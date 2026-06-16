@@ -1,0 +1,23 @@
+{
+  "ad": "Osmanlı Kuruluş",
+  "sinif": 10,
+  "konular": [
+    {
+      "id": "tar-1-1",
+      "ad": "Kuruluş Dönemi Padişahları",
+      "sayfaBasl": 3,
+      "sayfaBitis": 9,
+      "altKonular": [
+        {
+          "id": "tar-1-1-1",
+          "ad": "Osman Bey ve Orhan Bey",
+          "sayfa": 3,
+          "sorular": [
+            { "no": 1, "cevap": "B", "zorluk": "kolay" },
+            { "no": 2, "cevap": "E", "zorluk": "orta" }
+          ]
+        }
+      ]
+    }
+  ]
+}

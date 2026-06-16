@@ -2148,33 +2148,26 @@ window._firestoreReady = true;
 // ══════════════════════════════
 // MANIFEST DATA  (konular JSON yükleme ile gelir)
 // ══════════════════════════════
-const MANIFEST = {
+// v5: MANIFEST artık dersler/manifest.json'dan fetch edilir (bkz. fetchManifest()).
+// Ağ/CORS başarısız olursa (örn. file:// üzerinden açma) bu fallback kullanılır.
+const MANIFEST_FALLBACK = {
   dersler: [
     {
-      id:'mat', ad:'Matematik', ikon:'🔢', renk:'var(--mat)', progPct:42,
+      id:'mat', ad:'Matematik', ikon:'🔢', renk:'var(--mat)', progPct:0,
       fasikuller:[
-        { id:'analitik-duzlem', ad:'Analitik Düzlem', thumb:'📐', thumbBg:'linear-gradient(135deg,#312e81,#1e1b4b)', sinif:10, konuSayisi:7, soruSayisi:66, progPct:45, sonCalisma:'2 saat önce', konular:[] },
-        { id:'tyt-matematik', ad:'3 Adımda TYT Matematik', thumb:'📊', thumbBg:'linear-gradient(135deg,#1e1b4b,#312e81)', sinif:12, konuSayisi:34, soruSayisi:1061, progPct:0, sonCalisma:'—', konular:[] },
-        { id:'limit-turev', ad:'Limit ve Türev', thumb:'📉', thumbBg:'linear-gradient(135deg,#1e1b4b,#0c4a6e)', sinif:12, konuSayisi:5, soruSayisi:48, progPct:20, sonCalisma:'2 gün önce', konular:[] }
+        { id:'analitik-duzlem', ad:'Analitik Düzlem', thumb:'📐', thumbBg:'linear-gradient(135deg,#312e81,#1e1b4b)', sinif:10, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/matematik/analitik.json', konular:[] },
+        { id:'tyt-matematik', ad:'3 Adımda TYT Matematik', thumb:'📊', thumbBg:'linear-gradient(135deg,#1e1b4b,#312e81)', sinif:12, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/matematik/tyt-mat.json', konular:[] }
       ]
     },
-    { id:'bio', ad:'Biyoloji', ikon:'🧬', renk:'var(--bio)', progPct:15, fasikuller:[
-      { id:'bio-1', ad:'Hücre Biyolojisi', thumb:'🔬', thumbBg:'linear-gradient(135deg,#431407,#450a0a)', sinif:10, konuSayisi:1, soruSayisi:20, progPct:15, sonCalisma:'1 hafta önce', konular:[] }
+    { id:'bio', ad:'Biyoloji', ikon:'🧬', renk:'var(--bio)', progPct:0, fasikuller:[
+      { id:'bio-1', ad:'Hücre Biyolojisi', thumb:'🔬', thumbBg:'linear-gradient(135deg,#431407,#450a0a)', sinif:10, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/biyoloji/hucre.json', konular:[] }
     ]},
-    { id:'fiz', ad:'Fizik', ikon:'⚡', renk:'var(--fiz)', progPct:28, fasikuller:[
-      { id:'fiz-1', ad:'Kuvvet ve Hareket', thumb:'🌀', thumbBg:'linear-gradient(135deg,#164e63,#0c4a6e)', sinif:10, konuSayisi:1, soruSayisi:40, progPct:28, sonCalisma:'3 gün önce', konular:[] }
-    ]},
-    { id:'tar', ad:'Tarih', ikon:'🏛️', renk:'var(--tar)', progPct:33, fasikuller:[
-      { id:'tar-1', ad:'Osmanlı Kuruluş', thumb:'📜', thumbBg:'linear-gradient(135deg,#500724,#2d1657)', sinif:10, konuSayisi:1, soruSayisi:35, progPct:33, sonCalisma:'4 gün önce', konular:[] }
-    ]},
-    { id:'kim', ad:'Kimya', ikon:'🧪', renk:'var(--kim)', progPct:60, fasikuller:[
-      { id:'kim-1', ad:'Atom ve Periyodik Tablo', thumb:'⚗️', thumbBg:'linear-gradient(135deg,#064e3b,#052e16)', sinif:10, konuSayisi:1, soruSayisi:28, progPct:60, sonCalisma:'1 gün önce', konular:[] }
-    ]},
-    { id:'edb', ad:'Edebiyat', ikon:'📖', renk:'var(--edb)', progPct:55, fasikuller:[
-      { id:'siir', ad:'Şiir Türleri', thumb:'📝', thumbBg:'linear-gradient(135deg,#2e1065,#1a0533)', sinif:10, konuSayisi:2, soruSayisi:22, progPct:55, sonCalisma:'5 saat önce', konular:[] }
+    { id:'fiz', ad:'Fizik', ikon:'⚡', renk:'var(--fiz)', progPct:0, fasikuller:[
+      { id:'fiz-1', ad:'Kuvvet ve Hareket', thumb:'🌀', thumbBg:'linear-gradient(135deg,#164e63,#0c4a6e)', sinif:10, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/fizik/kuvvet.json', konular:[] }
     ]}
   ]
 };
+let MANIFEST = { dersler: [] };
 
 // Demo verilerinin orijinal anlık görüntüsü (Demo Verileri açma/kapama ve sıfırlama için)
 const DEMO_SNAPSHOT = MANIFEST.dersler.map(d=>({
@@ -2234,9 +2227,11 @@ const appState = {
 // ══════════════════════════════
 // INIT
 // ══════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   renderMathSymbols();
   renderStreakDots();
+  // v5: Önce dersler/manifest.json'dan ders/fasikül listesini ve içeriklerini çek
+  await fetchManifest();
   loadManifestMeta();
   loadAllKonular();
   // Demo Verileri tercihini uygula
@@ -6068,64 +6063,7 @@ function handleJSONUpload(input, dersId, fasikulId){
   reader.onload = (e) => {
     try{
       const raw = JSON.parse(e.target.result);
-      const ders = MANIFEST.dersler.find(d=>d.id===dersId);
-      if(!ders){ showToast('Ders bulunamadı','error'); return; }
-      const fas = ders.fasikuller.find(f=>f.id===fasikulId);
-      if(!fas){ showToast('Fasikül bulunamadı','error'); return; }
-
-      // Format tespiti
-      let konular;
-      if(Array.isArray(raw)){
-        konular = raw; // FORMAT 1
-      } else if(raw.konular && Array.isArray(raw.konular)){
-        konular = raw.konular; // FORMAT 2
-        // Wrapper meta bilgilerini de güncelle
-        if(raw.ad) fas.ad = raw.ad;
-        if(raw.sinif) fas.sinif = raw.sinif;
-        if(raw.soruSayisi) fas.soruSayisi = raw.soruSayisi;
-        if(raw.konuSayisi !== undefined) fas.konuSayisi = raw.konuSayisi;
-        if(raw.thumb) fas.thumb = raw.thumb;
-      } else {
-        showToast('Geçersiz JSON formatı. konular dizisi bulunamadı.','error');
-        return;
-      }
-
-      // ── JSON FORMAT NORMALİZASYONU ─────────────────────────
-      // FORMAT A (Kart): konular[i].altKonular var, sorular[j].sayfa YOK → her altKonu = çoklu soru, aynı sayfada
-      // FORMAT B (Tarama): konular[i].altKonular YOK, konular[i].sorular var, her soruda .sayfa → her soru kendi sayfasında
-      // FORMAT B → normalize ederek FORMAT A'ya dönüştür: her konu = bir altKonu, her soru = kendi sayfası
-      konular.forEach(k => {
-        if(!k.altKonular && k.sorular && k.sorular.length > 0) {
-          // FORMAT B: kart-bazlı (her soru farklı sayfada)
-          k._kartBazliKonu = true;
-          // Her soru için sayfa bilgisi kendi üzerinde → tek altKonu oluştur (tüm sorular içinde)
-          k.altKonular = [{
-            id: k.id + '-sorular',
-            ad: k.ad,
-            sayfa: k.sayfaBasl || (k.sorular[0]?.sayfa) || 1,
-            _kartBazli: true,
-            sorular: k.sorular.map(s => ({
-              ...s,
-              // sayfa zaten s.sayfa'da var
-              onizleme: s.onizleme || (k.ad + ' S.' + s.no),
-              zorluk: s.zorluk || 'orta'
-            }))
-          }];
-        }
-      });
-
-      // konuSayisi ve soruSayisi otomatik hesapla
-      fas.konular = konular;
-      fas.konuSayisi = konular.length;
-      fas.soruSayisi = konular.reduce((sum, k)=>
-        sum + (k.altKonular||[]).reduce((s2, ak)=> s2 + (ak.sorular||[]).length, 0), 0);
-      fas.sonCalisma = 'Az önce yüklendi';
-
-      persistKonular(dersId, fasikulId, konular);
-      persistManifest();
-      renderDerslerGrid();
-      renderFasikulCards(ders.fasikuller, ders);
-      showToast(`✓ ${fas.ad} — ${fas.konuSayisi} konu, ${fas.soruSayisi} soru yüklendi`, 'success');
+      applyFasikulData(dersId, fasikulId, raw, {silent:false, persist:true});
     } catch(err){
       showToast('JSON ayrıştırma hatası: ' + err.message, 'error');
     }
@@ -6134,6 +6072,80 @@ function handleJSONUpload(input, dersId, fasikulId){
   // input'u sıfırla (aynı dosya tekrar seçilebilsin)
   input.value = '';
 }
+
+/**
+ * Bir fasikül için ham JSON verisini (manuel yükleme veya otomatik fetch'ten gelen)
+ * MANIFEST üzerine uygular, normalize eder ve isteğe bağlı olarak kalıcı hale getirir.
+ * opts.silent=true ise hata/başarı toast'ları bastırılır (sayfa açılışındaki otomatik fetch için).
+ * opts.persist=true ise localStorage + manifest meta güncellenir.
+ */
+function applyFasikulData(dersId, fasikulId, raw, opts){
+  opts = opts || {};
+  const ders = MANIFEST.dersler.find(d=>d.id===dersId);
+  if(!ders){ if(!opts.silent) showToast('Ders bulunamadı','error'); return false; }
+  const fas = ders.fasikuller.find(f=>f.id===fasikulId);
+  if(!fas){ if(!opts.silent) showToast('Fasikül bulunamadı','error'); return false; }
+
+  // Format tespiti
+  let konular;
+  if(Array.isArray(raw)){
+    konular = raw; // FORMAT 1
+  } else if(raw.konular && Array.isArray(raw.konular)){
+    konular = raw.konular; // FORMAT 2
+    // Wrapper meta bilgilerini de güncelle
+    if(raw.ad) fas.ad = raw.ad;
+    if(raw.sinif) fas.sinif = raw.sinif;
+    if(raw.soruSayisi) fas.soruSayisi = raw.soruSayisi;
+    if(raw.konuSayisi !== undefined) fas.konuSayisi = raw.konuSayisi;
+    if(raw.thumb) fas.thumb = raw.thumb;
+  } else {
+    if(!opts.silent) showToast('Geçersiz JSON formatı. konular dizisi bulunamadı.','error');
+    return false;
+  }
+
+  // ── JSON FORMAT NORMALİZASYONU ─────────────────────────
+  // FORMAT A (Kart): konular[i].altKonular var, sorular[j].sayfa YOK → her altKonu = çoklu soru, aynı sayfada
+  // FORMAT B (Tarama): konular[i].altKonular YOK, konular[i].sorular var, her soruda .sayfa → her soru kendi sayfasında
+  // FORMAT B → normalize ederek FORMAT A'ya dönüştür: her konu = bir altKonu, her soru = kendi sayfası
+  konular.forEach(k => {
+    if(!k.altKonular && k.sorular && k.sorular.length > 0) {
+      // FORMAT B: kart-bazlı (her soru farklı sayfada)
+      k._kartBazliKonu = true;
+      // Her soru için sayfa bilgisi kendi üzerinde → tek altKonu oluştur (tüm sorular içinde)
+      k.altKonular = [{
+        id: k.id + '-sorular',
+        ad: k.ad,
+        sayfa: k.sayfaBasl || (k.sorular[0]?.sayfa) || 1,
+        _kartBazli: true,
+        sorular: k.sorular.map(s => ({
+          ...s,
+          // sayfa zaten s.sayfa'da var
+          onizleme: s.onizleme || (k.ad + ' S.' + s.no),
+          zorluk: s.zorluk || 'orta'
+        }))
+      }];
+    }
+  });
+
+  // konuSayisi ve soruSayisi otomatik hesapla
+  fas.konular = konular;
+  fas.konuSayisi = konular.length;
+  fas.soruSayisi = konular.reduce((sum, k)=>
+    sum + (k.altKonular||[]).reduce((s2, ak)=> s2 + (ak.sorular||[]).length, 0), 0);
+  fas.sonCalisma = opts.silent ? (fas.sonCalisma||'—') : 'Az önce yüklendi';
+
+  if(opts.persist){
+    persistKonular(dersId, fasikulId, konular);
+    persistManifest();
+  }
+  if(!opts.silent){
+    renderDerslerGrid();
+    renderFasikulCards(ders.fasikuller, ders);
+    showToast(`✓ ${fas.ad} — ${fas.konuSayisi} konu, ${fas.soruSayisi} soru yüklendi`, 'success');
+  }
+  return true;
+}
+
 
 function persistKonular(dersId, fasikulId, konular){
   try{
@@ -6178,6 +6190,48 @@ function loadAllKonular(){
       }catch(e){}
     });
   });
+}
+
+// ══════════════════════════════
+// MANIFEST FETCH (v5 — dersler/manifest.json otomatik yükleme)
+// ══════════════════════════════
+async function fetchManifest(){
+  try{
+    const res = await fetch('dersler/manifest.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('manifest.json HTTP '+res.status);
+    const data = await res.json();
+    if(!data || !Array.isArray(data.dersler)) throw new Error('manifest.json formatı geçersiz');
+    MANIFEST.dersler = data.dersler.map(d=>({
+      ...d,
+      fasikuller: (d.fasikuller||[]).map(f=>({ konular:[], ...f }))
+    }));
+  }catch(e){
+    console.warn('manifest.json çekilemedi, yerleşik fallback kullanılıyor:', e.message);
+    MANIFEST.dersler = JSON.parse(JSON.stringify(MANIFEST_FALLBACK.dersler));
+    showToast('dersler/manifest.json okunamadı, varsayılan liste kullanılıyor','error');
+  }
+  // Manifestte tanımlı her fasikül için, eğer henüz localStorage'da konu verisi yoksa
+  // f.json alanındaki yoldan otomatik içerik çek.
+  await Promise.all(
+    MANIFEST.dersler.flatMap(ders =>
+      ders.fasikuller.map(fas => fetchFasikulJSON(ders, fas))
+    )
+  );
+}
+
+async function fetchFasikulJSON(ders, fas){
+  if(!fas.json) return; // json yolu tanımlı değilse atla (manuel yüklemeye devam edilir)
+  const key = `edu_konular_${ders.id}_${fas.id}`;
+  // Kullanıcı bu fasikülü zaten elle yükleyip localStorage'a kaydetmişse tekrar fetch etme.
+  if(localStorage.getItem(key)) return;
+  try{
+    const res = await fetch(fas.json, {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const raw = await res.json();
+    applyFasikulData(ders.id, fas.id, raw, {silent:true, persist:true});
+  }catch(e){
+    console.warn(`Fasikül JSON çekilemedi (${ders.id}/${fas.id}):`, e.message);
+  }
 }
 
 // ══════════════════════════════

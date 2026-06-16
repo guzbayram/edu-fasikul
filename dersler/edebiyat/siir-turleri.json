@@ -1,0 +1,40 @@
+{
+  "ad": "Şiir Türleri",
+  "sinif": 10,
+  "konular": [
+    {
+      "id": "edb-1-1",
+      "ad": "Lirik ve Epik Şiir",
+      "sayfaBasl": 3,
+      "sayfaBitis": 7,
+      "altKonular": [
+        {
+          "id": "edb-1-1-1",
+          "ad": "Lirik Şiirin Özellikleri",
+          "sayfa": 3,
+          "sorular": [
+            { "no": 1, "cevap": "D", "zorluk": "kolay" },
+            { "no": 2, "cevap": "B", "zorluk": "orta" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "edb-1-2",
+      "ad": "Didaktik ve Pastoral Şiir",
+      "sayfaBasl": 8,
+      "sayfaBitis": 12,
+      "altKonular": [
+        {
+          "id": "edb-1-2-1",
+          "ad": "Didaktik Şiirin Özellikleri",
+          "sayfa": 8,
+          "sorular": [
+            { "no": 3, "cevap": "A", "zorluk": "orta" },
+            { "no": 4, "cevap": "E", "zorluk": "zor" }
+          ]
+        }
+      ]
+    }
+  ]
+}

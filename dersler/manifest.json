@@ -1,0 +1,142 @@
+{
+  "dersler": [
+    {
+      "id": "mat",
+      "ad": "Matematik",
+      "ikon": "🔢",
+      "renk": "var(--mat)",
+      "progPct": 0,
+      "fasikuller": [
+        {
+          "id": "analitik-duzlem",
+          "ad": "Analitik Düzlem",
+          "thumb": "📐",
+          "thumbBg": "linear-gradient(135deg,#312e81,#1e1b4b)",
+          "sinif": 10,
+          "konuSayisi": 0,
+          "soruSayisi": 0,
+          "progPct": 0,
+          "sonCalisma": "—",
+          "json": "dersler/matematik/analitik.json"
+        },
+        {
+          "id": "tyt-matematik",
+          "ad": "3 Adımda TYT Matematik",
+          "thumb": "📊",
+          "thumbBg": "linear-gradient(135deg,#1e1b4b,#312e81)",
+          "sinif": 12,
+          "konuSayisi": 0,
+          "soruSayisi": 0,
+          "progPct": 0,
+          "sonCalisma": "—",
+          "json": "dersler/matematik/tyt-mat.json"
+        }
+      ]
+    },
+    {
+      "id": "bio",
+      "ad": "Biyoloji",
+      "ikon": "🧬",
+      "renk": "var(--bio)",
+      "progPct": 0,
+      "fasikuller": [
+        {
+          "id": "bio-1",
+          "ad": "Hücre Biyolojisi",
+          "thumb": "🔬",
+          "thumbBg": "linear-gradient(135deg,#431407,#450a0a)",
+          "sinif": 10,
+          "konuSayisi": 0,
+          "soruSayisi": 0,
+          "progPct": 0,
+          "sonCalisma": "—",
+          "json": "dersler/biyoloji/hucre.json"
+        }
+      ]
+    },
+    {
+      "id": "fiz",
+      "ad": "Fizik",
+      "ikon": "⚡",
+      "renk": "var(--fiz)",
+      "progPct": 0,
+      "fasikuller": [
+        {
+          "id": "fiz-1",
+          "ad": "Kuvvet ve Hareket",
+          "thumb": "🌀",
+          "thumbBg": "linear-gradient(135deg,#164e63,#0c4a6e)",
+          "sinif": 10,
+          "konuSayisi": 0,
+          "soruSayisi": 0,
+          "progPct": 0,
+          "sonCalisma": "—",
+          "json": "dersler/fizik/kuvvet.json"
+        }
+      ]
+    },
+    {
+      "id": "tar",
+      "ad": "Tarih",
+      "ikon": "🏛️",
+      "renk": "var(--tar)",
+      "progPct": 0,
+      "fasikuller": [
+        {
+          "id": "tar-1",
+          "ad": "Osmanlı Kuruluş",
+          "thumb": "📜",
+          "thumbBg": "linear-gradient(135deg,#500724,#2d1657)",
+          "sinif": 10,
+          "konuSayisi": 0,
+          "soruSayisi": 0,
+          "progPct": 0,
+          "sonCalisma": "—",
+          "json": "dersler/tarih/osmanli-kurulus.json"
+        }
+      ]
+    },
+    {
+      "id": "kim",
+      "ad": "Kimya",
+      "ikon": "🧪",
+      "renk": "var(--kim)",
+      "progPct": 0,
+      "fasikuller": [
+        {
+          "id": "kim-1",
+          "ad": "Atom ve Periyodik Tablo",
+          "thumb": "⚗️",
+          "thumbBg": "linear-gradient(135deg,#064e3b,#052e16)",
+          "sinif": 10,
+          "konuSayisi": 0,
+          "soruSayisi": 0,
+          "progPct": 0,
+          "sonCalisma": "—",
+          "json": "dersler/kimya/atom-periyodik.json"
+        }
+      ]
+    },
+    {
+      "id": "edb",
+      "ad": "Edebiyat",
+      "ikon": "📖",
+      "renk": "var(--edb)",
+      "progPct": 0,
+      "fasikuller": [
+        {
+          "id": "siir",
+          "ad": "Şiir Türleri",
+          "thumb": "📝",
+          "thumbBg": "linear-gradient(135deg,#2e1065,#1a0533)",
+          "sinif": 10,
+          "konuSayisi": 0,
+          "soruSayisi": 0,
+          "progPct": 0,
+          "sonCalisma": "—",
+          "json": "dersler/edebiyat/siir-turleri.json"
+        }
+      ]
+    }
+  ]
+}

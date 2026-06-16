@@ -1,0 +1,23 @@
+{
+  "ad": "Atom ve Periyodik Tablo",
+  "sinif": 10,
+  "konular": [
+    {
+      "id": "kim-1-1",
+      "ad": "Atom Modelleri",
+      "sayfaBasl": 3,
+      "sayfaBitis": 8,
+      "altKonular": [
+        {
+          "id": "kim-1-1-1",
+          "ad": "Bohr Atom Modeli",
+          "sayfa": 3,
+          "sorular": [
+            { "no": 1, "cevap": "A", "zorluk": "kolay" },
+            { "no": 2, "cevap": "C", "zorluk": "orta" }
+          ]
+        }
+      ]
+    }
+  ]
+}
