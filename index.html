@@ -247,24 +247,24 @@ a{color:inherit;text-decoration:none}
    DASHBOARD PANEL
 ════════════════════════════════════════════════════════ */
 .welcome-banner{
-  background:linear-gradient(135deg,rgba(129,140,248,0.14) 0%,rgba(34,211,238,0.07) 100%);
-  border:1px solid rgba(129,140,248,0.2);border-radius:var(--radius-xl);
-  padding:28px 32px;margin-bottom:24px;
-  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,rgba(129,140,248,0.12) 0%,rgba(34,211,238,0.06) 100%);
+  border:1px solid rgba(129,140,248,0.18);border-radius:var(--radius-lg);
+  padding:20px 24px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
 }
 .welcome-text h1{font-family:var(--font-display);font-size:26px;font-weight:700;margin-bottom:6px}
 .welcome-text p{color:var(--text-1);font-size:14px}
 .welcome-text p span{color:var(--mat);font-weight:600}
-.welcome-emoji{font-size:56px;filter:drop-shadow(0 4px 12px rgba(129,140,248,0.3))}
+.welcome-emoji{font-size:42px;filter:drop-shadow(0 4px 12px rgba(129,140,248,0.24))}
 
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 .stat-card{
-  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:18px 20px;transition:border-color .2s;
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;transition:border-color .2s;
 }
 .stat-card:hover{border-color:var(--border-strong)}
-.stat-card .stat-icon{font-size:22px;margin-bottom:10px}
-.stat-card .stat-value{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--text-0)}
+.stat-card .stat-icon{font-size:18px;margin-bottom:8px}
+.stat-card .stat-value{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--text-0)}
 .stat-card .stat-label{font-size:12px;color:var(--text-muted);margin-top:4px}
 .stat-card .stat-delta{font-size:11px;color:var(--green);margin-top:4px}
 
@@ -273,28 +273,28 @@ a{color:inherit;text-decoration:none}
 
 /* SON AÇILAN FAKİKÜL BANNER */
 .last-open-banner{
-  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xl);
-  padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:18px;cursor:pointer;transition:all .2s;
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;
 }
 .last-open-banner:hover{border-color:var(--border-strong);transform:translateY(-2px)}
 .last-open-thumb{
-  width:52px;height:66px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;
+  width:46px;height:58px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0;
 }
 .last-open-info{flex:1}
 .last-open-info .lo-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
 .last-open-info .lo-name{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:4px}
 .last-open-info .lo-meta{font-size:13px;color:var(--text-muted)}
 .last-open-prog{width:140px;flex-shrink:0;text-align:right}
-.last-open-prog .lo-pct{font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--mat)}
+.last-open-prog .lo-pct{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--mat)}
 .last-open-prog .lo-pct-lbl{font-size:11px;color:var(--text-muted)}
 .last-open-prog .lo-pbar{height:4px;background:var(--bg-4);border-radius:99px;overflow:hidden;margin-top:6px}
 .last-open-prog .lo-pbar-fill{height:100%;background:var(--mat);border-radius:99px}
 .last-open-arrow{font-size:22px;color:var(--mat);flex-shrink:0}
 
-.dersler-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.dersler-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:28px}
 .ders-card{
-  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);
-  overflow:hidden;cursor:pointer;transition:all .25s;padding:18px;position:relative;
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;transition:all .25s;padding:16px;position:relative;
 }
 .ders-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
 .ders-card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
@@ -434,16 +434,20 @@ a{color:inherit;text-decoration:none}
 ════════════════════════════════════════════════════════ */
 #reader-overlay{
   position:fixed;inset:0;z-index:200;background:var(--bg-0);
-  display:none;flex-direction:row;
+  display:none;flex-direction:column;overflow:hidden;
 }
 #reader-overlay.open{display:flex}
 
 /* LEFT NAV */
 .reader-left{
-  width:var(--lp-w);flex-shrink:0;background:var(--bg-1);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;transition:width .3s;overflow:hidden;
+  position:fixed;left:18px;top:70px;bottom:18px;width:min(360px,calc(100vw - 36px));
+  flex-shrink:0;background:var(--bg-1);border:1px solid var(--border-strong);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-xl);
+  display:flex;flex-direction:column;transition:transform .25s ease,opacity .25s ease;overflow:hidden;
+  transform:translateX(calc(-100% - 34px));opacity:0;z-index:520;
 }
-.reader-left.collapsed{width:0;border-right:none}
+.reader-left.mobile-open{transform:translateX(0);opacity:1}
+.reader-left.collapsed{transform:translateX(calc(-100% - 34px));opacity:0}
 .reader-left-header{
   padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px;
@@ -486,8 +490,8 @@ a{color:inherit;text-decoration:none}
 .reader-center{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-0)}
 
 .reader-toolbar{
-  height:50px;flex-shrink:0;background:var(--bg-1);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 10px;gap:4px;overflow-x:auto;
+  height:56px;flex-shrink:0;background:var(--bg-1);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 14px;gap:8px;overflow-x:auto;
 }
 .reader-toolbar::-webkit-scrollbar{height:0}
 .tool-group{display:flex;align-items:center;gap:3px;flex-shrink:0}
@@ -499,7 +503,7 @@ a{color:inherit;text-decoration:none}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 1px 2px rgba(0,0,0,.08);
 }
 .tool-btn:hover{
-  background:var(--bg-4);color:#fff;border-color:var(--text-muted);
+  background:var(--mat-dim);color:var(--text-0);border-color:var(--mat);
   transform:translateY(-1px);
 }
 .tool-btn.active{
@@ -508,8 +512,8 @@ a{color:inherit;text-decoration:none}
 }
 .tool-btn[data-tool="select"]{font-size:16px}
 .tool-btn[data-tool="select"].active{
-  background:#111827;color:#fff;border-color:#64748b;
-  box-shadow:0 0 0 2px rgba(100,116,139,.28),0 4px 12px rgba(15,23,42,.22);
+  background:var(--mat);color:#fff;border-color:var(--mat);
+  box-shadow:0 0 0 2px var(--mat-glow),0 4px 12px rgba(76,29,149,.2);
 }
 .tool-btn[title]:hover::after{
   content:attr(title);position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);
@@ -521,17 +525,36 @@ a{color:inherit;text-decoration:none}
 .size-slider{width:68px;accent-color:var(--mat);cursor:pointer;flex-shrink:0}
 .toolbar-fasikul-name{
   font-family:var(--font-display);font-size:13px;font-weight:700;
-  padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;
+  padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(280px,34vw);
   color:var(--text-0);
 }
 
+.reader-tool-palette{
+  position:fixed;left:50%;top:72px;transform:translateX(-50%);
+  z-index:420;background:var(--bg-2);border:1px solid rgba(129,140,248,.28);
+  border-radius:12px;padding:6px;box-shadow:0 8px 26px rgba(79,70,229,.12);backdrop-filter:blur(14px);
+}
+.reader-color-palette{
+  position:fixed;left:50%;top:126px;transform:translateX(-50%);
+  z-index:420;background:var(--bg-1);border:1px solid rgba(129,140,248,.22);
+  border-radius:12px;padding:8px 10px;box-shadow:0 6px 20px rgba(79,70,229,.1);backdrop-filter:blur(14px);
+}
+.reader-history-palette{
+  position:fixed;right:18px;top:72px;z-index:420;
+  background:var(--bg-2);border:1px solid rgba(129,140,248,.22);
+  border-radius:12px;padding:6px;box-shadow:0 6px 20px rgba(79,70,229,.1);backdrop-filter:blur(14px);
+}
+.reader-meta-actions{margin-left:auto}
+
 /* PDF CANVAS */
 .reader-canvas-wrap{
-  flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:24px 20px;gap:20px;
-  background:var(--bg-0);
+  flex:1;overflow:auto;display:flex;flex-direction:column;align-items:flex-start;padding:84px 20px 22px;gap:20px;
+  background:var(--bg-0);overscroll-behavior:contain;
 }
+.reader-canvas-wrap.card-panning{cursor:grabbing;user-select:none}
+.reader-canvas-wrap.card-pan-ready{cursor:grab}
 .reader-page-stage{
-  width:100%;min-height:calc(100% - 32px);display:flex;align-items:center;justify-content:center;
+  width:max-content;min-width:100%;min-height:calc(100% - 32px);display:flex;align-items:center;justify-content:center;
   padding:16px 0;box-sizing:border-box;flex-shrink:0;
 }
 .reading-mode .reader-canvas-wrap{
@@ -561,7 +584,7 @@ a{color:inherit;text-decoration:none}
 
 /* BOTTOM BAR */
 .reader-bottom-bar{
-  height:48px;flex-shrink:0;background:var(--bg-1);border-top:1px solid var(--border);
+  height:46px;flex-shrink:0;background:var(--bg-1);border-top:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;gap:10px;padding:0 20px;
 }
 .page-nav-btn{
@@ -579,12 +602,14 @@ a{color:inherit;text-decoration:none}
 
 /* RIGHT PANEL — SORU BANKASI */
 .reader-right{
-  width:var(--rp-w);flex-shrink:0;background:var(--bg-1);border-left:1px solid var(--border);
-  display:flex;flex-direction:column;transition:width .3s;overflow:hidden;
+  width:100%;flex-shrink:0;background:var(--bg-1);border-left:none;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:10px 18px calc(10px + env(safe-area-inset-bottom));
+  transition:max-height .25s ease,opacity .2s;overflow:hidden;min-height:196px;max-height:34vh;
 }
-.reader-right.collapsed{width:0;border-left:none}
+.reader-right.collapsed{max-height:48px;min-height:48px;opacity:.96}
 
-.rp-header{padding:12px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.rp-header{width:min(70vw,920px);padding:0;border-bottom:none;min-width:0;display:flex;align-items:center;gap:12px}
 .rp-title{font-family:var(--font-display);font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;display:flex;align-items:center;gap:8px;min-width:0}
 .rp-title-main{flex-shrink:0}
 .rp-title-topic{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--mat);font-family:var(--font-ui);font-size:12px;font-weight:700}
@@ -592,7 +617,7 @@ a{color:inherit;text-decoration:none}
 .rp-stats-row{display:flex;gap:8px;font-size:11px;color:var(--text-muted)}
 .rp-stat{display:flex;align-items:center;gap:4px}
 
-.test-control{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.test-control{width:min(70vw,920px);padding:0;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .start-test-btn{
   flex:1;padding:9px 12px;background:var(--mat);color:#fff;border-radius:var(--radius);
   font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;
@@ -616,7 +641,9 @@ a{color:inherit;text-decoration:none}
 
 /* Timer Duration Picker */
 .timer-picker{
-  padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;
+  position:fixed;left:18px;bottom:220px;z-index:430;
+  padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--bg-1);box-shadow:var(--shadow-lg);flex-shrink:0;
   display:none;
 }
 .timer-picker.show{display:block}
@@ -630,7 +657,7 @@ a{color:inherit;text-decoration:none}
 .timer-opt.active{background:var(--mat-dim);color:var(--mat);border-color:var(--mat)}
 
 /* SORU LİSTESİ */
-.soru-list{flex:1;overflow-y:auto;padding:8px}
+.soru-list{width:100%;min-height:0;overflow-y:auto;padding:0;display:flex;align-items:center;justify-content:center}
 .soru-card{
   background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
   margin-bottom:8px;overflow:hidden;transition:all .2s;
@@ -686,7 +713,7 @@ a{color:inherit;text-decoration:none}
 .cevap-feedback.show-wrong{display:block;background:var(--red-dim);color:var(--red)}
 
 /* TEST PROGRESS BAR */
-.test-progress-bar{padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0}
+.test-progress-bar{width:min(70vw,920px);padding:0;border-top:none;align-self:center;min-width:0}
 .tp-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:6px}
 .tp-track{height:5px;background:var(--bg-4);border-radius:99px;overflow:hidden}
 .tp-fill{height:100%;background:var(--mat);border-radius:99px;transition:width .4s}
@@ -1009,7 +1036,7 @@ a{color:inherit;text-decoration:none}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.4)}50%{box-shadow:0 0 0 8px rgba(249,115,22,0)}}
 
 /* ════ TEK SORU KARTI ════ */
-.soru-list{ flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px; }
+.soru-list{ flex:1; overflow-y:auto; padding:0; display:flex; flex-direction:column; gap:8px; }
 
 /* Üst özet şeridi */
 .soru-strip{
@@ -1030,7 +1057,8 @@ a{color:inherit;text-decoration:none}
 /* Tek kart */
 .tek-soru-card{
   background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-lg);
-  overflow:hidden; flex-shrink:0;
+  overflow:hidden; flex-shrink:0;width:min(70vw,920px);max-width:100%;
+  box-shadow:0 10px 32px rgba(0,0,0,.20);
 }
 .tsk-header{
   padding:10px 14px; display:flex; align-items:center; gap:8px;
@@ -1572,6 +1600,106 @@ a{color:inherit;text-decoration:none}
 /* Masaüstünde mobil butonları gizle */
 #mobileMenuBtn { display: none; }
 
+/* ════════════════════════════════════════════════════════
+   TABLET-FIRST READER REFINEMENT
+════════════════════════════════════════════════════════ */
+#reader-overlay.open #mobileMenuBtn{display:flex!important}
+#mobileLeftOverlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.42);
+  z-index:510;backdrop-filter:blur(2px);
+}
+#mobileLeftOverlay.show{display:block}
+.reader-right.collapsed .soru-list,
+.reader-right.collapsed .test-progress-bar,
+.reader-right.collapsed .test-control{display:none!important}
+
+@media (max-width: 1366px) {
+  .panel.active{padding:18px}
+  .welcome-banner{padding:18px 20px}
+  .stats-row{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .reader-toolbar{height:54px;padding:0 10px}
+  .reader-tool-palette{top:66px}
+  .reader-color-palette{top:120px}
+  .reader-history-palette{top:66px;right:10px}
+  .reader-canvas-wrap{padding:80px 12px 16px}
+  .reader-right{
+    min-height:230px;max-height:38vh;padding:10px 12px;
+  }
+  .tek-soru-card{width:min(70vw,820px)}
+  .rp-header,.test-control,.test-progress-bar{width:min(70vw,820px)}
+  .tsk-body{padding:10px 12px}
+  .tsk-cevap-btn{min-height:42px}
+}
+
+@media (max-width: 1024px) {
+  .reader-toolbar{gap:5px}
+  .toolbar-fasikul-name{max-width:28vw}
+  .reader-meta-actions .tool-btn[title="Sol Paneli Aç/Kapat"],
+  .reader-meta-actions .tool-btn[title="Soru Panelini Aç/Kapat"]{display:none}
+  .reader-right{
+    gap:8px;min-height:230px;max-height:40vh;
+  }
+  .rp-title{font-size:12px}
+  .rp-stats-row{gap:7px}
+  .test-control{gap:6px}
+  .start-test-btn{font-size:12px;padding:8px 10px}
+  .timer-display{font-size:12px;padding:7px 9px}
+  .tek-soru-card{width:70vw}
+  .reader-tool-palette{left:44%}
+  .reader-color-palette{left:44%}
+}
+
+@media (max-width: 768px) {
+  #reader-overlay{flex-direction:column!important}
+  .reader-toolbar{height:52px!important;padding:0 8px!important}
+  .reader-left{
+    left:10px!important;right:auto!important;top:62px!important;bottom:10px!important;
+    width:calc(100vw - 20px)!important;height:auto!important;max-height:none!important;
+    border-radius:16px!important;transform:translateX(calc(-100% - 22px))!important;
+    transition:transform .25s ease,opacity .25s ease!important;
+  }
+  .reader-left.mobile-open,
+  .reader-left.collapsed.mobile-open{transform:translateX(0)!important;opacity:1!important}
+  .reader-left::before{display:none!important}
+  .reader-center{flex:1!important;min-height:0!important}
+  .reader-tool-palette{
+    left:8px!important;right:auto;top:60px!important;transform:none!important;
+    flex-direction:column;max-height:calc(100vh - 260px);overflow-y:auto;
+  }
+  .reader-color-palette{
+    left:auto!important;right:8px;top:60px!important;transform:none!important;
+    display:flex!important;flex-direction:column;max-height:calc(100vh - 260px);overflow-y:auto;
+  }
+  .reader-history-palette{right:8px;top:auto!important;bottom:205px}
+  .reader-canvas-wrap{padding:70px 8px 12px!important}
+  .reader-bottom-bar{height:40px!important}
+  .reader-right{
+    display:flex!important;width:100%!important;max-height:42vh!important;min-height:236px!important;
+    flex-direction:column!important;align-items:center!important;
+    gap:7px!important;padding:8px 10px calc(8px + env(safe-area-inset-bottom))!important;
+    border-top:1px solid var(--border)!important;
+  }
+  .rp-header{display:flex;align-items:center;gap:8px;padding:0!important}
+  .rp-title{margin-bottom:0!important;flex:1}
+  .rp-stats-row{flex-direction:row;font-size:10px!important}
+  .test-control{margin-top:0;margin-left:0;padding:0!important}
+  .soru-list{padding:0!important;align-items:center!important;justify-content:center!important}
+  .tek-soru-card{width:min(70vw,620px)!important;margin:0 auto!important}
+  .rp-header,.test-control,.test-progress-bar{width:min(70vw,620px)!important}
+  .test-progress-bar{padding:0!important}
+  .tp-nav-btn,.finish-test-btn{min-height:38px}
+}
+
+@media (max-width: 560px) {
+  .reader-meta-actions label[for="pdfFileInputToolbar"],
+  #viewModeBtn,
+  #readingModeBtn{display:none}
+  .toolbar-fasikul-name{max-width:42vw}
+  .reader-right{min-height:252px!important;max-height:46vh!important}
+  .tek-soru-card{width:100%!important}
+  .reader-tool-palette,.reader-color-palette{top:58px!important}
+}
+
 /* ════ PDF CONTEXT MENU ════ */
 .ctx-item{
   display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;
@@ -1581,6 +1709,113 @@ a{color:inherit;text-decoration:none}
 .ctx-item:hover{background:var(--bg-3)}
 .ctx-item.ctx-active{background:var(--mat-dim);}
 .ctx-item.ctx-active > div > div:first-child{color:var(--mat)}
+
+/* ════════════════════════════════════════════════════════
+   TWO-ROW STUDY CONTROLS + RIGHT TOOL PANEL
+════════════════════════════════════════════════════════ */
+@media (min-width: 769px) {
+  #reader-overlay{flex-direction:row}
+  .reader-center{min-width:0;padding-right:300px}
+  .reader-canvas-wrap{padding-bottom:154px}
+  .reader-bottom-bar{
+    position:fixed;left:0;right:300px;bottom:86px;z-index:360;
+    height:56px;background:var(--bg-1);border-top:1px solid var(--border);
+    border-right:1px solid var(--border);box-shadow:0 -8px 24px rgba(0,0,0,.08);
+  }
+  .reader-right{
+    position:fixed;right:0;top:56px;bottom:0;z-index:350;
+    width:300px;min-height:0;max-height:none;padding:14px;
+    border-top:none;border-left:1px solid var(--border);
+    align-items:stretch;gap:12px;overflow-y:auto;
+  }
+  .rp-header,.test-control,.test-progress-bar{width:100%}
+  .rp-header{display:block;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  .rp-title{white-space:normal;line-height:1.35;margin-bottom:8px}
+  .rp-stats-row{display:grid;grid-template-columns:1fr;gap:7px;font-size:12px}
+  .test-control{display:grid;grid-template-columns:1fr auto;gap:8px}
+  .start-test-btn{grid-column:1 / -1;min-height:46px}
+  .timer-display{min-height:42px;display:flex;align-items:center;justify-content:center}
+  .timer-settings-btn{width:42px;height:42px;border-radius:var(--radius)}
+  .test-progress-bar{margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
+  .tp-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  .finish-test-btn{grid-column:1 / -1;min-height:42px}
+  .tp-nav-btn{min-height:42px}
+  .soru-list{
+    position:fixed;left:0;right:300px;bottom:0;z-index:365;
+    height:86px;padding:8px 24px;background:var(--bg-1);
+    border-top:1px solid var(--border);border-right:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .tek-soru-card{
+    width:calc(100% - 48px)!important;max-width:980px;border-radius:var(--radius);
+    box-shadow:none;background:transparent;border:none;
+  }
+  .tsk-header,.tsk-feedback,.tsk-actions{display:none!important}
+  .tsk-body{padding:0}
+  .tsk-nav-dots{display:none}
+  .tsk-cevap-row{margin:0;gap:10px}
+  .tsk-cevap-btn{min-width:0;min-height:52px;border-radius:var(--radius);font-size:16px}
+  .timer-picker{right:314px;left:auto;bottom:118px}
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  .reader-center{padding-right:260px}
+  .reader-bottom-bar{right:260px}
+  .reader-right{width:260px}
+  .soru-list{right:260px;padding-inline:16px}
+  .tek-soru-card{width:100%!important}
+  .tsk-cevap-row{gap:7px}
+}
+
+/* Answer and pen controls live in the right study panel. */
+@media (min-width: 769px) {
+  .reader-canvas-wrap{padding-bottom:72px}
+  .reader-bottom-bar{bottom:0}
+  .reader-right{
+    padding-top:174px;
+  }
+  .reader-tool-palette,
+  .reader-color-palette,
+  .reader-history-palette{
+    left:auto;transform:none;right:14px;width:272px;
+  }
+  .reader-tool-palette{
+    top:70px;display:flex;flex-wrap:wrap;justify-content:center;
+  }
+  .reader-color-palette{
+    top:124px;display:flex;flex-wrap:wrap;justify-content:center;
+  }
+  .reader-history-palette{
+    top:176px;display:flex;flex-wrap:wrap;justify-content:center;
+  }
+  .soru-list{
+    position:static;left:auto;right:auto;bottom:auto;z-index:auto;
+    width:100%;height:auto;min-height:0;padding:0;background:transparent;
+    border:0;overflow:visible;display:block;
+  }
+  .tek-soru-card{
+    width:100%!important;max-width:none;background:var(--bg-2);
+    border:1px solid var(--border);box-shadow:none;
+  }
+  .tsk-header{display:flex!important}
+  .tsk-body{padding:10px}
+  .tsk-cevap-row{
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:6px;margin:0;
+  }
+  .tsk-cevap-btn{
+    min-height:44px;padding:8px 2px;font-size:14px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  .reader-right{padding-top:206px}
+  .reader-tool-palette,
+  .reader-color-palette,
+  .reader-history-palette{right:10px;width:240px}
+  .reader-color-palette{top:156px}
+  .reader-history-palette{top:206px}
+}
 </style>
 <!-- Firebase -->
 <script type="module">
@@ -1893,7 +2128,7 @@ window._firestoreReady = true;
       </div>
       <div class="tool-divider"></div>
       <!-- Drawing tools -->
-      <div class="tool-group" id="toolGroup">
+      <div class="tool-group reader-tool-palette" id="toolGroup">
         <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Seç / Taşı">🖱️</button>
         <button class="tool-btn active" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
         <button class="tool-btn" data-tool="tukenmez" onclick="setTool(this,'tukenmez')" title="Tükenmez">🖊️</button>
@@ -1903,7 +2138,7 @@ window._firestoreReady = true;
       </div>
       <div class="tool-divider"></div>
       <!-- Color & size -->
-      <div class="tool-group" id="colorGroup">
+      <div class="tool-group reader-color-palette" id="colorGroup">
         <div class="color-dot selected" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></div>
         <div class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></div>
         <div class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></div>
@@ -1915,14 +2150,14 @@ window._firestoreReady = true;
       </div>
       <div class="tool-divider"></div>
       <!-- History & actions -->
-      <div class="tool-group">
+      <div class="tool-group reader-history-palette">
         <button class="tool-btn" onclick="undoDraw()" title="Geri Al (Ctrl+Z)">↩️</button>
         <button class="tool-btn" onclick="redoDraw()" title="İleri Al (Ctrl+Y)">↪️</button>
         <button class="tool-btn" onclick="clearPage()" title="Sayfayı Temizle">🧹</button>
         <button class="tool-btn" onclick="saveDrawing()" title="Kaydet (Ctrl+S)">💾</button>
       </div>
       <!-- Right controls -->
-      <div class="tool-group" style="margin-left:auto">
+      <div class="tool-group reader-meta-actions">
         <label class="tool-btn" for="pdfFileInputToolbar" title="PDF Yükle / Değiştir" style="cursor:pointer">📂</label>
         <input type="file" id="pdfFileInputToolbar" accept=".pdf" style="display:none" onchange="handlePDFUpload(this)">
         <button class="tool-btn" id="viewModeBtn" onclick="setViewMode(appState.viewMode==='single'?'scroll':'single')" title="Görünüm Modu (Sağ Tık)">📄</button>
@@ -2176,26 +2411,33 @@ window._firestoreReady = true;
 // ══════════════════════════════
 // MANIFEST DATA  (konular JSON yükleme ile gelir)
 // ══════════════════════════════
-// v5: MANIFEST artık dersler/manifest.json'dan fetch edilir (bkz. fetchManifest()).
-// Ağ/CORS başarısız olursa (örn. file:// üzerinden açma) bu fallback kullanılır.
-const MANIFEST_FALLBACK = {
+const MANIFEST = {
   dersler: [
     {
-      id:'mat', ad:'Matematik', ikon:'🔢', renk:'var(--mat)', progPct:0,
+      id:'mat', ad:'Matematik', ikon:'🔢', renk:'var(--mat)', progPct:42,
       fasikuller:[
-        { id:'analitik-duzlem', ad:'Analitik Düzlem', thumb:'📐', thumbBg:'linear-gradient(135deg,#312e81,#1e1b4b)', sinif:10, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/matematik/analitik.json', konular:[] },
-        { id:'tyt-matematik', ad:'3 Adımda TYT Matematik', thumb:'📊', thumbBg:'linear-gradient(135deg,#1e1b4b,#312e81)', sinif:12, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/matematik/tyt-mat.json', konular:[] }
+        { id:'analitik-duzlem', ad:'Analitik Düzlem', thumb:'📐', thumbBg:'linear-gradient(135deg,#312e81,#1e1b4b)', sinif:10, konuSayisi:7, soruSayisi:66, progPct:45, sonCalisma:'2 saat önce', konular:[] },
+        { id:'tyt-matematik', ad:'3 Adımda TYT Matematik', thumb:'📊', thumbBg:'linear-gradient(135deg,#1e1b4b,#312e81)', sinif:12, konuSayisi:34, soruSayisi:1061, progPct:0, sonCalisma:'—', konular:[] },
+        { id:'limit-turev', ad:'Limit ve Türev', thumb:'📉', thumbBg:'linear-gradient(135deg,#1e1b4b,#0c4a6e)', sinif:12, konuSayisi:5, soruSayisi:48, progPct:20, sonCalisma:'2 gün önce', konular:[] }
       ]
     },
-    { id:'bio', ad:'Biyoloji', ikon:'🧬', renk:'var(--bio)', progPct:0, fasikuller:[
-      { id:'bio-1', ad:'Hücre Biyolojisi', thumb:'🔬', thumbBg:'linear-gradient(135deg,#431407,#450a0a)', sinif:10, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/biyoloji/hucre.json', konular:[] }
+    { id:'bio', ad:'Biyoloji', ikon:'🧬', renk:'var(--bio)', progPct:15, fasikuller:[
+      { id:'bio-1', ad:'Hücre Biyolojisi', thumb:'🔬', thumbBg:'linear-gradient(135deg,#431407,#450a0a)', sinif:10, konuSayisi:1, soruSayisi:20, progPct:15, sonCalisma:'1 hafta önce', konular:[] }
     ]},
-    { id:'fiz', ad:'Fizik', ikon:'⚡', renk:'var(--fiz)', progPct:0, fasikuller:[
-      { id:'fiz-1', ad:'Kuvvet ve Hareket', thumb:'🌀', thumbBg:'linear-gradient(135deg,#164e63,#0c4a6e)', sinif:10, konuSayisi:0, soruSayisi:0, progPct:0, sonCalisma:'—', json:'dersler/fizik/kuvvet.json', konular:[] }
+    { id:'fiz', ad:'Fizik', ikon:'⚡', renk:'var(--fiz)', progPct:28, fasikuller:[
+      { id:'fiz-1', ad:'Kuvvet ve Hareket', thumb:'🌀', thumbBg:'linear-gradient(135deg,#164e63,#0c4a6e)', sinif:10, konuSayisi:1, soruSayisi:40, progPct:28, sonCalisma:'3 gün önce', konular:[] }
+    ]},
+    { id:'tar', ad:'Tarih', ikon:'🏛️', renk:'var(--tar)', progPct:33, fasikuller:[
+      { id:'tar-1', ad:'Osmanlı Kuruluş', thumb:'📜', thumbBg:'linear-gradient(135deg,#500724,#2d1657)', sinif:10, konuSayisi:1, soruSayisi:35, progPct:33, sonCalisma:'4 gün önce', konular:[] }
+    ]},
+    { id:'kim', ad:'Kimya', ikon:'🧪', renk:'var(--kim)', progPct:60, fasikuller:[
+      { id:'kim-1', ad:'Atom ve Periyodik Tablo', thumb:'⚗️', thumbBg:'linear-gradient(135deg,#064e3b,#052e16)', sinif:10, konuSayisi:1, soruSayisi:28, progPct:60, sonCalisma:'1 gün önce', konular:[] }
+    ]},
+    { id:'edb', ad:'Edebiyat', ikon:'📖', renk:'var(--edb)', progPct:55, fasikuller:[
+      { id:'siir', ad:'Şiir Türleri', thumb:'📝', thumbBg:'linear-gradient(135deg,#2e1065,#1a0533)', sinif:10, konuSayisi:2, soruSayisi:22, progPct:55, sonCalisma:'5 saat önce', konular:[] }
     ]}
   ]
 };
-let MANIFEST = { dersler: [] };
 
 // Demo verilerinin orijinal anlık görüntüsü (Demo Verileri açma/kapama ve sıfırlama için)
 const DEMO_SNAPSHOT = MANIFEST.dersler.map(d=>({
@@ -2255,11 +2497,9 @@ const appState = {
 // ══════════════════════════════
 // INIT
 // ══════════════════════════════
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   renderMathSymbols();
   renderStreakDots();
-  // v5: Önce dersler/manifest.json'dan ders/fasikül listesini ve içeriklerini çek
-  await fetchManifest();
   loadManifestMeta();
   loadAllKonular();
   // Demo Verileri tercihini uygula
@@ -2308,6 +2548,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       else showToast('Lütfen bir PDF dosyası bırak','error');
     });
   }
+
+  initCardZoomPan();
 });
 
 function renderDate(){
@@ -2582,6 +2824,7 @@ async function openReader(dersId, fasikulId){
 
   appState.aktifDers = ders;
   appState.aktifFasikul = fasikul;
+  normalizeFasikulKonular(fasikul.konular || []);
   appState.currentPage = 1;
   appState.sorularState = {};
   appState.undoStack = [];
@@ -2806,28 +3049,44 @@ function buildKonuNav(fasikul){
   }
   konular.forEach(k=>{
     const opt = document.createElement('option');
-    opt.value = k.id; opt.textContent = k.ad;
+    opt.value = k.id || k.ad; opt.textContent = k.ad;
     select.appendChild(opt);
   });
   appState.aktifKonu = konular[0];
+  select.value = konular[0]?.id || konular[0]?.ad || '';
   renderAltKonuList(konular[0]);
 }
 
 function onAnaKonuChange(){
-  const sel = document.getElementById('anaKonuSelect').value;
-  const konu = appState.aktifFasikul.konular.find(k=>k.id===sel);
+  const select = document.getElementById('anaKonuSelect');
+  const sel = select.value;
+  const konular = appState.aktifFasikul?.konular || [];
+  const konu = konular.find(k=>(k.id || k.ad)===sel) || konular[select.selectedIndex];
   if(!konu) return;
   appState.aktifKonu = konu;
+  if(select) select.value = konu.id || konu.ad || '';
+
+  const visibleAlts = (konu.altKonular || []).filter(ak=> ak.ad !== 'Çözümlü Sorular - Çözümler');
+  const startPage = konu.sayfaBasl || visibleAlts[0]?.sorular?.[0]?.sayfa || visibleAlts[0]?.sayfa || 1;
+  const targetAlt = visibleAlts.find(ak=>{
+    const sorular = ak.sorular || [];
+    const first = sorular[0]?.sayfa || ak.sayfa || 0;
+    const last = sorular[sorular.length-1]?.sayfa || ak.sayfa || 0;
+    return startPage >= first && startPage <= last;
+  }) || visibleAlts[0] || null;
+
+  appState.aktifAltKonu = targetAlt;
+  appState.activeQuestionIdx = 0;
   renderAltKonuList(konu);
-  // Otomatik olarak konunun ilk alt konusunu seç ve PDF sayfasına git
-  const firstAlt = konu.altKonular?.[0];
-  if(firstAlt){
-    const itemId = `altk-${firstAlt.id}`;
-    selectAltKonu(firstAlt, itemId);
-  } else if(konu.sayfaBasl){
-    // Alt konu yoksa konunun başlangıç sayfasına git
-    goToPage(konu.sayfaBasl);
+  if(targetAlt){
+    renderSoruList(targetAlt.sorular || []);
+    updateRightPanelTitle();
+    document.getElementById('rpSoruSayisi').textContent = `${targetAlt.sorular?.length||0} ${isKonuKartAltKonu(targetAlt) ? 'Kart' : 'Soru'}`;
+    updateTestProgress();
   }
+  appState._suppressNavSync = true;
+  goToPage(startPage);
+  setTimeout(()=>{ appState._suppressNavSync = false; }, 500);
 }
 
 function renderAltKonuList(konu){
@@ -2848,7 +3107,8 @@ function renderAltKonuList(konu){
     const isDone = !isKonuKartlari && totalCount>0 && solvedCount===totalCount;
     const item = document.createElement('div');
     const itemId = `altk-${ak.id}`;
-    item.className='alt-konu-item'+(isDone?' done':'');
+    const isActive = appState.aktifAltKonu && (appState.aktifAltKonu === ak || appState.aktifAltKonu.id === ak.id);
+    item.className='alt-konu-item'+(isDone?' done':'')+(isActive?' active':'');
     item.id = itemId;
     item.innerHTML=`
       <div class="akn-icon-wrap"></div>
@@ -2862,9 +3122,15 @@ function renderAltKonuList(konu){
 function selectAltKonu(altKonu, itemId){
   appState._suppressNavSync = true;
   appState.aktifAltKonu = altKonu;
+  const parentKonu = getParentKonuForAlt(altKonu);
+  if(parentKonu){
+    appState.aktifKonu = parentKonu;
+    const select = document.getElementById('anaKonuSelect');
+    if(select) select.value = parentKonu.id || parentKonu.ad || '';
+  }
   appState.activeQuestionIdx = 0;
   document.querySelectorAll('.alt-konu-item').forEach(el=>el.classList.remove('active'));
-  const el = document.getElementById(itemId);
+  const el = document.getElementById(itemId || `altk-${altKonu.id}`);
   if(el){ el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   // Kart bazlıda: ilk sorunun sayfasına git (s.sayfa), diğerinde altKonu.sayfa
   const _selKartBazli = altKonu.sorular?.length > 0 && !!altKonu.sorular[0]?.sayfa;
@@ -2877,13 +3143,11 @@ function selectAltKonu(altKonu, itemId){
   document.getElementById('rpSoruSayisi').textContent = `${altKonu.sorular?.length||0} ${isKonuKartAltKonu(altKonu) ? 'Kart' : 'Soru'}`;
   updateTestProgress();
   setTimeout(()=>{ appState._suppressNavSync = false; }, 800);
-  // Mobilde konu seçince sol paneli kapat
-  if(window.innerWidth <= 768){
-    const left = document.getElementById('readerLeft');
-    const overlay = document.getElementById('mobileLeftOverlay');
-    left.classList.remove('mobile-open');
-    overlay.classList.remove('show');
-  }
+  // Konu seçilince çekmece kapanır; çalışma alanı tek panel olarak kalır.
+  const left = document.getElementById('readerLeft');
+  const overlay = document.getElementById('mobileLeftOverlay');
+  left?.classList.remove('mobile-open');
+  overlay?.classList.remove('show');
 }
 
 
@@ -3280,14 +3544,27 @@ function getReaderFitScale(page, wrap){
   return Math.max(0.35, fitScale * zoomScale);
 }
 
+function sizeReaderStage(stage, wrap, displayW, displayH){
+  const styles = getComputedStyle(wrap);
+  const padX = parseFloat(styles.paddingLeft || 0) + parseFloat(styles.paddingRight || 0);
+  const padY = parseFloat(styles.paddingTop || 0) + parseFloat(styles.paddingBottom || 0);
+  const viewportW = Math.max(0, wrap.clientWidth - padX);
+  const viewportH = Math.max(0, wrap.clientHeight - padY);
+  stage.style.width = Math.ceil(Math.max(viewportW, displayW + 32)) + 'px';
+  stage.style.height = Math.ceil(Math.max(viewportH, displayH + 32)) + 'px';
+}
+
 // ── renderPages: mod'a göre tek sayfa veya scroll
 function renderPages(){
   if(appState.viewMode === 'scroll'){
-    renderAllPages().then(()=>{
+    return renderAllPages().then(()=>{
+      appState._renderedZoom = appState.zoom;
       setTimeout(()=>scrollToPage(appState.currentPage, 'auto'), 50);
     });
   } else {
-    renderSinglePageMode(appState.currentPage);
+    return renderSinglePageMode(appState.currentPage).then(()=>{
+      appState._renderedZoom = appState.zoom;
+    });
   }
 }
 
@@ -3324,6 +3601,7 @@ async function renderSinglePageMode(pageNum){
       pageWrap.style.width = displayW + 'px';
       pageWrap.style.height = displayH + 'px';
       pageWrap.style.background = '#fff';
+      sizeReaderStage(stage, wrap, displayW, displayH);
 
       const pdfCanvas = document.createElement('canvas');
       pdfCanvas.width = viewport.width;
@@ -3350,6 +3628,7 @@ async function renderSinglePageMode(pageNum){
     pageWrap.style.width = displayW + 'px';
     pageWrap.style.height = displayH + 'px';
     pageWrap.style.boxShadow = 'none';
+    sizeReaderStage(stage, wrap, displayW, displayH);
     const mockDiv = document.createElement('div');
     mockDiv.className = 'pdf-page-mock';
     mockDiv.style.cssText = 'width:' + displayW + 'px;min-height:' + displayH + 'px;';
@@ -3799,13 +4078,114 @@ function promptPageJump(){
 }
 
 function changeZoom(delta){
-  appState.zoom = Math.max(50,Math.min(150,appState.zoom+delta));
+  const wrap = document.getElementById('readerCanvasWrap');
+  const renderedZoom = appState._renderedZoom || appState.zoom;
+  const viewportX = (wrap?.clientWidth || 0) / 2;
+  const viewportY = (wrap?.clientHeight || 0) / 2;
+  const contentX = (wrap?.scrollLeft || 0) + viewportX;
+  const contentY = (wrap?.scrollTop || 0) + viewportY;
+  appState.zoom = Math.max(40,Math.min(200,appState.zoom+delta));
   document.getElementById('zoomLabel').textContent = `%${appState.zoom}`;
-  renderPages();
-  // scroll modunda zoom sonrası mevcut sayfaya dön
-  if(appState.viewMode === 'scroll'){
-    setTimeout(()=>scrollToPage(appState.currentPage, 'auto'), 200);
-  }
+  scheduleCardZoomRender({
+    contentX,
+    contentY,
+    viewportX,
+    viewportY,
+    ratio: appState.zoom / renderedZoom
+  });
+}
+
+function scheduleCardZoomRender(anchor){
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap) return;
+  if(anchor) appState._zoomAnchor = anchor;
+  clearTimeout(appState._zoomRenderTimer);
+  wrap.classList.add('zoom-settling');
+  appState._zoomRenderTimer = setTimeout(async ()=>{
+    const savedAnchor = appState._zoomAnchor;
+    appState._zoomAnchor = null;
+    const oldScrollBehavior = wrap.style.scrollBehavior;
+    wrap.style.scrollBehavior = 'auto';
+    await Promise.resolve(renderPages());
+    requestAnimationFrame(()=>{
+      if(savedAnchor){
+        const rect = wrap.getBoundingClientRect();
+        wrap.scrollLeft = Math.max(0, savedAnchor.contentX * savedAnchor.ratio - savedAnchor.viewportX);
+        wrap.scrollTop = Math.max(0, savedAnchor.contentY * savedAnchor.ratio - savedAnchor.viewportY);
+      }
+      wrap.style.scrollBehavior = oldScrollBehavior;
+      wrap.classList.remove('zoom-settling');
+    });
+  }, 90);
+}
+
+function initCardZoomPan(){
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap || wrap.dataset.zoomPanReady) return;
+  wrap.dataset.zoomPanReady = '1';
+  wrap.classList.add('card-pan-ready');
+
+  let isPanning = false;
+  let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+
+  const isCardGestureTarget = (target) =>
+    !!target.closest('#readerCanvasWrap') && !target.closest('button,label,input,select,.reader-right,.reader-toolbar,.reader-bottom-bar');
+
+  wrap.addEventListener('wheel', (e)=>{
+    if(!document.getElementById('reader-overlay')?.classList.contains('open')) return;
+    if(!isCardGestureTarget(e.target)) return;
+
+    // Trackpad pinch on Chrome/Safari arrives as ctrl/meta wheel. Plain wheel remains pan/scroll.
+    if(e.ctrlKey || e.metaKey){
+      e.preventDefault();
+      const beforeLeft = wrap.scrollLeft;
+      const beforeTop = wrap.scrollTop;
+      const rect = wrap.getBoundingClientRect();
+      const viewportX = e.clientX - rect.left;
+      const viewportY = e.clientY - rect.top;
+      const relX = viewportX + beforeLeft;
+      const relY = viewportY + beforeTop;
+      const oldZoom = appState.zoom;
+      const delta = e.deltaY < 0 ? 5 : -5;
+      appState.zoom = Math.max(40, Math.min(200, appState.zoom + delta));
+      if(appState.zoom === oldZoom) return;
+      document.getElementById('zoomLabel').textContent = `%${appState.zoom}`;
+      scheduleCardZoomRender({
+        contentX: relX,
+        contentY: relY,
+        viewportX,
+        viewportY,
+        ratio: appState.zoom / (appState._renderedZoom || oldZoom)
+      });
+    }
+  }, {passive:false});
+
+  wrap.addEventListener('pointerdown', (e)=>{
+    if(e.button !== 0 || !isCardGestureTarget(e.target)) return;
+    if(appState.drawTool !== 'select' && e.target.closest('canvas')) return;
+    isPanning = true;
+    startX = e.clientX; startY = e.clientY;
+    startScrollLeft = wrap.scrollLeft; startScrollTop = wrap.scrollTop;
+    wrap.classList.add('card-panning');
+    wrap.setPointerCapture?.(e.pointerId);
+  });
+
+  wrap.addEventListener('pointermove', (e)=>{
+    if(!isPanning) return;
+    e.preventDefault();
+    wrap.scrollLeft = startScrollLeft - (e.clientX - startX);
+    wrap.scrollTop = startScrollTop - (e.clientY - startY);
+  });
+
+  const stopPan = (e)=>{
+    if(!isPanning) return;
+    isPanning = false;
+    wrap.classList.remove('card-panning');
+    try{ wrap.releasePointerCapture?.(e.pointerId); }catch(_e){}
+  };
+  wrap.addEventListener('pointerup', stopPan);
+  wrap.addEventListener('pointercancel', stopPan);
+  wrap.addEventListener('pointerleave', stopPan);
 }
 
 function toggleReaderPanel(side){
@@ -4137,8 +4517,23 @@ function goToFlowItem(item){
   if(!item) return;
   appState.aktifAltKonu = item.alt;
   appState.activeQuestionIdx = item.localIdx;
+  const parentKonu = getParentKonuForAlt(item.alt);
+  if(parentKonu){
+    if(appState.aktifKonu?.id !== parentKonu.id){
+      appState.aktifKonu = parentKonu;
+      const select = document.getElementById('anaKonuSelect');
+      if(select) select.value = parentKonu.id || parentKonu.ad || '';
+      renderAltKonuList(parentKonu);
+    }
+    document.querySelectorAll('.alt-konu-item').forEach(el=>el.classList.remove('active'));
+    const itemEl = document.getElementById(`altk-${item.alt.id}`);
+    if(itemEl){
+      itemEl.classList.add('active');
+      itemEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+  }
   updateRightPanelTitle();
-  document.getElementById('rpSoruSayisi').textContent = `${item.alt.sorular?.length || 0} Soru`;
+  document.getElementById('rpSoruSayisi').textContent = `${item.alt.sorular?.length || 0} ${isKonuKartAltKonu(item.alt) ? 'Kart' : 'Soru'}`;
   renderSoruList(item.alt.sorular || []);
   appState._suppressNavSync = true;
   goToPage(item.page);
@@ -6069,9 +6464,57 @@ function downloadSampleJSON(format){
 // ══════════════════════════════
 // JSON YÜKLEME (Fasikül Konuları)
 // ══════════════════════════════
+function slugifyId(text, fallback='item'){
+  return String(text || fallback)
+    .toLocaleLowerCase('tr-TR')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || fallback;
+}
+
+function normalizeFasikulKonular(konular){
+  if(!Array.isArray(konular)) return [];
+  konular.forEach((k, konuIdx) => {
+    k.id = k.id || `konu-${konuIdx + 1}-${slugifyId(k.ad, 'konu')}`;
+    if(!k.altKonular && k.sorular && k.sorular.length > 0) {
+      k._kartBazliKonu = true;
+      k.altKonular = [{
+        id: `${k.id}-sorular`,
+        ad: k.ad,
+        sayfa: k.sayfaBasl || (k.sorular[0]?.sayfa) || 1,
+        _kartBazli: true,
+        sorular: k.sorular.map(s => ({
+          ...s,
+          onizleme: s.onizleme || (k.ad + ' S.' + s.no),
+          zorluk: s.zorluk || 'orta'
+        }))
+      }];
+    }
+    (k.altKonular || []).forEach((ak, altIdx) => {
+      ak.id = ak.id || `${k.id}-alt-${altIdx + 1}-${slugifyId(ak.ad, 'alt')}`;
+      const sorular = ak.sorular || [];
+      const firstPage = sorular.find(s=>s.sayfa)?.sayfa || ak.sayfa || k.sayfaBasl || 1;
+      ak.sayfa = ak.sayfa || firstPage;
+      sorular.forEach((s, soruIdx) => {
+        s.no = s.no ?? (soruIdx + 1);
+        s.sayfa = s.sayfa || (ak.sayfa ? ak.sayfa + soruIdx : undefined);
+        s._uid = s._uid || `${ak.id}_${s.no}`;
+        s.onizleme = s.onizleme || `${k.ad} - ${ak.ad} Soru ${s.no}`;
+        s.zorluk = s.zorluk || 'orta';
+      });
+    });
+    const pages = (k.altKonular || []).flatMap(ak => (ak.sorular || []).map(s=>s.sayfa).filter(Boolean));
+    if(pages.length){
+      k.sayfaBasl = k.sayfaBasl || Math.min(...pages);
+      k.sayfaBitis = k.sayfaBitis || Math.max(...pages);
+    }
+  });
+  return konular;
+}
+
 /**
  * Beklenen JSON formatı (üç seçenek desteklenir):
- * 
+ *
  * FORMAT 1 — Direkt konular dizisi:
  * [ { id, ad, sayfaBasl, sayfaBitis, altKonular: [ { id, ad, sayfa, sorular: [ {no, onizleme, cevap, zorluk} ] } ] } ]
  *
@@ -6091,7 +6534,46 @@ function handleJSONUpload(input, dersId, fasikulId){
   reader.onload = (e) => {
     try{
       const raw = JSON.parse(e.target.result);
-      applyFasikulData(dersId, fasikulId, raw, {silent:false, persist:true});
+      const ders = MANIFEST.dersler.find(d=>d.id===dersId);
+      if(!ders){ showToast('Ders bulunamadı','error'); return; }
+      const fas = ders.fasikuller.find(f=>f.id===fasikulId);
+      if(!fas){ showToast('Fasikül bulunamadı','error'); return; }
+
+      // Format tespiti
+      let konular;
+      if(Array.isArray(raw)){
+        konular = raw; // FORMAT 1
+      } else if(raw.konular && Array.isArray(raw.konular)){
+        konular = raw.konular; // FORMAT 2
+        // Wrapper meta bilgilerini de güncelle
+        if(raw.ad) fas.ad = raw.ad;
+        if(raw.sinif) fas.sinif = raw.sinif;
+        if(raw.soruSayisi) fas.soruSayisi = raw.soruSayisi;
+        if(raw.konuSayisi !== undefined) fas.konuSayisi = raw.konuSayisi;
+        if(raw.thumb) fas.thumb = raw.thumb;
+      } else {
+        showToast('Geçersiz JSON formatı. konular dizisi bulunamadı.','error');
+        return;
+      }
+
+      // ── JSON FORMAT NORMALİZASYONU ─────────────────────────
+      // FORMAT A (Kart): konular[i].altKonular var, sorular[j].sayfa YOK → her altKonu = çoklu soru, aynı sayfada
+      // FORMAT B (Tarama): konular[i].altKonular YOK, konular[i].sorular var, her soruda .sayfa → her soru kendi sayfasında
+      // FORMAT B → normalize ederek FORMAT A'ya dönüştür: her konu = bir altKonu, her soru = kendi sayfası
+      konular = normalizeFasikulKonular(konular);
+
+      // konuSayisi ve soruSayisi otomatik hesapla
+      fas.konular = konular;
+      fas.konuSayisi = konular.length;
+      fas.soruSayisi = konular.reduce((sum, k)=>
+        sum + (k.altKonular||[]).reduce((s2, ak)=> s2 + (ak.sorular||[]).length, 0), 0);
+      fas.sonCalisma = 'Az önce yüklendi';
+
+      persistKonular(dersId, fasikulId, konular);
+      persistManifest();
+      renderDerslerGrid();
+      renderFasikulCards(ders.fasikuller, ders);
+      showToast(`✓ ${fas.ad} — ${fas.konuSayisi} konu, ${fas.soruSayisi} soru yüklendi`, 'success');
     } catch(err){
       showToast('JSON ayrıştırma hatası: ' + err.message, 'error');
     }
@@ -6100,80 +6582,6 @@ function handleJSONUpload(input, dersId, fasikulId){
   // input'u sıfırla (aynı dosya tekrar seçilebilsin)
   input.value = '';
 }
-
-/**
- * Bir fasikül için ham JSON verisini (manuel yükleme veya otomatik fetch'ten gelen)
- * MANIFEST üzerine uygular, normalize eder ve isteğe bağlı olarak kalıcı hale getirir.
- * opts.silent=true ise hata/başarı toast'ları bastırılır (sayfa açılışındaki otomatik fetch için).
- * opts.persist=true ise localStorage + manifest meta güncellenir.
- */
-function applyFasikulData(dersId, fasikulId, raw, opts){
-  opts = opts || {};
-  const ders = MANIFEST.dersler.find(d=>d.id===dersId);
-  if(!ders){ if(!opts.silent) showToast('Ders bulunamadı','error'); return false; }
-  const fas = ders.fasikuller.find(f=>f.id===fasikulId);
-  if(!fas){ if(!opts.silent) showToast('Fasikül bulunamadı','error'); return false; }
-
-  // Format tespiti
-  let konular;
-  if(Array.isArray(raw)){
-    konular = raw; // FORMAT 1
-  } else if(raw.konular && Array.isArray(raw.konular)){
-    konular = raw.konular; // FORMAT 2
-    // Wrapper meta bilgilerini de güncelle
-    if(raw.ad) fas.ad = raw.ad;
-    if(raw.sinif) fas.sinif = raw.sinif;
-    if(raw.soruSayisi) fas.soruSayisi = raw.soruSayisi;
-    if(raw.konuSayisi !== undefined) fas.konuSayisi = raw.konuSayisi;
-    if(raw.thumb) fas.thumb = raw.thumb;
-  } else {
-    if(!opts.silent) showToast('Geçersiz JSON formatı. konular dizisi bulunamadı.','error');
-    return false;
-  }
-
-  // ── JSON FORMAT NORMALİZASYONU ─────────────────────────
-  // FORMAT A (Kart): konular[i].altKonular var, sorular[j].sayfa YOK → her altKonu = çoklu soru, aynı sayfada
-  // FORMAT B (Tarama): konular[i].altKonular YOK, konular[i].sorular var, her soruda .sayfa → her soru kendi sayfasında
-  // FORMAT B → normalize ederek FORMAT A'ya dönüştür: her konu = bir altKonu, her soru = kendi sayfası
-  konular.forEach(k => {
-    if(!k.altKonular && k.sorular && k.sorular.length > 0) {
-      // FORMAT B: kart-bazlı (her soru farklı sayfada)
-      k._kartBazliKonu = true;
-      // Her soru için sayfa bilgisi kendi üzerinde → tek altKonu oluştur (tüm sorular içinde)
-      k.altKonular = [{
-        id: k.id + '-sorular',
-        ad: k.ad,
-        sayfa: k.sayfaBasl || (k.sorular[0]?.sayfa) || 1,
-        _kartBazli: true,
-        sorular: k.sorular.map(s => ({
-          ...s,
-          // sayfa zaten s.sayfa'da var
-          onizleme: s.onizleme || (k.ad + ' S.' + s.no),
-          zorluk: s.zorluk || 'orta'
-        }))
-      }];
-    }
-  });
-
-  // konuSayisi ve soruSayisi otomatik hesapla
-  fas.konular = konular;
-  fas.konuSayisi = konular.length;
-  fas.soruSayisi = konular.reduce((sum, k)=>
-    sum + (k.altKonular||[]).reduce((s2, ak)=> s2 + (ak.sorular||[]).length, 0), 0);
-  fas.sonCalisma = opts.silent ? (fas.sonCalisma||'—') : 'Az önce yüklendi';
-
-  if(opts.persist){
-    persistKonular(dersId, fasikulId, konular);
-    persistManifest();
-  }
-  if(!opts.silent){
-    renderDerslerGrid();
-    renderFasikulCards(ders.fasikuller, ders);
-    showToast(`✓ ${fas.ad} — ${fas.konuSayisi} konu, ${fas.soruSayisi} soru yüklendi`, 'success');
-  }
-  return true;
-}
-
 
 function persistKonular(dersId, fasikulId, konular){
   try{
@@ -6194,22 +6602,7 @@ function loadAllKonular(){
         if(saved){
           const loadedKonular = JSON.parse(saved);
           // Normalize FORMAT B (kart bazlı: altKonular yok, sorularda sayfa var)
-          loadedKonular.forEach(k => {
-            if(!k.altKonular && k.sorular && k.sorular.length > 0) {
-              k._kartBazliKonu = true;
-              k.altKonular = [{
-                id: k.id + '-sorular',
-                ad: k.ad,
-                sayfa: k.sayfaBasl || (k.sorular[0]?.sayfa) || 1,
-                _kartBazli: true,
-                sorular: k.sorular.map(s => ({
-                  ...s,
-                  onizleme: s.onizleme || (k.ad + ' S.' + s.no),
-                  zorluk: s.zorluk || 'orta'
-                }))
-              }];
-            }
-          });
+          normalizeFasikulKonular(loadedKonular);
           fas.konular = loadedKonular;
           fas.konuSayisi = fas.konular.length;
           fas.soruSayisi = fas.konular.reduce((sum,k)=>
@@ -6218,48 +6611,6 @@ function loadAllKonular(){
       }catch(e){}
     });
   });
-}
-
-// ══════════════════════════════
-// MANIFEST FETCH (v5 — dersler/manifest.json otomatik yükleme)
-// ══════════════════════════════
-async function fetchManifest(){
-  try{
-    const res = await fetch('dersler/manifest.json', {cache:'no-store'});
-    if(!res.ok) throw new Error('manifest.json HTTP '+res.status);
-    const data = await res.json();
-    if(!data || !Array.isArray(data.dersler)) throw new Error('manifest.json formatı geçersiz');
-    MANIFEST.dersler = data.dersler.map(d=>({
-      ...d,
-      fasikuller: (d.fasikuller||[]).map(f=>({ konular:[], ...f }))
-    }));
-  }catch(e){
-    console.warn('manifest.json çekilemedi, yerleşik fallback kullanılıyor:', e.message);
-    MANIFEST.dersler = JSON.parse(JSON.stringify(MANIFEST_FALLBACK.dersler));
-    showToast('dersler/manifest.json okunamadı, varsayılan liste kullanılıyor','error');
-  }
-  // Manifestte tanımlı her fasikül için, eğer henüz localStorage'da konu verisi yoksa
-  // f.json alanındaki yoldan otomatik içerik çek.
-  await Promise.all(
-    MANIFEST.dersler.flatMap(ders =>
-      ders.fasikuller.map(fas => fetchFasikulJSON(ders, fas))
-    )
-  );
-}
-
-async function fetchFasikulJSON(ders, fas){
-  if(!fas.json) return; // json yolu tanımlı değilse atla (manuel yüklemeye devam edilir)
-  const key = `edu_konular_${ders.id}_${fas.id}`;
-  // Kullanıcı bu fasikülü zaten elle yükleyip localStorage'a kaydetmişse tekrar fetch etme.
-  if(localStorage.getItem(key)) return;
-  try{
-    const res = await fetch(fas.json, {cache:'no-store'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const raw = await res.json();
-    applyFasikulData(ders.id, fas.id, raw, {silent:true, persist:true});
-  }catch(e){
-    console.warn(`Fasikül JSON çekilemedi (${ders.id}/${fas.id}):`, e.message);
-  }
 }
 
 // ══════════════════════════════
@@ -6466,7 +6817,7 @@ function endOnboarding(){
 // ══════════════════════════════
 // INIT UPDATES (v4)
 // ══════════════════════════════
-// Onboarding on first login — triggered from original enterApp 
+// Onboarding on first login — triggered from original enterApp
 // (Onboarding check done in the first DOMContentLoaded listener above)
 </script>
 </body>
