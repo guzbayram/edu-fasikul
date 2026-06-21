@@ -1731,7 +1731,10 @@ a{color:inherit;text-decoration:none}
   .rp-header,.test-control,.test-progress-bar{width:100%}
   .rp-header{display:block;padding-bottom:12px;border-bottom:1px solid var(--border)}
   .rp-title{white-space:normal;line-height:1.35;margin-bottom:8px}
-  .rp-stats-row{display:grid;grid-template-columns:1fr;gap:7px;font-size:12px}
+  .rp-stats-row{
+    display:flex;align-items:center;flex-wrap:nowrap;gap:12px;
+    font-size:12px;white-space:nowrap;
+  }
   .test-control{display:grid;grid-template-columns:1fr auto;gap:8px}
   .start-test-btn{grid-column:1 / -1;min-height:46px}
   .timer-display{min-height:42px;display:flex;align-items:center;justify-content:center}
@@ -4296,19 +4299,10 @@ function escapeHtml(text){
 function updateRightPanelTitle(titleOverride){
   const titleEl = document.getElementById('rpTitle');
   if(!titleEl) return;
-  const altTitle = titleOverride || appState.aktifAltKonu?.ad || 'Test Seç';
   const konuTitle = appState.aktifKonu?.ad || '';
-  if(konuTitle && !titleOverride){
-    titleEl.innerHTML = `
-      <span class="rp-title-main">${escapeHtml(altTitle)}</span>
-      <span class="rp-title-sep">·</span>
-      <span class="rp-title-topic" title="${escapeHtml(konuTitle)}">${escapeHtml(konuTitle)}</span>
-    `;
-    titleEl.title = `${altTitle} - ${konuTitle}`;
-  } else {
-    titleEl.textContent = altTitle;
-    titleEl.title = altTitle;
-  }
+  const title = titleOverride || konuTitle || appState.aktifAltKonu?.ad || 'Test Seç';
+  titleEl.textContent = title;
+  titleEl.title = title;
 }
 
 function renderSoruStrip(sorular){
