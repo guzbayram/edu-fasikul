@@ -1769,24 +1769,25 @@ a{color:inherit;text-decoration:none}
 
 /* Answer and pen controls live in the right study panel. */
 @media (min-width: 769px) {
+  .reader-toolbar{position:fixed;left:0;right:0;top:0;z-index:430}
+  .reader-center{padding-top:56px}
   .reader-canvas-wrap{padding-bottom:72px}
   .reader-bottom-bar{bottom:0}
-  .reader-right{
-    padding-top:174px;
-  }
+  .reader-right{padding-top:68px}
   .reader-tool-palette,
   .reader-color-palette,
   .reader-history-palette{
-    left:auto;transform:none;right:14px;width:272px;
+    position:static;left:auto;top:auto;right:auto;transform:none;width:auto;
+    background:transparent;border:0;border-radius:0;padding:0;box-shadow:none;backdrop-filter:none;
   }
   .reader-tool-palette{
-    top:70px;display:flex;flex-wrap:nowrap;justify-content:center;gap:2px;padding:5px;
+    display:flex;flex-wrap:nowrap;justify-content:center;gap:2px;
   }
   .reader-color-palette{
-    top:124px;display:flex;flex-wrap:wrap;justify-content:center;
+    display:flex;flex-wrap:nowrap;justify-content:center;
   }
   .reader-history-palette{
-    top:176px;display:flex;flex-wrap:wrap;justify-content:center;
+    display:flex;flex-wrap:nowrap;justify-content:center;
   }
   .soru-list{
     position:static;left:auto;right:auto;bottom:auto;z-index:auto;
@@ -1809,12 +1810,14 @@ a{color:inherit;text-decoration:none}
 }
 
 @media (min-width: 769px) and (max-width: 1180px) {
-  .reader-right{padding-top:206px}
-  .reader-tool-palette,
-  .reader-color-palette,
-  .reader-history-palette{right:10px;width:240px}
-  .reader-color-palette{top:156px}
-  .reader-history-palette{top:206px}
+  .reader-right{padding-top:66px}
+  .reader-toolbar{gap:4px;padding-inline:8px}
+  .reader-toolbar .tool-divider{margin-inline:3px}
+  .reader-toolbar .tool-btn{width:34px;height:34px}
+  .reader-toolbar .toolbar-fasikul-name{max-width:118px;padding-inline:4px}
+  .reader-toolbar .color-dot{width:16px;height:16px}
+  .reader-toolbar .size-slider{width:50px}
+  .reader-tool-palette,.reader-color-palette,.reader-history-palette{gap:2px}
 }
 </style>
 <!-- Firebase -->
@@ -6568,6 +6571,12 @@ function handleJSONUpload(input, dersId, fasikulId){
       fas.soruSayisi = konular.reduce((sum, k)=>
         sum + (k.altKonular||[]).reduce((s2, ak)=> s2 + (ak.sorular||[]).length, 0), 0);
       fas.sonCalisma = 'Az önce yüklendi';
+
+      // Okuyucu açıksa konu adlarını kayıt işlemini bekletmeden hemen göster.
+      if(appState.aktifDers?.id === dersId && appState.aktifFasikul?.id === fasikulId){
+        buildKonuNav(fas);
+        updateRightPanelTitle();
+      }
 
       persistKonular(dersId, fasikulId, konular);
       persistManifest();
