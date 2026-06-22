@@ -10,6 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="1-0-Edu-Fasikul/catalog-data.js"></script>
 <style>
 /* ════════════════════════════════════════════════════════
    DESIGN TOKENS
@@ -2045,6 +2046,7 @@ a{color:inherit;text-decoration:none}
   grid-template-areas:
     "avatar prefs"
     "info data"
+    "info folder"
     "info logout";
   gap:16px;align-items:stretch
 }
@@ -2055,6 +2057,7 @@ a{color:inherit;text-decoration:none}
 .pref-row{min-height:64px}
 .profil-right-column .profil-section:nth-of-type(1){grid-area:prefs}
 .profil-right-column .profil-section:nth-of-type(2){grid-area:data}
+.profil-right-column .profil-section:nth-of-type(3){grid-area:folder}
 .profil-right-column .btn-danger{grid-area:logout}
 .btn-danger{width:100%;min-height:52px;border-radius:16px;background:var(--red-dim)}
 .app-info-card{
@@ -2070,6 +2073,9 @@ a{color:inherit;text-decoration:none}
 .app-info-features{display:flex;flex-direction:column;gap:12px;color:var(--text-1);font-size:13px}
 .app-info-features span{padding-bottom:12px;border-bottom:1px solid var(--border)}
 .app-info-version{margin-top:auto;padding-top:22px;color:var(--text-muted);font-size:11px;letter-spacing:.04em}
+.edu-dir-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:12px;background:var(--bg-3);font-size:12px;color:var(--text-1)}
+.edu-dir-summary b{color:var(--green)}
+.edu-dir-summary span{color:var(--text-muted)}
 
 @media (max-width:768px){
   .main-content{width:100%;padding-bottom:76px}
@@ -2499,6 +2505,38 @@ window._firestoreReady = true;
             <button class="pref-action pref-chip" onclick="startOnboarding()">🎓 Turu Başlat</button>
           </div>
         </div>
+        <div class="profil-section" id="eduDirSection">
+          <div class="profil-section-title">📁 PDF Klasörü</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.7;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);border-left:3px solid var(--mat)">
+            <b style="color:var(--text-0)">Bir kez yapmanız yeterli:</b><br>
+            Bilgisayarınızda bir klasör oluşturun (örn: <code style="background:var(--bg-4);padding:1px 5px;border-radius:3px">Edu-Fasikul</code>) ve PDF dosyalarını oraya koyun. Aşağıdan o klasörü seçin — uygulama PDF'leri buradan okur.<br><br>
+            <b style="color:var(--green)">✓ JSON dosyaları</b> GitHub'dan <b>otomatik</b> indirilir, sizin bir şey yapmanıza gerek yok.
+          </div>
+          <div class="pref-row">
+            <span class="pref-label" style="flex:1">
+              <span id="eduDirStatus">Klasör bağlı değil</span><br>
+              <span style="font-size:11px;color:var(--text-muted)" id="eduDirSubStatus">PDF klasörünüzü seçin</span>
+            </span>
+            <button class="pref-action pref-chip" id="eduDirButton" onclick="selectEduDir()">📂 Klasör Seç</button>
+          </div>
+          <div id="eduDirFileList" style="display:none;margin-top:10px"></div>
+        </div>
+        <div class="profil-section">
+          <div class="profil-section-title">🌐 GitHub JSON Kaynağı</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.6">
+            JSON fasikül dosyaları bu GitHub deposundan otomatik indirilir.
+          </div>
+          <div class="pref-row" style="gap:8px;flex-wrap:wrap">
+            <input type="text" id="githubRepoInput" placeholder="kullanici/repo-adi" style="flex:1;min-width:150px;padding:8px 12px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-0);font-size:12px;outline:none" oninput="onGithubRepoInput(this.value)">
+            <input type="text" id="githubBranchInput" placeholder="main" value="main" style="width:70px;padding:8px 10px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-0);font-size:12px;outline:none" oninput="onGithubRepoInput()">
+            <input type="text" id="githubPathInput" placeholder="klasor/ (boş=kök)" style="width:130px;padding:8px 10px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-0);font-size:12px;outline:none" oninput="onGithubRepoInput()">
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+            <button class="pref-action pref-chip" onclick="saveGithubConfig()" style="background:var(--mat-dim);color:var(--mat)">💾 Kaydet &amp; Yenile</button>
+            <span id="githubConfigStatus" style="font-size:11px;color:var(--text-muted)"></span>
+          </div>
+          <div id="githubConfigHint" style="font-size:11px;color:var(--text-muted);margin-top:6px;word-break:break-all"></div>
+        </div>
         <button class="btn-danger" onclick="doLogout()">Çıkış Yap</button>
         </div>
       </div>
@@ -2761,7 +2799,7 @@ window._firestoreReady = true;
 <div class="modal-overlay" id="dersModal" onclick="event.target===this&&closeDersModal()">
   <div class="modal-box" style="max-width:440px">
     <h2 id="dersModalTitle">➕ Ders Ekle</h2>
-    <p class="modal-sub">Yeni bir ders oluştur ya da mevcut dersi düzenle</p>
+    <p class="modal-sub">Dersler, otomatik JSON fasiküllerini gruplandırır. PDF dosyası burada yüklenmez.</p>
     <input type="hidden" id="dersEditId">
     <div class="form-group" style="margin-bottom:14px">
       <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Ders Adı</label>
@@ -2795,8 +2833,15 @@ window._firestoreReady = true;
 <div class="modal-overlay" id="fasikulModal" onclick="event.target===this&&closeFasikulModal()">
   <div class="modal-box" style="max-width:460px">
     <h2 id="fasikulModalTitle">📚 Fasikül Ekle</h2>
-    <p class="modal-sub">Yeni bir fasikül oluştur ya da mevcut fasiküle düzenleme yap</p>
+    <p class="modal-sub">Fasikül, GitHub'daki hazır JSON ile profilinizde bağlı PDF klasöründeki aynı adlı PDF eşleşmesinden oluşur.</p>
     <input type="hidden" id="fasikulEditId">
+    <div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">GitHub JSON Kaynağı</label>
+      <select id="fasikulSourceSelect" onchange="applyBundledSourceToForm(this.value)" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:13px;outline:none">
+        <option value="">GitHub JSON seçin</option>
+      </select>
+      <div id="fasikulSourceHint" style="font-size:11px;color:var(--text-muted);margin-top:7px">Kullanıcı JSON seçmez; liste GitHub'daki hazır JSON dosyalarından gelir.</div>
+    </div>
     <div class="form-group" style="margin-bottom:14px">
       <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Fasikül Adı</label>
       <input type="text" id="fasikulAdInput" placeholder="örn: Analitik Düzlem" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px;outline:none">
@@ -2818,9 +2863,30 @@ window._firestoreReady = true;
     <div class="modal-btns">
       <button class="modal-btn mb-primary" onclick="saveFasikul()">💾 Kaydet</button>
       <button class="modal-btn mb-secondary" onclick="closeFasikulModal()">İptal</button>
-      <button class="modal-btn mb-secondary" onclick="downloadSampleJSON('A')" title="Çoklu soru (bir sayfada birden fazla soru) — altKonular yapısı" style="font-size:12px">📋 Örnek JSON (Çoklu)</button>
-      <button class="modal-btn mb-secondary" onclick="downloadSampleJSON('B')" title="Kart bazlı (her sayfada bir soru) — sorular konunun altında" style="font-size:12px">📋 Örnek JSON (Kart)</button>
       <button class="modal-btn mb-danger" id="fasikulSilBtn" onclick="silFasikul()" style="display:none">🗑️ Fasiküle Sil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ KÜTÜPHANEDen FASİKÜL EKLE MODAL ═══════ -->
+<div class="modal-overlay" id="kutuphaneFasikulModal" onclick="event.target===this&&closeKutuphaneFasikulModal()">
+  <div class="modal-box" style="max-width:560px;max-height:80vh;display:flex;flex-direction:column">
+    <h2>📚 Fasikül Kütüphanesi</h2>
+    <p class="modal-sub">GitHub'dan otomatik indirilen JSON fasikülleri — PDF klasörünüzden bulunup açılır.</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <input type="text" id="kutuphaneFasikulSearch" placeholder="🔍 Fasikül ara…" oninput="filterKutuphaneFasikuller(this.value)"
+        style="flex:1;padding:9px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:13px;outline:none">
+      <select id="kutuphaneDersFilter" onchange="filterKutuphaneFasikuller(document.getElementById('kutuphaneFasikulSearch').value)"
+        style="padding:9px 12px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:13px;outline:none">
+        <option value="">Tüm Dersler</option>
+      </select>
+    </div>
+    <div id="kutuphaneFasikulListWrap" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px">
+      <div style="text-align:center;padding:32px;color:var(--text-muted)">Yükleniyor…</div>
+    </div>
+    <div class="modal-btns" style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+      <button class="modal-btn mb-secondary" onclick="closeKutuphaneFasikulModal()">Kapat</button>
+      <button class="modal-btn mb-primary" id="kutuphaneDersSecBtn" onclick="kutuphaneDersSec()" style="display:none">📥 Seçileni Bu Derse Ekle</button>
     </div>
   </div>
 </div>
@@ -2829,6 +2895,94 @@ window._firestoreReady = true;
    JAVASCRIPT
 ═══════════════════════════════════════════════════ -->
 <script>
+// ══════════════════════════════
+// ══════════════════════════════
+// GITHUB JSON KAYNAK KONFİGÜRASYONU
+// ══════════════════════════════
+const GITHUB_CONFIG_KEY = 'edu_github_config';
+function getGithubConfig(){
+  try{
+    const saved = localStorage.getItem(GITHUB_CONFIG_KEY);
+    if(saved) return JSON.parse(saved);
+  }catch(e){}
+  // Varsayılan: aynı klasördeki relative path (mevcut davranış korunur)
+  return { repo: '', branch: 'main', path: '1-0-Edu-Fasikul/' };
+}
+function setGithubConfig(cfg){
+  localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(cfg));
+}
+function buildGithubRawUrl(filename){
+  const cfg = getGithubConfig();
+  if(!cfg.repo){
+    // Repo ayarlanmamış: relative path kullan (local / aynı sunucu)
+    const p = (cfg.path || '1-0-Edu-Fasikul/').replace(/\/$/,'');
+    return `${p}/${encodeURIComponent(filename)}`;
+  }
+  const branch = cfg.branch || 'main';
+  const path = (cfg.path || '').replace(/^\/+|\/+$/g,'');
+  const filePart = path ? `${path}/${encodeURIComponent(filename)}` : encodeURIComponent(filename);
+  return `https://raw.githubusercontent.com/${cfg.repo}/${branch}/${filePart}`;
+}
+function onGithubRepoInput(){
+  const repo = document.getElementById('githubRepoInput')?.value?.trim() || '';
+  const branch = document.getElementById('githubBranchInput')?.value?.trim() || 'main';
+  const path = document.getElementById('githubPathInput')?.value?.trim() || '';
+  const hint = document.getElementById('githubConfigHint');
+  if(hint && repo){
+    const sample = buildGithubRawUrlFromParts(repo, branch, path, 'ornek.json');
+    hint.textContent = 'Örnek URL: ' + sample;
+  } else if(hint){ hint.textContent = ''; }
+}
+function buildGithubRawUrlFromParts(repo, branch, path, filename){
+  if(!repo) return (path||'1-0-Edu-Fasikul/').replace(/\/$/,'') + '/' + filename;
+  const b = branch || 'main';
+  const p = (path||'').replace(/^\/+|\/+$/g,'');
+  const fp = p ? `${p}/${filename}` : filename;
+  return `https://raw.githubusercontent.com/${repo}/${b}/${fp}`;
+}
+async function saveGithubConfig(){
+  const repo = document.getElementById('githubRepoInput')?.value?.trim() || '';
+  const branch = document.getElementById('githubBranchInput')?.value?.trim() || 'main';
+  const path = document.getElementById('githubPathInput')?.value?.trim() || '';
+  setGithubConfig({ repo, branch, path });
+  bundledSourceCache.clear(); // Cache'i temizle — yeni URL'den tekrar çekilsin
+  const statusEl = document.getElementById('githubConfigStatus');
+  if(statusEl){ statusEl.textContent = '⏳ Test ediliyor…'; statusEl.style.color='var(--yellow)'; }
+  // Test: ilk kaynağı çekmeyi dene
+  const firstSrc = BUNDLED_FASIKUL_SOURCES[0];
+  if(firstSrc){
+    try{
+      const url = buildGithubRawUrl(firstSrc.json);
+      const r = await fetch(url);
+      if(r.ok){
+        const data = await r.json();
+        bundledSourceCache.set(firstSrc.json, data);
+        if(statusEl){ statusEl.textContent = '✓ Bağlantı başarılı'; statusEl.style.color='var(--green)'; }
+      } else {
+        if(statusEl){ statusEl.textContent = `✗ HTTP ${r.status}`; statusEl.style.color='var(--red)'; }
+      }
+    }catch(e){
+      if(statusEl){ statusEl.textContent = `✗ ${e.message}`; statusEl.style.color='var(--red)'; }
+    }
+  } else {
+    if(statusEl){ statusEl.textContent = '✓ Kaydedildi'; statusEl.style.color='var(--green)'; }
+  }
+  // Kütüphaneyi yenile
+  await loadBundledFasikuller();
+  renderDerslerGrid();
+  showToast('GitHub ayarları kaydedildi ✓','success');
+}
+function initGithubConfigUI(){
+  const cfg = getGithubConfig();
+  const ri = document.getElementById('githubRepoInput');
+  const bi = document.getElementById('githubBranchInput');
+  const pi = document.getElementById('githubPathInput');
+  if(ri) ri.value = cfg.repo || '';
+  if(bi) bi.value = cfg.branch || 'main';
+  if(pi) pi.value = cfg.path || '';
+  onGithubRepoInput();
+}
+
 // ══════════════════════════════
 // MANIFEST DATA  (konular JSON yükleme ile gelir)
 // ══════════════════════════════
@@ -2859,6 +3013,33 @@ const MANIFEST = {
     ]}
   ]
 };
+
+// Depoyla birlikte gelen fasikül kaynakları. JSON otomatik yüklenir;
+// PDF aynı adla kullanıcının profilden bağladığı klasörden okunur.
+const BUNDLED_DERS_CONFIG = {
+  mat: { ad:'Matematik', ikon:'🔢', renk:'var(--mat)' },
+  geo: { ad:'Geometri', ikon:'📐', renk:'var(--kim)' },
+  tyt: { ad:'TYT Denemeleri', ikon:'📝', renk:'var(--edb)' }
+};
+const BUNDLED_FASIKUL_SOURCES = [
+  {id:'lgs-matematik',dersId:'mat',json:'0-lgs_matematik-kart.json',pdf:'0-lgs_matematik-kart.pdf'},
+  {id:'ucgen-akademi-1',dersId:'mat',json:'1-1-Üçgen Akademi-1.fasikül-kart.json',pdf:'1-1-Üçgen Akademi-1.fasikül-kart.pdf'},
+  {id:'ucgen-akademi-2',dersId:'mat',json:'1-2-Üçgen Akademi-2.fasikül-kart.json',pdf:'1-2-Üçgen Akademi-2.fasikül-kart.pdf'},
+  {id:'ucgen-akademi-3',dersId:'mat',json:'1-3-Üçgen Akademi-3.fasikül-kart.json',pdf:'1-3-Üçgen Akademi-3.fasikül-kart.pdf'},
+  {id:'ucgen-akademi-4',dersId:'mat',json:'1-4-Üçgen Akademi-4.fasikül-kart.json',pdf:'1-4-Üçgen Akademi-4.fasikül-kart.pdf'},
+  {id:'ucgen-akademi-5',dersId:'mat',json:'1-5-Üçgen Akademi-5.fasikül-kart.json',pdf:'1-5-Üçgen Akademi-5.fasikül-kart.pdf'},
+  {id:'tyt-matematik-ozet',dersId:'mat',json:'1-Matematik-Ozet-Tyt-kart.json',pdf:'1-Matematik-Ozet-Tyt-kart.pdf'},
+  {id:'tyt-matematik-vsc',dersId:'mat',json:'10-tyt-mat-vsc-testleri-kart.json',pdf:'10-tyt-mat-vsc-testleri-kart.pdf'},
+  {id:'tyt-cikmis-sorular',dersId:'mat',json:'11-tyt-cıkmış-sorular-2018-2025-kart.json',pdf:'11-tyt-cıkmış-sorular-2018-2025-kart.pdf'},
+  {id:'tyt-matematik-soru-bankasi',dersId:'mat',json:'2-tyt-matematik-soru-bankası-kart.json',pdf:'2-tyt-matematik-soru-bankası-kart.pdf'},
+  {id:'tyt-geometri-soru-bankasi',dersId:'geo',json:'3-tyt-geometri-soru-bankası-kart.json',pdf:'3-tyt-geometri-soru-bankası-kart.pdf'},
+  {id:'tyt-matematik-tarama',dersId:'mat',json:'4-tyt-mat-tarama-testleri-kart.json',pdf:'4-tyt-mat-tarama-testleri-kart.pdf'},
+  {id:'uc-adim-tyt-matematik',dersId:'mat',json:'5-uc-adim-tyt-matematik-kartjson.json',pdf:'5-uc-adim-tyt-matematik-kart.pdf'},
+  {id:'uc-adim-deneme-tyt-15',dersId:'tyt',json:'6-uc-adim-deneme-tyt-15-cards.json',pdf:'6-uc-adim-deneme-tyt-15-cards.pdf'},
+  {id:'tyt-kampi-tum-dersler',dersId:'tyt',json:'7-tyt-kampi-tum-dersler-kart.json',pdf:'7-tyt-kampi-tum-dersler-kart.pdf'},
+  {id:'tyt-denemeleri-1',dersId:'tyt',json:'8-tyt-denemeleri-1-cards.json',pdf:'8-tyt-denemeleri-1-cards.pdf'},
+  {id:'tyt-denemeleri-2',dersId:'tyt',json:'9-tyt-denemeleri-2-cards.json',pdf:'9-tyt-denemeleri-2-cards.pdf'}
+];
 
 // Demo verilerinin orijinal anlık görüntüsü (Demo Verileri açma/kapama ve sıfırlama için)
 const DEMO_SNAPSHOT = MANIFEST.dersler.map(d=>({
@@ -2912,7 +3093,9 @@ const appState = {
     goal: 20
   },
   avatarEmojis: ['🎓','🧑‍🎓','👨‍🎓','👩‍🎓','🦁','🐯','🦊','🦅','🚀','⚡','🔥','🎯','💡','🌟','🏆','🎮','🤖','👾','🧠','🌈'],
-  avatarIdx: 0
+  avatarIdx: 0,
+  eduDirHandle: null,   // Edu-Fasikul lokal klasör erişimi
+  eduDirPermission: 'prompt'
 };
 
 // ══════════════════════════════
@@ -2923,6 +3106,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderStreakDots();
   loadManifestMeta();
   await loadAllKonular();
+  await loadBundledFasikuller();
+  await restoreEduDirHandle();
+  initGithubConfigUI();
   // Demo Verileri tercihini uygula
   const demoMode = localStorage.getItem('edu_demo_mode');
   if(demoMode === '0'){
@@ -3184,11 +3370,11 @@ function renderFasikulCards(fasikuller, ders){
     const renkCSS = fas.temaRenk || ders.renk;
     card.style.setProperty('--fas-accent', renkCSS);
     const hasKonular = fas.konular && fas.konular.length > 0;
+    const isBundled = fas.sourceType === 'bundled';
     const jsonPillHtml = hasKonular
-      ? `<span class="fasikul-json-pill ok">✓ JSON yüklü</span>`
-      : `<label class="fasikul-json-pill missing" for="jsonInput_${fas.id}" onclick="event.stopPropagation()">⚠ JSON yükle</label>`;
+      ? `<span class="fasikul-json-pill ok">✓ ${isBundled?'JSON otomatik':'JSON yüklü'}</span>`
+      : `<span class="fasikul-json-pill missing">JSON yok</span>`;
     card.innerHTML=`
-      <input type="file" id="jsonInput_${fas.id}" accept=".json" style="display:none" onchange="handleJSONUpload(this,'${ders.id}','${fas.id}')">
       <div class="fasikul-card-top">
         <div class="fasikul-drag-handle" title="Sürükleyerek sırala" aria-hidden="true">⣿</div>
         <div class="fasikul-thumb" style="background:color-mix(in srgb,${renkCSS} 16%,transparent)">${fas.thumb}</div>
@@ -3202,7 +3388,6 @@ function renderFasikulCards(fasikuller, ders){
         </div>
         <button class="fasikul-card-menu-btn" type="button" aria-label="Fasikül seçenekleri" title="Fasikül seçenekleri" onclick="event.stopPropagation();toggleFasikulMenu(this)">⋮</button>
         <div class="fasikul-card-menu">
-          <label for="jsonInput_${fas.id}" onclick="event.stopPropagation()">📋 Soru JSON'u yükle</label>
           <button onclick="event.stopPropagation();openFasikulModal('${fas.id}')">✏️ Fasikülü düzenle</button>
           <div class="fasikul-menu-divider"></div>
           <div class="fasikul-color-label">Kart rengi</div>
@@ -6565,10 +6750,140 @@ window.addEventListener('resize', ()=>{
 // ══════════════════════════════
 // DATA RESET
 // ══════════════════════════════
+// ── Edu-Fasikul Lokal Klasör Yönetimi ─────────────────────────
+
+const FASIKUL_PDF_MAP = {};
+BUNDLED_FASIKUL_SOURCES.forEach(s=>{ FASIKUL_PDF_MAP[s.id]=s.pdf; });
+
+function openHandleDB(){
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open('EduFasikulHandles',1);
+    request.onupgradeneeded=()=>{ if(!request.result.objectStoreNames.contains('handles')) request.result.createObjectStore('handles'); };
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error);
+  });
+}
+async function saveEduDirHandle(handle){
+  const db=await openHandleDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('handles','readwrite');
+    tx.objectStore('handles').put(handle,'edu-directory');
+    tx.oncomplete=()=>{db.close();resolve();};
+    tx.onerror=()=>{db.close();reject(tx.error);};
+  });
+}
+async function loadEduDirHandle(){
+  const db=await openHandleDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('handles','readonly');
+    const request=tx.objectStore('handles').get('edu-directory');
+    request.onsuccess=()=>resolve(request.result||null);
+    request.onerror=()=>reject(request.error);
+    tx.oncomplete=()=>db.close();
+  });
+}
+async function restoreEduDirHandle(){
+  if(!('showDirectoryPicker' in window)) return;
+  try{
+    const handle=await loadEduDirHandle();
+    if(!handle) return;
+    appState.eduDirHandle=handle;
+    appState.eduDirPermission=await handle.queryPermission({mode:'read'});
+    await updateEduDirUI();
+  }catch(e){}
+}
+
+async function selectEduDir(){
+  if(!('showDirectoryPicker' in window)){
+    showToast('Bu tarayıcı klasör erişimini desteklemiyor. Chrome/Edge kullanın.','error');
+    return;
+  }
+  try{
+    let handle=appState.eduDirHandle;
+    if(handle){
+      const permission=await handle.requestPermission({mode:'read'});
+      if(permission!=='granted') handle=null;
+    }
+    if(!handle) handle=await window.showDirectoryPicker({id:'edu-fasikul-pdf-folder',mode:'read'});
+    appState.eduDirHandle = handle;
+    appState.eduDirPermission = 'granted';
+    await saveEduDirHandle(handle);
+    localStorage.setItem('edu_dir_name', handle.name);
+    showToast(`✓ "${handle.name}" klasörü bağlandı`,'success');
+    await updateEduDirUI();
+  } catch(e){
+    if(e.name !== 'AbortError') showToast('Klasör seçimi iptal edildi','info');
+  }
+}
+
+async function updateEduDirUI(){
+  const statusEl = document.getElementById('eduDirStatus');
+  const listEl   = document.getElementById('eduDirFileList');
+  const buttonEl = document.getElementById('eduDirButton');
+  if(!statusEl) return;
+
+  if(!appState.eduDirHandle){
+    statusEl.textContent = 'Klasör bağlı değil';
+    if(buttonEl) buttonEl.textContent='Klasör Seç';
+    listEl.style.display = 'none';
+    return;
+  }
+
+  const permission=await appState.eduDirHandle.queryPermission({mode:'read'});
+  appState.eduDirPermission=permission;
+  if(permission!=='granted'){
+    statusEl.innerHTML=`<b>${appState.eduDirHandle.name}</b> · izin gerekli`;
+    if(buttonEl) buttonEl.textContent='İzni Etkinleştir';
+    listEl.style.display='none';
+    return;
+  }
+
+  statusEl.innerHTML = `<b style="color:var(--green)">✓ ${appState.eduDirHandle.name}</b> bağlandı`;
+  if(buttonEl) buttonEl.textContent='Klasörü Değiştir';
+
+  // Her beklenen PDF dosyasını kontrol et
+  const allFasikuller = MANIFEST.dersler.flatMap(d=>d.fasikuller).filter(f=>f.pdfFile||FASIKUL_PDF_MAP[f.id]);
+  let foundCount = 0;
+  const missing = [];
+  for(const fas of allFasikuller){
+    const pdfName = fas.pdfFile || FASIKUL_PDF_MAP[fas.id] || (fas.id + '.pdf');
+    let found = false;
+    try{
+      await findPdfFileHandle(pdfName);
+      found = true;
+    } catch(e){ found = false; }
+    if(found) foundCount++; else missing.push(pdfName);
+  }
+  const total=allFasikuller.length;
+  listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${total}</b> PDF bulundu${missing.length ? `<span>${missing.length} dosya eksik</span>` : '<span>Tüm dosyalar hazır</span>'}</div>`;
+  listEl.style.display = 'block';
+}
+
+async function findPdfFileHandle(pdfName){
+  if(!appState.eduDirHandle) throw new Error('Klasör yok');
+  try{ return await appState.eduDirHandle.getFileHandle(pdfName); }catch(e){}
+  const wanted=String(pdfName).normalize('NFC').toLocaleLowerCase('tr-TR');
+  for await(const entry of appState.eduDirHandle.values()){
+    if(entry.kind==='file' && entry.name.normalize('NFC').toLocaleLowerCase('tr-TR')===wanted) return entry;
+  }
+  throw new Error('PDF bulunamadı');
+}
+
+async function getLocalPdfBlob(fasikul){
+  if(!appState.eduDirHandle) return null;
+  const permission=await appState.eduDirHandle.queryPermission({mode:'read'});
+  if(permission!=='granted') return null;
+  const pdfName = fasikul.pdfFile || FASIKUL_PDF_MAP[fasikul.id] || (fasikul.id + '.pdf');
+  try{
+    const fileHandle = await findPdfFileHandle(pdfName);
+    const file = await fileHandle.getFile();
+    return URL.createObjectURL(file);
+  } catch(e){ return null; }
+}
+
 function getFasikulPdfUrl(fasikul){
   if(!fasikul) return null;
   if(fasikul.pdfUrl) return fasikul.pdfUrl;
-  if(fasikul.id === 'tyt-matematik') return '1-Matematik-Ozet-Tyt.pdf';
   return null;
 }
 
@@ -6579,17 +6894,26 @@ async function ensureReaderPdfLoaded(targetPage=1){
     goToPage(targetPage);
     return true;
   }
-  const url = getFasikulPdfUrl(fas);
+
+  // 1. Önce kullanıcının bir kez bağladığı PDF klasörüne bak.
+  let url = null;
+  if(appState.eduDirHandle){
+    url = await getLocalPdfBlob(fas);
+    if(url) showToast(`📁 PDF lokal klasörden açılıyor…`,'info');
+  }
+  // 2. Yalnızca özel olarak tanımlanmış bir uzak URL varsa onu kullan.
+  if(!url) url = getFasikulPdfUrl(fas);
+
   if(!url){
     document.getElementById('pdfUploadZone').style.display = '';
     document.getElementById('readerCanvasWrap').style.display = 'none';
-    showToast('Bu fasikül için PDF dosyası yüklenmeli','info');
+    showToast('PDF bulunamadı. Ayarlar → Edu-Fasikul Klasörü seçin veya PDF yükleyin.','info');
     return false;
   }
   try{
     return await loadPDFUrl(url, targetPage);
   }catch(e){
-    showToast('PDF otomatik açılamadı. PDF dosyasını yükleyin.','error');
+    showToast('PDF açılamadı. Dosyayı kontrol edin.','error');
     return false;
   }
 }
@@ -6826,6 +7150,9 @@ function openFasikulModal(fasikulId){
   document.getElementById('fasikulSinifInput').value = '10';
   document.getElementById('fasikulSoruInput').value = '0';
   document.getElementById('fasikulThumbInput').value = '';
+  document.getElementById('fasikulSinifInput').readOnly = true;
+  document.getElementById('fasikulSoruInput').readOnly = true;
+  populateFasikulSourceSelect(fasikulId);
   silBtn.style.display = 'none';
   document.getElementById('fasikulModalTitle').textContent = '📚 Fasikül Ekle';
   if(fasikulId && currentDrawerDers){
@@ -6836,11 +7163,61 @@ function openFasikulModal(fasikulId){
       document.getElementById('fasikulSinifInput').value = fas.sinif||10;
       document.getElementById('fasikulSoruInput').value = fas.soruSayisi||0;
       document.getElementById('fasikulThumbInput').value = fas.thumb||'';
-      silBtn.style.display = '';
-      document.getElementById('fasikulModalTitle').textContent = '✏️ Fasiküle Düzenle';
+      document.getElementById('fasikulSourceSelect').value = fas.sourceType==='bundled' ? fas.id : '';
+      document.getElementById('fasikulSourceSelect').disabled = true;
+      applyBundledSourceToForm(fas.sourceType==='bundled' ? fas.id : '', false);
+      silBtn.style.display = fas.sourceType==='bundled' ? 'none' : '';
+      document.getElementById('fasikulModalTitle').textContent = '✏️ Fasikülü Düzenle';
     }
   }
   modal.classList.add('open');
+}
+function populateFasikulSourceSelect(editId=''){
+  const select=document.getElementById('fasikulSourceSelect');
+  const hint=document.getElementById('fasikulSourceHint');
+  if(!select) return;
+  select.disabled=false;
+  select.innerHTML='<option value="">GitHub JSON seçin</option>';
+  const used=new Set(MANIFEST.dersler.flatMap(d=>d.fasikuller.map(f=>f.id)));
+  let availableCount=0;
+  BUNDLED_FASIKUL_SOURCES.forEach(source=>{
+    if(source.dersId!==currentDrawerDers?.id && source.id!==editId) return;
+    const raw=bundledSourceCache.get(source.json);
+    const option=document.createElement('option');
+    option.value=source.id;
+    option.textContent=`${used.has(source.id)&&source.id!==editId?'✓ ':''}${raw?.ad || source.json.replace(/\.json$/,'')}`;
+    option.disabled=used.has(source.id) && source.id!==editId;
+    if(!option.disabled) availableCount++;
+    select.appendChild(option);
+  });
+  if(hint){
+    hint.textContent = availableCount
+      ? 'GitHub JSON seçin; PDF profilinizde bağlı klasörde aynı adla aranır.'
+      : 'Bu ders için eklenecek yeni GitHub JSON fasikülü kalmadı.';
+  }
+  select.disabled = availableCount===0 && !editId;
+}
+function applyBundledSourceToForm(sourceId,fillValues=true){
+  const source=BUNDLED_FASIKUL_SOURCES.find(s=>s.id===sourceId);
+  const hint=document.getElementById('fasikulSourceHint');
+  const sinif=document.getElementById('fasikulSinifInput');
+  const soru=document.getElementById('fasikulSoruInput');
+  if(!source){
+    if(hint) hint.textContent='Fasikül eklemek için GitHub JSON kaynağı seçin.';
+    if(sinif) sinif.readOnly=true;
+    if(soru) soru.readOnly=true;
+    return;
+  }
+  const raw=bundledSourceCache.get(source.json);
+  if(fillValues && raw){
+    document.getElementById('fasikulAdInput').value=raw.ad||'';
+    sinif.value=bundledSinif(raw.sinif);
+    soru.value=raw.soruSayisi||raw.toplamSoru||0;
+    document.getElementById('fasikulThumbInput').value=raw.thumb||'📄';
+  }
+  sinif.readOnly=true;
+  soru.readOnly=true;
+  if(hint) hint.innerHTML=`GitHub JSON: <b>${source.json}</b><br>PDF klasöründe aranacak dosya: <b>${source.pdf}</b>`;
 }
 function closeFasikulModal(){
   document.getElementById('fasikulModal').classList.remove('open');
@@ -6852,16 +7229,27 @@ function saveFasikul(){
   const sinif = parseInt(document.getElementById('fasikulSinifInput').value)||10;
   const soruSayisi = parseInt(document.getElementById('fasikulSoruInput').value)||0;
   const thumb = document.getElementById('fasikulThumbInput').value.trim() || '📄';
+  const sourceId = document.getElementById('fasikulSourceSelect').value;
+  const source = BUNDLED_FASIKUL_SOURCES.find(s=>s.id===sourceId);
+  const sourceRaw = source ? bundledSourceCache.get(source.json) : null;
+  if(!editId && !source){ showToast('Fasikül eklemek için GitHub JSON kaynağı seçin','error'); return; }
   if(!ad){ showToast('Fasikül adı gerekli','error'); return; }
   const thumbBgMap = {'var(--mat)':'linear-gradient(135deg,#312e81,#1e1b4b)','var(--fiz)':'linear-gradient(135deg,#164e63,#0c4a6e)','var(--kim)':'linear-gradient(135deg,#064e3b,#052e16)','var(--bio)':'linear-gradient(135deg,#431407,#450a0a)','var(--tar)':'linear-gradient(135deg,#500724,#2d1657)','var(--edb)':'linear-gradient(135deg,#2e1065,#1a0533)'};
   const thumbBg = thumbBgMap[currentDrawerDers.renk] || 'linear-gradient(135deg,#312e81,#1e1b4b)';
   if(editId){
     const fas = currentDrawerDers.fasikuller.find(f=>f.id===editId);
-    if(fas){ fas.ad=ad; fas.sinif=sinif; fas.soruSayisi=soruSayisi; fas.thumb=thumb; fas.thumbBg=thumbBg; fas.konuSayisi=fas.konular?.length||0; }
+    if(fas){
+      fas.ad=ad; fas.sinif=sinif; fas.soruSayisi=soruSayisi; fas.thumb=thumb; fas.thumbBg=thumbBg; fas.konuSayisi=fas.konular?.length||0;
+      if(source){ fas.jsonFile=source.json;fas.pdfFile=source.pdf;fas.sourceType='bundled'; }
+    }
     showToast(`${ad} güncellendi ✓`,'success');
   } else {
-    const newId = ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
-    currentDrawerDers.fasikuller.push({ id:newId, ad, thumb, thumbBg, sinif, konuSayisi:0, soruSayisi, progPct:0, sonCalisma:'Yeni eklendi', konular:[] });
+    const newId = source?.id || ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
+    const konular = sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular) : [];
+    currentDrawerDers.fasikuller.push({
+      id:newId,ad,thumb,thumbBg,sinif,konuSayisi:konular.length,soruSayisi,progPct:0,sonCalisma:'Yeni eklendi',konular,
+      jsonFile:source?.json||null,pdfFile:source?.pdf||null,sourceType:source?'bundled':null
+    });
     showToast(`${ad} eklendi ✓`,'success');
   }
   persistManifest();
@@ -6886,7 +7274,194 @@ function silFasikul(){
   showToast('Fasikül silindi 🗑️','success');
 }
 
-function downloadSampleJSON(format){
+// ══════════════════════════════
+// KÜTÜPHANE MODAL — Bundled fasiküllerden ekleme/çıkarma
+// ══════════════════════════════
+let _kutuphaneFasikulAll = []; // {source, raw, ders (config)}
+
+async function openKutuphaneFasikulModal(targetDersId){
+  // Hangi derse ekleneceğini belirle
+  const modal = document.getElementById('kutuphaneFasikulModal');
+  if(!modal) return;
+  modal.classList.add('open');
+  modal.dataset.targetDers = targetDersId || '';
+
+  // Ders filtre dropdown'unu doldur
+  const dersFilter = document.getElementById('kutuphaneDersFilter');
+  if(dersFilter){
+    const dersIds = [...new Set(BUNDLED_FASIKUL_SOURCES.map(s=>s.dersId))];
+    dersFilter.innerHTML = '<option value="">Tüm Dersler</option>';
+    dersIds.forEach(dId=>{
+      const cfg = BUNDLED_DERS_CONFIG[dId] || {ad:dId};
+      const opt = document.createElement('option');
+      opt.value = dId; opt.textContent = `${cfg.ikon||''}${cfg.ad||dId}`;
+      if(dId===targetDersId) opt.selected = true;
+      dersFilter.appendChild(opt);
+    });
+  }
+
+  // Seçilen ders göster/gizle butonu
+  const btn = document.getElementById('kutuphaneDersSecBtn');
+  if(btn) btn.style.display = targetDersId ? '' : 'none';
+
+  // Listele
+  const listWrap = document.getElementById('kutuphaneFasikulListWrap');
+  if(listWrap) listWrap.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-muted)">⏳ Yükleniyor…</div>';
+
+  // Tüm kaynakları önbelleğe al
+  _kutuphaneFasikulAll = [];
+  for(const source of BUNDLED_FASIKUL_SOURCES){
+    const raw = await readBundledJson(source);
+    _kutuphaneFasikulAll.push({source, raw});
+  }
+  filterKutuphaneFasikuller(document.getElementById('kutuphaneFasikulSearch')?.value||'');
+}
+
+function closeKutuphaneFasikulModal(){
+  const modal = document.getElementById('kutuphaneFasikulModal');
+  if(modal) modal.classList.remove('open');
+}
+
+function filterKutuphaneFasikuller(q=''){
+  const listWrap = document.getElementById('kutuphaneFasikulListWrap');
+  const dersFilter = document.getElementById('kutuphaneDersFilter');
+  if(!listWrap) return;
+  const dersId = dersFilter?.value || '';
+  const lq = q.toLocaleLowerCase('tr-TR');
+
+  let items = _kutuphaneFasikulAll.filter(({source, raw})=>{
+    if(dersId && source.dersId !== dersId) return false;
+    const name = raw?.ad || source.json;
+    if(lq && !name.toLocaleLowerCase('tr-TR').includes(lq) && !source.json.toLocaleLowerCase('tr-TR').includes(lq)) return false;
+    return true;
+  });
+
+  if(!items.length){
+    listWrap.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-muted)">Fasikül bulunamadı</div>';
+    return;
+  }
+
+  listWrap.innerHTML = '';
+  items.forEach(({source, raw})=>{
+    const cfg = BUNDLED_DERS_CONFIG[source.dersId] || {ad:source.dersId,ikon:'📚',renk:'var(--mat)'};
+    const name = raw?.ad || source.json.replace(/\.json$/,'');
+    const sinif = raw?.sinif || '?';
+    const soruSayisi = raw?.soruSayisi || 0;
+    const konuSayisi = raw?.konular?.length || 0;
+    const thumb = raw?.thumb || '📄';
+
+    // Hangi derslerde zaten var?
+    const existingDersIds = MANIFEST.dersler
+      .filter(d => d.fasikuller?.some(f=>f.id===source.id))
+      .map(d=>d.id);
+
+    const tagsHtml = existingDersIds.map(dId=>{
+      const dc = BUNDLED_DERS_CONFIG[dId] || MANIFEST.dersler.find(d=>d.id===dId);
+      const dAd = dc?.ad || dId;
+      return `<span style="background:var(--green-dim);color:var(--green);padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600">✓ ${dAd}</span>`;
+    }).join('');
+
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);border:1px solid var(--border)';
+    row.innerHTML = `
+      <div style="font-size:26px;flex-shrink:0">${thumb}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
+        <div style="font-size:11px;color:var(--text-muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span style="color:${cfg.renk||'var(--mat)'}">${cfg.ikon||''}${cfg.ad}</span>
+          <span>${sinif}. Sınıf</span>
+          <span>${konuSayisi} konu</span>
+          <span>${soruSayisi} soru</span>
+          ${tagsHtml}
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;opacity:.6">${source.json}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+        ${_buildKutuphaneBtns(source, existingDersIds)}
+      </div>
+    `;
+    listWrap.appendChild(row);
+  });
+}
+
+function _buildKutuphaneBtns(source, existingDersIds){
+  // Her ders için ekle/çıkar butonu
+  const targetDers = document.getElementById('kutuphaneFasikulModal')?.dataset?.targetDers;
+  let btns = '';
+
+  MANIFEST.dersler.forEach(ders=>{
+    const isIn = existingDersIds.includes(ders.id);
+    const highlight = ders.id === targetDers ? 'font-weight:700;' : '';
+    if(isIn){
+      btns += `<button onclick="kutuphaneCikar('${source.id}','${ders.id}')" title="${ders.ad}'dan çıkar"
+        style="${highlight}padding:4px 8px;border-radius:6px;font-size:10px;background:var(--red-dim);color:var(--red);cursor:pointer;border:none;white-space:nowrap">
+        ✕ ${ders.ikon||ders.ad}</button>`;
+    } else {
+      btns += `<button onclick="kutuphaneDersEkle('${source.id}','${ders.id}')" title="${ders.ad}'a ekle"
+        style="${highlight}padding:4px 8px;border-radius:6px;font-size:10px;background:var(--bg-4);color:var(--text-1);cursor:pointer;border:none;white-space:nowrap">
+        + ${ders.ikon||ders.ad}</button>`;
+    }
+  });
+  return btns;
+}
+
+async function kutuphaneDersEkle(sourceId, dersId){
+  const source = BUNDLED_FASIKUL_SOURCES.find(s=>s.id===sourceId);
+  if(!source){ showToast('Kaynak bulunamadı','error'); return; }
+  let ders = MANIFEST.dersler.find(d=>d.id===dersId);
+  if(!ders){ showToast('Ders bulunamadı','error'); return; }
+  if(ders.fasikuller.some(f=>f.id===source.id)){ showToast('Zaten ekli','info'); return; }
+
+  const raw = await readBundledJson(source);
+  const cfg = BUNDLED_DERS_CONFIG[dersId] || {};
+  const thumbBgMap = {'var(--mat)':'linear-gradient(135deg,#312e81,#1e1b4b)','var(--fiz)':'linear-gradient(135deg,#164e63,#0c4a6e)','var(--kim)':'linear-gradient(135deg,#064e3b,#052e16)','var(--bio)':'linear-gradient(135deg,#431407,#450a0a)','var(--tar)':'linear-gradient(135deg,#500724,#2d1657)','var(--edb)':'linear-gradient(135deg,#2e1065,#1a0533)'};
+  const thumbBg = thumbBgMap[ders.renk] || 'linear-gradient(135deg,#312e81,#1e1b4b)';
+  const konular = raw?.konular ? normalizeFasikulKonular([...raw.konular]) : [];
+  ders.fasikuller.push({
+    id: source.id,
+    ad: raw?.ad || source.id,
+    thumb: raw?.thumb || '📄',
+    thumbBg,
+    sinif: bundledSinif(raw?.sinif),
+    konular,
+    konuSayisi: konular.length,
+    soruSayisi: konular.reduce((s,k)=>s+(k.altKonular||[]).reduce((s2,ak)=>s2+(ak.sorular||[]).length,0),0),
+    progPct: 0,
+    sonCalisma: 'Yeni eklendi',
+    jsonFile: source.json,
+    pdfFile: source.pdf,
+    sourceType: 'bundled'
+  });
+  persistManifest();
+  renderDerslerGrid();
+  showToast(`✓ "${raw?.ad||source.id}" ${ders.ad}'a eklendi`,'success');
+  // Listeyi yenile
+  filterKutuphaneFasikuller(document.getElementById('kutuphaneFasikulSearch')?.value||'');
+}
+
+function kutuphaneCikar(sourceId, dersId){
+  const ders = MANIFEST.dersler.find(d=>d.id===dersId);
+  if(!ders) return;
+  const fas = ders.fasikuller.find(f=>f.id===sourceId);
+  if(!fas) return;
+  if(!confirm(`"${fas.ad}" fasiküle "${ders.ad}" dersinden çıkarılsın mı?`)) return;
+  ders.fasikuller = ders.fasikuller.filter(f=>f.id!==sourceId);
+  try{ localStorage.removeItem(`edu_konular_${dersId}_${sourceId}`); }catch(e){}
+  persistManifest();
+  renderDerslerGrid();
+  showToast(`Fasikül "${ders.ad}"dan çıkarıldı 🗑️`,'success');
+  filterKutuphaneFasikuller(document.getElementById('kutuphaneFasikulSearch')?.value||'');
+}
+
+function kutuphaneDersSec(){
+  const modal = document.getElementById('kutuphaneFasikulModal');
+  const targetDersId = modal?.dataset?.targetDers;
+  if(!targetDersId){ showToast('Hedef ders seçilmedi','error'); return; }
+  closeKutuphaneFasikulModal();
+  openDrawer(targetDersId);
+}
+
+function downloadOrnekJson(format){
   // FORMAT A: çoklu soru (bir sayfada birden fazla soru) — altKonular yapısı
   const sampleA = {
     "ad": "Fasikül Adı (Çoklu Soru)",
@@ -7122,6 +7697,79 @@ async function persistKonular(dersId, fasikulId, konular){
   }
 }
 
+const bundledSourceCache = new Map();
+async function readBundledJson(source){
+  if(bundledSourceCache.has(source.json)) return bundledSourceCache.get(source.json);
+  let raw = null;
+  // 1. GitHub veya yapılandırılmış URL'den çek
+  if(location.protocol !== 'file:'){
+    try{
+      const url = buildGithubRawUrl(source.json);
+      const response = await fetch(url);
+      if(response.ok) raw = await response.json();
+      else {
+        // GitHub başarısız olursa eski relative path'i dene
+        const fallback = await fetch(`1-0-Edu-Fasikul/${encodeURIComponent(source.json)}`);
+        if(fallback.ok) raw = await fallback.json();
+      }
+    }catch(e){
+      try{
+        const fallback = await fetch(`1-0-Edu-Fasikul/${encodeURIComponent(source.json)}`);
+        if(fallback.ok) raw = await fallback.json();
+      }catch(e2){}
+    }
+  }
+  // 2. Gzip bundle varsa oradan
+  if(!raw && window.EDU_FASIKUL_GZIP?.[source.json]){
+    try{
+      const binary = atob(window.EDU_FASIKUL_GZIP[source.json]);
+      const bytes = Uint8Array.from(binary, c=>c.charCodeAt(0));
+      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+      raw = JSON.parse(await new Response(stream).text());
+    }catch(e){ console.warn('Yerel JSON kataloğu okunamadı:', source.json, e); }
+  }
+  if(raw) bundledSourceCache.set(source.json, raw);
+  return raw;
+}
+function bundledSinif(value){
+  const n = parseInt(value);
+  if(Number.isFinite(n)) return n;
+  return String(value||'').toUpperCase().includes('LGS') ? 8 : 12;
+}
+async function loadBundledFasikuller(){
+  let loaded = 0;
+  for(const source of BUNDLED_FASIKUL_SOURCES){
+    const raw = await readBundledJson(source);
+    if(!raw || !Array.isArray(raw.konular)) continue;
+    let ders = MANIFEST.dersler.find(d=>d.id===source.dersId);
+    if(!ders){
+      const cfg = BUNDLED_DERS_CONFIG[source.dersId] || BUNDLED_DERS_CONFIG.mat;
+      ders = {id:source.dersId,ad:cfg.ad,ikon:cfg.ikon,renk:cfg.renk,progPct:0,fasikuller:[]};
+      MANIFEST.dersler.push(ders);
+    }
+    let fas = ders.fasikuller.find(f=>f.id===source.id);
+    if(!fas){
+      fas = {id:source.id,progPct:0,sonCalisma:'Henüz çalışılmadı',temaRenk:null};
+      ders.fasikuller.push(fas);
+    }
+    const konular = normalizeFasikulKonular(raw.konular);
+    fas.ad = fas.ad || raw.ad || source.id;
+    fas.thumb = fas.thumb || raw.thumb || '📄';
+    fas.thumbBg = fas.thumbBg || 'linear-gradient(135deg,#312e81,#1e1b4b)';
+    fas.sinif = fas.sinif || bundledSinif(raw.sinif);
+    fas.konular = konular;
+    fas.konuSayisi = konular.length;
+    fas.soruSayisi = konular.reduce((sum,k)=>sum+(k.altKonular||[]).reduce((s,ak)=>s+(ak.sorular||[]).length,0),0);
+    fas.jsonFile = source.json;
+    fas.pdfFile = source.pdf;
+    fas.sourceType = 'bundled';
+    if(raw.cozumVideoLinkleri) fas.cozumVideoLinkleri = raw.cozumVideoLinkleri;
+    loaded++;
+  }
+  window.bundledLibraryReady = true;
+  return loaded;
+}
+
 async function loadAllKonular(){
   // Eski localStorage kayıtlarını destekle; büyük konu dosyalarını IndexedDB'den yükle.
   for(const ders of MANIFEST.dersler){
@@ -7154,7 +7802,8 @@ function persistManifest(){
       fasikuller: d.fasikuller.map(f=>({
         id:f.id, ad:f.ad, thumb:f.thumb, thumbBg:f.thumbBg,
         sinif:f.sinif, konuSayisi:f.konuSayisi, soruSayisi:f.soruSayisi,
-        progPct:f.progPct, sonCalisma:f.sonCalisma, temaRenk:f.temaRenk||null
+        progPct:f.progPct, sonCalisma:f.sonCalisma, temaRenk:f.temaRenk||null,
+        jsonFile:f.jsonFile||null, pdfFile:f.pdfFile||null, sourceType:f.sourceType||null
       }))
     }));
     localStorage.setItem('edu_manifest_meta', JSON.stringify(slim));
@@ -7173,7 +7822,7 @@ function loadManifestMeta(){
         existing.ad=sd.ad; existing.ikon=sd.ikon; existing.renk=sd.renk; existing.progPct=sd.progPct;
         sd.fasikuller.forEach(sf=>{
           const ef = existing.fasikuller.find(f=>f.id===sf.id);
-          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; }
+          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; ef.jsonFile=sf.jsonFile||null; ef.pdfFile=sf.pdfFile||null; ef.sourceType=sf.sourceType||null; }
           else { existing.fasikuller.push({...sf, konular:[]}); }
         });
         const savedOrder=sd.fasikuller.map(sf=>sf.id);
