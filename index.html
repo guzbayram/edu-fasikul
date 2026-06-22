@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="1-0-Edu-Fasikul/catalog-data.js"></script>
+<!-- catalog-data.js: BUNDLED_FASIKUL_SOURCES artık index.html içinde tanımlı, harici dosya gerekmez -->
 <style>
 /* ════════════════════════════════════════════════════════
    DESIGN TOKENS
@@ -2963,7 +2963,7 @@ window.dispatchEvent(new Event('auth-ready'));
 // ══════════════════════════════
 const GITHUB_CONFIG_KEY = 'edu_github_config';
 function getGithubConfig(){
-  const defaultConfig = { repo: 'guzbayram/edu-fasikul', branch: 'main', path: '1-0-Edu-Fasikul/' };
+  const defaultConfig = { repo: 'guzbayram/edu-fasikul', branch: 'main', path: '' };
   try{
     const saved = localStorage.getItem(GITHUB_CONFIG_KEY);
     if(saved){
@@ -2980,14 +2980,16 @@ function setGithubConfig(cfg){
 }
 function buildGithubRawUrl(filename){
   const cfg = getGithubConfig();
+  // Türkçe ve özel karakterleri NFC'ye normalize et (macOS NFD → GitHub NFC)
+  const normFile = filename.normalize('NFC');
   if(!cfg.repo){
     // Repo ayarlanmamış: relative path kullan (local / aynı sunucu)
-    const p = (cfg.path || '1-0-Edu-Fasikul/').replace(/\/$/,'');
-    return `${p}/${encodeURIComponent(filename)}`;
+    const p = (cfg.path || '').replace(/\/$/,'');
+    return p ? `${p}/${encodeURIComponent(normFile)}` : encodeURIComponent(normFile);
   }
   const branch = cfg.branch || 'main';
   const path = (cfg.path || '').replace(/^\/+|\/+$/g,'');
-  const filePart = path ? `${path}/${encodeURIComponent(filename)}` : encodeURIComponent(filename);
+  const filePart = path ? `${path}/${encodeURIComponent(normFile)}` : encodeURIComponent(normFile);
   return `https://raw.githubusercontent.com/${cfg.repo}/${branch}/${filePart}`;
 }
 function onGithubRepoInput(){
@@ -3001,10 +3003,11 @@ function onGithubRepoInput(){
   } else if(hint){ hint.textContent = ''; }
 }
 function buildGithubRawUrlFromParts(repo, branch, path, filename){
-  if(!repo) return (path||'1-0-Edu-Fasikul/').replace(/\/$/,'') + '/' + filename;
+  const normFile = (filename||'').normalize('NFC');
+  if(!repo) return path ? path.replace(/\/$/,'') + '/' + normFile : normFile;
   const b = branch || 'main';
   const p = (path||'').replace(/^\/+|\/+$/g,'');
-  const fp = p ? `${p}/${filename}` : filename;
+  const fp = p ? `${p}/${normFile}` : normFile;
   return `https://raw.githubusercontent.com/${repo}/${b}/${fp}`;
 }
 async function saveGithubConfig(){
@@ -8557,12 +8560,12 @@ async function readBundledJson(source){
       if(response.ok) raw = await response.json();
       else {
         // GitHub başarısız olursa eski relative path'i dene
-        const fallback = await fetch(`1-0-Edu-Fasikul/${encodeURIComponent(source.json)}`);
+        const fallback = await fetch(encodeURIComponent(source.json.normalize('NFC')));
         if(fallback.ok) raw = await fallback.json();
       }
     }catch(e){
       try{
-        const fallback = await fetch(`1-0-Edu-Fasikul/${encodeURIComponent(source.json)}`);
+        const fallback = await fetch(encodeURIComponent(source.json.normalize('NFC')));
         if(fallback.ok) raw = await fallback.json();
       }catch(e2){}
     }
