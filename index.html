@@ -1829,6 +1829,399 @@ a{color:inherit;text-decoration:none}
   .reader-page-stage{align-items:flex-start;padding-top:0}
   .reader-page-stage .pdf-page-wrap{margin-top:0!important}
 }
+
+/* ════ FOCUSED LEARNING APP SHELL — 2026 REFRESH ════ */
+:root{
+  --bg-0:#080817;
+  --bg-1:#0d0d20;
+  --bg-2:#17142f;
+  --bg-3:#201c3e;
+  --bg-4:#2a2650;
+  --bg-5:#35305d;
+  --border:rgba(151,143,255,.12);
+  --border-strong:rgba(151,143,255,.25);
+  --text-0:#f5f3ff;
+  --text-1:#bbb7d3;
+  --text-muted:#777390;
+  --mat:#7c73ff;
+  --mat-dim:rgba(124,115,255,.16);
+  --mat-glow:rgba(124,115,255,.32);
+  --radius:14px;
+  --radius-lg:20px;
+  --radius-xl:26px;
+}
+[data-theme="light"]{
+  --bg-0:#f6f4fc;
+  --bg-1:#faf9ff;
+  --bg-2:#ffffff;
+  --bg-3:#f0eef8;
+  --bg-4:#e8e5f3;
+  --bg-5:#ddd9ec;
+  --border:rgba(54,45,112,.08);
+  --border-strong:rgba(54,45,112,.16);
+  --text-0:#1c1933;
+  --text-1:#5e5879;
+  --text-muted:#8d88a5;
+}
+
+#screen-app{
+  display:block!important;
+  background:
+    radial-gradient(circle at 82% 0%,rgba(124,115,255,.10),transparent 34%),
+    var(--bg-0);
+}
+.main-content{
+  width:min(100%,940px);
+  height:100%;
+  margin:0 auto;
+  padding-bottom:88px;
+  overflow:hidden;
+}
+.top-bar{
+  height:78px;
+  padding:0 26px;
+  background:color-mix(in srgb,var(--bg-0) 90%,transparent);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+}
+.top-bar-title{font-family:var(--font-ui);font-size:18px;font-weight:700}
+.top-bar-actions .icon-btn:nth-child(2),
+.top-bar-actions .icon-btn:nth-child(3),
+.top-bar-actions .avatar-btn{display:none}
+.top-bar-actions .icon-btn{
+  width:44px;height:44px;border-radius:15px;background:var(--bg-2);border:1px solid var(--border)
+}
+.panel{padding:22px 20px 44px}
+
+/* The former sidebar becomes the persistent four-item bottom navigation. */
+.sidebar{
+  position:fixed!important;
+  z-index:90;
+  left:50%;right:auto;top:auto;bottom:0;
+  transform:translateX(-50%);
+  width:min(100%,940px)!important;
+  height:88px;
+  padding:0 26px max(8px,env(safe-area-inset-bottom));
+  display:block!important;
+  overflow:visible;
+  background:color-mix(in srgb,var(--bg-0) 94%,transparent);
+  border:0;border-top:1px solid var(--border);
+  backdrop-filter:blur(22px);
+}
+.sidebar-brand,.nav-section-label,.sidebar-footer{display:none!important}
+.sidebar-nav{
+  height:100%;padding:0;display:grid;grid-template-columns:repeat(4,1fr);overflow:visible
+}
+.nav-item{
+  position:relative;margin:0;padding:12px 8px 8px;border-radius:0;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;
+  color:var(--text-muted);font-size:12px;font-weight:600
+}
+.nav-item:hover{background:transparent;color:var(--text-0)}
+.nav-item.active{background:transparent;color:var(--mat)}
+.nav-item.active::before{
+  content:"";position:absolute;left:34%;right:34%;top:0;height:3px;
+  border-radius:0 0 99px 99px;background:var(--mat);box-shadow:0 2px 12px var(--mat-glow)
+}
+.nav-icon{width:auto;font-size:21px;filter:grayscale(1);opacity:.82}
+.nav-item.active .nav-icon{filter:none;opacity:1}
+.nav-badge{position:absolute;top:10px;left:55%;margin:0;border:2px solid var(--bg-0)}
+
+/* Dashboard */
+.welcome-banner{
+  position:relative;overflow:hidden;min-height:156px;padding:26px 28px;margin-bottom:16px;
+  background:linear-gradient(125deg,rgba(91,84,214,.72),rgba(65,58,144,.82));
+  border:1px solid rgba(139,131,255,.42);border-radius:var(--radius-xl)
+}
+.welcome-banner::after{
+  content:"";position:absolute;width:300px;height:300px;right:-80px;top:-170px;
+  border-radius:50%;background:rgba(255,255,255,.08);filter:blur(2px)
+}
+.welcome-text h1{font-family:var(--font-ui);font-size:25px;margin-bottom:8px}
+.welcome-text p{color:rgba(241,239,255,.72)}
+.welcome-text p span{color:#fff}
+.welcome-emoji{font-size:52px;z-index:1}
+.stats-row{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.stat-card{
+  min-height:112px;padding:17px;background:var(--bg-2);border-color:var(--border);border-radius:18px
+}
+.stat-card .stat-icon{
+  display:grid;place-items:center;width:36px;height:36px;margin-bottom:12px;
+  border-radius:11px;background:var(--mat-dim)
+}
+.stat-card .stat-value{font-family:var(--font-ui);font-size:22px}
+.stat-card .stat-label{color:var(--text-1)}
+.section-title{font-family:var(--font-ui);font-size:16px;letter-spacing:.01em}
+.last-open-banner{
+  min-height:116px;padding:18px 20px;margin-bottom:24px;background:var(--bg-2);
+  border-color:var(--border);border-radius:20px
+}
+.last-open-thumb{width:56px;height:68px;border-radius:14px}
+.last-open-info .lo-name{font-family:var(--font-ui)}
+.last-open-prog .lo-pct{font-family:var(--font-ui)}
+.dersler-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ders-card{
+  min-height:190px;padding:20px;background:var(--bg-2);border-color:var(--border);
+  border-radius:20px
+}
+.ders-card::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--accent,var(--mat))
+}
+.ders-card-top{margin-bottom:18px}
+.ders-card-icon{
+  display:grid;place-items:center;width:44px;height:44px;border-radius:14px;
+  background:color-mix(in srgb,var(--accent,var(--mat)) 15%,transparent);font-size:23px
+}
+.ders-card-name{font-family:var(--font-ui);font-size:17px}
+.progress-ring circle:first-child{stroke:var(--bg-4)}
+.ders-card-footer{margin-top:2px}
+
+/* Fasikül library */
+.drawer{
+  background:
+    radial-gradient(circle at 86% 0%,rgba(124,115,255,.09),transparent 30%),
+    var(--bg-0)
+}
+.drawer-header{
+  min-height:78px;padding:16px max(20px,calc((100vw - 940px)/2 + 20px));
+  background:color-mix(in srgb,var(--bg-0) 92%,transparent);backdrop-filter:blur(18px)
+}
+.drawer-header h3{font-family:var(--font-ui);font-size:20px}
+.drawer-back{width:44px;height:44px;border-radius:14px;background:var(--bg-2);border:1px solid var(--border)}
+.drawer-search{margin:20px max(20px,calc((100vw - 940px)/2 + 20px)) 8px}
+.drawer-search input{height:52px;padding:0 18px;background:var(--bg-2);border-color:var(--border);border-radius:16px;font-size:14px}
+.drawer-body{
+  padding:14px max(20px,calc((100vw - 940px)/2 + 20px)) 42px;
+  grid-template-columns:repeat(2,minmax(0,1fr));gap:16px
+}
+.fasikul-card{
+  min-height:220px;padding:20px;gap:18px;border-radius:20px;background:var(--bg-2);
+  border-color:var(--border);cursor:grab;overflow:visible
+}
+.fasikul-card::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:4px;
+  border-radius:20px 20px 0 0;background:var(--fas-accent,var(--mat))
+}
+.fasikul-card:hover{background:var(--bg-2);border-color:color-mix(in srgb,var(--fas-accent,var(--mat)) 48%,var(--border));transform:translateY(-2px)}
+.fasikul-card:active{cursor:grabbing}
+.fasikul-card.dragging{opacity:.45;transform:scale(.98)}
+.fasikul-card.drag-over{border-color:var(--fas-accent,var(--mat));box-shadow:0 0 0 3px color-mix(in srgb,var(--fas-accent,var(--mat)) 20%,transparent)}
+.fasikul-card-top{gap:12px;align-items:flex-start}
+.fasikul-drag-handle{align-self:center;color:var(--text-muted);font-size:20px;line-height:1;cursor:grab;user-select:none}
+.fasikul-thumb{width:48px;height:48px;border-radius:14px}
+.fasikul-name{font-size:16px;font-weight:700;margin-bottom:8px}
+.fasikul-meta{gap:8px 12px;line-height:1.5}
+.fasikul-card-menu-btn{margin:-5px -5px 0 0;background:var(--bg-3)}
+.fasikul-card-menu{top:58px;right:14px;min-width:230px;padding:9px;border-radius:16px;z-index:12}
+.fasikul-menu-divider{height:1px;background:var(--border);margin:5px 2px}
+.fasikul-color-label{padding:4px 8px 6px;color:var(--text-muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.fasikul-color-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:2px 7px 8px}
+.fasikul-color-swatch{
+  width:22px!important;height:22px!important;padding:0!important;border-radius:50%!important;
+  background:var(--swatch)!important;border:2px solid transparent!important;box-shadow:0 0 0 1px var(--border-strong)
+}
+.fasikul-color-swatch.selected{border-color:var(--bg-2)!important;box-shadow:0 0 0 2px var(--swatch)}
+.fasikul-order-actions{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.fasikul-order-actions button{justify-content:center!important;padding-inline:5px!important;font-size:11px!important}
+.fasikul-progress{margin-top:auto}
+.prog-bar{height:7px;background:var(--bg-4)}
+.fasikul-card-footer{padding-top:2px}
+.fasikul-open-btn{min-width:74px;min-height:40px;border-radius:12px}
+.drawer-body.is-filtered .fasikul-drag-handle{opacity:.3}
+
+/* Secondary panels */
+.stats-kpi{grid-template-columns:repeat(2,1fr);gap:14px}
+.kpi-card,.chart-card,.konu-table,.streak-calendar,.hatali-card,
+.profil-avatar-card,.profil-section{
+  background:var(--bg-2)!important;border:1px solid var(--border)!important;border-radius:20px!important
+}
+.chart-card{min-height:300px}
+.konu-table{overflow:hidden}
+.hatali-card{padding:18px 20px}
+.hatali-filter-select{background:var(--bg-2);border-color:var(--border);border-radius:12px}
+.profil-wrap{
+  max-width:none;display:grid;
+  grid-template-columns:minmax(300px,0.9fr) minmax(0,1.65fr);
+  grid-template-areas:
+    "avatar prefs"
+    "info data"
+    "info logout";
+  gap:16px;align-items:stretch
+}
+.profil-left-column,.profil-right-column{display:contents}
+.profil-avatar-card{grid-area:avatar;padding:34px 22px;position:static;margin:0}
+.profil-avatar-emoji{width:96px;height:96px;font-size:44px;background:linear-gradient(135deg,var(--mat),#554bdc)}
+.profil-section{margin:0;padding:8px 18px}
+.pref-row{min-height:64px}
+.profil-right-column .profil-section:nth-of-type(1){grid-area:prefs}
+.profil-right-column .profil-section:nth-of-type(2){grid-area:data}
+.profil-right-column .btn-danger{grid-area:logout}
+.btn-danger{width:100%;min-height:52px;border-radius:16px;background:var(--red-dim)}
+.app-info-card{
+  grid-area:info;display:flex;flex-direction:column;min-height:0;padding:24px;
+  background:var(--bg-2);border:1px solid var(--border);border-radius:20px
+}
+.app-info-icon{
+  display:grid;place-items:center;width:46px;height:46px;margin-bottom:18px;
+  border-radius:14px;background:var(--mat-dim);font-size:23px
+}
+.app-info-title{font-size:18px;font-weight:700;color:var(--text-0);margin-bottom:10px}
+.app-info-card p{font-size:13px;line-height:1.65;color:var(--text-muted);margin-bottom:20px}
+.app-info-features{display:flex;flex-direction:column;gap:12px;color:var(--text-1);font-size:13px}
+.app-info-features span{padding-bottom:12px;border-bottom:1px solid var(--border)}
+.app-info-version{margin-top:auto;padding-top:22px;color:var(--text-muted);font-size:11px;letter-spacing:.04em}
+
+@media (max-width:768px){
+  .main-content{width:100%;padding-bottom:76px}
+  .top-bar{height:62px;padding:0 16px}
+  .top-bar-actions .icon-btn{width:40px;height:40px}
+  .panel.active{padding:16px 14px 30px!important}
+  .sidebar{height:76px!important;padding:0 6px max(5px,env(safe-area-inset-bottom))!important}
+  .nav-item{font-size:10px;padding:9px 2px 5px!important}
+  .nav-icon{font-size:19px}
+  .welcome-banner{min-height:142px;padding:22px 20px;border-radius:21px}
+  .welcome-text h1{font-size:21px}
+  .welcome-text p{font-size:12px;line-height:1.55}
+  .welcome-emoji{font-size:38px}
+  .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+  .stat-card{min-height:104px;padding:14px!important}
+  .last-open-banner{align-items:flex-start;padding:15px}
+  .last-open-prog{width:80px}
+  .last-open-info .lo-meta{font-size:11px}
+  .last-open-arrow{display:none}
+  .dersler-grid{grid-template-columns:1fr!important;gap:11px}
+  .ders-card{min-height:168px;padding:16px!important}
+  .drawer-header{min-height:62px;padding:9px 14px!important}
+  .drawer-header h3{font-size:17px!important}
+  .drawer-search{margin:12px 14px 6px!important}
+  .drawer-body{display:grid!important;grid-template-columns:1fr!important;padding:10px 14px 28px!important;gap:12px!important}
+  .fasikul-card{min-height:205px;padding:17px!important;gap:15px!important}
+  .fasikul-card:hover{transform:none}
+  .fasikul-drag-handle{font-size:18px}
+  .fasikul-card-menu{position:fixed;left:14px;right:14px;top:auto;bottom:88px;min-width:0}
+  .stats-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .charts-row{grid-template-columns:1fr}
+  .hatali-card{align-items:flex-start}
+  .hatali-actions{width:100%;justify-content:flex-start}
+  .profil-wrap{display:block}
+  .profil-left-column,.profil-right-column{display:flex;flex-direction:column;gap:14px}
+  .profil-left-column{margin-bottom:14px}
+  .profil-avatar-card{position:static;margin:0}
+  .profil-avatar-card,.app-info-card,.profil-right-column .profil-section,.profil-right-column .btn-danger{grid-area:auto}
+  .app-info-card{min-height:260px}
+  .profil-section{margin:0}
+  .btn-danger{width:100%}
+}
+
+@media (max-width:420px){
+  .welcome-emoji{display:none}
+  .last-open-prog{display:none}
+  .stats-kpi{grid-template-columns:1fr}
+  .pref-row{align-items:flex-start;gap:10px;flex-direction:column}
+}
+
+/* ════ MINIMAL STUDY READER ════ */
+#reader-overlay{background:var(--bg-0)}
+.reader-toolbar{
+  height:64px!important;padding:0 16px!important;gap:8px!important;
+  background:color-mix(in srgb,var(--bg-0) 94%,transparent)!important;
+  border-bottom:1px solid var(--border)!important;backdrop-filter:blur(18px)
+}
+.reader-toolbar .tool-divider{display:none!important}
+.reader-toolbar .tool-btn{
+  width:38px;height:38px;border-radius:12px;background:var(--bg-2);
+  border:1px solid var(--border);box-shadow:none;font-size:16px
+}
+.reader-toolbar .tool-btn:hover{transform:none;background:var(--bg-3)}
+.reader-toolbar .tool-btn[title]:hover::after{display:none}
+.reader-back-btn{color:var(--text-0)!important;font-size:19px!important}
+.toolbar-fasikul-name{font-family:var(--font-ui);font-size:14px;max-width:250px;padding:0 6px}
+
+/* Keep only pen, marker and eraser. */
+.reader-tool-palette .tool-btn[data-tool="select"],
+.reader-tool-palette .tool-btn[data-tool="tukenmez"],
+.reader-tool-palette .tool-btn[data-tool="text"]{display:none!important}
+.reader-tool-palette,.reader-color-palette,.reader-history-palette{
+  position:static!important;transform:none!important;background:transparent!important;
+  border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;
+  flex-direction:row!important;max-height:none!important;overflow:visible!important
+}
+/* Four clear colors are enough for everyday annotation. */
+.reader-color-palette .color-dot:nth-of-type(n+5),
+.reader-color-palette .size-slider{display:none!important}
+.reader-color-palette{gap:6px!important;padding:0 5px!important}
+.reader-color-palette .color-dot{width:20px!important;height:20px!important}
+.reader-history-palette .tool-btn:nth-child(3),
+.reader-history-palette .tool-btn:nth-child(4){display:none!important}
+.reader-meta-actions label[for="pdfFileInputToolbar"],
+.reader-meta-actions #readingModeBtn,
+.reader-meta-actions .tool-btn[title="Sol Paneli Aç/Kapat"],
+.reader-meta-actions .tool-btn[title="Soru Panelini Aç/Kapat"]{display:none!important}
+
+.reader-canvas-wrap{
+  padding:28px 20px 20px!important;background:var(--bg-0);
+  scrollbar-color:var(--bg-4) transparent
+}
+.pdf-page-wrap{box-shadow:0 10px 42px rgba(0,0,0,.28)!important}
+.reader-bottom-bar{
+  height:58px!important;background:color-mix(in srgb,var(--bg-0) 94%,transparent)!important;
+  border-top:1px solid var(--border)!important;gap:8px!important
+}
+.reader-bottom-bar .page-nav-btn{width:36px;height:36px;border-radius:12px;background:var(--bg-2)}
+.reader-bottom-bar .page-indicator{height:36px;display:flex;align-items:center;background:var(--bg-2);border-color:var(--border)}
+.reader-bottom-bar .zoom-group{margin-left:8px}
+
+@media (min-width:769px){
+  #reader-overlay.open #mobileMenuBtn{display:none!important}
+  .reader-toolbar{right:286px!important}
+  .reader-center{padding-top:64px!important;padding-right:286px!important}
+  .reader-right{
+    top:0!important;bottom:0!important;width:286px!important;padding:82px 16px 16px!important;
+    gap:14px!important;background:var(--bg-1);border-left:1px solid var(--border)!important;
+    overflow-y:auto
+  }
+  .reader-bottom-bar{right:286px!important;bottom:0!important}
+  .rp-header{display:block!important;padding:0 0 14px!important;border-bottom:1px solid var(--border)!important}
+  .rp-title{font-family:var(--font-ui);font-size:16px;margin:0;white-space:normal}
+  .rp-stats-row{display:none!important}
+  .test-control{display:grid!important;grid-template-columns:1fr auto!important;gap:8px!important;padding:0!important}
+  .start-test-btn{grid-column:auto!important;min-height:44px;border-radius:14px}
+  .timer-display{min-height:44px;padding:0 12px;display:flex;align-items:center;background:var(--bg-2);border-color:var(--border)}
+  .timer-settings-btn{display:none!important}
+  .soru-list{padding:0!important;overflow:visible!important}
+  .tek-soru-card{border-radius:18px!important;background:var(--bg-2)!important;border-color:var(--border)!important}
+  .tsk-header{min-height:48px;padding:12px!important;border-bottom:1px solid var(--border)}
+  .tsk-badge,.tsk-page,.tsk-star{display:none!important}
+  .tsk-no{background:var(--mat-dim);color:var(--mat)}
+  .tsk-nav-dots{display:none!important}
+  .tsk-body{padding:12px!important}
+  .tsk-actions .tsk-action-btn:first-child{display:none!important}
+  .tsk-actions{margin-top:8px}
+  .test-progress-bar{margin-top:auto!important;padding-top:14px!important;border-top:1px solid var(--border)!important}
+  .tp-nav{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .tp-nav-btn{min-height:40px;border-radius:12px;background:var(--bg-2)}
+  .finish-test-btn{grid-column:1/-1;min-height:40px;border-radius:12px}
+}
+
+@media (max-width:768px){
+  .reader-toolbar{height:58px!important;padding:0 8px!important;overflow:hidden!important}
+  #reader-overlay.open #mobileMenuBtn{display:flex!important}
+  .toolbar-fasikul-name{max-width:34vw!important;font-size:12px}
+  .reader-tool-palette .tool-btn[data-tool="eraser"]{display:none!important}
+  .reader-color-palette{display:none!important}
+  .reader-history-palette{display:none!important}
+  .reader-meta-actions #viewModeBtn{display:none!important}
+  .reader-meta-actions{margin-left:auto}
+  .reader-canvas-wrap{padding:12px 8px!important}
+  .reader-right{padding:10px!important;gap:8px!important;background:var(--bg-1);overflow-y:auto!important}
+  .rp-stats-row{display:none!important}
+  .rp-header{min-height:28px}
+  .test-control{display:grid!important;grid-template-columns:1fr auto!important;width:100%!important}
+  .timer-settings-btn{display:none!important}
+  .soru-list,.test-progress-bar{width:100%!important}
+  .tsk-badge,.tsk-page,.tsk-star,.tsk-nav-dots{display:none!important}
+  .reader-bottom-bar{height:48px!important}
+}
 </style>
 <!-- Firebase -->
 <script type="module">
@@ -2041,16 +2434,30 @@ window._firestoreReady = true;
     <div class="panel" id="panel-profil">
       <div class="section-title" style="margin-bottom:24px">👤 Profilim</div>
       <div class="profil-wrap">
-        <div class="profil-avatar-card">
-          <div class="profil-avatar-emoji" id="profilAvatar" onclick="cycleAvatar()" title="Değiştirmek için tıkla">🎓</div>
-          <div class="profil-name" id="profileName">Demo Kullanıcı</div>
-          <div class="profil-sub" id="profileSub">Öğrenci · demo@edufasikuler.com</div>
-          <div class="profil-stats-row">
-            <div class="profil-stat"><div class="profil-stat-val" style="color:var(--mat)">142</div><div class="profil-stat-lbl">Soru</div></div>
-            <div class="profil-stat"><div class="profil-stat-val" style="color:var(--orange)">7🔥</div><div class="profil-stat-lbl">Seri</div></div>
-            <div class="profil-stat"><div class="profil-stat-val" style="color:var(--green)">%74</div><div class="profil-stat-lbl">Başarı</div></div>
+        <div class="profil-left-column">
+          <div class="profil-avatar-card">
+            <div class="profil-avatar-emoji" id="profilAvatar" onclick="cycleAvatar()" title="Değiştirmek için tıkla">🎓</div>
+            <div class="profil-name" id="profileName">Demo Kullanıcı</div>
+            <div class="profil-sub" id="profileSub">Öğrenci · demo@edufasikuler.com</div>
+            <div class="profil-stats-row">
+              <div class="profil-stat"><div class="profil-stat-val" style="color:var(--mat)">142</div><div class="profil-stat-lbl">Soru</div></div>
+              <div class="profil-stat"><div class="profil-stat-val" style="color:var(--orange)">7🔥</div><div class="profil-stat-lbl">Seri</div></div>
+              <div class="profil-stat"><div class="profil-stat-val" style="color:var(--green)">%74</div><div class="profil-stat-lbl">Başarı</div></div>
+            </div>
+          </div>
+          <div class="app-info-card">
+            <div class="app-info-icon">📚</div>
+            <div class="app-info-title">EduFasikül Hakkında</div>
+            <p>Dijital fasiküllerinizi okuyabileceğiniz, soruları çözebileceğiniz ve gelişiminizi takip edebileceğiniz kişisel çalışma alanınız.</p>
+            <div class="app-info-features">
+              <span>✍️ PDF üzerinde not alma</span>
+              <span>🎯 Akıllı test ve tekrar</span>
+              <span>📊 Ayrıntılı performans takibi</span>
+            </div>
+            <div class="app-info-version">EduFasikül · Sürüm 4</div>
           </div>
         </div>
+        <div class="profil-right-column">
         <div class="profil-section">
           <div class="profil-section-title">⚙️ Tercihler</div>
           <div class="pref-row">
@@ -2093,6 +2500,7 @@ window._firestoreReady = true;
           </div>
         </div>
         <button class="btn-danger" onclick="doLogout()">Çıkış Yap</button>
+        </div>
       </div>
     </div>
   </div><!-- /main-content -->
@@ -2136,7 +2544,7 @@ window._firestoreReady = true;
       <!-- Nav group -->
       <div class="tool-group">
         <button class="tool-btn" id="mobileMenuBtn" onclick="toggleMobileLeft()" title="Konular" style="display:none">☰</button>
-        <button class="tool-btn" onclick="closeReader()" title="Geri dön" style="color:var(--red)">✕</button>
+        <button class="tool-btn reader-back-btn" onclick="closeReader()" title="Fasiküllere dön">←</button>
         <span class="toolbar-fasikul-name" id="toolbarFasikulAd">—</span>
       </div>
       <div class="tool-divider"></div>
@@ -2221,7 +2629,7 @@ window._firestoreReady = true;
     </div>
 
     <div class="test-control">
-      <button class="start-test-btn" id="startTestBtn" onclick="toggleTest()">▶ Testi Başlat</button>
+      <button class="start-test-btn" id="startTestBtn" onclick="toggleTest()">▶ Başlat</button>
       <div class="timer-display" id="timerDisplay">00:00</div>
       <button class="timer-settings-btn" onclick="toggleTimerPicker()" title="Süre Ayarı">⚙️</button>
     </div>
@@ -2251,9 +2659,9 @@ window._firestoreReady = true;
       <div class="tp-label"><span id="tpProgress">0 / 0 çözüldü</span><span id="tpNet">Net: —</span></div>
       <div class="tp-track"><div class="tp-fill" id="tpFill" style="width:0%"></div></div>
       <div class="tp-nav">
-        <button class="tp-nav-btn" onclick="prevQuestion()">◀ Önceki</button>
-        <button class="tp-nav-btn" onclick="nextQuestion()">Sonraki ▶</button>
-        <button class="finish-test-btn" onclick="finishTest()">🏁 Bitir</button>
+        <button class="tp-nav-btn" onclick="prevQuestion()" title="Önceki soru" aria-label="Önceki soru">←</button>
+        <button class="tp-nav-btn" onclick="nextQuestion()" title="Sonraki soru" aria-label="Sonraki soru">→</button>
+        <button class="finish-test-btn" onclick="finishTest()">Bitir</button>
       </div>
     </div>
   </div>
@@ -2734,6 +3142,9 @@ function renderDerslerGrid(){
 // ══════════════════════════════
 let currentDrawerDers = null;
 let allFasikulCards = [];
+const FASIKUL_THEME_COLORS = ['#7c73ff','#ec6471','#f59e0b','#22c55e','#14b8a6','#38bdf8','#d946ef'];
+let draggedFasikulId = null;
+let fasikulWasDragged = false;
 
 function openDrawer(e, dersId){
   if(e?.stopPropagation) e.stopPropagation();
@@ -2758,6 +3169,8 @@ function filterFasikuller(q){
 function renderFasikulCards(fasikuller, ders){
   const body = document.getElementById('drawerBody');
   body.innerHTML = '';
+  const sortable = fasikuller.length === ders.fasikuller.length;
+  body.classList.toggle('is-filtered', !sortable);
   if(fasikuller.length===0){
     body.innerHTML='<div style="text-align:center;padding:32px;color:var(--text-muted)">Fasikül bulunamadı</div>';
     return;
@@ -2765,8 +3178,11 @@ function renderFasikulCards(fasikuller, ders){
   fasikuller.forEach(fas => {
     const card = document.createElement('div');
     card.className='fasikul-card';
+    card.dataset.fasikulId=fas.id;
+    card.draggable=sortable;
     const soruCozulen = Math.floor(fas.soruSayisi * fas.progPct/100);
-    const renkCSS = ders.renk;
+    const renkCSS = fas.temaRenk || ders.renk;
+    card.style.setProperty('--fas-accent', renkCSS);
     const hasKonular = fas.konular && fas.konular.length > 0;
     const jsonPillHtml = hasKonular
       ? `<span class="fasikul-json-pill ok">✓ JSON yüklü</span>`
@@ -2774,7 +3190,8 @@ function renderFasikulCards(fasikuller, ders){
     card.innerHTML=`
       <input type="file" id="jsonInput_${fas.id}" accept=".json" style="display:none" onchange="handleJSONUpload(this,'${ders.id}','${fas.id}')">
       <div class="fasikul-card-top">
-        <div class="fasikul-thumb">${fas.thumb}</div>
+        <div class="fasikul-drag-handle" title="Sürükleyerek sırala" aria-hidden="true">⣿</div>
+        <div class="fasikul-thumb" style="background:color-mix(in srgb,${renkCSS} 16%,transparent)">${fas.thumb}</div>
         <div class="fasikul-info">
           <div class="fasikul-name">${fas.ad}</div>
           <div class="fasikul-meta">
@@ -2787,6 +3204,16 @@ function renderFasikulCards(fasikuller, ders){
         <div class="fasikul-card-menu">
           <label for="jsonInput_${fas.id}" onclick="event.stopPropagation()">📋 Soru JSON'u yükle</label>
           <button onclick="event.stopPropagation();openFasikulModal('${fas.id}')">✏️ Fasikülü düzenle</button>
+          <div class="fasikul-menu-divider"></div>
+          <div class="fasikul-color-label">Kart rengi</div>
+          <div class="fasikul-color-grid">
+            ${FASIKUL_THEME_COLORS.map(c=>`<button class="fasikul-color-swatch${renkCSS===c?' selected':''}" style="--swatch:${c}" title="Bu rengi kullan" aria-label="Kart rengini değiştir" onclick="event.stopPropagation();setFasikulTheme('${ders.id}','${fas.id}','${c}')"></button>`).join('')}
+          </div>
+          <div class="fasikul-menu-divider"></div>
+          <div class="fasikul-order-actions">
+            <button onclick="event.stopPropagation();moveFasikul('${ders.id}','${fas.id}',-1)">↑ Üste taşı</button>
+            <button onclick="event.stopPropagation();moveFasikul('${ders.id}','${fas.id}',1)">↓ Alta taşı</button>
+          </div>
         </div>
       </div>
       <div class="fasikul-progress">
@@ -2803,10 +3230,64 @@ function renderFasikulCards(fasikuller, ders){
       </div>`;
     card.addEventListener('click', (e)=>{
       if(e.target.closest('.fasikul-card-menu')||e.target.closest('.fasikul-card-menu-btn')) return;
+      if(fasikulWasDragged){ fasikulWasDragged=false; return; }
       openReader(ders.id, fas.id);
     });
+    if(sortable){
+      card.addEventListener('dragstart', e=>{
+        draggedFasikulId=fas.id; fasikulWasDragged=true;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed='move';
+        e.dataTransfer.setData('text/plain',fas.id);
+      });
+      card.addEventListener('dragend', ()=>{
+        card.classList.remove('dragging');
+        document.querySelectorAll('.fasikul-card.drag-over').forEach(c=>c.classList.remove('drag-over'));
+        draggedFasikulId=null;
+      });
+      card.addEventListener('dragover', e=>{
+        e.preventDefault();
+        if(draggedFasikulId && draggedFasikulId!==fas.id) card.classList.add('drag-over');
+      });
+      card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
+      card.addEventListener('drop', e=>{
+        e.preventDefault(); card.classList.remove('drag-over');
+        reorderFasikulByDrop(ders.id,draggedFasikulId,fas.id);
+      });
+    }
     body.appendChild(card);
   });
+}
+function setFasikulTheme(dersId,fasikulId,color){
+  const ders=MANIFEST.dersler.find(d=>d.id===dersId);
+  const fas=ders?.fasikuller.find(f=>f.id===fasikulId);
+  if(!fas || !FASIKUL_THEME_COLORS.includes(color)) return;
+  fas.temaRenk=color;
+  persistManifest();
+  renderFasikulCards(ders.fasikuller,ders);
+  showToast('Fasikül rengi güncellendi','success');
+}
+function moveFasikul(dersId,fasikulId,direction){
+  const ders=MANIFEST.dersler.find(d=>d.id===dersId);
+  if(!ders) return;
+  const from=ders.fasikuller.findIndex(f=>f.id===fasikulId);
+  const to=Math.max(0,Math.min(ders.fasikuller.length-1,from+direction));
+  if(from<0 || from===to) return;
+  const [item]=ders.fasikuller.splice(from,1);
+  ders.fasikuller.splice(to,0,item);
+  persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
+}
+function reorderFasikulByDrop(dersId,sourceId,targetId){
+  if(!sourceId || sourceId===targetId) return;
+  const ders=MANIFEST.dersler.find(d=>d.id===dersId);
+  if(!ders) return;
+  const from=ders.fasikuller.findIndex(f=>f.id===sourceId);
+  const to=ders.fasikuller.findIndex(f=>f.id===targetId);
+  if(from<0 || to<0) return;
+  const [item]=ders.fasikuller.splice(from,1);
+  ders.fasikuller.splice(to,0,item);
+  persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
+  showToast('Fasikül sırası kaydedildi','success');
 }
 function toggleFasikulMenu(btn){
   const menu = btn.nextElementSibling;
@@ -5719,7 +6200,7 @@ function stopTimer(){
   clearInterval(appState.timerInterval);
   appState.timerSec=0;
   updateTimer();
-  document.getElementById('startTestBtn').textContent='▶ Testi Başlat';
+  document.getElementById('startTestBtn').textContent='▶ Başlat';
   document.getElementById('startTestBtn').classList.remove('running');
 }
 function updateTimer(){
@@ -6673,7 +7154,7 @@ function persistManifest(){
       fasikuller: d.fasikuller.map(f=>({
         id:f.id, ad:f.ad, thumb:f.thumb, thumbBg:f.thumbBg,
         sinif:f.sinif, konuSayisi:f.konuSayisi, soruSayisi:f.soruSayisi,
-        progPct:f.progPct, sonCalisma:f.sonCalisma
+        progPct:f.progPct, sonCalisma:f.sonCalisma, temaRenk:f.temaRenk||null
       }))
     }));
     localStorage.setItem('edu_manifest_meta', JSON.stringify(slim));
@@ -6692,8 +7173,16 @@ function loadManifestMeta(){
         existing.ad=sd.ad; existing.ikon=sd.ikon; existing.renk=sd.renk; existing.progPct=sd.progPct;
         sd.fasikuller.forEach(sf=>{
           const ef = existing.fasikuller.find(f=>f.id===sf.id);
-          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; }
+          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; }
           else { existing.fasikuller.push({...sf, konular:[]}); }
+        });
+        const savedOrder=sd.fasikuller.map(sf=>sf.id);
+        existing.fasikuller.sort((a,b)=>{
+          const ai=savedOrder.indexOf(a.id), bi=savedOrder.indexOf(b.id);
+          if(ai<0 && bi<0) return 0;
+          if(ai<0) return 1;
+          if(bi<0) return -1;
+          return ai-bi;
         });
       } else {
         MANIFEST.dersler.push({...sd, fasikuller: sd.fasikuller.map(f=>({...f,konular:[]}))});
