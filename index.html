@@ -5602,9 +5602,20 @@ function selectAnswer(soruNo, selected, correct, idx){
 
   const isCorrect = selected===correct;
   const timeSec = appState.timerSec;
+  const aktifSoru = (appState.aktifAltKonu?.sorular||[]).find(s=>(s._uid||s.no)===soruNo);
 
   appState.sorularState[soruNo] = {
-    answered:true, selected, correct:isCorrect, timeSec
+    answered:       true,
+    selected:       selected,
+    correct:        isCorrect,
+    correct_answer: correct,
+    timeSec:        timeSec,
+    fasikulId:      appState.aktifFasikul?.id  || '',
+    fasikulAd:      appState.aktifFasikul?.ad  || '',
+    konu:           appState.aktifKonu?.ad     || '',
+    altKonu:        appState.aktifAltKonu?.ad  || '',
+    zorluk:         aktifSoru?.zorluk          || '',
+    _synced:        false
   };
 
   // Wrong → add to hatalilar
@@ -5631,7 +5642,7 @@ function selectAnswer(soruNo, selected, correct, idx){
     }, 700);
   }
 
-  // v4: persist answers
+  // persist answers + istatistik
   persistData();
 }
 
@@ -8346,22 +8357,77 @@ function _getUserKey(){
   return appState.user.uid || appState.user.email.replace(/[^a-zA-Z0-9]/g,'_');
 }
 
+function _hesaplaIstatistik(){
+  const state = appState.sorularState || {};
+  let toplam=0, dogru=0, yanlis=0, bos=0;
+  const konular = {};
+  Object.values(state).forEach(s=>{
+    if(!s || !s.answered) return;
+    toplam++;
+    const konu = s.konu || 'Diğer';
+    if(!konular[konu]) konular[konu]={dogru:0, yanlis:0};
+    if(s.skipped){ bos++; }
+    else if(s.correct){ dogru++; konular[konu].dogru++; }
+    else { yanlis++; konular[konu].yanlis++; }
+  });
+  return {toplam, dogru, yanlis, bos, konular};
+}
+
+function _hesaplaFasikulIstatistik(){
+  const fasikuller = {};
+  (appState.hatalilar||[]).forEach(h=>{
+    const fid = h.fasikulId || 'bilinmiyor';
+    if(!fasikuller[fid]) fasikuller[fid]={fasikulAd:h.fasikulAd||fid, dersId:h.ders||'', dersAd:h.dersAd||'', hataSayisi:0, konular:{}};
+    fasikuller[fid].hataSayisi++;
+    const konu = h.konu || 'Diğer';
+    fasikuller[fid].konular[konu] = (fasikuller[fid].konular[konu]||0) + 1;
+  });
+  return fasikuller;
+}
+
+function _persistYeniCozumler(uid){
+  if(!window._fsDoc || !window._firestoreReady) return;
+  const state = appState.sorularState || {};
+  Object.entries(state).forEach(([soruKey, s])=>{
+    if(!s || !s.answered || s._synced) return;
+    const cozumRef = window._fsDoc(window._db, 'ogrenciler', uid, 'cozumGecmisi', String(soruKey));
+    window._fsSetDoc(cozumRef, {
+      soruKey: soruKey,
+      fasikulId: s.fasikulId || appState.aktifFasikul?.id || '',
+      fasikulAd: s.fasikulAd || appState.aktifFasikul?.ad || '',
+      konu: s.konu || appState.aktifKonu?.ad || '',
+      altKonu: s.altKonu || appState.aktifAltKonu?.ad || '',
+      dogruCevap: s.correct_answer || '',
+      ogrenciCevap: s.selected || null,
+      dogru: s.correct === true,
+      atladi: s.skipped === true,
+      sureSaniye: s.timeSec || 0,
+      zorluk: s.zorluk || '',
+      tarih: new Date().toISOString()
+    }, {merge:true}).then(()=>{ s._synced=true; }).catch(e=>console.warn('cozumGecmisi kayıt hatası:',e));
+  });
+}
+
 function persistData(){
   try{
     localStorage.setItem('edu_hatalilar', JSON.stringify(appState.hatalilar));
     localStorage.setItem('edu_sorularState', JSON.stringify(appState.sorularState));
   }catch(e){}
-  // Firestore'a da kaydet (misafir değilse)
   const key = _getUserKey();
   if(key && window._firestoreReady){
+    const istatistik = _hesaplaIstatistik();
+    const fasikulIst = _hesaplaFasikulIstatistik();
     const docRef = window._fsDoc(window._db, 'ogrenciler', key);
     window._fsSetDoc(docRef, {
       email: appState.user.email,
       name: appState.user.name,
       hatalilar: appState.hatalilar,
       sorularState: appState.sorularState,
+      istatistik: istatistik,
+      fasikulIstatistik: fasikulIst,
       guncelleme: new Date().toISOString()
     }, { merge: true }).catch(e=>console.warn('Firestore kayıt hatası:',e));
+    _persistYeniCozumler(key);
   }
 }
 
@@ -8384,10 +8450,9 @@ async function loadFromFirestore(){
     const snap = await window._fsGetDoc(docRef);
     if(snap.exists()){
       const data = snap.data();
-      if(data.hatalilar) appState.hatalilar = data.hatalilar;
+      if(data.hatalilar)    appState.hatalilar    = data.hatalilar;
       if(data.sorularState) appState.sorularState = data.sorularState;
-      // localStorage'ı da güncelle
-      localStorage.setItem('edu_hatalilar', JSON.stringify(appState.hatalilar));
+      localStorage.setItem('edu_hatalilar',    JSON.stringify(appState.hatalilar));
       localStorage.setItem('edu_sorularState', JSON.stringify(appState.sorularState));
       document.getElementById('hataliCount').textContent=appState.hatalilar.length||0;
       document.getElementById('hataliCountBig').textContent=`${appState.hatalilar.length||0} Soru`;
