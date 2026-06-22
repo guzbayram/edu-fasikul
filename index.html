@@ -2818,14 +2818,14 @@ window._firestoreReady = true;
 <div class="modal-overlay" id="fasikulModal" onclick="event.target===this&&closeFasikulModal()">
   <div class="modal-box" style="max-width:460px">
     <h2 id="fasikulModalTitle">📚 Fasikül Ekle</h2>
-    <p class="modal-sub">Fasikül, GitHub'daki hazır JSON ile profilinizde bağlı PDF klasöründeki aynı adlı PDF eşleşmesinden oluşur.</p>
+    <p class="modal-sub">Fasikül, GitHub'dan otomatik alınan JSON ile bu cihazdaki aynı adlı PDF eşleşmesinden oluşur.</p>
     <input type="hidden" id="fasikulEditId">
     <div class="form-group" style="margin-bottom:14px">
       <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Fasikül Seç</label>
       <select id="fasikulSourceSelect" onchange="applyBundledSourceToForm(this.value)" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:13px;outline:none">
         <option value="">JSON + PDF eşleşmesi seçin</option>
       </select>
-      <div id="fasikulSourceHint" style="font-size:11px;color:var(--text-muted);margin-top:7px">Liste, GitHub'daki JSON dosyaları ile seçili PDF klasöründeki aynı adlı PDF'lerden oluşur.</div>
+      <div id="fasikulSourceHint" style="font-size:11px;color:var(--text-muted);margin-top:7px">GitHub JSON kataloğu otomatik okunur; yalnızca PDF'si bu cihazda hazır olan fasiküller listelenir.</div>
     </div>
     <div class="form-group" style="margin-bottom:14px">
       <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Fasikül Adı</label>
@@ -2886,12 +2886,17 @@ window._firestoreReady = true;
 // ══════════════════════════════
 const GITHUB_CONFIG_KEY = 'edu_github_config';
 function getGithubConfig(){
+  const defaultConfig = { repo: 'guzbayram/edu-fasikul', branch: 'main', path: '1-0-Edu-Fasikul/' };
   try{
     const saved = localStorage.getItem(GITHUB_CONFIG_KEY);
-    if(saved) return JSON.parse(saved);
+    if(saved){
+      const parsed=JSON.parse(saved);
+      // Eski sürümde boş kaydedilmiş ayarlar yerine uygulamanın kendi
+      // GitHub kataloğunu otomatik kullan.
+      if(parsed?.repo) return parsed;
+    }
   }catch(e){}
-  // Varsayılan: aynı klasördeki relative path (mevcut davranış korunur)
-  return { repo: '', branch: 'main', path: '1-0-Edu-Fasikul/' };
+  return defaultConfig;
 }
 function setGithubConfig(cfg){
   localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(cfg));
@@ -6911,6 +6916,9 @@ async function handleBulkPdfImport(input){
 
   try{ await navigator.storage?.persist?.(); }catch(e){}
   await updateEduDirUI();
+  if(document.getElementById('fasikulModal')?.classList.contains('open')){
+    await populateFasikulSourceSelect(document.getElementById('fasikulEditId')?.value || '');
+  }
   if(matched) showToast(`✓ ${matched} PDF fasiküllerle eşleştirildi`,'success');
   else showToast('Seçilen PDF adları GitHub fasikülleriyle eşleşmedi','error');
 }
@@ -6989,7 +6997,13 @@ async function ensureReaderPdfLoaded(targetPage=1){
   }
   // 2. iPad/Safari'de profilden bir kez seçilip cihazda saklanan PDF'ye bak.
   if(!url && appState.aktifDers){
-    const cached = await getPDFFromDB(appState.aktifDers.id,fas.id);
+    let cached = await getPDFFromDB(appState.aktifDers.id,fas.id);
+    // Fasikül sonradan başka bir ders kartına eklenmiş olsa bile PDF,
+    // katalogdaki asıl kaynak anahtarıyla bulunabilsin.
+    if(!cached){
+      const source=BUNDLED_FASIKUL_SOURCES.find(s=>s.id===fas.id);
+      if(source) cached=await getPDFFromDB(source.dersId,fas.id);
+    }
     if(cached?.blob){
       url=URL.createObjectURL(cached.blob);
       showToast(`📱 PDF bu cihazdan açılıyor…`,'info');
@@ -7275,15 +7289,20 @@ async function populateFasikulSourceSelect(editId=''){
   const used=new Set(MANIFEST.dersler.flatMap(d=>d.fasikuller.map(f=>f.id)));
   let availableCount=0;
   const permission = appState.eduDirHandle ? await appState.eduDirHandle.queryPermission({mode:'read'}).catch(()=>null) : null;
-  if(!appState.eduDirHandle || permission!=='granted'){
+  const hasFolder = !!appState.eduDirHandle && permission==='granted';
+  const cachedKeys = await getCachedPDFKeys();
+  if(!hasFolder && cachedKeys.size===0){
     select.disabled=true;
-    if(hint) hint.innerHTML='Önce profil sayfasından PDF klasörünüzü seçin. Sonra burada GitHub JSON + lokal PDF eşleşmeleri listelenir.';
+    if(hint) hint.innerHTML='Önce profil sayfasından PDF dosyalarınızı seçin. GitHub JSON adresi uygulama tarafından otomatik kullanılır.';
     return;
   }
   for(const source of BUNDLED_FASIKUL_SOURCES){
-    const pdfFound = await hasLocalPdfFile(source.pdf);
+    const cachedPdfFound = cachedKeys.has(`${source.dersId}_${source.id}`);
+    const folderPdfFound = hasFolder ? await hasLocalPdfFile(source.pdf) : false;
+    const pdfFound = cachedPdfFound || folderPdfFound;
     if(!pdfFound && source.id!==editId) continue;
-    const raw=bundledSourceCache.get(source.json);
+    const raw=bundledSourceCache.get(source.json) || await readBundledJson(source);
+    if(!raw && source.id!==editId) continue;
     const dersAd=MANIFEST.dersler.find(d=>d.id===source.dersId)?.ad || source.dersId;
     const option=document.createElement('option');
     option.value=source.id;
@@ -7294,8 +7313,8 @@ async function populateFasikulSourceSelect(editId=''){
   }
   if(hint){
     hint.textContent = availableCount
-      ? `${availableCount} eşleşme bulundu. Seçince ad, sınıf ve soru sayısı JSON’dan otomatik gelir.`
-      : 'Seçili PDF klasöründe GitHub JSON dosyalarıyla eşleşen PDF bulunamadı.';
+      ? `${availableCount} GitHub JSON + PDF eşleşmesi bulundu. Bilgiler seçiminizle otomatik doldurulur.`
+      : 'Bu cihazdaki PDF adlarıyla eşleşen GitHub JSON fasikülü bulunamadı.';
   }
   select.disabled = availableCount===0 && !editId;
 }
@@ -7319,7 +7338,7 @@ function applyBundledSourceToForm(sourceId,fillValues=true){
   }
   sinif.readOnly=true;
   soru.readOnly=true;
-  if(hint) hint.innerHTML=`GitHub JSON: <b>${source.json}</b><br>PDF klasöründe aranacak dosya: <b>${source.pdf}</b>`;
+  if(hint) hint.innerHTML=`GitHub JSON: <b>${source.json}</b><br>Bu cihazdaki PDF: <b>${source.pdf}</b>`;
 }
 function closeFasikulModal(){
   document.getElementById('fasikulModal').classList.remove('open');
