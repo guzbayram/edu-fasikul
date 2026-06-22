@@ -3499,6 +3499,16 @@ async function openReader(dersId, fasikulId){
   const fasikul = ders?.fasikuller.find(f=>f.id===fasikulId);
   if(!fasikul) return;
 
+  // Kullanıcı fasikülü başka bir ders altına eklediyse metadata kalıcıdır,
+  // fakat ağır konu/soru verisi her açılışta GitHub kataloğundan yeniden bağlanır.
+  if(!fasikul.konular?.length && fasikul.sourceType==='bundled'){
+    const source=BUNDLED_FASIKUL_SOURCES.find(s=>s.id===fasikul.id || s.json===fasikul.jsonFile);
+    if(source){
+      const raw=await readBundledJson(source);
+      if(raw?.konular) hydrateBundledFasikul(fasikul,raw,source);
+    }
+  }
+
   appState.aktifDers = ders;
   appState.aktifFasikul = fasikul;
   normalizeFasikulKonular(fasikul.konular || []);
@@ -7401,6 +7411,7 @@ function saveFasikul(){
       existing.jsonFile=source.json;
       existing.pdfFile=source.pdf;
       existing.sourceType='bundled';
+      persistKonular(currentDrawerDers.id,existing.id,konular).catch(()=>{});
       showToast(`${ad} zaten vardı, bilgiler yenilendi ✓`,'success');
       persistManifest();
       renderFasikulCards(currentDrawerDers.fasikuller, currentDrawerDers);
@@ -7414,6 +7425,7 @@ function saveFasikul(){
       id:newId,ad,thumb,thumbBg,sinif,konuSayisi:konular.length,soruSayisi,progPct:0,sonCalisma:'Yeni eklendi',konular,
       jsonFile:source?.json||null,pdfFile:source?.pdf||null,sourceType:source?'bundled':null
     });
+    if(source) persistKonular(currentDrawerDers.id,newId,konular).catch(()=>{});
     showToast(`${ad} eklendi ✓`,'success');
   }
   persistManifest();
@@ -7900,6 +7912,21 @@ function bundledSinif(value){
   if(Number.isFinite(n)) return n;
   return String(value||'').toUpperCase().includes('LGS') ? 8 : 12;
 }
+function hydrateBundledFasikul(fas,raw,source){
+  const konular=normalizeFasikulKonular(raw.konular||[]);
+  fas.ad = fas.ad || raw.ad || source.id;
+  fas.thumb = fas.thumb || raw.thumb || '📄';
+  fas.thumbBg = fas.thumbBg || 'linear-gradient(135deg,#312e81,#1e1b4b)';
+  fas.sinif = fas.sinif || bundledSinif(raw.sinif);
+  fas.konular = konular;
+  fas.konuSayisi = konular.length;
+  fas.soruSayisi = konular.reduce((sum,k)=>sum+(k.altKonular||[]).reduce((s,ak)=>s+(ak.sorular||[]).length,0),0);
+  fas.jsonFile = source.json;
+  fas.pdfFile = source.pdf;
+  fas.sourceType = 'bundled';
+  if(raw.cozumVideoLinkleri) fas.cozumVideoLinkleri = raw.cozumVideoLinkleri;
+  return fas;
+}
 async function loadBundledFasikuller(){
   let loaded = 0;
   for(const source of BUNDLED_FASIKUL_SOURCES){
@@ -7911,24 +7938,23 @@ async function loadBundledFasikuller(){
       ders = {id:source.dersId,ad:cfg.ad,ikon:cfg.ikon,renk:cfg.renk,progPct:0,fasikuller:[]};
       MANIFEST.dersler.push(ders);
     }
-    let fas = ders.fasikuller.find(f=>f.id===source.id);
-    if(!fas){
-      fas = {id:source.id,progPct:0,sonCalisma:'Henüz çalışılmadı',temaRenk:null};
-      ders.fasikuller.push(fas);
+    let canonical = ders.fasikuller.find(f=>f.id===source.id);
+    if(!canonical){
+      canonical = {id:source.id,progPct:0,sonCalisma:'Henüz çalışılmadı',temaRenk:null};
+      ders.fasikuller.push(canonical);
     }
-    const konular = normalizeFasikulKonular(raw.konular);
-    fas.ad = fas.ad || raw.ad || source.id;
-    fas.thumb = fas.thumb || raw.thumb || '📄';
-    fas.thumbBg = fas.thumbBg || 'linear-gradient(135deg,#312e81,#1e1b4b)';
-    fas.sinif = fas.sinif || bundledSinif(raw.sinif);
-    fas.konular = konular;
-    fas.konuSayisi = konular.length;
-    fas.soruSayisi = konular.reduce((sum,k)=>sum+(k.altKonular||[]).reduce((s,ak)=>s+(ak.sorular||[]).length,0),0);
-    fas.jsonFile = source.json;
-    fas.pdfFile = source.pdf;
-    fas.sourceType = 'bundled';
-    if(raw.cozumVideoLinkleri) fas.cozumVideoLinkleri = raw.cozumVideoLinkleri;
-    loaded++;
+
+    // Aynı GitHub fasikülü kullanıcının oluşturduğu başka bir ders
+    // altında da bulunabilir. Tüm kopyalara aynı konu/soru JSON'unu bağla.
+    const copies=[];
+    for(const manifestDers of MANIFEST.dersler){
+      for(const fas of manifestDers.fasikuller||[]){
+        if(fas.id===source.id || fas.jsonFile===source.json) copies.push(fas);
+      }
+    }
+    if(!copies.includes(canonical)) copies.push(canonical);
+    copies.forEach(fas=>hydrateBundledFasikul(fas,raw,source));
+    loaded+=copies.length;
   }
   window.bundledLibraryReady = true;
   return loaded;
