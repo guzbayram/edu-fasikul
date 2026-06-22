@@ -3828,7 +3828,6 @@ async function openReader(dersId, fasikulId){
   appState.aktifFasikul = fasikul;
   normalizeFasikulKonular(fasikul.konular || []);
   appState.currentPage = 1;
-  appState.sorularState = {};
   appState.undoStack = [];
   appState.redoStack = [];
   // PDF state reset
@@ -3854,7 +3853,7 @@ async function openReader(dersId, fasikulId){
       // Kart bazlı flag: altKonunun kendisinde veya konuda işaretli
       if(k._kartBazliKonu) ak._kartBazli = true;
       (ak.sorular||[]).forEach((s, i)=>{
-        s._uid = ak.id + '_' + s.no;
+        s._uid = fasikul.id + '__' + ak.id + '_' + s.no;
         // Soruda sayfa yoksa altKonunun başlangıç sayfasından sırayla ata
         if(!s.sayfa && ak.sayfa){
           s.sayfa = ak.sayfa + i;
@@ -7403,14 +7402,17 @@ function findHataliContext(h){
         for(const ak of konu.altKonular||[]){
           if(h.altKonuId && ak.id !== h.altKonuId) continue;
           const s = ak.sorular?.find(q=>{
-            const qKey = String(q._uid || `${ak.id}_${q.no}`);
+            const modernKey = `${fas.id}__${ak.id}_${q.no}`;
+            const legacyKey = `${ak.id}_${q.no}`;
+            const qKey = String(q._uid || modernKey);
             const qNo = String(q.no);
             return wantedKeys.includes(qKey)
+              || wantedKeys.includes(legacyKey)
               || wantedKeys.includes(qNo)
               || (h.sayfa && Number(q.sayfa || ak.sayfa) === Number(h.sayfa));
           });
           if(s){
-            if(!s._uid) s._uid = `${ak.id}_${s.no}`;
+            s._uid = `${fas.id}__${ak.id}_${s.no}`;
             if(!s.sayfa && ak.sayfa) s.sayfa = ak.sayfa;
             return {ders, fas, konu, ak, s, page:s.sayfa || ak.sayfa || h.sayfa || 1};
           }
@@ -8551,7 +8553,7 @@ async function loadFromFirestore(){
       cozumSnap.forEach(d=>{
         const c=d.data();
         const soruKey=c.soruKey || decodeURIComponent(d.id);
-        loadedState[soruKey]={
+        const restoredState={
           answered:true,
           selected:c.ogrenciCevap ?? null,
           correct:c.dogru===true,
@@ -8562,6 +8564,10 @@ async function loadFromFirestore(){
           konu:c.konu||'',altKonu:c.altKonu||'',zorluk:c.zorluk||'',
           _synced:true
         };
+        loadedState[soruKey]=restoredState;
+        if(c.fasikulId && !String(soruKey).startsWith(`${c.fasikulId}__`)){
+          loadedState[`${c.fasikulId}__${soruKey}`]=restoredState;
+        }
       });
       appState.sorularState=loadedState;
       localStorage.setItem('edu_sorularState',JSON.stringify(appState.sorularState));
