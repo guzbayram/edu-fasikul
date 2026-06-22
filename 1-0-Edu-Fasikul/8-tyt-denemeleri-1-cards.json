@@ -1,0 +1,6297 @@
+{
+  "ad": "MEBİ YKS Denemeleri TYT",
+  "sinif": 12,
+  "soruSayisi": 1000,
+  "konuSayisi": 8,
+  "thumb": "📝",
+  "konular": [
+    {
+      "id": "deneme-1",
+      "ad": "MEBİ TYT 1. Deneme",
+      "sayfaBasl": 1,
+      "sayfaBitis": 125,
+      "altKonular": [
+        {
+          "id": "deneme-1-turkce",
+          "ad": "1. Deneme - Türkçe Testi",
+          "sayfa": 1,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "1. Deneme Türkçe Testi S.1",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "1. Deneme Türkçe Testi S.2",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "1. Deneme Türkçe Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "1. Deneme Türkçe Testi S.4",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "1. Deneme Türkçe Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "1. Deneme Türkçe Testi S.6",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "1. Deneme Türkçe Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "1. Deneme Türkçe Testi S.8",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "1. Deneme Türkçe Testi S.9",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "1. Deneme Türkçe Testi S.10",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "1. Deneme Türkçe Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "1. Deneme Türkçe Testi S.12",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "1. Deneme Türkçe Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "1. Deneme Türkçe Testi S.14",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "1. Deneme Türkçe Testi S.15",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "1. Deneme Türkçe Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "1. Deneme Türkçe Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "1. Deneme Türkçe Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "1. Deneme Türkçe Testi S.19",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "1. Deneme Türkçe Testi S.20",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "1. Deneme Türkçe Testi S.21",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "1. Deneme Türkçe Testi S.22",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "1. Deneme Türkçe Testi S.23",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "1. Deneme Türkçe Testi S.24",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "1. Deneme Türkçe Testi S.25",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "1. Deneme Türkçe Testi S.26",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "1. Deneme Türkçe Testi S.27",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "1. Deneme Türkçe Testi S.28",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "1. Deneme Türkçe Testi S.29",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "1. Deneme Türkçe Testi S.30",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "1. Deneme Türkçe Testi S.31",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "1. Deneme Türkçe Testi S.32",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "1. Deneme Türkçe Testi S.33",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "1. Deneme Türkçe Testi S.34",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "1. Deneme Türkçe Testi S.35",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "1. Deneme Türkçe Testi S.36",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "1. Deneme Türkçe Testi S.37",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "1. Deneme Türkçe Testi S.38",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "1. Deneme Türkçe Testi S.39",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "1. Deneme Türkçe Testi S.40",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-1-sosyal",
+          "ad": "1. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 41,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "1. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "E",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-1-mat",
+          "ad": "1. Deneme - Temel Matematik Testi",
+          "sayfa": 66,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "1. Deneme Temel Matematik Testi S.1",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "1. Deneme Temel Matematik Testi S.2",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "1. Deneme Temel Matematik Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "1. Deneme Temel Matematik Testi S.4",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "1. Deneme Temel Matematik Testi S.5",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "1. Deneme Temel Matematik Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "1. Deneme Temel Matematik Testi S.7",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "1. Deneme Temel Matematik Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "1. Deneme Temel Matematik Testi S.9",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "1. Deneme Temel Matematik Testi S.10",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "1. Deneme Temel Matematik Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "1. Deneme Temel Matematik Testi S.12",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "1. Deneme Temel Matematik Testi S.13",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "1. Deneme Temel Matematik Testi S.14",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "1. Deneme Temel Matematik Testi S.15",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "1. Deneme Temel Matematik Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "1. Deneme Temel Matematik Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "1. Deneme Temel Matematik Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "1. Deneme Temel Matematik Testi S.19",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "1. Deneme Temel Matematik Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "1. Deneme Temel Matematik Testi S.21",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "1. Deneme Temel Matematik Testi S.22",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "1. Deneme Temel Matematik Testi S.23",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "1. Deneme Temel Matematik Testi S.24",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "1. Deneme Temel Matematik Testi S.25",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "1. Deneme Temel Matematik Testi S.26",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "1. Deneme Temel Matematik Testi S.27",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "1. Deneme Temel Matematik Testi S.28",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "1. Deneme Temel Matematik Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "1. Deneme Temel Matematik Testi S.30",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "1. Deneme Temel Matematik Testi S.31",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "1. Deneme Temel Matematik Testi S.32",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "1. Deneme Temel Matematik Testi S.33",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "1. Deneme Temel Matematik Testi S.34",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "1. Deneme Temel Matematik Testi S.35",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "1. Deneme Temel Matematik Testi S.36",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "1. Deneme Temel Matematik Testi S.37",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "1. Deneme Temel Matematik Testi S.38",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "1. Deneme Temel Matematik Testi S.39",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "1. Deneme Temel Matematik Testi S.40",
+              "cevap": "B",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-1-fen",
+          "ad": "1. Deneme - Fen Bilimleri Testi",
+          "sayfa": 106,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "1. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deneme-2",
+      "ad": "MEBİ TYT 2. Deneme",
+      "sayfaBasl": 126,
+      "sayfaBitis": 250,
+      "altKonular": [
+        {
+          "id": "deneme-2-turkce",
+          "ad": "2. Deneme - Türkçe Testi",
+          "sayfa": 126,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "2. Deneme Türkçe Testi S.1",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "2. Deneme Türkçe Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "2. Deneme Türkçe Testi S.3",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "2. Deneme Türkçe Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "2. Deneme Türkçe Testi S.5",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "2. Deneme Türkçe Testi S.6",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "2. Deneme Türkçe Testi S.7",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "2. Deneme Türkçe Testi S.8",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "2. Deneme Türkçe Testi S.9",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "2. Deneme Türkçe Testi S.10",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "2. Deneme Türkçe Testi S.11",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "2. Deneme Türkçe Testi S.12",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "2. Deneme Türkçe Testi S.13",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "2. Deneme Türkçe Testi S.14",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "2. Deneme Türkçe Testi S.15",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "2. Deneme Türkçe Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "2. Deneme Türkçe Testi S.17",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "2. Deneme Türkçe Testi S.18",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "2. Deneme Türkçe Testi S.19",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "2. Deneme Türkçe Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "2. Deneme Türkçe Testi S.21",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "2. Deneme Türkçe Testi S.22",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "2. Deneme Türkçe Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "2. Deneme Türkçe Testi S.24",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "2. Deneme Türkçe Testi S.25",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "2. Deneme Türkçe Testi S.26",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "2. Deneme Türkçe Testi S.27",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "2. Deneme Türkçe Testi S.28",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "2. Deneme Türkçe Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "2. Deneme Türkçe Testi S.30",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "2. Deneme Türkçe Testi S.31",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "2. Deneme Türkçe Testi S.32",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "2. Deneme Türkçe Testi S.33",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "2. Deneme Türkçe Testi S.34",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "2. Deneme Türkçe Testi S.35",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "2. Deneme Türkçe Testi S.36",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "2. Deneme Türkçe Testi S.37",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "2. Deneme Türkçe Testi S.38",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "2. Deneme Türkçe Testi S.39",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "2. Deneme Türkçe Testi S.40",
+              "cevap": "B",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-2-sosyal",
+          "ad": "2. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 166,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "2. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "B",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-2-mat",
+          "ad": "2. Deneme - Temel Matematik Testi",
+          "sayfa": 191,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "2. Deneme Temel Matematik Testi S.1",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "2. Deneme Temel Matematik Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "2. Deneme Temel Matematik Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "2. Deneme Temel Matematik Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "2. Deneme Temel Matematik Testi S.5",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "2. Deneme Temel Matematik Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "2. Deneme Temel Matematik Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "2. Deneme Temel Matematik Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "2. Deneme Temel Matematik Testi S.9",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "2. Deneme Temel Matematik Testi S.10",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "2. Deneme Temel Matematik Testi S.11",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "2. Deneme Temel Matematik Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "2. Deneme Temel Matematik Testi S.13",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "2. Deneme Temel Matematik Testi S.14",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "2. Deneme Temel Matematik Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "2. Deneme Temel Matematik Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "2. Deneme Temel Matematik Testi S.17",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "2. Deneme Temel Matematik Testi S.18",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "2. Deneme Temel Matematik Testi S.19",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "2. Deneme Temel Matematik Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "2. Deneme Temel Matematik Testi S.21",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "2. Deneme Temel Matematik Testi S.22",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "2. Deneme Temel Matematik Testi S.23",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "2. Deneme Temel Matematik Testi S.24",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "2. Deneme Temel Matematik Testi S.25",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "2. Deneme Temel Matematik Testi S.26",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "2. Deneme Temel Matematik Testi S.27",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "2. Deneme Temel Matematik Testi S.28",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "2. Deneme Temel Matematik Testi S.29",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "2. Deneme Temel Matematik Testi S.30",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "2. Deneme Temel Matematik Testi S.31",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "2. Deneme Temel Matematik Testi S.32",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "2. Deneme Temel Matematik Testi S.33",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "2. Deneme Temel Matematik Testi S.34",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "2. Deneme Temel Matematik Testi S.35",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "2. Deneme Temel Matematik Testi S.36",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "2. Deneme Temel Matematik Testi S.37",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "2. Deneme Temel Matematik Testi S.38",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "2. Deneme Temel Matematik Testi S.39",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "2. Deneme Temel Matematik Testi S.40",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-2-fen",
+          "ad": "2. Deneme - Fen Bilimleri Testi",
+          "sayfa": 231,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "2. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deneme-3",
+      "ad": "MEBİ TYT 3. Deneme",
+      "sayfaBasl": 251,
+      "sayfaBitis": 375,
+      "altKonular": [
+        {
+          "id": "deneme-3-turkce",
+          "ad": "3. Deneme - Türkçe Testi",
+          "sayfa": 251,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "3. Deneme Türkçe Testi S.1",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "3. Deneme Türkçe Testi S.2",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "3. Deneme Türkçe Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "3. Deneme Türkçe Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "3. Deneme Türkçe Testi S.5",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "3. Deneme Türkçe Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "3. Deneme Türkçe Testi S.7",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "3. Deneme Türkçe Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "3. Deneme Türkçe Testi S.9",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "3. Deneme Türkçe Testi S.10",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "3. Deneme Türkçe Testi S.11",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "3. Deneme Türkçe Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "3. Deneme Türkçe Testi S.13",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "3. Deneme Türkçe Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "3. Deneme Türkçe Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "3. Deneme Türkçe Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "3. Deneme Türkçe Testi S.17",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "3. Deneme Türkçe Testi S.18",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "3. Deneme Türkçe Testi S.19",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "3. Deneme Türkçe Testi S.20",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "3. Deneme Türkçe Testi S.21",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "3. Deneme Türkçe Testi S.22",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "3. Deneme Türkçe Testi S.23",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "3. Deneme Türkçe Testi S.24",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "3. Deneme Türkçe Testi S.25",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "3. Deneme Türkçe Testi S.26",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "3. Deneme Türkçe Testi S.27",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "3. Deneme Türkçe Testi S.28",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "3. Deneme Türkçe Testi S.29",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "3. Deneme Türkçe Testi S.30",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "3. Deneme Türkçe Testi S.31",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "3. Deneme Türkçe Testi S.32",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "3. Deneme Türkçe Testi S.33",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "3. Deneme Türkçe Testi S.34",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "3. Deneme Türkçe Testi S.35",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "3. Deneme Türkçe Testi S.36",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "3. Deneme Türkçe Testi S.37",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "3. Deneme Türkçe Testi S.38",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "3. Deneme Türkçe Testi S.39",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "3. Deneme Türkçe Testi S.40",
+              "cevap": "B",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-3-sosyal",
+          "ad": "3. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 291,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "3. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "E",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-3-mat",
+          "ad": "3. Deneme - Temel Matematik Testi",
+          "sayfa": 316,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "3. Deneme Temel Matematik Testi S.1",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "3. Deneme Temel Matematik Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "3. Deneme Temel Matematik Testi S.3",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "3. Deneme Temel Matematik Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "3. Deneme Temel Matematik Testi S.5",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "3. Deneme Temel Matematik Testi S.6",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "3. Deneme Temel Matematik Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "3. Deneme Temel Matematik Testi S.8",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "3. Deneme Temel Matematik Testi S.9",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "3. Deneme Temel Matematik Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "3. Deneme Temel Matematik Testi S.11",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "3. Deneme Temel Matematik Testi S.12",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "3. Deneme Temel Matematik Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "3. Deneme Temel Matematik Testi S.14",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "3. Deneme Temel Matematik Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "3. Deneme Temel Matematik Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "3. Deneme Temel Matematik Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "3. Deneme Temel Matematik Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "3. Deneme Temel Matematik Testi S.19",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "3. Deneme Temel Matematik Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "3. Deneme Temel Matematik Testi S.21",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "3. Deneme Temel Matematik Testi S.22",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "3. Deneme Temel Matematik Testi S.23",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "3. Deneme Temel Matematik Testi S.24",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "3. Deneme Temel Matematik Testi S.25",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "3. Deneme Temel Matematik Testi S.26",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "3. Deneme Temel Matematik Testi S.27",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "3. Deneme Temel Matematik Testi S.28",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "3. Deneme Temel Matematik Testi S.29",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "3. Deneme Temel Matematik Testi S.30",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "3. Deneme Temel Matematik Testi S.31",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "3. Deneme Temel Matematik Testi S.32",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "3. Deneme Temel Matematik Testi S.33",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "3. Deneme Temel Matematik Testi S.34",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "3. Deneme Temel Matematik Testi S.35",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "3. Deneme Temel Matematik Testi S.36",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "3. Deneme Temel Matematik Testi S.37",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "3. Deneme Temel Matematik Testi S.38",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "3. Deneme Temel Matematik Testi S.39",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "3. Deneme Temel Matematik Testi S.40",
+              "cevap": "B",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-3-fen",
+          "ad": "3. Deneme - Fen Bilimleri Testi",
+          "sayfa": 356,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "3. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deneme-4",
+      "ad": "MEBİ TYT 4. Deneme",
+      "sayfaBasl": 376,
+      "sayfaBitis": 500,
+      "altKonular": [
+        {
+          "id": "deneme-4-turkce",
+          "ad": "4. Deneme - Türkçe Testi",
+          "sayfa": 376,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "4. Deneme Türkçe Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "4. Deneme Türkçe Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "4. Deneme Türkçe Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "4. Deneme Türkçe Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "4. Deneme Türkçe Testi S.5",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "4. Deneme Türkçe Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "4. Deneme Türkçe Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "4. Deneme Türkçe Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "4. Deneme Türkçe Testi S.9",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "4. Deneme Türkçe Testi S.10",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "4. Deneme Türkçe Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "4. Deneme Türkçe Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "4. Deneme Türkçe Testi S.13",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "4. Deneme Türkçe Testi S.14",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "4. Deneme Türkçe Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "4. Deneme Türkçe Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "4. Deneme Türkçe Testi S.17",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "4. Deneme Türkçe Testi S.18",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "4. Deneme Türkçe Testi S.19",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "4. Deneme Türkçe Testi S.20",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "4. Deneme Türkçe Testi S.21",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "4. Deneme Türkçe Testi S.22",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "4. Deneme Türkçe Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "4. Deneme Türkçe Testi S.24",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "4. Deneme Türkçe Testi S.25",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "4. Deneme Türkçe Testi S.26",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "4. Deneme Türkçe Testi S.27",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "4. Deneme Türkçe Testi S.28",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "4. Deneme Türkçe Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "4. Deneme Türkçe Testi S.30",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "4. Deneme Türkçe Testi S.31",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "4. Deneme Türkçe Testi S.32",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "4. Deneme Türkçe Testi S.33",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "4. Deneme Türkçe Testi S.34",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "4. Deneme Türkçe Testi S.35",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "4. Deneme Türkçe Testi S.36",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "4. Deneme Türkçe Testi S.37",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "4. Deneme Türkçe Testi S.38",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "4. Deneme Türkçe Testi S.39",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "4. Deneme Türkçe Testi S.40",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-4-sosyal",
+          "ad": "4. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 416,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "4. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-4-mat",
+          "ad": "4. Deneme - Temel Matematik Testi",
+          "sayfa": 441,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "4. Deneme Temel Matematik Testi S.1",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "4. Deneme Temel Matematik Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "4. Deneme Temel Matematik Testi S.3",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "4. Deneme Temel Matematik Testi S.4",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "4. Deneme Temel Matematik Testi S.5",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "4. Deneme Temel Matematik Testi S.6",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "4. Deneme Temel Matematik Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "4. Deneme Temel Matematik Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "4. Deneme Temel Matematik Testi S.9",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "4. Deneme Temel Matematik Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "4. Deneme Temel Matematik Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "4. Deneme Temel Matematik Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "4. Deneme Temel Matematik Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "4. Deneme Temel Matematik Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "4. Deneme Temel Matematik Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "4. Deneme Temel Matematik Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "4. Deneme Temel Matematik Testi S.17",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "4. Deneme Temel Matematik Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "4. Deneme Temel Matematik Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "4. Deneme Temel Matematik Testi S.20",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "4. Deneme Temel Matematik Testi S.21",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "4. Deneme Temel Matematik Testi S.22",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "4. Deneme Temel Matematik Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "4. Deneme Temel Matematik Testi S.24",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "4. Deneme Temel Matematik Testi S.25",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "4. Deneme Temel Matematik Testi S.26",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "4. Deneme Temel Matematik Testi S.27",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "4. Deneme Temel Matematik Testi S.28",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "4. Deneme Temel Matematik Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "4. Deneme Temel Matematik Testi S.30",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "4. Deneme Temel Matematik Testi S.31",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "4. Deneme Temel Matematik Testi S.32",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "4. Deneme Temel Matematik Testi S.33",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "4. Deneme Temel Matematik Testi S.34",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "4. Deneme Temel Matematik Testi S.35",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "4. Deneme Temel Matematik Testi S.36",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "4. Deneme Temel Matematik Testi S.37",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "4. Deneme Temel Matematik Testi S.38",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "4. Deneme Temel Matematik Testi S.39",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "4. Deneme Temel Matematik Testi S.40",
+              "cevap": "B",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-4-fen",
+          "ad": "4. Deneme - Fen Bilimleri Testi",
+          "sayfa": 481,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "4. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deneme-5",
+      "ad": "MEBİ TYT 5. Deneme",
+      "sayfaBasl": 501,
+      "sayfaBitis": 625,
+      "altKonular": [
+        {
+          "id": "deneme-5-turkce",
+          "ad": "5. Deneme - Türkçe Testi",
+          "sayfa": 501,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "5. Deneme Türkçe Testi S.1",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "5. Deneme Türkçe Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "5. Deneme Türkçe Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "5. Deneme Türkçe Testi S.4",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "5. Deneme Türkçe Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "5. Deneme Türkçe Testi S.6",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "5. Deneme Türkçe Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "5. Deneme Türkçe Testi S.8",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "5. Deneme Türkçe Testi S.9",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "5. Deneme Türkçe Testi S.10",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "5. Deneme Türkçe Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "5. Deneme Türkçe Testi S.12",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "5. Deneme Türkçe Testi S.13",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "5. Deneme Türkçe Testi S.14",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "5. Deneme Türkçe Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "5. Deneme Türkçe Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "5. Deneme Türkçe Testi S.17",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "5. Deneme Türkçe Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "5. Deneme Türkçe Testi S.19",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "5. Deneme Türkçe Testi S.20",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "5. Deneme Türkçe Testi S.21",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "5. Deneme Türkçe Testi S.22",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "5. Deneme Türkçe Testi S.23",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "5. Deneme Türkçe Testi S.24",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "5. Deneme Türkçe Testi S.25",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "5. Deneme Türkçe Testi S.26",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "5. Deneme Türkçe Testi S.27",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "5. Deneme Türkçe Testi S.28",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "5. Deneme Türkçe Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "5. Deneme Türkçe Testi S.30",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "5. Deneme Türkçe Testi S.31",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "5. Deneme Türkçe Testi S.32",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "5. Deneme Türkçe Testi S.33",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "5. Deneme Türkçe Testi S.34",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "5. Deneme Türkçe Testi S.35",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "5. Deneme Türkçe Testi S.36",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "5. Deneme Türkçe Testi S.37",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "5. Deneme Türkçe Testi S.38",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "5. Deneme Türkçe Testi S.39",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "5. Deneme Türkçe Testi S.40",
+              "cevap": "C",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-5-sosyal",
+          "ad": "5. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 541,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "5. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "E",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-5-mat",
+          "ad": "5. Deneme - Temel Matematik Testi",
+          "sayfa": 566,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "5. Deneme Temel Matematik Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "5. Deneme Temel Matematik Testi S.2",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "5. Deneme Temel Matematik Testi S.3",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "5. Deneme Temel Matematik Testi S.4",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "5. Deneme Temel Matematik Testi S.5",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "5. Deneme Temel Matematik Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "5. Deneme Temel Matematik Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "5. Deneme Temel Matematik Testi S.8",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "5. Deneme Temel Matematik Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "5. Deneme Temel Matematik Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "5. Deneme Temel Matematik Testi S.11",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "5. Deneme Temel Matematik Testi S.12",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "5. Deneme Temel Matematik Testi S.13",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "5. Deneme Temel Matematik Testi S.14",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "5. Deneme Temel Matematik Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "5. Deneme Temel Matematik Testi S.16",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "5. Deneme Temel Matematik Testi S.17",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "5. Deneme Temel Matematik Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "5. Deneme Temel Matematik Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "5. Deneme Temel Matematik Testi S.20",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "5. Deneme Temel Matematik Testi S.21",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "5. Deneme Temel Matematik Testi S.22",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "5. Deneme Temel Matematik Testi S.23",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "5. Deneme Temel Matematik Testi S.24",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "5. Deneme Temel Matematik Testi S.25",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "5. Deneme Temel Matematik Testi S.26",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "5. Deneme Temel Matematik Testi S.27",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "5. Deneme Temel Matematik Testi S.28",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "5. Deneme Temel Matematik Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "5. Deneme Temel Matematik Testi S.30",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "5. Deneme Temel Matematik Testi S.31",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "5. Deneme Temel Matematik Testi S.32",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "5. Deneme Temel Matematik Testi S.33",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "5. Deneme Temel Matematik Testi S.34",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "5. Deneme Temel Matematik Testi S.35",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "5. Deneme Temel Matematik Testi S.36",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "5. Deneme Temel Matematik Testi S.37",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "5. Deneme Temel Matematik Testi S.38",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "5. Deneme Temel Matematik Testi S.39",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "5. Deneme Temel Matematik Testi S.40",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-5-fen",
+          "ad": "5. Deneme - Fen Bilimleri Testi",
+          "sayfa": 606,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "5. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deneme-6",
+      "ad": "MEBİ TYT 6. Deneme",
+      "sayfaBasl": 626,
+      "sayfaBitis": 750,
+      "altKonular": [
+        {
+          "id": "deneme-6-turkce",
+          "ad": "6. Deneme - Türkçe Testi",
+          "sayfa": 626,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "6. Deneme Türkçe Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "6. Deneme Türkçe Testi S.2",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "6. Deneme Türkçe Testi S.3",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "6. Deneme Türkçe Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "6. Deneme Türkçe Testi S.5",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "6. Deneme Türkçe Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "6. Deneme Türkçe Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "6. Deneme Türkçe Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "6. Deneme Türkçe Testi S.9",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "6. Deneme Türkçe Testi S.10",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "6. Deneme Türkçe Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "6. Deneme Türkçe Testi S.12",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "6. Deneme Türkçe Testi S.13",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "6. Deneme Türkçe Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "6. Deneme Türkçe Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "6. Deneme Türkçe Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "6. Deneme Türkçe Testi S.17",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "6. Deneme Türkçe Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "6. Deneme Türkçe Testi S.19",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "6. Deneme Türkçe Testi S.20",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "6. Deneme Türkçe Testi S.21",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "6. Deneme Türkçe Testi S.22",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "6. Deneme Türkçe Testi S.23",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "6. Deneme Türkçe Testi S.24",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "6. Deneme Türkçe Testi S.25",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "6. Deneme Türkçe Testi S.26",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "6. Deneme Türkçe Testi S.27",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "6. Deneme Türkçe Testi S.28",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "6. Deneme Türkçe Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "6. Deneme Türkçe Testi S.30",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "6. Deneme Türkçe Testi S.31",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "6. Deneme Türkçe Testi S.32",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "6. Deneme Türkçe Testi S.33",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "6. Deneme Türkçe Testi S.34",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "6. Deneme Türkçe Testi S.35",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "6. Deneme Türkçe Testi S.36",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "6. Deneme Türkçe Testi S.37",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "6. Deneme Türkçe Testi S.38",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "6. Deneme Türkçe Testi S.39",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "6. Deneme Türkçe Testi S.40",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-6-sosyal",
+          "ad": "6. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 666,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "6. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "C",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-6-mat",
+          "ad": "6. Deneme - Temel Matematik Testi",
+          "sayfa": 691,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "6. Deneme Temel Matematik Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "6. Deneme Temel Matematik Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "6. Deneme Temel Matematik Testi S.3",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "6. Deneme Temel Matematik Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "6. Deneme Temel Matematik Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "6. Deneme Temel Matematik Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "6. Deneme Temel Matematik Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "6. Deneme Temel Matematik Testi S.8",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "6. Deneme Temel Matematik Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "6. Deneme Temel Matematik Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "6. Deneme Temel Matematik Testi S.11",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "6. Deneme Temel Matematik Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "6. Deneme Temel Matematik Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "6. Deneme Temel Matematik Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "6. Deneme Temel Matematik Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "6. Deneme Temel Matematik Testi S.16",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "6. Deneme Temel Matematik Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "6. Deneme Temel Matematik Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "6. Deneme Temel Matematik Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "6. Deneme Temel Matematik Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "6. Deneme Temel Matematik Testi S.21",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "6. Deneme Temel Matematik Testi S.22",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "6. Deneme Temel Matematik Testi S.23",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "6. Deneme Temel Matematik Testi S.24",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "6. Deneme Temel Matematik Testi S.25",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "6. Deneme Temel Matematik Testi S.26",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "6. Deneme Temel Matematik Testi S.27",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "6. Deneme Temel Matematik Testi S.28",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "6. Deneme Temel Matematik Testi S.29",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "6. Deneme Temel Matematik Testi S.30",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "6. Deneme Temel Matematik Testi S.31",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "6. Deneme Temel Matematik Testi S.32",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "6. Deneme Temel Matematik Testi S.33",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "6. Deneme Temel Matematik Testi S.34",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "6. Deneme Temel Matematik Testi S.35",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "6. Deneme Temel Matematik Testi S.36",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "6. Deneme Temel Matematik Testi S.37",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "6. Deneme Temel Matematik Testi S.38",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "6. Deneme Temel Matematik Testi S.39",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "6. Deneme Temel Matematik Testi S.40",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-6-fen",
+          "ad": "6. Deneme - Fen Bilimleri Testi",
+          "sayfa": 731,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "6. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "E",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deneme-7",
+      "ad": "MEBİ TYT 7. Deneme",
+      "sayfaBasl": 751,
+      "sayfaBitis": 875,
+      "altKonular": [
+        {
+          "id": "deneme-7-turkce",
+          "ad": "7. Deneme - Türkçe Testi",
+          "sayfa": 751,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "7. Deneme Türkçe Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "7. Deneme Türkçe Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "7. Deneme Türkçe Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "7. Deneme Türkçe Testi S.4",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "7. Deneme Türkçe Testi S.5",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "7. Deneme Türkçe Testi S.6",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "7. Deneme Türkçe Testi S.7",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "7. Deneme Türkçe Testi S.8",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "7. Deneme Türkçe Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "7. Deneme Türkçe Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "7. Deneme Türkçe Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "7. Deneme Türkçe Testi S.12",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "7. Deneme Türkçe Testi S.13",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "7. Deneme Türkçe Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "7. Deneme Türkçe Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "7. Deneme Türkçe Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "7. Deneme Türkçe Testi S.17",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "7. Deneme Türkçe Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "7. Deneme Türkçe Testi S.19",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "7. Deneme Türkçe Testi S.20",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "7. Deneme Türkçe Testi S.21",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "7. Deneme Türkçe Testi S.22",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "7. Deneme Türkçe Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "7. Deneme Türkçe Testi S.24",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "7. Deneme Türkçe Testi S.25",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "7. Deneme Türkçe Testi S.26",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "7. Deneme Türkçe Testi S.27",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "7. Deneme Türkçe Testi S.28",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "7. Deneme Türkçe Testi S.29",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "7. Deneme Türkçe Testi S.30",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "7. Deneme Türkçe Testi S.31",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "7. Deneme Türkçe Testi S.32",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "7. Deneme Türkçe Testi S.33",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "7. Deneme Türkçe Testi S.34",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "7. Deneme Türkçe Testi S.35",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "7. Deneme Türkçe Testi S.36",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "7. Deneme Türkçe Testi S.37",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "7. Deneme Türkçe Testi S.38",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "7. Deneme Türkçe Testi S.39",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "7. Deneme Türkçe Testi S.40",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-7-sosyal",
+          "ad": "7. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 791,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "7. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-7-mat",
+          "ad": "7. Deneme - Temel Matematik Testi",
+          "sayfa": 816,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "7. Deneme Temel Matematik Testi S.1",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "7. Deneme Temel Matematik Testi S.2",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "7. Deneme Temel Matematik Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "7. Deneme Temel Matematik Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "7. Deneme Temel Matematik Testi S.5",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "7. Deneme Temel Matematik Testi S.6",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "7. Deneme Temel Matematik Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "7. Deneme Temel Matematik Testi S.8",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "7. Deneme Temel Matematik Testi S.9",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "7. Deneme Temel Matematik Testi S.10",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "7. Deneme Temel Matematik Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "7. Deneme Temel Matematik Testi S.12",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "7. Deneme Temel Matematik Testi S.13",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "7. Deneme Temel Matematik Testi S.14",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "7. Deneme Temel Matematik Testi S.15",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "7. Deneme Temel Matematik Testi S.16",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "7. Deneme Temel Matematik Testi S.17",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "7. Deneme Temel Matematik Testi S.18",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "7. Deneme Temel Matematik Testi S.19",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "7. Deneme Temel Matematik Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "7. Deneme Temel Matematik Testi S.21",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "7. Deneme Temel Matematik Testi S.22",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "7. Deneme Temel Matematik Testi S.23",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "7. Deneme Temel Matematik Testi S.24",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "7. Deneme Temel Matematik Testi S.25",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "7. Deneme Temel Matematik Testi S.26",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "7. Deneme Temel Matematik Testi S.27",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "7. Deneme Temel Matematik Testi S.28",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "7. Deneme Temel Matematik Testi S.29",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "7. Deneme Temel Matematik Testi S.30",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "7. Deneme Temel Matematik Testi S.31",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "7. Deneme Temel Matematik Testi S.32",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "7. Deneme Temel Matematik Testi S.33",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "7. Deneme Temel Matematik Testi S.34",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "7. Deneme Temel Matematik Testi S.35",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "7. Deneme Temel Matematik Testi S.36",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "7. Deneme Temel Matematik Testi S.37",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "7. Deneme Temel Matematik Testi S.38",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "7. Deneme Temel Matematik Testi S.39",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "7. Deneme Temel Matematik Testi S.40",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-7-fen",
+          "ad": "7. Deneme - Fen Bilimleri Testi",
+          "sayfa": 856,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "7. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "C",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deneme-8",
+      "ad": "MEBİ TYT 8. Deneme",
+      "sayfaBasl": 876,
+      "sayfaBitis": 1000,
+      "altKonular": [
+        {
+          "id": "deneme-8-turkce",
+          "ad": "8. Deneme - Türkçe Testi",
+          "sayfa": 876,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "8. Deneme Türkçe Testi S.1",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "8. Deneme Türkçe Testi S.2",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "8. Deneme Türkçe Testi S.3",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "8. Deneme Türkçe Testi S.4",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "8. Deneme Türkçe Testi S.5",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "8. Deneme Türkçe Testi S.6",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "8. Deneme Türkçe Testi S.7",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "8. Deneme Türkçe Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "8. Deneme Türkçe Testi S.9",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "8. Deneme Türkçe Testi S.10",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "8. Deneme Türkçe Testi S.11",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "8. Deneme Türkçe Testi S.12",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "8. Deneme Türkçe Testi S.13",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "8. Deneme Türkçe Testi S.14",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "8. Deneme Türkçe Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "8. Deneme Türkçe Testi S.16",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "8. Deneme Türkçe Testi S.17",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "8. Deneme Türkçe Testi S.18",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "8. Deneme Türkçe Testi S.19",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "8. Deneme Türkçe Testi S.20",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "8. Deneme Türkçe Testi S.21",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "8. Deneme Türkçe Testi S.22",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "8. Deneme Türkçe Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "8. Deneme Türkçe Testi S.24",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "8. Deneme Türkçe Testi S.25",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "8. Deneme Türkçe Testi S.26",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "8. Deneme Türkçe Testi S.27",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "8. Deneme Türkçe Testi S.28",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "8. Deneme Türkçe Testi S.29",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "8. Deneme Türkçe Testi S.30",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "8. Deneme Türkçe Testi S.31",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "8. Deneme Türkçe Testi S.32",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "8. Deneme Türkçe Testi S.33",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "8. Deneme Türkçe Testi S.34",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "8. Deneme Türkçe Testi S.35",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "8. Deneme Türkçe Testi S.36",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "8. Deneme Türkçe Testi S.37",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "8. Deneme Türkçe Testi S.38",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "8. Deneme Türkçe Testi S.39",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "8. Deneme Türkçe Testi S.40",
+              "cevap": "E",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-8-sosyal",
+          "ad": "8. Deneme - Sosyal Bilimler Testi",
+          "sayfa": 916,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.1",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.3",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.4",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.5",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.6",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.7",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.9",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.10",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.12",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.13",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.14",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.16",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.17",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.18",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.19",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.21",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.22",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.23",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.24",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "8. Deneme Sosyal Bilimler Testi S.25",
+              "cevap": "A",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-8-mat",
+          "ad": "8. Deneme - Temel Matematik Testi",
+          "sayfa": 941,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "8. Deneme Temel Matematik Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "8. Deneme Temel Matematik Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "8. Deneme Temel Matematik Testi S.3",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "8. Deneme Temel Matematik Testi S.4",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "8. Deneme Temel Matematik Testi S.5",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "8. Deneme Temel Matematik Testi S.6",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "8. Deneme Temel Matematik Testi S.7",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "8. Deneme Temel Matematik Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "8. Deneme Temel Matematik Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "8. Deneme Temel Matematik Testi S.10",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "8. Deneme Temel Matematik Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "8. Deneme Temel Matematik Testi S.12",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "8. Deneme Temel Matematik Testi S.13",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "8. Deneme Temel Matematik Testi S.14",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "8. Deneme Temel Matematik Testi S.15",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "8. Deneme Temel Matematik Testi S.16",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "8. Deneme Temel Matematik Testi S.17",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "8. Deneme Temel Matematik Testi S.18",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "8. Deneme Temel Matematik Testi S.19",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "8. Deneme Temel Matematik Testi S.20",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 21,
+              "onizleme": "8. Deneme Temel Matematik Testi S.21",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 22,
+              "onizleme": "8. Deneme Temel Matematik Testi S.22",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 23,
+              "onizleme": "8. Deneme Temel Matematik Testi S.23",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 24,
+              "onizleme": "8. Deneme Temel Matematik Testi S.24",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 25,
+              "onizleme": "8. Deneme Temel Matematik Testi S.25",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 26,
+              "onizleme": "8. Deneme Temel Matematik Testi S.26",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 27,
+              "onizleme": "8. Deneme Temel Matematik Testi S.27",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 28,
+              "onizleme": "8. Deneme Temel Matematik Testi S.28",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 29,
+              "onizleme": "8. Deneme Temel Matematik Testi S.29",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 30,
+              "onizleme": "8. Deneme Temel Matematik Testi S.30",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 31,
+              "onizleme": "8. Deneme Temel Matematik Testi S.31",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 32,
+              "onizleme": "8. Deneme Temel Matematik Testi S.32",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 33,
+              "onizleme": "8. Deneme Temel Matematik Testi S.33",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 34,
+              "onizleme": "8. Deneme Temel Matematik Testi S.34",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 35,
+              "onizleme": "8. Deneme Temel Matematik Testi S.35",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 36,
+              "onizleme": "8. Deneme Temel Matematik Testi S.36",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 37,
+              "onizleme": "8. Deneme Temel Matematik Testi S.37",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 38,
+              "onizleme": "8. Deneme Temel Matematik Testi S.38",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 39,
+              "onizleme": "8. Deneme Temel Matematik Testi S.39",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 40,
+              "onizleme": "8. Deneme Temel Matematik Testi S.40",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        },
+        {
+          "id": "deneme-8-fen",
+          "ad": "8. Deneme - Fen Bilimleri Testi",
+          "sayfa": 981,
+          "sorular": [
+            {
+              "no": 1,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.1",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 2,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.2",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 3,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.3",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 4,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.4",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 5,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.5",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 6,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.6",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 7,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.7",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 8,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.8",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 9,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.9",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 10,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.10",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 11,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.11",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 12,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.12",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 13,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.13",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 14,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.14",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 15,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.15",
+              "cevap": "D",
+              "zorluk": "orta"
+            },
+            {
+              "no": 16,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.16",
+              "cevap": "C",
+              "zorluk": "orta"
+            },
+            {
+              "no": 17,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.17",
+              "cevap": "A",
+              "zorluk": "orta"
+            },
+            {
+              "no": 18,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.18",
+              "cevap": "B",
+              "zorluk": "orta"
+            },
+            {
+              "no": 19,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.19",
+              "cevap": "E",
+              "zorluk": "orta"
+            },
+            {
+              "no": 20,
+              "onizleme": "8. Deneme Fen Bilimleri Testi S.20",
+              "cevap": "D",
+              "zorluk": "orta"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
