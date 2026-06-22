@@ -2591,6 +2591,7 @@ window.dispatchEvent(new Event('auth-ready'));
           <select id="adminNewRole" style="width:100%;padding:13px 16px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px">
             <option value="ogrenci">🎓 Öğrenci</option>
             <option value="ogretmen">👨‍🏫 Öğretmen</option>
+            <option value="admin">🔑 Yönetici</option>
           </select>
         </div>
         <div class="form-error" id="adminFormError"></div>
@@ -3418,7 +3419,7 @@ async function loadKullaniciList(){
       <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius)">
         <div style="flex:1;min-width:0">
           <div style="font-weight:600;font-size:14px">${(u.name||'').replace(/</g,'&lt;')}</div>
-          <div style="font-size:12px;color:var(--text-muted)">${(u.email||'').replace(/</g,'&lt;')} · ${u.role==='ogretmen'?'Öğretmen':'Öğrenci'}${u.active===false?' · <span style="color:var(--red)">Devre Dışı</span>':''}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${(u.email||'').replace(/</g,'&lt;')} · ${u.role==='admin'?'🔑 Yönetici':u.role==='ogretmen'?'Öğretmen':'Öğrenci'}${u.active===false?' · <span style="color:var(--red)">Devre Dışı</span>':''}</div>
         </div>
         <button class="pref-action pref-chip" onclick="toggleKullaniciActive('${u.id}', ${u.active===false})">${u.active===false?'Etkinleştir':'Devre Dışı Bırak'}</button>
         <button class="pref-action pref-chip" style="color:var(--yellow)" onclick="resetKullaniciPassword('${(u.email||'').replace(/'/g,"\\'")}')">Şifre Sıfırla</button>
