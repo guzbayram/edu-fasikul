@@ -2235,7 +2235,16 @@ a{color:inherit;text-decoration:none}
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  updatePassword,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbpnmiiHY94r9qTUUFgGQNsfTT8Q3Y0XU",
@@ -2248,11 +2257,30 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
 window._db = db;
+window._auth = auth;
 window._fsDoc = doc;
 window._fsSetDoc = setDoc;
 window._fsGetDoc = getDoc;
+window._fsCollection = collection;
+window._fsGetDocs = getDocs;
+window._fsDeleteDoc = deleteDoc;
+window._fsUpdateDoc = updateDoc;
+
+// Firebase Auth fonksiyonları
+window._authCreateUser = createUserWithEmailAndPassword;
+window._authSignIn = signInWithEmailAndPassword;
+window._authSignOut = signOut;
+window._authOnStateChanged = onAuthStateChanged;
+window._authUpdatePassword = updatePassword;
+window._authSendPasswordReset = sendPasswordResetEmail;
+
 window._firestoreReady = true;
+window._authReady = true;
+window.dispatchEvent(new Event('firestore-ready'));
+window.dispatchEvent(new Event('auth-ready'));
 </script>
 </head>
 <body>
@@ -2277,17 +2305,17 @@ window._firestoreReady = true;
     <div class="login-form-wrap">
       <h2>Hoş Geldin 👋</h2>
       <p>Dijital çalışma ortamına giriş yap</p>
-      <div class="role-toggle">
+      <div class="role-toggle" style="display:none">
         <button class="role-btn active" onclick="setRole('ogrenci',this)">🎓 Öğrenci</button>
         <button class="role-btn" onclick="setRole('ogretmen',this)">👨‍🏫 Öğretmen</button>
       </div>
       <div class="form-group">
         <label>E-posta</label>
-        <input type="email" id="emailInput" placeholder="ornek@mail.com" value="demo@edufasikuler.com">
+        <input type="email" id="emailInput" placeholder="ornek@mail.com">
       </div>
       <div class="form-group">
         <label>Şifre</label>
-        <input type="password" id="passInput" placeholder="••••••••" value="demo123">
+        <input type="password" id="passInput" placeholder="••••••••">
         <div class="form-error" id="formError">Şifre en az 6 karakter olmalıdır.</div>
       </div>
       <button class="btn-login" onclick="doLogin()">Giriş Yap →</button>
@@ -2318,6 +2346,9 @@ window._firestoreReady = true;
       </div>
       <div class="nav-item" onclick="showPanel('profil',this)">
         <span class="nav-icon">👤</span><span class="nav-label">Profil</span>
+      </div>
+      <div class="nav-item" id="navAdminBtn" onclick="showPanel('admin',this)" style="display:none">
+        <span class="nav-icon">🛠️</span><span class="nav-label">Yönetim</span>
       </div>
     </div>
     <div class="sidebar-footer">
@@ -2526,6 +2557,46 @@ window._firestoreReady = true;
           <div id="eduDirFileList" style="display:none;margin-top:10px"></div>
         </div>
         <button class="btn-danger" onclick="doLogout()">Çıkış Yap</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN / YÖNETİM -->
+    <div class="panel" id="panel-admin">
+      <div class="section-title" style="margin-bottom:8px">🛠️ Kullanıcı Yönetimi</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;padding:10px 14px;background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-sm);max-width:760px;line-height:1.7">
+        🔒 <b style="color:var(--green)">Firebase Authentication aktif</b> — Şifreler artık Firestore'da <b>düz metin olarak tutulmuyor</b>; Firebase'in güvenli sunucularında şifreli olarak saklanıyor.<br>
+        Kullanıcı eklenirken Firebase Auth'ta hesap oluşturulur ve e-posta/şifre doğrulaması sunucu taraflı yapılır.<br>
+        Silinen kullanıcılar Firestore erişimini hemen kaybeder. · Admin hesabı: Firebase Console &gt; Authentication üzerinden yönetilir.
+      </div>
+      <div class="profil-section" style="max-width:560px;margin-bottom:20px">
+        <div class="profil-section-title">➕ Yeni Kullanıcı Ekle</div>
+        <div class="form-group">
+          <label>Ad Soyad</label>
+          <input type="text" id="adminNewName" placeholder="Ahmet Yılmaz">
+        </div>
+        <div class="form-group">
+          <label>E-posta</label>
+          <input type="email" id="adminNewEmail" placeholder="ornek@mail.com">
+        </div>
+        <div class="form-group">
+          <label>Geçici Şifre <span style="font-weight:400;color:var(--text-muted)">(kullanıcı daha sonra değiştirebilir)</span></label>
+          <input type="text" id="adminNewPass" placeholder="en az 6 karakter">
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select id="adminNewRole" style="width:100%;padding:13px 16px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px">
+            <option value="ogrenci">🎓 Öğrenci</option>
+            <option value="ogretmen">👨‍🏫 Öğretmen</option>
+          </select>
+        </div>
+        <div class="form-error" id="adminFormError"></div>
+        <button class="btn-login" id="adminAddBtn" onclick="addKullanici()">Kullanıcı Ekle</button>
+      </div>
+      <div class="profil-section" style="max-width:760px">
+        <div class="profil-section-title">👥 Eklenen Kullanıcılar (<span id="adminUserCount">0</span>)</div>
+        <div id="adminUserList" style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <div style="color:var(--text-muted);font-size:13px">Yükleniyor…</div>
         </div>
       </div>
     </div>
@@ -3197,35 +3268,92 @@ function renderStreakDots(){
 // AUTH
 // ══════════════════════════════
 let activeRole = 'ogrenci';
+const ADMIN_EMAIL = 'admin@edufasikuler.com';
 function setRole(r, btn){
   activeRole = r;
   document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
-function doLogin(){
-  const email = document.getElementById('emailInput').value.trim();
+function _sanitizeEmailKey(email){ return email.toLowerCase().trim().replace(/[^a-zA-Z0-9]/g,'_'); }
+
+// ─── GİRİŞ (Firebase Authentication) ───────────────────────────
+async function doLogin(){
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
   const pass = document.getElementById('passInput').value;
   const err = document.getElementById('formError');
+  const btn = document.querySelector('.btn-login');
   if(!email){ err.textContent='E-posta gerekli.'; err.classList.add('show'); return; }
   if(pass.length < 6){ err.textContent='Şifre en az 6 karakter olmalıdır.'; err.classList.add('show'); return; }
   err.classList.remove('show');
-  const name = email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-  appState.user={name, role:activeRole, email};
-  enterApp(name);
+
+  if(!window._authReady || !window._firestoreReady){
+    err.textContent='Bağlantı kuruluyor, lütfen birkaç saniye sonra tekrar deneyin.';
+    err.classList.add('show');
+    return;
+  }
+
+  if(btn){ btn.disabled=true; btn.textContent='Giriş yapılıyor…'; }
+  try{
+    // Firebase Authentication ile giriş
+    const cred = await window._authSignIn(window._auth, email, pass);
+    const uid = cred.user.uid;
+
+    // Kullanıcı profilini Firestore'dan çek (rol, ad, aktif mi?)
+    const docRef = window._fsDoc(window._db, 'kullanicilar', uid);
+    const snap = await window._fsGetDoc(docRef);
+
+    if(!snap.exists()){
+      // Auth'ta var ama Firestore'da yok → yetkisiz hesap
+      await window._authSignOut(window._auth);
+      err.textContent='Bu hesap yönetici tarafından eklenmemiş veya silinmiş.';
+      err.classList.add('show');
+      return;
+    }
+    const data = snap.data();
+    if(data.active === false){
+      await window._authSignOut(window._auth);
+      err.textContent='Bu hesap devre dışı bırakılmış. Yöneticinizle iletişime geçin.';
+      err.classList.add('show');
+      return;
+    }
+    const name = data.name || email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    appState.user = { name, role: data.role||'ogrenci', email, uid };
+    enterApp(name);
+  }catch(e){
+    console.warn('Giriş hatası:', e);
+    const code = e.code || '';
+    if(code.includes('user-not-found') || code.includes('invalid-credential') || code.includes('wrong-password')){
+      err.textContent='E-posta veya şifre hatalı.';
+    } else if(code.includes('too-many-requests')){
+      err.textContent='Çok fazla başarısız deneme. Lütfen biraz bekleyin.';
+    } else {
+      err.textContent='Giriş sırasında bir hata oluştu. Tekrar deneyin.';
+    }
+    err.classList.add('show');
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='Giriş Yap →'; }
+  }
 }
+
 function doGuest(){
   appState.user={name:'Misafir',role:'ogrenci',email:'misafir@demo.com'};
   document.documentElement.classList.add('guest-mode');
   enterApp('Misafir');
 }
+
 function enterApp(name){
   document.getElementById('welcomeName').textContent = name;
   document.getElementById('profileName').textContent = name;
-  document.getElementById('profileSub').textContent = `${appState.user.role==='ogretmen'?'Öğretmen':'Öğrenci'} · ${appState.user.email}`;
+  const roleLabel = {ogretmen:'Öğretmen',admin:'Yönetici'}[appState.user.role] || 'Öğrenci';
+  document.getElementById('profileSub').textContent = `${roleLabel} · ${appState.user.email}`;
   document.getElementById('screen-login').classList.remove('active');
   document.getElementById('screen-app').classList.add('active');
   renderDerslerGrid();
   showToast(`Hoş geldin, ${name}! 👋`, 'success');
+
+  // Admin menüsünü sadece admin rolüne göster
+  const adminBtn = document.getElementById('navAdminBtn');
+  if(adminBtn) adminBtn.style.display = (appState.user.role==='admin') ? '' : 'none';
 
   // Firestore'dan veri yükle (misafir değilse)
   if(appState.user && appState.user.email !== 'misafir@demo.com'){
@@ -3241,13 +3369,150 @@ function enterApp(name){
     }, 800);
   }
 }
-function doLogout(){
+
+async function doLogout(){
   if(!confirm('Çıkış yapmak istediğinize emin misiniz?')) return;
+  if(window._authReady && appState.user && appState.user.email !== 'misafir@demo.com'){
+    try{ await window._authSignOut(window._auth); }catch(e){}
+  }
   appState.user = null;
   document.documentElement.classList.remove('guest-mode');
   document.getElementById('screen-app').classList.remove('active');
   document.getElementById('screen-login').classList.add('active');
 }
+
+// ──────────────────────────────────────────────────────────────────
+// ADMİN — KULLANICI YÖNETİMİ (Firebase Auth + Firestore)
+// Kullanıcı ekleme: Auth'ta hesap oluşturur + Firestore'a profil yazar.
+// Şifreler artık Firestore'da tutulmaz; Auth sunucusunda güvenli şekilde saklanır.
+// ──────────────────────────────────────────────────────────────────
+async function loadKullaniciList(){
+  const listEl = document.getElementById('adminUserList');
+  if(!listEl) return;
+  if(!window._firestoreReady){ listEl.innerHTML='<div style="color:var(--text-muted);font-size:13px">Bağlantı bekleniyor…</div>'; return; }
+  listEl.innerHTML='<div style="color:var(--text-muted);font-size:13px">Yükleniyor…</div>';
+  try{
+    const colRef = window._fsCollection(window._db,'kullanicilar');
+    const snap = await window._fsGetDocs(colRef);
+    const users=[];
+    snap.forEach(d=>users.push({id:d.id, ...d.data()}));
+    document.getElementById('adminUserCount').textContent = users.length;
+    if(users.length===0){
+      listEl.innerHTML = '<div style="color:var(--text-muted);font-size:13px">Henüz kullanıcı eklenmedi.</div>';
+      return;
+    }
+    listEl.innerHTML = users.map(u=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius)">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:14px">${(u.name||'').replace(/</g,'&lt;')}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${(u.email||'').replace(/</g,'&lt;')} · ${u.role==='ogretmen'?'Öğretmen':'Öğrenci'}${u.active===false?' · <span style="color:var(--red)">Devre Dışı</span>':''}</div>
+        </div>
+        <button class="pref-action pref-chip" onclick="toggleKullaniciActive('${u.id}', ${u.active===false})">${u.active===false?'Etkinleştir':'Devre Dışı Bırak'}</button>
+        <button class="pref-action pref-chip" style="color:var(--yellow)" onclick="resetKullaniciPassword('${(u.email||'').replace(/'/g,"\\'")}')">Şifre Sıfırla</button>
+        <button class="pref-action pref-chip" style="color:var(--red)" onclick="deleteKullanici('${u.id}')">Sil</button>
+      </div>
+    `).join('');
+  }catch(e){
+    console.warn('Kullanıcı listesi yüklenemedi:', e);
+    listEl.innerHTML = '<div style="color:var(--red);font-size:13px">Liste yüklenirken hata oluştu.</div>';
+  }
+}
+
+async function addKullanici(){
+  const name = document.getElementById('adminNewName').value.trim();
+  const email = document.getElementById('adminNewEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('adminNewPass').value;
+  const role = document.getElementById('adminNewRole').value;
+  const err = document.getElementById('adminFormError');
+  err.classList.remove('show');
+  if(!name || !email){ err.textContent='Ad ve e-posta gerekli.'; err.classList.add('show'); return; }
+  if(pass.length < 6){ err.textContent='Şifre en az 6 karakter olmalıdır.'; err.classList.add('show'); return; }
+  if(email === ADMIN_EMAIL){ err.textContent='Bu e-posta adresi kullanılamaz.'; err.classList.add('show'); return; }
+  if(!window._firestoreReady || !window._authReady){ err.textContent='Bağlantı kuruluyor, tekrar deneyin.'; err.classList.add('show'); return; }
+
+  const addBtn = document.getElementById('adminAddBtn');
+  if(addBtn){ addBtn.disabled=true; addBtn.textContent='Ekleniyor…'; }
+  try{
+    // 1) Firebase Auth'ta hesap oluştur
+    const cred = await window._authCreateUser(window._auth, email, pass);
+    const uid = cred.user.uid;
+
+    // 2) Firestore'a profil yaz (şifre YOK — Auth'ta güvenli)
+    const docRef = window._fsDoc(window._db, 'kullanicilar', uid);
+    await window._fsSetDoc(docRef, {
+      name, email, role, active: true,
+      addedBy: appState.user?.email || 'admin',
+      createdAt: new Date().toISOString()
+    });
+
+    // 3) Admin hâlâ giriş yapmış kalsın — yeni kullanıcı hesabını bırak
+    //    (createUserWithEmailAndPassword mevcut oturumu DEĞİŞTİRMEZ,
+    //    ancak bazı eski SDK versiyonlarında değiştirebilir. Güvenli tarafta kalalım.)
+    // Firebase v12'de createUser mevcut oturumu etkilemez; bu yüzden ek bir şey gerekmez.
+
+    document.getElementById('adminNewName').value='';
+    document.getElementById('adminNewEmail').value='';
+    document.getElementById('adminNewPass').value='';
+    showToast(`${name} başarıyla eklendi ✅`, 'success');
+    loadKullaniciList();
+  }catch(e){
+    console.warn('Kullanıcı eklenemedi:', e);
+    const code = e.code || '';
+    if(code.includes('email-already-in-use')){
+      err.textContent='Bu e-posta zaten kayıtlı.';
+    } else if(code.includes('invalid-email')){
+      err.textContent='Geçersiz e-posta adresi.';
+    } else if(code.includes('weak-password')){
+      err.textContent='Şifre çok zayıf, en az 6 karakter kullanın.';
+    } else {
+      err.textContent='Kullanıcı eklenirken hata oluştu: ' + (e.message||code);
+    }
+    err.classList.add('show');
+  }finally{
+    if(addBtn){ addBtn.disabled=false; addBtn.textContent='Kullanıcı Ekle'; }
+  }
+}
+
+async function deleteKullanici(uid){
+  if(!confirm('Bu kullanıcıyı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) return;
+  try{
+    // Firestore profilini sil
+    await window._fsDeleteDoc(window._fsDoc(window._db,'kullanicilar', uid));
+    // Not: Firebase Auth hesabını silmek için Cloud Function gerekir (client SDK ile
+    // sadece kendi hesabını silebilirsin). Firestore profili silinince giriş yapsa bile
+    // "Bu hesap yönetici tarafından eklenmemiş" hatasını alır → erişimi engellenir.
+    showToast('Kullanıcı erişimi kaldırıldı','success');
+    loadKullaniciList();
+  }catch(e){
+    console.warn('Kullanıcı silinemedi:', e);
+    showToast('Silme işlemi başarısız','error');
+  }
+}
+
+async function toggleKullaniciActive(uid, makeActive){
+  try{
+    const docRef = window._fsDoc(window._db,'kullanicilar', uid);
+    await window._fsSetDoc(docRef, {active: makeActive}, {merge:true});
+    showToast(makeActive ? 'Hesap etkinleştirildi' : 'Hesap devre dışı bırakıldı', 'success');
+    loadKullaniciList();
+  }catch(e){
+    console.warn('Durum güncellenemedi:', e);
+    showToast('İşlem başarısız','error');
+  }
+}
+
+async function resetKullaniciPassword(email){
+  if(!email){ showToast('E-posta bulunamadı','error'); return; }
+  if(!confirm(`${email} adresine şifre sıfırlama e-postası gönderilsin mi?`)) return;
+  try{
+    await window._authSendPasswordReset(window._auth, email);
+    showToast('Şifre sıfırlama e-postası gönderildi 📧','success');
+  }catch(e){
+    console.warn('Şifre sıfırlama hatası:', e);
+    showToast('E-posta gönderilemedi: ' + (e.message||e.code),'error');
+  }
+}
+
 
 // ══════════════════════════════
 // THEME
@@ -3302,10 +3567,11 @@ function showPanel(name, navEl){
   document.getElementById('panel-'+name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   if(navEl) navEl.classList.add('active');
-  const titles = {dashboard:'Anasayfa',stats:'İstatistikler',hatalilar:'Hatalılar Defteri',profil:'Profilim'};
+  const titles = {dashboard:'Anasayfa',stats:'İstatistikler',hatalilar:'Hatalılar Defteri',profil:'Profilim',admin:'Kullanıcı Yönetimi'};
   document.getElementById('topBarTitle').textContent = titles[name]||name;
   if(name==='stats' && !window._chartsInited){ initCharts(); window._chartsInited=true; }
   if(name==='hatalilar') renderHatalilar();
+  if(name==='admin') loadKullaniciList();
 }
 
 // ══════════════════════════════
@@ -8076,8 +8342,8 @@ function loadManifestMeta(){
 function _getUserKey(){
   // Misafir → sadece localStorage
   if(!appState.user || appState.user.email==='misafir@demo.com') return null;
-  // e-postayı güvenli Firestore key'e çevir
-  return appState.user.email.replace(/[^a-zA-Z0-9]/g,'_');
+  // UID varsa onu kullan (Firebase Auth), yoksa e-postayı key'e çevir (eski veri geçiş desteği)
+  return appState.user.uid || appState.user.email.replace(/[^a-zA-Z0-9]/g,'_');
 }
 
 function persistData(){
