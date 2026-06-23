@@ -197,6 +197,12 @@ async function renderSinglePDFPage(pageNum, pageWrap){
 
   } catch(err){
     console.error('Sayfa render hatası:', err);
+    pageWrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:300px;flex-direction:column;gap:12px;color:var(--text-muted,#888)">
+      <div style="font-size:36px">⚠️</div>
+      <div style="font-size:14px;font-weight:600">Sayfa ${pageNum} yüklenemedi</div>
+      <button onclick="window.renderPdfPages?.()" style="padding:6px 14px;border-radius:8px;border:1px solid var(--border,#ccc);background:var(--bg-secondary,#f5f5f5);cursor:pointer;font-size:13px">Tekrar Dene</button>
+    </div>`;
+    window.showToast?.(`Sayfa ${pageNum} yüklenemedi`, 'error');
   }
 }
 
