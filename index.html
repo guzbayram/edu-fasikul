@@ -1834,6 +1834,71 @@ a{color:inherit;text-decoration:none}
   .reader-page-stage .pdf-page-wrap{margin-top:0!important}
 }
 
+/* ════ TABLET LAYOUT — Panel Konumu ════
+   Landscape: soru paneli SOLDA (PDF sağda)
+   Portrait : soru paneli ÜSTTE (toolbar altı, PDF altında)
+═══════════════════════════════════════════════════════ */
+
+/* TABLET LANDSCAPE — panel sola taşı */
+@media (min-width: 769px) and (max-width: 1366px) and (orientation: landscape) {
+  /* Panel: sağdan sola */
+  .reader-right{
+    left:0!important;right:auto!important;
+    border-left:none!important;border-right:1px solid var(--border)!important;
+  }
+  /* Center: sağ dolgu kaldır, sol dolgu ekle */
+  .reader-center{padding-right:0!important;padding-left:300px!important}
+  /* Alt bar ve soru şeridi */
+  .reader-bottom-bar{left:300px!important;right:0!important}
+  .soru-list{left:300px!important;right:0!important;border-right:none!important}
+  /* Timer picker konumu */
+  .timer-picker{left:314px!important;right:auto!important}
+}
+/* Dar tablet landscape (769-1180px) panel 260px */
+@media (min-width: 769px) and (max-width: 1180px) and (orientation: landscape) {
+  .reader-center{padding-left:260px!important}
+  .reader-bottom-bar{left:260px!important}
+  .soru-list{left:260px!important}
+  .timer-picker{left:274px!important}
+}
+
+/* TABLET PORTRAIT — panel araç çubuğunun hemen altında, PDF üstünde */
+@media (min-width: 601px) and (max-width: 1200px) and (orientation: portrait) {
+  .reader-right{
+    top:56px!important;left:0!important;right:0!important;bottom:auto!important;
+    width:100%!important;max-height:38vh!important;min-height:0!important;
+    border-left:none!important;border-right:none!important;
+    border-top:none!important;border-bottom:1px solid var(--border)!important;
+    overflow-y:auto!important;padding:10px 16px!important;
+    align-items:stretch!important;
+  }
+  .rp-header,.test-control,.test-progress-bar{width:100%!important}
+  .tek-soru-card{width:100%!important;max-width:100%!important}
+  .tsk-cevap-row{gap:8px!important}
+  /* Center: toolbar + panel boşluğu kadar padding-top */
+  .reader-center{
+    padding-right:0!important;padding-left:0!important;
+    padding-top:calc(56px + 38vh)!important;
+  }
+  /* Alt bar ve soru şeridi tam genişlik */
+  .reader-bottom-bar{left:0!important;right:0!important;bottom:0!important}
+  .soru-list{left:0!important;right:0!important;border-right:none!important}
+  .timer-picker{left:16px!important;right:16px!important;bottom:60px!important}
+}
+
+/* TOOLBAR: tabletlerde taşma için kaydırılabilir yap */
+@media (min-width: 601px) and (max-width: 1366px) {
+  .reader-toolbar{
+    overflow-x:auto!important;
+    scrollbar-width:none!important;
+    -ms-overflow-style:none!important;
+  }
+  .reader-toolbar::-webkit-scrollbar{display:none!important}
+  /* Tüm araç butonları görünsün */
+  .reader-meta-actions label[for="pdfFileInputToolbar"],
+  .reader-meta-actions #readingModeBtn{display:flex!important}
+}
+
 /* ════ FOCUSED LEARNING APP SHELL — 2026 REFRESH ════ */
 :root{
   --bg-0:#080817;
