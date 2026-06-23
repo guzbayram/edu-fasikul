@@ -1839,12 +1839,13 @@ a{color:inherit;text-decoration:none}
    Portrait : soru paneli ÜSTTE (toolbar altı, PDF altında)
 ═══════════════════════════════════════════════════════ */
 
-/* TABLET LANDSCAPE — panel sola taşı */
+/* TABLET LANDSCAPE — panel sola taşı, kartlar paneli doldursun */
 @media (min-width: 769px) and (max-width: 1366px) and (orientation: landscape) {
   /* Panel: sağdan sola */
   .reader-right{
     left:0!important;right:auto!important;
     border-left:none!important;border-right:1px solid var(--border)!important;
+    align-items:stretch!important;padding:12px!important;
   }
   /* Center: sağ dolgu kaldır, sol dolgu ekle */
   .reader-center{padding-right:0!important;padding-left:300px!important}
@@ -1853,6 +1854,29 @@ a{color:inherit;text-decoration:none}
   .soru-list{left:300px!important;right:0!important;border-right:none!important}
   /* Timer picker konumu */
   .timer-picker{left:314px!important;right:auto!important}
+
+  /* Kart ve içerik: paneli tam doldur, ortala */
+  .rp-header,.test-control,.test-progress-bar{width:100%!important;max-width:100%!important}
+  .tek-soru-card{
+    width:100%!important;max-width:100%!important;
+    background:transparent!important;border:none!important;box-shadow:none!important;
+  }
+  .tsk-header,.tsk-feedback,.tsk-actions{display:none!important}
+  .tsk-body{padding:0!important}
+  .tsk-nav-dots{display:none!important}
+  .tsk-cevap-row{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:6px!important;margin:0!important;
+  }
+  .tsk-cevap-btn{
+    width:100%!important;min-width:0!important;
+    min-height:48px!important;font-size:15px!important;
+    padding:6px 2px!important;border-radius:var(--radius)!important;
+  }
+  .start-test-btn{width:100%!important;min-height:44px!important}
+  .test-control{display:flex!important;flex-direction:column!important;gap:8px!important;width:100%!important}
+  .timer-display{width:100%!important;justify-content:center!important}
 }
 /* Dar tablet landscape (769-1180px) panel 260px */
 @media (min-width: 769px) and (max-width: 1180px) and (orientation: landscape) {
@@ -1860,6 +1884,7 @@ a{color:inherit;text-decoration:none}
   .reader-bottom-bar{left:260px!important}
   .soru-list{left:260px!important}
   .timer-picker{left:274px!important}
+  .tsk-cevap-btn{min-height:44px!important;font-size:13px!important}
 }
 
 /* TABLET PORTRAIT — panel altta (mobil gibi ama daha geniş) */
