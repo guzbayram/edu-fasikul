@@ -2305,10 +2305,9 @@ a{color:inherit;text-decoration:none}
 }
 
 @media (max-width:768px){
-  .reader-toolbar{height:58px!important;padding:0 8px!important;overflow:hidden!important}
+  .reader-toolbar{height:58px!important;padding:0 8px!important;overflow-x:auto!important;overflow-y:hidden!important}
   #reader-overlay.open #mobileMenuBtn{display:flex!important}
-  .toolbar-fasikul-name{max-width:34vw!important;font-size:12px}
-  .reader-tool-palette .tool-btn[data-tool="eraser"]{display:none!important}
+  .toolbar-fasikul-name{max-width:28vw!important;font-size:12px}
   .reader-color-palette{display:none!important}
   .reader-history-palette{display:none!important}
   .reader-meta-actions #viewModeBtn{display:none!important}
