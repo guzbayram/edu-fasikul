@@ -8,6 +8,7 @@ function loadPreferences(){
     if(saved){
       if(typeof saved.sound==='boolean') appState.preferences.sound=saved.sound;
       if(typeof saved.autoNext==='boolean') appState.preferences.autoNext=saved.autoNext;
+      if(typeof saved.timerAlert==='boolean') appState.preferences.timerAlert=saved.timerAlert;
       if(Number.isFinite(Number(saved.goal))) appState.preferences.goal=Math.min(300,Math.max(5,Number(saved.goal)));
     }
   }catch(e){}
@@ -15,12 +16,15 @@ function loadPreferences(){
   if(sound){sound.textContent=appState.preferences.sound?'Açık':'Kapalı';sound.classList.toggle('off',!appState.preferences.sound);}
   const auto=document.getElementById('autoNextToggle');
   if(auto){auto.textContent=appState.preferences.autoNext?'Açık':'Kapalı';auto.classList.toggle('off',!appState.preferences.autoNext);}
+  const timerAlert=document.getElementById('timerAlertToggle');
+  if(timerAlert){timerAlert.textContent=appState.preferences.timerAlert?'Açık':'Kapalı';timerAlert.classList.toggle('off',!appState.preferences.timerAlert);}
   const slider=document.getElementById('goalSlider');
   if(slider) slider.value=appState.preferences.goal;
   updateGoal(appState.preferences.goal,false);
 }
 function toggleSound(btn){ appState.preferences.sound=!appState.preferences.sound;btn.textContent=appState.preferences.sound?'Açık':'Kapalı';btn.classList.toggle('off',!appState.preferences.sound);savePreferences(); }
 function toggleAutoNext(btn){ appState.preferences.autoNext=!appState.preferences.autoNext;btn.textContent=appState.preferences.autoNext?'Açık':'Kapalı';btn.classList.toggle('off',!appState.preferences.autoNext);savePreferences(); }
+function toggleTimerAlert(btn){ appState.preferences.timerAlert=!appState.preferences.timerAlert;btn.textContent=appState.preferences.timerAlert?'Açık':'Kapalı';btn.classList.toggle('off',!appState.preferences.timerAlert);savePreferences(); }
 function updateGoal(v,persist=true){ const goal=Math.min(300,Math.max(5,parseInt(v)||100));document.getElementById('goalVal').textContent=`${goal} soru`;document.getElementById('goalDisplay').textContent=`${goal} soru`;appState.preferences.goal=goal;if(persist)savePreferences(); }
 function cycleAvatar(){ appState.avatarIdx=(appState.avatarIdx+1)%appState.avatarEmojis.length; const em=appState.avatarEmojis[appState.avatarIdx]; document.getElementById('profilAvatar').textContent=em; document.getElementById('avatarBtn').textContent=em; }
 function exportData(){ const d={user:appState.user,hatalilar:appState.hatalilar,drawings:Object.keys(appState.drawings)}; const b=document.createElement('a'); b.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(d,null,2)); b.download='edufasikuler_data.json'; b.click(); showToast('Veriler indirildi ✓','success'); }
@@ -91,6 +95,7 @@ window.savePreferences = savePreferences;
 window.loadPreferences = loadPreferences;
 window.toggleSound = toggleSound;
 window.toggleAutoNext = toggleAutoNext;
+window.toggleTimerAlert = toggleTimerAlert;
 window.updateGoal = updateGoal;
 window.cycleAvatar = cycleAvatar;
 window.exportData = exportData;
