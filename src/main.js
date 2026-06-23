@@ -17,7 +17,8 @@ import {
   persistData, loadPersistedData, loadFromFirestore,
   persistDrawingCloud, deleteDrawingCloud, scheduleCloudPersist,
   getDashboardStats, getAnsweredRecords, _hesaplaIstatistik,
-  _canonicalAnswerKey
+  _canonicalAnswerKey, _getUserKey,
+  addHataliCloud, removeHataliCloud, migrateHatalilarToSubcollection
 } from './firebase/firestore.js';
 import { startRealtimeSync, stopRealtimeSync } from './sync/realtime.js';
 
@@ -2428,6 +2429,10 @@ window.persistDrawingCloud = persistDrawingCloud;
 window.deleteDrawingCloud = deleteDrawingCloud;
 window.getDashboardStats = getDashboardStats;
 window.getAnsweredRecords = getAnsweredRecords;
+window._getUserKey = _getUserKey;
+window.addHataliCloud = addHataliCloud;
+window.removeHataliCloud = removeHataliCloud;
+window.migrateHatalilarToSubcollection = migrateHatalilarToSubcollection;
 window.persistManifest = typeof persistManifest !== 'undefined' ? persistManifest : ()=>{};
 window.renderSoruStrip = typeof renderSoruStrip !== 'undefined' ? renderSoruStrip : ()=>{};
 window.updateTestProgress = typeof updateTestProgress !== 'undefined' ? updateTestProgress : ()=>{};
