@@ -3505,7 +3505,26 @@ async function addKullanici(){
     console.warn('Kullanıcı eklenemedi:', e);
     const code = e.code || '';
     if(code.includes('email-already-in-use')){
-      err.textContent='Bu e-posta zaten kayıtlı.';
+      // Auth'ta kayıtlı ama Firestore dokümanı silinmiş olabilir.
+      // Verilen şifreyle giriş deneyerek UID'yi kurtaralım.
+      try {
+        const existing = await window._authSignIn(window._authCreator, email, pass);
+        const uid = existing.user.uid;
+        const docRef = window._fsDoc(window._db, 'kullanicilar', uid);
+        await window._fsSetDoc(docRef, {
+          name, email, role, active: true,
+          addedBy: appState.user?.email || 'admin',
+          createdAt: new Date().toISOString()
+        });
+        document.getElementById('adminNewName').value='';
+        document.getElementById('adminNewEmail').value='';
+        document.getElementById('adminNewPass').value='';
+        showToast(`${name} başarıyla eklendi ✅`, 'success');
+        loadKullaniciList();
+        return;
+      } catch(_) {
+        err.textContent='Bu e-posta Firebase\'de kayıtlı ve şifresi farklı. Firebase Console > Authentication\'dan hesabı silip tekrar deneyin.';
+      }
     } else if(code.includes('invalid-email')){
       err.textContent='Geçersiz e-posta adresi.';
     } else if(code.includes('weak-password')){
