@@ -9,7 +9,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth'],
-          pdf: ['pdfjs-dist/legacy/build/pdf.mjs'],
+          pdf: ['pdfjs-dist/legacy/build/pdf'],
           fabric: ['fabric'],
           chart: ['chart.js'],
         }
@@ -17,6 +17,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['fabric', 'chart.js']
+    include: ['fabric', 'chart.js', 'pdfjs-dist/legacy/build/pdf']
   }
 });
