@@ -3882,7 +3882,7 @@ async function openReader(dersId, fasikulId){
 
   // Kullanıcı fasikülü başka bir ders altına eklediyse metadata kalıcıdır,
   // fakat ağır konu/soru verisi her açılışta GitHub kataloğundan yeniden bağlanır.
-  if(!fasikul.konular?.length && fasikul.sourceType==='bundled'){
+  if(fasikul.sourceType==='bundled'){
     const source=BUNDLED_FASIKUL_SOURCES.find(s=>s.id===fasikul.id || s.json===fasikul.jsonFile);
     if(source){
       const raw=await readBundledJson(source);
@@ -6886,6 +6886,9 @@ function updateTestProgress(){
   document.getElementById('tpFill').style.width=`${pct}%`;
   document.getElementById('tpNet').textContent=answered>0?`Net: ${net.toFixed(2)}`:'Net: —';
   document.getElementById('rpNet').textContent=answered>0?net.toFixed(2):'—';
+  // rpSoruSayisi her zaman aynı kaynaktan güncellensin → tutarsızlık olmaz
+  const rpEl=document.getElementById('rpSoruSayisi');
+  if(rpEl) rpEl.textContent=`${sorular.length} ${isKonuKartAltKonu(appState.aktifAltKonu)?'Kart':'Soru'}`;
 }
 
 function finishTest(){
