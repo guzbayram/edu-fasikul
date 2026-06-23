@@ -239,6 +239,10 @@
             <button class="pref-action pref-toggle" id="autoNextToggle" onclick="toggleAutoNext(this)">Açık</button>
           </div>
           <div class="pref-row">
+            <span class="pref-label">🔔 Sesli 2 Dakika Uyarısı</span>
+            <button class="pref-action pref-toggle" id="timerAlertToggle" onclick="toggleTimerAlert(this)">Açık</button>
+          </div>
+          <div class="pref-row">
             <span class="pref-label">🎯 Günlük Hedef</span>
             <div class="goal-slider-wrap">
               <input type="range" min="5" max="300" step="5" value="100" id="goalSlider" oninput="updateGoal(this.value)">
@@ -453,21 +457,16 @@
       </div>
     </div>
 
-    <div class="test-control">
-      <button class="start-test-btn" id="startTestBtn" onclick="toggleTest()">▶ Başlat</button>
+    <!-- Otomatik timer — ilk cevapla başlar -->
+    <div class="auto-timer-bar">
       <div class="timer-display" id="timerDisplay">00:00</div>
-      <button class="timer-settings-btn" onclick="toggleTimerPicker()" title="Süre Ayarı">⚙️</button>
+      <span class="afk-indicator" id="afkIndicator" style="display:none" title="5 dk hareketsizlik — cevap işaretlediğinde devam eder">⏸ AFK</span>
+      <button class="tsk-action-btn" onclick="finishTest()" title="Sonuçları Gör">📊 Bitir</button>
     </div>
 
-    <div class="timer-picker" id="timerPicker">
-      <div class="timer-picker-label">Test Süresi</div>
-      <div class="timer-options">
-        <button class="timer-opt" data-mins="5" onclick="setTimerDuration(5,this)">5 dk</button>
-        <button class="timer-opt" data-mins="10" onclick="setTimerDuration(10,this)">10 dk</button>
-        <button class="timer-opt active" data-mins="20" onclick="setTimerDuration(20,this)">20 dk</button>
-        <button class="timer-opt" data-mins="40" onclick="setTimerDuration(40,this)">40 dk</button>
-        <button class="timer-opt" data-mins="0" onclick="setTimerDuration(0,this)">∞ Süresiz</button>
-      </div>
+    <!-- Alt konu istatistikleri -->
+    <div class="altkonu-stats-bar" id="altKonuStatsDisplay">
+      <span style="color:var(--text-muted);font-size:12px">Henüz soru çözülmedi</span>
     </div>
 
     <div class="soru-list" id="soruList">
@@ -486,7 +485,6 @@
       <div class="tp-nav">
         <button class="tp-nav-btn" onclick="prevQuestion()" title="Önceki soru" aria-label="Önceki soru">←</button>
         <button class="tp-nav-btn" onclick="nextQuestion()" title="Sonraki soru" aria-label="Sonraki soru">→</button>
-        <button class="finish-test-btn" onclick="finishTest()">Bitir</button>
       </div>
     </div>
   </div>
