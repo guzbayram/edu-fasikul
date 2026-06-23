@@ -1,17 +1,56 @@
 import { appState } from '../state/appState.js';
 
+const MAX_PDF_BYTES = 50 * 1024 * 1024; // 50 MB
+
+async function calcPDFHash(file){
+  try{
+    const buf = await file.arrayBuffer();
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){ return null; }
+}
+
+async function savePDFHashToCloud(fasikulId, hash, pageCount){
+  if(!fasikulId || !hash || !window._firestoreReady) return;
+  window._fsSetDoc(
+    window._fsDoc(window._db, 'fasikuller', fasikulId),
+    { hash, pageCount, uploadedAt: new Date().toISOString() },
+    { merge: true }
+  ).catch(()=>{});
+}
+
+export async function checkPDFHashMatch(fasikulId, localHash){
+  if(!fasikulId || !localHash || !window._firestoreReady) return true;
+  try{
+    const snap = await window._fsGetDoc(window._fsDoc(window._db, 'fasikuller', fasikulId));
+    if(!snap.exists()) return true;
+    const remote = snap.data().hash;
+    return !remote || remote === localHash;
+  }catch(e){ return true; }
+}
+
 async function handlePDFUpload(input){
   const file = input.files[0];
   if(!file || file.type !== 'application/pdf'){
-    showToast('Lütfen geçerli bir PDF dosyası seç','error');
+    window.showToast?.('Lütfen geçerli bir PDF dosyası seç','error');
     return;
   }
-  await loadPDFFile(file);
-  // Aynı fasikül için bir dahaki açılışta otomatik yüklensin diye sakla
+  if(file.size > MAX_PDF_BYTES){
+    window.showToast?.(`PDF çok büyük (${(file.size/1024/1024).toFixed(0)} MB). Maksimum 50 MB yüklenebilir.`,'error');
+    input.value = '';
+    return;
+  }
+  await window.loadPDFFile?.(file);
   if(appState.aktifDers && appState.aktifFasikul){
     savePDFToDB(appState.aktifDers.id, appState.aktifFasikul.id, file).catch(()=>{});
+    // Hash'i arka planda hesapla ve buluta kaydet
+    calcPDFHash(file).then(hash => {
+      if(hash && appState.aktifFasikul){
+        const pageCount = appState.totalPages || 0;
+        savePDFHashToCloud(appState.aktifFasikul.id, hash, pageCount);
+      }
+    });
   }
-  // Reset input so same file can be re-selected
   input.value = '';
 }
 
@@ -111,3 +150,5 @@ window.getPDFFromDB = getPDFFromDB;
 window.getCachedPDFKeys = getCachedPDFKeys;
 window.getCachedPDFRecords = getCachedPDFRecords;
 window.deletePDFFromDB = deletePDFFromDB;
+window.calcPDFHash = calcPDFHash;
+window.checkPDFHashMatch = checkPDFHashMatch;
