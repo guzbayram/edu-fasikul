@@ -2559,6 +2559,7 @@ window.dispatchEvent(new Event('auth-ready'));
           </div>
           <div id="eduDirFileList" style="display:none;margin-top:10px"></div>
         </div>
+        <button id="profilAdminBtn" onclick="showPanel('admin',document.getElementById('navAdminBtn'))" style="display:none;width:100%;padding:14px;margin-bottom:10px;background:var(--mat-dim);color:var(--mat);border:1.5px solid var(--mat);border-radius:var(--radius);font-size:15px;font-weight:600;cursor:pointer">🛠️ Kullanıcı Yönetimi</button>
         <button class="btn-danger" onclick="doLogout()">Çıkış Yap</button>
         </div>
       </div>
@@ -3397,6 +3398,8 @@ function enterApp(name){
   // Admin menüsünü sadece admin rolüne göster
   const adminBtn = document.getElementById('navAdminBtn');
   if(adminBtn) adminBtn.style.display = (appState.user.role==='admin') ? '' : 'none';
+  const profilAdminBtn = document.getElementById('profilAdminBtn');
+  if(profilAdminBtn) profilAdminBtn.style.display = (appState.user.role==='admin') ? '' : 'none';
 
   // Firestore'dan veri yükle (misafir değilse)
   if(appState.user && appState.user.email !== 'misafir@demo.com'){
