@@ -388,8 +388,13 @@ function addToHatalilar(soruNo){
   if(!s) return;
   const soruKey = s._uid || soruNo;
   const exists = appState.hatalilar.find(h=>(h.soruKey || h.uid || h.soruNo)===soruKey);
-  if(exists){ exists.yanlisSayisi++; return; }
-  appState.hatalilar.push({
+  const uid = window._getUserKey?.();
+  if(exists){
+    exists.yanlisSayisi++;
+    if(uid) window.addHataliCloud?.(uid, exists);
+    return;
+  }
+  const newHatali = {
     ders:appState.aktifDers.id,
     dersAd:appState.aktifDers.ad,
     fasikulId:appState.aktifFasikul.id,
@@ -404,9 +409,11 @@ function addToHatalilar(soruNo){
     sayfa:s.sayfa || alt.sayfa || appState.currentPage,
     tarih:'Az önce',
     yanlisSayisi:1
-  });
+  };
+  appState.hatalilar.push(newHatali);
   document.getElementById('hataliCount').textContent=appState.hatalilar.length;
   document.getElementById('hataliCountBig').textContent=`${appState.hatalilar.length} Soru`;
+  if(uid) window.addHataliCloud?.(uid, newHatali);
   // v4: persist
   persistData();
 }
