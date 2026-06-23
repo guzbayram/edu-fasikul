@@ -8944,7 +8944,16 @@ function startRealtimeSync(uid){
       appState.cloudSolutionsLoaded = true;
       recalcFasikulProgress();
       updateDashboard();
-      renderFasikulCards();
+      // Fasikül kartlarını güncelle
+      if(typeof renderDerslerGrid==='function') renderDerslerGrid();
+      // Reader açıksa test progressini ve soru şeridini güncelle
+      const readerOpen = document.getElementById('reader-overlay')?.classList.contains('open');
+      if(readerOpen){
+        if(typeof updateTestProgress==='function') updateTestProgress();
+        if(appState.aktifAltKonu?.sorular && typeof renderSoruStrip==='function'){
+          renderSoruStrip(appState.aktifAltKonu.sorular);
+        }
+      }
     }
   }, (err)=>{ console.warn('Cozumler onSnapshot hatası:',err); });
 
