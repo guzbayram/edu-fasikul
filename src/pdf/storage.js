@@ -1,8 +1,10 @@
 import { appState } from '../state/appState.js';
 
-const MAX_PDF_BYTES = 50 * 1024 * 1024; // 50 MB
+// Hash yalnızca küçük dosyalarda hesaplanır; büyük PDF'lerde arrayBuffer belleği tüketir
+const HASH_SIZE_LIMIT = 150 * 1024 * 1024; // 150 MB üstünde hash atla
 
 async function calcPDFHash(file){
+  if(file.size > HASH_SIZE_LIMIT) return null;
   try{
     const buf = await file.arrayBuffer();
     const hash = await crypto.subtle.digest('SHA-256', buf);
@@ -33,11 +35,6 @@ async function handlePDFUpload(input){
   const file = input.files[0];
   if(!file || file.type !== 'application/pdf'){
     window.showToast?.('Lütfen geçerli bir PDF dosyası seç','error');
-    return;
-  }
-  if(file.size > MAX_PDF_BYTES){
-    window.showToast?.(`PDF çok büyük (${(file.size/1024/1024).toFixed(0)} MB). Maksimum 50 MB yüklenebilir.`,'error');
-    input.value = '';
     return;
   }
   await window.loadPDFFile?.(file);
