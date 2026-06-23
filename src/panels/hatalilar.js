@@ -34,11 +34,16 @@ function renderHatalilar(){
   });
 }
 function removeHatali(idx){
+  const removed = appState.hatalilar[idx];
   appState.hatalilar.splice(idx,1);
   document.getElementById('hataliCount').textContent=appState.hatalilar.length;
   document.getElementById('hataliCountBig').textContent=`${appState.hatalilar.length} Soru`;
+  // Buluttan da sil
+  const uid = window._getUserKey?.();
+  if(uid && removed?.soruKey) window.removeHataliCloud?.(uid, removed.soruKey);
+  try{ localStorage.setItem('edu_hatalilar',JSON.stringify(appState.hatalilar)); }catch(e){}
   renderHatalilar();
-  showToast('Hatalılar defterinden kaldırıldı','info');
+  window.showToast?.('Hatalılar defterinden kaldırıldı','info');
 }
 function startTekrarModu(){
   if(!appState.hatalilar.length){ showToast('Hatalılar listeniz boş!','info'); return; }
