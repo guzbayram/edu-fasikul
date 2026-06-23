@@ -68,10 +68,28 @@ export function startRealtimeSync(uid){
         }
       }
     });
-  }, (err)=>{ console.warn('Cizimler onSnapshot hatası:',err); });
+  }, (err)=>{
+    console.warn('Cizimler onSnapshot hatası:',err);
+    window.showToast?.('Çizim senkronizasyonu kesildi','error');
+  });
+
+  // ── Hatalıları dinle ──
+  const hatalilarRef = window._fsCollection(window._db,'kullanicilar',uid,'hatalilar');
+  window._realtimeUnsubHatalilar = window._fsOnSnapshot(hatalilarRef, (snapshot)=>{
+    if(snapshot.metadata.hasPendingWrites) return;
+    const hatalilar = [];
+    snapshot.forEach(doc => hatalilar.push(doc.data()));
+    appState.hatalilar = hatalilar;
+    try{ localStorage.setItem('edu_hatalilar',JSON.stringify(hatalilar)); }catch(e){}
+    const n = hatalilar.length;
+    document.getElementById('hataliCount').textContent = n;
+    document.getElementById('hataliCountBig').textContent = `${n} Soru`;
+    window.renderHatalilar?.();
+  }, (err)=>{ console.warn('Hatalilar onSnapshot hatası:',err); });
 }
 
 export function stopRealtimeSync(){
   if(window._realtimeUnsubCozumler){ window._realtimeUnsubCozumler(); window._realtimeUnsubCozumler=null; }
   if(window._realtimeUnsubCizimler){ window._realtimeUnsubCizimler(); window._realtimeUnsubCizimler=null; }
+  if(window._realtimeUnsubHatalilar){ window._realtimeUnsubHatalilar(); window._realtimeUnsubHatalilar=null; }
 }
