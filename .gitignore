@@ -1,11 +1,5 @@
-# PDF dosyaları (büyük boyutlu, git'e alınmaz)
-*.pdf
-
-# Ekran görüntüleri ve test görselleri
-*.png
-*.jpg
-*.jpeg
-
-# Sistem dosyaları
-.DS_Store
-.claude/
+node_modules/
+dist/
+.env
+.env.local
+*.local
