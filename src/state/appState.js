@@ -19,6 +19,9 @@ export const appState = {
   timerInterval: null,
   timerDurationMins: 20,
   timerCountdown: true,
+  lastAnswerTime: null,
+  timer2minLast: 0,
+  altKonuStats: {},
   sorularState: {},
   activeQuestionIdx: 0,
   readingMode: false,
@@ -37,7 +40,8 @@ export const appState = {
   preferences: {
     sound: true,
     autoNext: true,
-    goal: 100
+    goal: 100,
+    timerAlert: true
   },
   cloudIstatistik: null,
   cloudFasikulIstatistik: null,
