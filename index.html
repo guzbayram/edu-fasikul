@@ -8924,8 +8924,8 @@ function startRealtimeSync(uid){
       if(!soruKey) return;
       const existing = appState.sorularState[soruKey];
       const incomingTarih = data.tarih || '';
-      // Sadece uzak değişiklikleri işle (kendi yazdıklarımızı değil)
-      if(change.doc.metadata && change.doc.metadata.hasPendingWrites) return;
+      // Kendi yazdığımız değişiklikleri atla
+      if(change.doc.metadata.hasPendingWrites) return;
       // Daha yeni veri geliyorsa güncelle
       if(!existing || incomingTarih > (existing.tarih||'') || !existing._synced){
         appState.sorularState[soruKey] = {
@@ -8962,23 +8962,29 @@ function startRealtimeSync(uid){
   window._realtimeUnsubCizimler = window._fsOnSnapshot(cizimlerRef, (snapshot)=>{
     snapshot.docChanges().forEach(change=>{
       if(change.type==='removed') return;
-      if(change.doc.metadata && change.doc.metadata.hasPendingWrites) return;
+      // Kendi yazdığımız değişiklikleri atla (local write henüz sunucuya gitmemiş)
+      if(change.doc.metadata.hasPendingWrites) return;
       const data = change.doc.data();
       const key = data.key;
       if(!key || !data.json) return;
-      // Mevcut çizimden farklıysa güncelle
-      if(appState.drawings[key] !== data.json){
-        appState.drawings[key] = data.json;
-        // Şu an bu sayfa açıksa canvas'ı yenile
-        const aktifId = appState.aktifFasikul?.id;
-        const currentPage = appState.currentPage;
-        const currentKey = aktifId ? `drawing_${aktifId}_p${currentPage}` : null;
-        if(currentKey === key){
-          // Tüm canvas instance'larını kontrol et
-          const fc = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
-          if(fc){
-            fc.loadFromJSON(data.json, ()=>{ fc.renderAll(); });
-          }
+      if(appState.drawings[key] === data.json) return; // Aynı içerik, gerek yok
+      appState.drawings[key] = data.json;
+      // Şu an bu sayfa açıksa canvas'ı yenile
+      const aktifId = appState.aktifFasikul?.id;
+      const currentPage = appState.currentPage;
+      const currentKey = aktifId ? `drawing_${aktifId}_p${currentPage}` : null;
+      if(currentKey === key){
+        // Canvas başlatılmışsa anında yükle
+        const fc = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
+        if(fc){
+          fc.loadFromJSON(data.json, ()=>{ fc.renderAll(); });
+        } else {
+          // Canvas henüz yok — sayfa açıldığında otomatik yüklenir (drawings[] zaten güncellendi)
+          // Kısa süre sonra tekrar dene (PDF yükleniyor olabilir)
+          setTimeout(()=>{
+            const fc2 = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
+            if(fc2 && appState.drawings[key]) fc2.loadFromJSON(appState.drawings[key], ()=>fc2.renderAll());
+          }, 1500);
         }
       }
     });
