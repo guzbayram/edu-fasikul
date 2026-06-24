@@ -4,8 +4,27 @@ function renderSoruList(sorular){
   const list = document.getElementById('soruList');
   updateKonuDropdownLabel();
   updateRightPanelTitle();
+  const ak = appState.aktifAltKonu;
+  const isVid = isVideoFasikul() && ak && ak.konuVideoUrl;
+  const videoBlock = isVid ? renderKonuVideoBlockHtml(ak) : '';
+
+  // Video fasikül: konu videosu izlenmeden sorular kilitli
+  if(isVid && !isVideoWatched(ak)){
+    list.innerHTML = videoBlock + `
+      <div class="tek-soru-card">
+        <div style="text-align:center;padding:28px;color:var(--text-muted)">
+          <div style="font-size:30px;margin-bottom:8px">🔒</div>
+          <div style="font-size:13px;line-height:1.5">Soruların açılması için önce yukarıdaki <b>konu videosunu</b> izleyin.</div>
+        </div>
+      </div>`;
+    renderSoruStrip([]);
+    updateTestProgress();
+    document.getElementById('rpSoruSayisi').textContent = `${sorular?.length||0} Soru`;
+    return;
+  }
+
   if(!sorular || !sorular.length){
-    list.innerHTML = `
+    list.innerHTML = videoBlock + `
       <div class="tek-soru-card" id="tekSoruCard">
         <div style="text-align:center;padding:32px;color:var(--text-muted)">
           <div style="font-size:32px;margin-bottom:8px">📭</div>
@@ -15,10 +34,7 @@ function renderSoruList(sorular){
     updateTestProgress();
     return;
   }
-  // Kart zaten varsa sadece güncelle
-  if(!document.getElementById('tekSoruCard')){
-    list.innerHTML = `<div class="tek-soru-card" id="tekSoruCard"></div>`;
-  }
+  list.innerHTML = videoBlock + `<div class="tek-soru-card" id="tekSoruCard"></div>`;
   renderTekSoruKart(sorular, appState.activeQuestionIdx);
   renderSoruStrip(sorular);
   updateTestProgress();
@@ -94,7 +110,7 @@ function renderTekSoruKart(sorular, idx){
     <div class="tsk-header">
       <span class="tsk-no">${isKonuKart ? `K.${s.no}` : `S.${s.no}`}</span>
       <span class="tsk-badge ${badgeClass}">${badgeTxt}</span>
-      <span class="tsk-page" onclick="goToPage(${s.sayfa||appState.currentPage})">Sayfa ${s.sayfa||'?'}</span>
+      ${isVideoFasikul() ? `<span class="tsk-page" style="cursor:default">${s.grup==='assessment'?'Değerlendirme':'Alıştırma'}</span>` : `<span class="tsk-page" onclick="goToPage(${s.sayfa||appState.currentPage})">Sayfa ${s.sayfa||'?'}</span>`}
       <span class="tsk-star ${isStarred?'on':''}" onclick="toggleStar('${s._uid||s.no}')" title="Yıldızla">⭐</span>
     </div>
     <div class="tsk-body">
@@ -283,6 +299,78 @@ function changeQuestionPage(delta){
   return true;
 }
 
+// ══════════════════════════════
+// VIDEO FASİKÜL — konu videosu, kilit (gating) ve oynatıcı
+// ══════════════════════════════
+function isVideoFasikul(fas){
+  return (fas || appState.aktifFasikul)?.tip === 'video';
+}
+function isVideoWatched(ak){
+  if(!ak) return true;
+  return !!appState.videoWatched[ak.id];
+}
+function markVideoWatched(ak){
+  ak = ak || appState.aktifAltKonu;
+  if(!ak || appState.videoWatched[ak.id]) return;
+  appState.videoWatched[ak.id] = true;
+  try{ persistData(); }catch(e){}
+  showToast('Konu videosu tamamlandı — sorular açıldı ✓','success');
+  if(appState.aktifAltKonu && appState.aktifAltKonu.id === ak.id){
+    renderSoruList(appState.aktifAltKonu.sorular || []);
+  }
+  if(appState.aktifKonu) renderAltKonuList(appState.aktifKonu);
+}
+// Sağ panelde konu videosu başlık bloğu (izle butonu + durum)
+function renderKonuVideoBlockHtml(ak){
+  const watched = isVideoWatched(ak);
+  const dur = ak.videoDuration ? ` • ${ak.videoDuration}` : '';
+  return `
+    <div class="konu-video-block" style="background:var(--bg-3);border:1px solid var(--border-strong);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="font-size:30px;line-height:1">🎬</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:var(--text-0);line-height:1.3">${escapeHtml(ak.ad)}</div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px">Konu Videosu${dur} ${watched?'• ✅ İzlendi':'• 🔒 Sorular kilitli'}</div>
+      </div>
+      <button class="modal-btn mb-primary" style="padding:8px 14px" onclick="playKonuVideo()">▶ ${watched?'Tekrar İzle':'Konu Videosunu İzle'}</button>
+      ${watched?'':`<button class="modal-btn mb-secondary" style="padding:8px 12px" onclick="markVideoWatched()">✓ İzledim</button>`}
+    </div>`;
+}
+function playKonuVideo(){
+  const ak = appState.aktifAltKonu;
+  if(!ak?.konuVideoUrl){ showToast('Konu videosu bulunamadı','error'); return; }
+  playVideoModal(ak.konuVideoUrl, {
+    title:`🎬 ${ak.ad}`,
+    onEnded:()=>markVideoWatched(ak)
+  });
+}
+// Genel video oynatıcı (modal). Oynatma engellenirse yeni sekmeye düşer.
+function playVideoModal(url, opts={}){
+  const modal = document.getElementById('videoModal');
+  const player = document.getElementById('videoModalPlayer');
+  const titleEl = document.getElementById('videoModalTitle');
+  const noteEl = document.getElementById('videoModalNote');
+  if(!modal || !player){ window.open(url,'_blank','noopener,noreferrer'); return; }
+  titleEl.textContent = opts.title || '🎬 Video';
+  noteEl.style.display = 'none';
+  player.onended = null;
+  player.onerror = null;
+  player.src = url;
+  player.onended = ()=>{ if(typeof opts.onEnded==='function') opts.onEnded(); };
+  player.onerror = ()=>{
+    noteEl.style.display = 'block';
+    noteEl.innerHTML = `Video burada oynatılamadı. <a href="${url}" target="_blank" rel="noopener noreferrer" style="color:var(--mat)">Yeni sekmede aç</a>`;
+  };
+  modal.classList.add('open');
+  const p = player.play?.();
+  if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
+}
+function closeVideoModal(){
+  const modal = document.getElementById('videoModal');
+  const player = document.getElementById('videoModalPlayer');
+  if(player){ try{ player.pause(); }catch(e){} player.removeAttribute('src'); player.load?.(); }
+  modal?.classList.remove('open');
+}
+
 function showCozum(idx){
   const alt = appState.aktifAltKonu;
   const sorular = alt?.sorular || [];
@@ -291,11 +379,7 @@ function showCozum(idx){
   const videoLinks = window.appData?.cozumVideoLinkleri || appState.aktifFasikul?.cozumVideoLinkleri || {};
   const videoUrl = soru.cozumVideoUrl || soru.cozumVideoURL || soru.cozumUrl || soru.videoUrl || videoLinks[soru.cozumLinkKey];
   if(videoUrl){
-    const opened = window.open(videoUrl, '_blank', 'noopener,noreferrer');
-    if(!opened){
-      window.location.href = videoUrl;
-    }
-    showToast(`S.${soru.no} çözüm videosu açıldı`,'info');
+    playVideoModal(videoUrl, { title:`👁️ S.${soru.no} Çözümü` });
     return;
   }
   const solution = getSolutionForQuestion(alt, soru);
@@ -1883,6 +1967,13 @@ window.findQuestionFlowIndexByPage = findQuestionFlowIndexByPage;
 window.goToFlowItem = goToFlowItem;
 window.changeQuestionPage = changeQuestionPage;
 window.showCozum = showCozum;
+window.isVideoFasikul = isVideoFasikul;
+window.isVideoWatched = isVideoWatched;
+window.markVideoWatched = markVideoWatched;
+window.renderKonuVideoBlockHtml = renderKonuVideoBlockHtml;
+window.playKonuVideo = playKonuVideo;
+window.playVideoModal = playVideoModal;
+window.closeVideoModal = closeVideoModal;
 window.selectAnswer = selectAnswer;
 window.skipQuestion = skipQuestion;
 window.addToHatalilar = addToHatalilar;

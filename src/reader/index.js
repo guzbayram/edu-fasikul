@@ -322,20 +322,31 @@ function renderAltKonuList(konu){
     list.innerHTML='<div style="padding:16px;font-size:12px;color:var(--text-muted)">Bu konuya alt başlık eklenmemiş.</div>';
     return;
   }
+  const isVid = isVideoFasikul();
   konu.altKonular.filter(ak=> ak.ad !== 'Çözümlü Sorular - Çözümler').forEach(ak=>{
     const isKonuKartlari = isKonuKartAltKonu(ak);
+    const isVideoRow = isVid && !!ak.konuVideoUrl;
     const solvedCount = ak.sorular ? ak.sorular.filter(s=>appState.sorularState[s._uid||s.no]?.answered).length : 0;
     const totalCount = ak.sorular?.length||0;
-    const isDone = !isKonuKartlari && totalCount>0 && solvedCount===totalCount;
+    const watched = isVideoRow ? isVideoWatched(ak) : false;
+    const isDone = isVideoRow
+      ? (watched && totalCount>0 && solvedCount===totalCount)
+      : (!isKonuKartlari && totalCount>0 && solvedCount===totalCount);
     const item = document.createElement('div');
     const itemId = `altk-${ak.id}`;
     const isActive = appState.aktifAltKonu && (appState.aktifAltKonu === ak || appState.aktifAltKonu.id === ak.id);
     item.className='alt-konu-item'+(isDone?' done':'')+(isActive?' active':'');
     item.id = itemId;
+    let chip;
+    if(isVideoRow){
+      chip = `<span class="akn-chip">${watched ? `✅ ${solvedCount}/${totalCount}` : '🔒 Video'}</span>`;
+    } else if(totalCount>0){
+      chip = `<span class="akn-chip">${isKonuKartlari ? `${totalCount} Kart` : `${solvedCount}/${totalCount}`}</span>`;
+    } else { chip = ''; }
     item.innerHTML=`
-      <div class="akn-icon-wrap"></div>
+      <div class="akn-icon-wrap">${isVideoRow ? '🎬' : ''}</div>
       <span class="akn-name">${ak.ad}</span>
-      ${totalCount>0?`<span class="akn-chip">${isKonuKartlari ? `${totalCount} Kart` : `${solvedCount}/${totalCount}`}</span>`:''}`;
+      ${chip}`;
     item.onclick = ()=>selectAltKonu(ak, itemId);
     list.appendChild(item);
   });

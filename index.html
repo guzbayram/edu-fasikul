@@ -549,6 +549,19 @@
   </div>
 </div>
 
+<!-- Video Oynatıcı Modal (konu videosu + çözüm videosu) -->
+<div class="modal-overlay" id="videoModal" onclick="event.target===this&&closeVideoModal()">
+  <div class="modal-box" style="max-width:860px;width:94vw;padding:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+      <h2 id="videoModalTitle" style="margin:0;font-size:16px">🎬 Video</h2>
+      <button class="modal-btn mb-secondary" onclick="closeVideoModal()" style="padding:6px 12px">✕ Kapat</button>
+    </div>
+    <video id="videoModalPlayer" controls playsinline preload="metadata"
+      style="width:100%;max-height:72vh;background:#000;border-radius:12px;display:block"></video>
+    <div id="videoModalNote" style="font-size:12px;color:var(--text-muted);margin-top:8px;display:none"></div>
+  </div>
+</div>
+
 <!-- Keyboard Shortcuts Modal -->
 <div class="modal-overlay" id="kbModal" onclick="event.target===this&&closeModal('kbModal')">
   <div class="modal-box" id="kbModal">

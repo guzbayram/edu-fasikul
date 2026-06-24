@@ -217,7 +217,8 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'uc-adim-deneme-tyt-15',dersId:'tyt',json:'6-uc-adim-deneme-tyt-15-cards.json',pdf:'6-uc-adim-deneme-tyt-15-cards.pdf'},
   {id:'tyt-kampi-tum-dersler',dersId:'tyt',json:'7-tyt-kampi-tum-dersler-kart.json',pdf:'7-tyt-kampi-tum-dersler-kart.pdf'},
   {id:'tyt-denemeleri-1',dersId:'tyt',json:'8-tyt-denemeleri-1-cards.json',pdf:'8-tyt-denemeleri-1-cards.pdf'},
-  {id:'tyt-denemeleri-2',dersId:'tyt',json:'9-tyt-denemeleri-2-cards.json',pdf:'9-tyt-denemeleri-2-cards.pdf'}
+  {id:'tyt-denemeleri-2',dersId:'tyt',json:'9-tyt-denemeleri-2-cards.json',pdf:'9-tyt-denemeleri-2-cards.pdf'},
+  {id:'matematik-destek',dersId:'mat',json:'12-Matematik (Destek)-kart.json',pdf:'12-Matematik (Destek).pdf',type:'video'}
 ];
 
 // Demo verilerinin orijinal anlık görüntüsü (Demo Verileri açma/kapama ve sıfırlama için)
@@ -2169,6 +2170,7 @@ function hydrateBundledFasikul(fas,raw,source){
   fas.pdfFile = source.pdf;
   fas.sourceType = 'bundled';
   if(raw.cozumVideoLinkleri) fas.cozumVideoLinkleri = raw.cozumVideoLinkleri;
+  if(raw.tip) fas.tip = raw.tip;
   return fas;
 }
 async function loadBundledFasikuller(){

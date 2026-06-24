@@ -170,6 +170,7 @@ export function persistData(){
   try{
     localStorage.setItem('edu_hatalilar', JSON.stringify(appState.hatalilar));
     localStorage.setItem('edu_sorularState', JSON.stringify(appState.sorularState));
+    localStorage.setItem('edu_video_watched', JSON.stringify(appState.videoWatched));
   }catch(e){}
   const key = _getUserKey();
   if(key && window._firestoreReady){
@@ -189,6 +190,7 @@ export function persistData(){
       preferences: appState.preferences,
       theme: appState.theme,
       manifest: window.buildManifestMeta?.() || [],
+      videoWatched: appState.videoWatched,
       istatistik: istatistik,
       fasikulIstatistik: fasikulIst,
       guncelleme: new Date().toISOString()
@@ -205,6 +207,8 @@ export function loadPersistedData(){
     if(h) appState.hatalilar=JSON.parse(h);
     const s=localStorage.getItem('edu_sorularState');
     if(s) appState.sorularState=JSON.parse(s);
+    const vw=localStorage.getItem('edu_video_watched');
+    if(vw) appState.videoWatched=JSON.parse(vw);
     document.getElementById('hataliCount').textContent=appState.hatalilar.length||0;
     document.getElementById('hataliCountBig').textContent=`${appState.hatalilar.length||0} Soru`;
   }catch(e){}
@@ -240,6 +244,10 @@ export async function loadFromFirestore(){
         window.renderDerslerGrid?.();
       }
       if(data.sorularState) appState.sorularState = data.sorularState;
+      if(data.videoWatched){
+        appState.videoWatched = {...appState.videoWatched, ...data.videoWatched};
+        try{ localStorage.setItem('edu_video_watched', JSON.stringify(appState.videoWatched)); }catch(e){}
+      }
       localStorage.setItem('edu_hatalilar',    JSON.stringify(appState.hatalilar));
     }
 
