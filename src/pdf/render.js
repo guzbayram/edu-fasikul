@@ -74,6 +74,7 @@ async function renderAllPages(){
 
   const totalPages = appState.totalPages;
   const dpr = window.devicePixelRatio || 1;
+  const baseScale = appState.zoom / 100;
 
   // Her sayfa için önce placeholder oluştur (boyut sonra doldurulacak)
   for(let i = 1; i <= totalPages; i++){
@@ -165,7 +166,7 @@ async function renderSinglePDFPage(pageNum, pageWrap){
   if(!appState.pdfDoc) return;
   try{
     const page = await appState.pdfDoc.getPage(pageNum);
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const baseScale = getReaderFitScale(page, document.getElementById('readerCanvasWrap'));
     const renderScale = baseScale * dpr;
     const viewport = page.getViewport({scale: renderScale});
@@ -181,9 +182,12 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     pdfCanvas.width = viewport.width;
     pdfCanvas.height = viewport.height;
     pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;';
+    pdfCanvas.style.background = 'transparent';
     pageWrap.insertBefore(pdfCanvas, pageWrap.firstChild);
 
-    await page.render({ canvasContext: pdfCanvas.getContext('2d'), viewport }).promise;
+    const ctx2d = pdfCanvas.getContext('2d');
+    if(!ctx2d) throw new Error('Canvas 2D context alınamadı');
+    await page.render({ canvasContext: ctx2d, viewport }).promise;
 
     // Fabric çizim canvas
     const drawEl = document.createElement('canvas');
@@ -248,7 +252,9 @@ function getReaderFitScale(page, wrap){
   const container = wrap || document.getElementById('readerCanvasWrap');
   const styles = container ? getComputedStyle(container) : null;
   const padX = styles ? parseFloat(styles.paddingLeft || 0) + parseFloat(styles.paddingRight || 0) : 0;
-  const viewportW = Math.max(280, (container?.clientWidth || window.innerWidth) - padX - 2);
+  // clientWidth=0 olursa layout henüz hazır değil — window.innerWidth'e düş
+  const rawW = container?.clientWidth || 0;
+  const viewportW = Math.max(280, (rawW > 0 ? rawW : window.innerWidth) - padX - 2);
   const natural = page.getViewport({scale: 1});
   const fitScale = viewportW / natural.width;
   return Math.max(0.35, fitScale * zoomScale);
@@ -291,7 +297,8 @@ async function renderSinglePageMode(pageNum){
   appState.fabricCanvas = null;
   if(appState._pageObserver){ appState._pageObserver.disconnect(); appState._pageObserver = null; }
 
-  const dpr = window.devicePixelRatio || 1;
+  // Cap DPR at 2 — iPad 3x + yüksek zoom birleşimi çok büyük canvas oluşturur
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const baseScale = appState.zoom / 100;
 
   const stage = document.createElement('div');
@@ -305,33 +312,42 @@ async function renderSinglePageMode(pageNum){
   if(appState.pdfDoc){
     try{
       const page = await appState.pdfDoc.getPage(pageNum);
+      // Force layout reflow before reading clientWidth (Safari timing fix)
+      void wrap.getBoundingClientRect();
       const baseScale = getReaderFitScale(page, wrap);
       const renderScale = baseScale * dpr;
       const viewport = page.getViewport({scale: renderScale});
       const displayW = viewport.width / dpr;
       const displayH = viewport.height / dpr;
+
       pageWrap.style.width = displayW + 'px';
       pageWrap.style.height = displayH + 'px';
       pageWrap.style.background = '#fff';
       sizeReaderStage(stage, wrap, displayW, displayH);
 
+      // DOM'a önce ekle — Safari off-DOM canvas render'ı sessizce başarısız olur
+      stage.appendChild(pageWrap);
+      wrap.appendChild(stage);
+
       const pdfCanvas = document.createElement('canvas');
       pdfCanvas.width = viewport.width;
       pdfCanvas.height = viewport.height;
-      pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;';
+      pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;';
       pageWrap.appendChild(pdfCanvas);
-      await page.render({ canvasContext: pdfCanvas.getContext('2d'), viewport }).promise;
+
+      const ctx2d = pdfCanvas.getContext('2d');
+      if(!ctx2d) throw new Error('Canvas 2D context alınamadı (bellek yetersiz olabilir)');
+      await page.render({ canvasContext: ctx2d, viewport }).promise;
 
       const drawEl = document.createElement('canvas');
       drawEl.className = 'fabric-draw-canvas';
       drawEl.width = displayW; drawEl.height = displayH;
-      drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
+      drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;';
       pageWrap.appendChild(drawEl);
-      stage.appendChild(pageWrap);
-      wrap.appendChild(stage);
       initFabricForPage(drawEl, displayW, displayH, pageNum);
     } catch(err){
       console.error('Sayfa render hatası:', err);
+      showToast('Sayfa ' + pageNum + ' render hatası: ' + err.message, 'error');
     }
   } else {
     const baseScale = appState.zoom / 100;
@@ -421,19 +437,40 @@ function initPDFContextMenu(){
     });
   }
 
-  // Sağ tık
+  // Sağ tık (masaüstü)
   wrap.addEventListener('contextmenu', e=>{
     e.preventDefault();
-    // Aktif modu işaretle
-    document.getElementById('ctxSingle')?.classList.toggle('ctx-active', appState.viewMode === 'single');
-    document.getElementById('ctxScroll')?.classList.toggle('ctx-active', appState.viewMode === 'scroll');
-    // Pozisyon
-    const x = Math.min(e.clientX, window.innerWidth - 220);
-    const y = Math.min(e.clientY, window.innerHeight - 180);
-    menu.style.left = x + 'px';
-    menu.style.top = y + 'px';
-    menu.style.display = 'block';
+    showContextMenu(e.clientX, e.clientY);
   });
+}
+
+function showContextMenu(x, y){
+  const menu = document.getElementById('pdfContextMenu');
+  if(!menu) return;
+  document.getElementById('ctxSingle')?.classList.toggle('ctx-active', appState.viewMode === 'single');
+  document.getElementById('ctxScroll')?.classList.toggle('ctx-active', appState.viewMode === 'scroll');
+  const mx = Math.min(x, window.innerWidth - 220);
+  const my = Math.min(y, window.innerHeight - 180);
+  menu.style.left = mx + 'px';
+  menu.style.top = my + 'px';
+  menu.style.display = 'block';
+}
+
+function openViewModeMenu(e){
+  e.stopPropagation();
+  const menu = document.getElementById('pdfContextMenu');
+  if(menu && menu.style.display === 'block'){
+    menu.style.display = 'none';
+    return;
+  }
+  // Butonu altta konumlandır
+  const btn = document.getElementById('viewModeBtn');
+  if(btn){
+    const rect = btn.getBoundingClientRect();
+    showContextMenu(rect.left, rect.bottom + 4);
+  } else {
+    showContextMenu(e.clientX, e.clientY);
+  }
 }
 
 
@@ -660,6 +697,7 @@ function initCardZoomPan(){
   wrap.addEventListener('pointerdown', (e)=>{
     if(e.button !== 0 || !isCardGestureTarget(e.target)) return;
     if(appState.drawTool !== 'select' && e.target.closest('canvas')) return;
+    if(appState._touchGestureActive) return; // pinch/pan gesture devam ediyor
     isPanning = true;
     startX = e.clientX; startY = e.clientY;
     startScrollLeft = wrap.scrollLeft; startScrollTop = wrap.scrollTop;
@@ -685,6 +723,105 @@ function initCardZoomPan(){
   wrap.addEventListener('pointerleave', stopPan);
 }
 
+// ══════════════════════════════════════════════════════════
+// TABLET TOUCH GESTURES — Pinch-to-zoom + two-finger pan/scroll
+// Capture phase ile Fabric.js'e ulaşmadan 2-parmak olayları yakalar.
+// ══════════════════════════════════════════════════════════
+function initTouchGestures() {
+  const wrap = document.getElementById('readerCanvasWrap');
+  if (!wrap || wrap.dataset.touchGestureReady) return;
+  wrap.dataset.touchGestureReady = '1';
+
+  let g = null; // gesture state — null means inactive
+
+  function dist(a, b) { return Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY); }
+  function midpt(a, b) { return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
+
+  // CSS scale on all rendered stages for instant visual feedback
+  function applyVisualScale(scale, cx, cy) {
+    wrap.querySelectorAll('.reader-page-stage').forEach(stage => {
+      const r = stage.getBoundingClientRect();
+      stage.style.transformOrigin = `${cx - r.left}px ${cy - r.top}px`;
+      stage.style.transform = `scale(${scale})`;
+    });
+  }
+  function clearVisualScale() {
+    wrap.querySelectorAll('.reader-page-stage').forEach(s => {
+      s.style.transform = '';
+      s.style.transformOrigin = '';
+    });
+  }
+
+  wrap.addEventListener('touchstart', e => {
+    if (e.touches.length >= 2) {
+      e.preventDefault();
+      e.stopPropagation();
+      appState._touchGestureActive = true;
+      const t0 = e.touches[0], t1 = e.touches[1];
+      g = {
+        startDist: dist(t0, t1),
+        startZoom: appState.zoom,
+        startMid: midpt(t0, t1),
+        lastMid: midpt(t0, t1),
+        lastDist: dist(t0, t1),
+        scale: 1,
+      };
+    } else {
+      g = null;
+      appState._touchGestureActive = false;
+    }
+  }, { passive: false, capture: true });
+
+  wrap.addEventListener('touchmove', e => {
+    if (!g || e.touches.length < 2) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const t0 = e.touches[0], t1 = e.touches[1];
+    const d = dist(t0, t1);
+    const m = midpt(t0, t1);
+
+    // İki parmak pan: parmak hareketini scroll'a dönüştür
+    wrap.scrollLeft -= (m.x - g.lastMid.x);
+    wrap.scrollTop  -= (m.y - g.lastMid.y);
+
+    // Pinch scale (başlangıç mesafesine göre)
+    g.scale = d / g.startDist;
+    applyVisualScale(g.scale, g.startMid.x, g.startMid.y);
+
+    g.lastMid = m;
+    g.lastDist = d;
+  }, { passive: false, capture: true });
+
+  const commitGesture = e => {
+    if (!g) return;
+    if (e.touches.length >= 2) return; // hâlâ 2 parmak
+
+    const newZoom = Math.max(40, Math.min(200, Math.round(g.startZoom * g.scale)));
+    const wrapRect = wrap.getBoundingClientRect();
+    clearVisualScale();
+
+    if (Math.abs(newZoom - g.startZoom) >= 2) {
+      const contentX = g.startMid.x - wrapRect.left + wrap.scrollLeft;
+      const contentY = g.startMid.y - wrapRect.top  + wrap.scrollTop;
+      appState.zoom = newZoom;
+      document.getElementById('zoomLabel').textContent = `%${newZoom}`;
+      scheduleCardZoomRender({
+        contentX,
+        contentY,
+        viewportX: g.startMid.x - wrapRect.left,
+        viewportY: g.startMid.y - wrapRect.top,
+        ratio: newZoom / (appState._renderedZoom || g.startZoom),
+      });
+    }
+    g = null;
+    appState._touchGestureActive = false;
+  };
+
+  wrap.addEventListener('touchend',    commitGesture, { passive: false, capture: true });
+  wrap.addEventListener('touchcancel', commitGesture, { passive: false, capture: true });
+}
+
 
 // ── Bu modülün fonksiyonlarını window'a kaydet ──
 // main.js ve diğer modüller window.xxx ile çağırabilsin
@@ -704,7 +841,9 @@ window.renderSinglePageMode = renderSinglePageMode;
 window.renderPDFPage = renderPDFPage;
 window.renderFallbackPage = renderFallbackPage;
 window.setViewMode = setViewMode;
+window.openViewModeMenu = openViewModeMenu;
 window.initPDFContextMenu = initPDFContextMenu;
+window.initTouchGestures = initTouchGestures;
 window.buildMockPageContent = buildMockPageContent;
 window.changePage = changePage;
 window.goToPage = goToPage;

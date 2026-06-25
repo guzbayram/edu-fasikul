@@ -24,6 +24,7 @@ export const appState = {
   altKonuStats: {},
   sorularState: {},
   activeQuestionIdx: 0,
+  soruListMode: 'tek',
   readingMode: false,
   cevapModalSoruNo: null,
   pdfDocFasikulId: null,

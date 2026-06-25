@@ -15,11 +15,14 @@ function renderSoruList(sorular){
     updateTestProgress();
     return;
   }
-  // Kart zaten varsa sadece güncelle
-  if(!document.getElementById('tekSoruCard')){
-    list.innerHTML = `<div class="tek-soru-card" id="tekSoruCard"></div>`;
+  if(appState.soruListMode === 'scroll'){
+    renderSurekliMod(sorular);
+  } else {
+    if(!document.getElementById('tekSoruCard')){
+      list.innerHTML = `<div class="tek-soru-card" id="tekSoruCard"></div>`;
+    }
+    renderTekSoruKart(sorular, appState.activeQuestionIdx);
   }
-  renderTekSoruKart(sorular, appState.activeQuestionIdx);
   renderSoruStrip(sorular);
   updateTestProgress();
   document.getElementById('rpSoruSayisi').textContent = `${sorular.length} Soru`;
@@ -58,8 +61,7 @@ function renderSoruStrip(sorular){
   });
 }
 
-function renderTekSoruKart(sorular, idx){
-  const card = document.getElementById('tekSoruCard');
+function renderTekSoruKartEl(card, sorular, idx){
   if(!card) return;
   const s = sorular[idx];
   if(!s){ card.innerHTML=''; return; }
@@ -112,20 +114,65 @@ function renderTekSoruKart(sorular, idx){
     </div>`;
 }
 
+function renderTekSoruKart(sorular, idx){
+  const card = document.getElementById('tekSoruCard');
+  renderTekSoruKartEl(card, sorular, idx);
+}
+
+function renderSurekliMod(sorular){
+  const list = document.getElementById('soruList');
+  if(!list) return;
+  list.innerHTML = sorular.map((s,i) =>
+    `<div class="tek-soru-card surekli-card ${i===appState.activeQuestionIdx?'surekli-active':''}" id="soruCard-${i}"></div>`
+  ).join('');
+  sorular.forEach((s,i) => renderTekSoruKartEl(document.getElementById(`soruCard-${i}`), sorular, i));
+}
+
+function toggleSoruListMode(){
+  appState.soruListMode = appState.soruListMode === 'tek' ? 'scroll' : 'tek';
+  const btn = document.getElementById('soruListModeBtn');
+  if(btn) btn.title = appState.soruListMode === 'scroll' ? 'Tek tek moda geç' : 'Sürekli kaydırmaya geç';
+  if(btn) btn.textContent = appState.soruListMode === 'scroll' ? '📋' : '☰';
+  const sorular = appState.aktifAltKonu?.sorular || [];
+  if(appState.soruListMode === 'scroll'){
+    renderSurekliMod(sorular);
+    setTimeout(()=>{
+      const el = document.getElementById(`soruCard-${appState.activeQuestionIdx}`);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 80);
+  } else {
+    const list = document.getElementById('soruList');
+    if(list) list.innerHTML = `<div class="tek-soru-card" id="tekSoruCard"></div>`;
+    renderTekSoruKart(sorular, appState.activeQuestionIdx);
+  }
+  renderSoruStrip(sorular);
+}
+
 function goToSoru(idx){
   const sorular = appState.aktifAltKonu?.sorular || [];
   if(idx < 0 || idx >= sorular.length) return;
   appState.activeQuestionIdx = idx;
   const s = sorular[idx];
-  // PDF sayfasına git (kart bazlı: suppress nav sync — biz zaten activeQuestionIdx'i set ettik)
+  // PDF sayfasına git
   if(s.sayfa){
     appState._suppressNavSync = true;
     goToPage(s.sayfa);
     setTimeout(()=>{ appState._suppressNavSync = false; }, 600);
   }
-  // Kartı güncelle
-  renderTekSoruKart(sorular, idx);
-  renderSoruStrip(sorular);
+  if(appState.soruListMode === 'scroll'){
+    // Sürekli modda: aktif kartı highlight et, kaydır
+    document.querySelectorAll('.surekli-card').forEach(el => el.classList.remove('surekli-active'));
+    const el = document.getElementById(`soruCard-${idx}`);
+    if(el){
+      el.classList.add('surekli-active');
+      el.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+    renderSoruStrip(sorular);
+    updateTestProgress();
+  } else {
+    renderTekSoruKart(sorular, idx);
+    renderSoruStrip(sorular);
+  }
 }
 
 function getManifestMaxPage(fasikul){
@@ -485,7 +532,11 @@ function selectAnswer(soruNo, selected, correct, idx){
 
   // Re-render the current card to show answer state
   const sorular = appState.aktifAltKonu?.sorular || [];
-  renderTekSoruKart(sorular, idx);
+  if(appState.soruListMode === 'scroll'){
+    renderTekSoruKartEl(document.getElementById(`soruCard-${idx}`), sorular, idx);
+  } else {
+    renderTekSoruKart(sorular, idx);
+  }
 
   // Update stats badge in alt konu list
   refreshAltKonuChip();
@@ -1867,6 +1918,9 @@ window.escapeHtml = escapeHtml;
 window.updateRightPanelTitle = updateRightPanelTitle;
 window.renderSoruStrip = renderSoruStrip;
 window.renderTekSoruKart = renderTekSoruKart;
+window.renderTekSoruKartEl = renderTekSoruKartEl;
+window.renderSurekliMod = renderSurekliMod;
+window.toggleSoruListMode = toggleSoruListMode;
 window.goToSoru = goToSoru;
 window.getManifestMaxPage = getManifestMaxPage;
 window.getVisibleManifestPages = getVisibleManifestPages;

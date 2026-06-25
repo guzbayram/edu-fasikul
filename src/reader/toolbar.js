@@ -1,8 +1,11 @@
 import { appState } from '../state/appState.js';
 
 function toggleReaderPanel(side){
-  if(side==='left') document.getElementById('readerLeft').classList.toggle('collapsed');
-  else document.getElementById('readerRight').classList.toggle('collapsed');
+  if(side==='left'){
+    window.toggleRpKonuSection?.();
+  } else {
+    document.getElementById('readerRight').classList.toggle('collapsed');
+  }
   if(document.getElementById('reader-overlay')?.classList.contains('open')){
     setTimeout(()=>renderPages(), 320);
   }

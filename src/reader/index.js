@@ -66,14 +66,27 @@ async function openReader(dersId, fasikulId){
 
   // Open overlay
   document.getElementById('reader-overlay').classList.add('open');
+  // Konu listesi görünür başlar
+  document.getElementById('readerRight')?.classList.remove('soru-mode');
+  document.getElementById('rpKonuSection')?.classList.remove('hidden');
 
   // Context menu başlat (sağ tık ile mod seçimi)
   initPDFContextMenu();
 
-  // Select first valid topic
-  const firstKonu = fasikul.konular[0];
-  const firstAlt = firstKonu?.altKonular?.[0];
-  if(firstAlt && firstAlt.sorular?.length > 0) selectAltKonu(firstAlt, `altk-${firstAlt.id}`);
+  // Son ziyaret edilen konuyu veya ilk konuyu seç
+  const konular = fasikul.konular || [];
+  const lastKonuId = fasikul._lastKonuId;
+  const lastAltKonuId = fasikul._lastAltKonuId;
+  let startKonu = (lastKonuId && konular.find(k => k.id === lastKonuId)) || konular[0];
+  const visibleAlts = (startKonu?.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler');
+  let startAlt = (lastAltKonuId && visibleAlts.find(ak => ak.id === lastAltKonuId)) || visibleAlts[0] || null;
+  if(startKonu){
+    // ana konu listesinde aktif işaretle
+    document.querySelectorAll('.ana-konu-item').forEach(el => el.classList.remove('active'));
+    const itemEl = document.getElementById(`anak-${startKonu.id || startKonu.ad}`);
+    if(itemEl) itemEl.classList.add('active');
+  }
+  if(startAlt && startAlt.sorular?.length > 0) selectAltKonu(startAlt, `altk-${startAlt.id}`);
 
   // PDF'i önce profil sayfasında bir kez bağlanan klasörden otomatik aç.
   // Klasörde bulunamazsa eski kayıtlı PDF yedeğine bakılır; en son manuel yükleme alanı görünür.
@@ -89,11 +102,88 @@ async function openReader(dersId, fasikulId){
 }
 
 function toggleMobileLeft(){
-  const left = document.getElementById('readerLeft');
-  const overlay = document.getElementById('mobileLeftOverlay');
-  const isOpen = left.classList.contains('mobile-open');
-  left.classList.toggle('mobile-open', !isOpen);
-  overlay.classList.toggle('show', !isOpen);
+  toggleRpKonuSection();
+}
+
+function openKonuList(){
+  const backdrop = document.getElementById('konuModalBackdrop');
+  const modal    = document.getElementById('konuModal');
+  if(!backdrop || !modal) return;
+  backdrop.style.display = 'block';
+  modal.style.display    = 'flex';
+  document.getElementById('reader-overlay')?.classList.add('konu-modal-open');
+  showKonuPanel();
+}
+
+function closeKonuModal(){
+  document.getElementById('konuModalBackdrop').style.display = 'none';
+  document.getElementById('konuModal').style.display = 'none';
+  document.getElementById('reader-overlay')?.classList.remove('konu-modal-open');
+}
+
+function showKonuPanel(){
+  document.getElementById('konuModalBodyA')?.classList.remove('hidden');
+  document.getElementById('konuModalBodyB')?.classList.add('hidden');
+  const backBtn = document.getElementById('konuModalBackBtn');
+  if(backBtn) backBtn.style.display = 'none';
+  const title = document.getElementById('konuModalTitle');
+  if(title) title.textContent = appState.aktifFasikul?.ad || 'Konu Seç';
+}
+
+function selectAnaKonu(konu){
+  if(!konu) return;
+  appState.aktifKonu = konu;
+  const select = document.getElementById('anaKonuSelect');
+  if(select) select.value = konu.id || konu.ad || '';
+  // Active görsel (modal listesinde)
+  document.querySelectorAll('.ana-konu-item').forEach(el => el.classList.remove('active'));
+  const itemEl = document.getElementById(`anak-${konu.id || konu.ad}`);
+  if(itemEl) itemEl.classList.add('active');
+
+  const visibleAlts = (konu.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler');
+
+  // Tek alt konu varsa direkt seç, altPanel'i gösterme
+  if(visibleAlts.length === 1){
+    selectAltKonu(visibleAlts[0], `altk-${visibleAlts[0].id}`);
+    return;
+  }
+
+  // Modal başlığını güncelle
+  const title = document.getElementById('konuModalTitle');
+  if(title) title.textContent = konu.ad;
+  // AltKonu listesini doldur
+  renderAltKonuList(konu);
+  // Panel B'ye geç
+  document.getElementById('konuModalBodyA')?.classList.add('hidden');
+  document.getElementById('konuModalBodyB')?.classList.remove('hidden');
+  const backBtn = document.getElementById('konuModalBackBtn');
+  if(backBtn) backBtn.style.display = 'inline-flex';
+  // İlk ya da son ziyaret edilen altKonuyu highlight et
+  const fas = appState.aktifFasikul;
+  const lastAkId = fas?._lastAltKonuId;
+  const lastAk = lastAkId && visibleAlts.find(ak => ak.id === lastAkId && konu.id === fas?._lastKonuId);
+  const targetAlt = lastAk || visibleAlts[0] || null;
+  if(targetAlt){
+    document.querySelectorAll('#altKonuList .alt-konu-item').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById(`altk-${targetAlt.id}`);
+    if(el){ el.classList.add('active'); el.scrollIntoView({behavior:'instant',block:'nearest'}); }
+  }
+}
+
+function toggleRpKonuSection(){
+  const konuSec = document.getElementById('rpKonuSection');
+  const right = document.getElementById('readerRight');
+  if(!konuSec) return;
+  const inSoruMode = right?.classList.contains('soru-mode');
+  if(inSoruMode){
+    right.classList.remove('soru-mode');
+  } else {
+    if(konuSec.classList.contains('hidden')){
+      konuSec.classList.remove('hidden');
+    } else {
+      konuSec.classList.add('hidden');
+    }
+  }
 }
 
 function closeReader(){
@@ -255,28 +345,36 @@ function syncNavToPage(pageNum){
 
 function buildKonuNav(fasikul){
   const select = document.getElementById('anaKonuSelect');
-  select.innerHTML = '';
+  const list = document.getElementById('anaKonuList');
+  if(select) select.innerHTML = '';
+  if(list) list.innerHTML = '';
   const konular = Array.isArray(fasikul?.konular) ? fasikul.konular : [];
   if(!konular.length){
     appState.aktifKonu = null;
     appState.aktifAltKonu = null;
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = 'Konu eklenmemiş';
-    select.appendChild(opt);
-    renderAltKonuList(null);
+    if(list) list.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--text-muted)">Bu fasikülde konu eklenmemiş.</div>';
     renderSoruList([]);
     updateRightPanelTitle();
     return;
   }
   konular.forEach(k=>{
-    const opt = document.createElement('option');
-    opt.value = k.id || k.ad; opt.textContent = k.ad;
-    select.appendChild(opt);
+    // Hidden select option
+    if(select){
+      const opt = document.createElement('option');
+      opt.value = k.id || k.ad; opt.textContent = k.ad;
+      select.appendChild(opt);
+    }
+    // Görünür liste öğesi
+    if(list){
+      const item = document.createElement('div');
+      item.className = 'ana-konu-item';
+      item.id = `anak-${k.id || k.ad}`;
+      const altCount = (k.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler').length;
+      item.innerHTML = `<span class="anak-name">${k.ad}</span>${altCount > 0 ? `<span class="anak-chip">${altCount}</span>` : ''}`;
+      item.onclick = () => selectAnaKonu(k);
+      list.appendChild(item);
+    }
   });
-  appState.aktifKonu = konular[0];
-  select.value = konular[0]?.id || konular[0]?.ad || '';
-  renderAltKonuList(konular[0]);
 }
 
 function onAnaKonuChange(){
@@ -289,26 +387,12 @@ function onAnaKonuChange(){
   if(select) select.value = konu.id || konu.ad || '';
 
   const visibleAlts = (konu.altKonular || []).filter(ak=> ak.ad !== 'Çözümlü Sorular - Çözümler');
-  const startPage = konu.sayfaBasl || visibleAlts[0]?.sorular?.[0]?.sayfa || visibleAlts[0]?.sayfa || 1;
-  const targetAlt = visibleAlts.find(ak=>{
-    const sorular = ak.sorular || [];
-    const first = sorular[0]?.sayfa || ak.sayfa || 0;
-    const last = sorular[sorular.length-1]?.sayfa || ak.sayfa || 0;
-    return startPage >= first && startPage <= last;
-  }) || visibleAlts[0] || null;
+  const firstAlt = visibleAlts[0] || null;
 
-  appState.aktifAltKonu = targetAlt;
-  appState.activeQuestionIdx = 0;
   renderAltKonuList(konu);
-  if(targetAlt){
-    renderSoruList(targetAlt.sorular || []);
-    updateRightPanelTitle();
-    document.getElementById('rpSoruSayisi').textContent = `${targetAlt.sorular?.length||0} ${isKonuKartAltKonu(targetAlt) ? 'Kart' : 'Soru'}`;
-    updateTestProgress();
+  if(firstAlt){
+    selectAltKonu(firstAlt, `altk-${firstAlt.id}`);
   }
-  appState._suppressNavSync = true;
-  goToPage(startPage);
-  setTimeout(()=>{ appState._suppressNavSync = false; }, 500);
 }
 
 function renderAltKonuList(konu){
@@ -350,6 +434,11 @@ function selectAltKonu(altKonu, itemId){
     const select = document.getElementById('anaKonuSelect');
     if(select) select.value = parentKonu.id || parentKonu.ad || '';
   }
+  // Son konumu fasikülde kaydet
+  if(appState.aktifFasikul){
+    appState.aktifFasikul._lastAltKonuId = altKonu.id;
+    appState.aktifFasikul._lastKonuId = parentKonu?.id || null;
+  }
   appState.activeQuestionIdx = 0;
   document.querySelectorAll('.alt-konu-item').forEach(el=>el.classList.remove('active'));
   const el = document.getElementById(itemId || `altk-${altKonu.id}`);
@@ -365,11 +454,9 @@ function selectAltKonu(altKonu, itemId){
   document.getElementById('rpSoruSayisi').textContent = `${altKonu.sorular?.length||0} ${isKonuKartAltKonu(altKonu) ? 'Kart' : 'Soru'}`;
   updateTestProgress();
   setTimeout(()=>{ appState._suppressNavSync = false; }, 800);
-  // Konu seçilince çekmece kapanır; çalışma alanı tek panel olarak kalır.
-  const left = document.getElementById('readerLeft');
-  const overlay = document.getElementById('mobileLeftOverlay');
-  left?.classList.remove('mobile-open');
-  overlay?.classList.remove('show');
+  // Konu modalı kapat, soru moduna geç
+  closeKonuModal();
+  document.getElementById('readerRight')?.classList.add('soru-mode');
 }
 
 
@@ -387,6 +474,11 @@ function selectAltKonu(altKonu, itemId){
 // main.js ve diğer modüller window.xxx ile çağırabilsin
 window.openReader = openReader;
 window.toggleMobileLeft = toggleMobileLeft;
+window.toggleRpKonuSection = toggleRpKonuSection;
+window.openKonuList = openKonuList;
+window.closeKonuModal = closeKonuModal;
+window.showKonuPanel = showKonuPanel;
+window.selectAnaKonu = selectAnaKonu;
 window.closeReader = closeReader;
 window.syncNavToPage = syncNavToPage;
 window.buildKonuNav = buildKonuNav;

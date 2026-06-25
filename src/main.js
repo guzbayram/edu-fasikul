@@ -297,6 +297,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   initCardZoomPan();
+  initTouchGestures();
 });
 
 function renderDate(){
@@ -2407,7 +2408,6 @@ window.renderFasikulCards = renderFasikulCards;
 window.normalizeFasikulKonular = normalizeFasikulKonular;
 window.normalizePdfFileName = normalizePdfFileName;
 window.readBundledJson = readBundledJson;
-window.bundledSourceCache = bundledSourceCache;
 window.hydrateBundledFasikul = hydrateBundledFasikul;
 window.isGuestSession = isGuestSession;
 window.closeModal = closeModal;
@@ -2449,3 +2449,5 @@ window.toggleKullaniciActive = toggleKullaniciActive;
 window.resetKullaniciPassword = resetKullaniciPassword;
 window.DEMO_SNAPSHOT = DEMO_SNAPSHOT;
 window.selectEduDir = selectEduDir;
+window.handleBulkPdfImport = handleBulkPdfImport;
+window.updateEduDirUI = updateEduDirUI;

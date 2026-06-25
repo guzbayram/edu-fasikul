@@ -1,8 +1,8 @@
 import { appState } from '../state/appState.js';
 
 function setTool(btn, tool){
-  document.querySelectorAll('#toolGroup .tool-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('.tool-btn[data-tool]').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll(`.tool-btn[data-tool="${tool}"]`).forEach(b=>b.classList.add('active'));
   appState.drawTool = tool;
   applyTool(tool);
 }
