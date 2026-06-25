@@ -372,16 +372,19 @@ function markVideoWatched(ak){
 // Sağ panelde konu videosu başlık bloğu (izle butonu + durum)
 function renderKonuVideoBlockHtml(ak){
   const watched = isVideoWatched(ak);
-  const dur = ak.videoDuration ? ` • ${ak.videoDuration}` : '';
+  const durTxt = ak.videoDuration ? `• ${ak.videoDuration} ` : '';
+  const statusTxt = watched ? '• ✅ İzlendi' : '• 🔒 Kilitli';
   return `
-    <div class="konu-video-block" style="background:var(--bg-3);border:1px solid var(--border-strong);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <div style="font-size:30px;line-height:1">🎬</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;color:var(--text-0);line-height:1.3">${escapeHtml(ak.ad)}</div>
-        <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px">Konu Videosu${dur} ${watched?'• ✅ İzlendi':'• 🔒 Sorular kilitli'}</div>
+    <div class="konu-video-block" style="background:var(--bg-3);border:1px solid var(--border-strong);border-radius:14px;padding:12px 14px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:28px;line-height:1;flex-shrink:0">🎬</div>
+        <div style="flex:1;min-width:0;text-align:center;font-size:13px;font-weight:700;color:var(--text-0);line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${escapeHtml(ak.ad)}</div>
+        <div style="flex-shrink:0;font-size:11px;color:var(--text-muted);text-align:right;line-height:1.4">${durTxt}${statusTxt}</div>
       </div>
-      <button class="modal-btn mb-primary" style="padding:8px 14px" onclick="playKonuVideo()">▶ ${watched?'Tekrar İzle':'Konu Videosunu İzle'}</button>
-      ${watched?'':`<button class="modal-btn mb-secondary" style="padding:8px 12px" onclick="markVideoWatched()">✓ İzledim</button>`}
+      <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+        <button class="modal-btn mb-primary" style="padding:8px 16px" onclick="playKonuVideo()">▶ ${watched?'Tekrar İzle':'Konu Videosunu İzle'}</button>
+        ${watched?'':`<button class="modal-btn mb-secondary" style="padding:8px 12px" onclick="markVideoWatched()">✓ İzledim</button>`}
+      </div>
     </div>`;
 }
 function playKonuVideo(){
