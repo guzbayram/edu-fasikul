@@ -2771,8 +2771,8 @@ a{color:inherit;text-decoration:none}
      Panel yüksekliği birimlerden türetilir; PDF ofseti hep senkron. ════ */
   #reader-overlay{
     --rp-row:clamp(30px,4vh,42px);
-    /* Panel ekran yüksekliğinin %30'unu GEÇMEZ; 8 birim (nav satırı kalktı) */
-    --rp-ph:min(30vh, calc(var(--rp-row) * 8 + 6px));
+    /* Panel ekran yüksekliğinin %30'unu GEÇMEZ; 7.4 birim (cevap 1.4u) */
+    --rp-ph:min(30vh, calc(var(--rp-row) * 7.4 + 6px));
   }
 
   /* ── SATIR 1+2: Konu adı (sol) + Konu Listesi ikonu (sağ) / alt: soru·süre·Net ── */
@@ -2803,7 +2803,7 @@ a{color:inherit;text-decoration:none}
   .kl-label{display:none!important}
   .kl-bars{width:15px!important;gap:3px!important}
   .rp-stats-row{
-    display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:center!important;
+    display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-start!important;
     height:var(--rp-row)!important;
     gap:12px!important;font-size:11px!important;color:var(--text-muted)!important;
     padding:0 12px!important;border-top:1px solid var(--border)!important;overflow:hidden!important;
@@ -2848,10 +2848,10 @@ a{color:inherit;text-decoration:none}
     font-size:11px!important;overflow-x:auto!important;overflow-y:hidden!important;
   }
 
-  /* ── SATIR 5 (2 BİRİM): ABCDE daire butonları ── */
+  /* ── SATIR 5 (1.4 BİRİM): ABCDE daire butonları ── */
   .soru-list{
     width:100%!important;flex-shrink:0!important;overflow:hidden!important;
-    height:calc(var(--rp-row) * 2)!important;min-height:calc(var(--rp-row) * 2)!important;
+    height:calc(var(--rp-row) * 1.4)!important;min-height:calc(var(--rp-row) * 1.4)!important;
     display:flex!important;align-items:center!important;justify-content:center!important;
     padding:0 12px!important;border-bottom:1px solid var(--border)!important;
     position:static!important;background:transparent!important;
@@ -2889,9 +2889,11 @@ a{color:inherit;text-decoration:none}
     border-bottom:1px solid var(--border)!important;overflow:hidden!important;
   }
   .tp-label{
-    display:flex!important;justify-content:space-between!important;
+    display:flex!important;justify-content:flex-start!important;
     font-size:10px!important;color:var(--text-muted)!important;
   }
+  /* "Net: 1.00" ilerleme satırından kaldırıldı — üst satırlarda zaten var */
+  #tpNet{display:none!important}
   .tp-track{display:block!important;height:6px!important}
   .test-control{display:none!important}
   .finish-test-btn{display:none!important}
