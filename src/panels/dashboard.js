@@ -644,8 +644,9 @@ async function openFasikulModal(fasikulId){
   await populateFasikulSourceSelect(fasikulId);
   silBtn.style.display = 'none';
   document.getElementById('fasikulModalTitle').textContent = '📚 Fasikül Ekle';
-  // Düzenleme: drawer açık olmasa da fasikülün sahibi dersi MANIFEST'ten çöz.
-  let ders = currentDrawerDers;
+  // Düzenleme: drawer açık olmasa da fasikülün sahibi dersi çöz.
+  // main.js drawer açınca window.currentDrawerDers'i set ediyor (split-brain köprüsü).
+  let ders = window.currentDrawerDers || currentDrawerDers;
   if(fasikulId && (!ders || !ders.fasikuller?.some(f=>f.id===fasikulId))){
     ders = window.MANIFEST?.dersler?.find(d=>d.fasikuller?.some(f=>f.id===fasikulId)) || ders;
   }
@@ -745,7 +746,7 @@ function saveFasikul(){
   // Hedef dersi çöz: aktif drawer dersi yoksa seçilen kaynağın dersId'sinden
   // (drawer açılmadan "+ Fasikül Ekle" ile gelindiğinde de çalışsın), düzenlemede
   // ise fasikülü içeren dersten bul.
-  let ders = currentDrawerDers;
+  let ders = window.currentDrawerDers || currentDrawerDers;
   if(!ders && source) ders = window.MANIFEST?.dersler?.find(d=>d.id===source.dersId) || null;
   if(!ders && editId) ders = window.MANIFEST?.dersler?.find(d=>d.fasikuller?.some(f=>f.id===editId)) || null;
   if(!ders){ showToast('Önce bir ders seç','error'); return; }
