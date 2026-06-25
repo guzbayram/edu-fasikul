@@ -526,6 +526,7 @@
 
       <!-- Portrait çizim araçları satırı (portrait modda görünür) -->
       <div class="rp-tools-bar" id="rpToolsBar">
+        <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · soru geçişi)">✋</button>
         <button class="tool-btn active" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
         <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
         <span class="eraser-size-group" style="display:none;gap:4px;align-items:center">
@@ -560,6 +561,7 @@
   <div class="solve-palette" id="solvePalette">
     <div class="sp-handle" id="spHandle" title="Taşı">⠿⠿</div>
     <div class="sp-row sp-tools">
+      <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · zoom · soru geçişi)">✋</button>
       <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
       <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
       <span class="sp-sep"></span>

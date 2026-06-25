@@ -841,10 +841,10 @@ function initLongPressDraw(){
   wrap.dataset.lpDrawReady = '1';
 
   const FREE_DRAW = new Set(['pen','tukenmez','marker']);
-  const MOVE_THRESHOLD = 10;  // px — bu kadar kayma = jest başladı
-  const DRAW_HOLD = 250;      // ilk hareket bu süreden önce/sonra → çiz/pan ayrımı
+  const MOVE_THRESHOLD = 8;   // px — jest başladı eşiği
   const MENU_HOLD = 1000;     // 1sn sabit basış → Görünüm Modu menüsü
-  const SWIPE_MIN = 90;       // tam ekranda soru geçişi için min kaydırma
+  const FLICK_MAX_MS = 500;   // bu süreden hızlı + uzun kaydırma = flick (soru geçişi)
+  const FLICK_MIN = 70;       // flick için min mesafe
   let s = null; // gesture state
 
   function findFabricAt(x, y){
@@ -880,19 +880,24 @@ function initLongPressDraw(){
       try{ s.fc.freeDrawingBrush.onMouseUp({ e: FAKE_E }); }catch(_e){}
     }
   }
-  const isSolve = ()=> document.getElementById('reader-overlay')?.classList.contains('solve-mode');
-
+  // ARAÇ = MOD (tahmin yok → akış su gibi):
+  //  ✏️ kalem/tükenmez/fosforlu → parmak hareketi ÇİZER
+  //  ✋ Gez (select)            → parmak PAN; hızlı kaydırma (flick) SORU GEÇİRİR
+  //  🗑️ silgi / metin          → Fabric'in kendi dokunma davranışı (devralmayız)
+  //  Her ikisi: 1sn sabit basış → Görünüm Modu menüsü · 2 parmak → pinch zoom
   wrap.addEventListener('touchstart', e => {
     if(e.touches.length !== 1){ if(s){ clearTimeout(s.menuTimer); endStroke(); s = null; } return; }
     const t = e.touches[0];
     if(t.touchType === 'stylus') return;          // Apple Pencil → Fabric doğrudan çizsin
-    if(!FREE_DRAW.has(appState.drawTool)) return;  // diğer araçlar mevcut davranış
-    e.preventDefault(); e.stopPropagation();        // Fabric bu dokunuşu almasın
+    const tool = appState.drawTool;
+    const isDraw = FREE_DRAW.has(tool);
+    const isNav  = (tool === 'select');
+    if(!isDraw && !isNav) return;                 // silgi/metin → Fabric native
+    e.preventDefault(); e.stopPropagation();
     appState._touchGestureActive = true;
     s = { x0:t.clientX, y0:t.clientY, lastX:t.clientX, lastY:t.clientY,
           sl:wrap.scrollLeft, st:wrap.scrollTop, t0:Date.now(),
-          mode:'pending', fc:null, inv:isSolve(), menuTimer:null };
-    // 1sn sabit basış → Görünüm Modu menüsü (çift-tık yerine — yazarken kazara açılmasın)
+          mode:'pending', fc:null, isDraw, isNav, menuTimer:null };
     s.menuTimer = setTimeout(()=>{
       if(!s || s.mode !== 'pending') return;
       s.mode = 'menu';
@@ -903,14 +908,13 @@ function initLongPressDraw(){
 
   wrap.addEventListener('touchmove', e => {
     if(!s || e.touches.length !== 1) return;
-    e.preventDefault(); e.stopPropagation();        // gesture boyunca Fabric'i bloke et
+    e.preventDefault(); e.stopPropagation();
     const t = e.touches[0];
     s.lastX = t.clientX; s.lastY = t.clientY;
     if(s.mode === 'pending' && Math.hypot(t.clientX - s.x0, t.clientY - s.y0) > MOVE_THRESHOLD){
       clearTimeout(s.menuTimer);
-      const fast = (Date.now() - s.t0) < DRAW_HOLD;
-      // normal: hızlı=pan, bekleyip-hareket=çiz · tam ekran(inv): hızlı=çiz, bekleyip-hareket=pan
-      if(s.inv ? fast : !fast) startDraw(); else s.mode = 'pan';
+      if(s.isDraw) startDraw();   // çizim aracı → hemen çiz
+      else s.mode = 'pan';        // ✋ Gez → pan
     }
     if(s.mode === 'pan'){
       wrap.scrollLeft = s.sl - (t.clientX - s.x0);
@@ -923,10 +927,10 @@ function initLongPressDraw(){
   const onEnd = ()=>{
     if(!s) return;
     clearTimeout(s.menuTimer);
-    // Tam ekranda pan ile sağa/yukarı kaydır → sonraki soru (sol/aşağı → önceki)
-    if(s.inv && s.mode === 'pan'){
-      const dx = s.lastX - s.x0, dy = s.lastY - s.y0;
-      if(Math.max(Math.abs(dx), Math.abs(dy)) > SWIPE_MIN){
+    // ✋ Gez modunda hızlı kaydırma (flick) → sağa/yukarı sonraki, sol/aşağı önceki soru
+    if(s.isNav && s.mode === 'pan'){
+      const dx = s.lastX - s.x0, dy = s.lastY - s.y0, dur = Date.now() - s.t0;
+      if(dur < FLICK_MAX_MS && Math.max(Math.abs(dx), Math.abs(dy)) > FLICK_MIN){
         if(Math.abs(dx) >= Math.abs(dy)) (dx > 0 ? window.nextQuestion : window.prevQuestion)?.();
         else                              (dy < 0 ? window.nextQuestion : window.prevQuestion)?.();
       }

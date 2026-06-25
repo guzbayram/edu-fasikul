@@ -15,6 +15,9 @@ function enterSolveMode(){
   if(!ov || !ov.classList.contains('open')) return;
   ov.classList.add('solve-mode');
   renderSolveAnswers();
+  // Tam ekrana girince varsayılan: ✋ Gez (pan/zoom/soru geçişi anında çalışsın)
+  const gez = document.querySelector('.solve-palette [data-tool="select"]');
+  if(gez && window.setTool) window.setTool(gez, 'select');
   // PDF'in yeni alana göre yeniden boyutlanması için
   setTimeout(()=>{ try{ window.dispatchEvent(new Event('resize')); }catch(_e){} }, 60);
 }
