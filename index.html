@@ -479,11 +479,6 @@
             <span class="kl-label">Konu Listesi</span>
           </button>
         </div>
-        <div class="rp-stats-row">
-          <div class="rp-stat">📝 <span id="rpSoruSayisi">0 Soru</span></div>
-          <div class="rp-stat">⏱️ <span id="rpSure">0:00</span></div>
-          <div class="rp-stat">Net: <span id="rpNet">—</span></div>
-        </div>
       </div>
 
       <!-- Otomatik timer -->
@@ -511,7 +506,15 @@
 
       <!-- İlerleme + Önceki/Sonraki -->
       <div class="test-progress-bar">
-        <div class="tp-label"><span id="tpProgress">0 / 0 çözüldü</span><span id="tpNet">Net: —</span></div>
+        <div class="tp-label">
+          <span id="tpProgress">0 / 0 çözüldü</span>
+          <div class="rp-stats-row">
+            <div class="rp-stat">📝 <span id="rpSoruSayisi">0 Soru</span></div>
+            <div class="rp-stat">⏱️ <span id="rpSure">0:00</span></div>
+            <div class="rp-stat">Net: <span id="rpNet">—</span></div>
+          </div>
+          <span id="tpNet">Net: —</span>
+        </div>
         <div class="tp-track"><div class="tp-fill" id="tpFill" style="width:0%"></div></div>
         <div class="tp-nav">
           <button class="tp-nav-btn tp-portrait-konu" onclick="openKonuList()" title="Konu Listesi">☰</button>
