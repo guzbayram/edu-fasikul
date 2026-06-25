@@ -2408,6 +2408,7 @@ window.renderFasikulCards = renderFasikulCards;
 window.normalizeFasikulKonular = normalizeFasikulKonular;
 window.normalizePdfFileName = normalizePdfFileName;
 window.readBundledJson = readBundledJson;
+window.bundledSourceCache = bundledSourceCache;
 window.hydrateBundledFasikul = hydrateBundledFasikul;
 window.isGuestSession = isGuestSession;
 window.closeModal = closeModal;
