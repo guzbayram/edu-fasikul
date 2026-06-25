@@ -53,17 +53,18 @@ export function startRealtimeSync(uid){
       if(!key || !data.json) return;
       if(appState.drawings[key] === data.json) return;
       appState.drawings[key] = data.json;
+      if(data.w && data.h) appState.drawingDims[key] = {w:data.w, h:data.h};
       const aktifId = appState.aktifFasikul?.id;
       const currentPage = appState.currentPage;
       const currentKey = aktifId ? `drawing_${aktifId}_p${currentPage}` : null;
       if(currentKey === key){
         const fc = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
         if(fc){
-          fc.loadFromJSON(data.json, ()=>{ fc.renderAll(); });
+          fc.loadFromJSON(data.json, ()=>{ window.applyDrawingScale?.(fc, key); fc.renderAll(); });
         } else {
           setTimeout(()=>{
             const fc2 = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
-            if(fc2 && appState.drawings[key]) fc2.loadFromJSON(appState.drawings[key], ()=>fc2.renderAll());
+            if(fc2 && appState.drawings[key]) fc2.loadFromJSON(appState.drawings[key], ()=>{ window.applyDrawingScale?.(fc2, key); fc2.renderAll(); });
           }, 1500);
         }
       }

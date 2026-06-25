@@ -1,5 +1,23 @@
 import { appState } from '../state/appState.js';
 
+// Çizim, kaydedildiği canvas boyutuna göre saklanır. Zoom değişip canvas yeniden
+// boyutlanınca nesneleri orana göre ölçekle ki konum/boyut kullanıcının çizdiği
+// yerde kalsın (zoom'dan etkilensin ama kaymasın).
+function applyDrawingScale(fc, key){
+  const dim = appState.drawingDims?.[key];
+  if(!dim || !dim.w || !dim.h || !fc.width || !fc.height) return;
+  const rw = fc.width / dim.w, rh = fc.height / dim.h;
+  if(Math.abs(rw - 1) < 0.002 && Math.abs(rh - 1) < 0.002) return;
+  fc.getObjects().forEach(o => {
+    o.left   = (o.left   || 0) * rw;
+    o.top    = (o.top    || 0) * rh;
+    o.scaleX = (o.scaleX || 1) * rw;
+    o.scaleY = (o.scaleY || 1) * rh;
+    o.setCoords();
+  });
+}
+window.applyDrawingScale = applyDrawingScale;
+
 function initFabricForPage(canvasEl, w, h, pageNum){
   const fc = new fabric.Canvas(canvasEl, {
     isDrawingMode: false, selection: true,
@@ -17,7 +35,7 @@ function initFabricForPage(canvasEl, w, h, pageNum){
   // Kayıtlı çizim varsa yükle
   const key = `drawing_${appState.aktifFasikul?.id}_p${pageNum}`;
   const saved = appState.drawings[key];
-  if(saved){ try{ fc.loadFromJSON(saved, ()=>{ applyTool(appState.drawTool); fc.renderAll(); }); }catch(e){} }
+  if(saved){ try{ fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); applyTool(appState.drawTool); fc.renderAll(); }); }catch(e){} }
 
   // Tıklandığında aktif canvas olarak seç
   fc._pageSelectHandler = ()=>{
@@ -50,7 +68,8 @@ function saveDrawingForPage(pageNum){
   const key = `drawing_${appState.aktifFasikul.id}_p${pageNum}`;
   const json=JSON.stringify(fc);
   appState.drawings[key] = json;
-  persistDrawingCloud(key,json);
+  appState.drawingDims[key] = { w: fc.width, h: fc.height };
+  persistDrawingCloud(key, json, fc.width, fc.height);
 }
 
 function setObjectsInteractive(fc, selectable){
@@ -110,7 +129,7 @@ function initFabricOnCanvas(canvasEl, w, h){
   const key = `drawing_${appState.aktifFasikul?.id}_p${appState.currentPage}`;
   const saved = appState.drawings[key];
   if(saved){
-    try{ fc.loadFromJSON(saved, ()=>fc.renderAll()); }catch(e){}
+    try{ fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); fc.renderAll(); }); }catch(e){}
   }
 
   // Otomatik kayıt (800ms debounce)
@@ -137,7 +156,8 @@ function saveDrawing(){
       const key = `drawing_${appState.aktifFasikul.id}_p${pn}`;
       const json=JSON.stringify(fc);
       appState.drawings[key] = json;
-      persistDrawingCloud(key,json);
+      appState.drawingDims[key] = { w: fc.width, h: fc.height };
+      persistDrawingCloud(key, json, fc.width, fc.height);
     });
   } else {
     const fc = appState.fabricCanvas;
@@ -145,7 +165,8 @@ function saveDrawing(){
     const key = `drawing_${appState.aktifFasikul.id}_p${appState.currentPage}`;
     const json=JSON.stringify(fc);
     appState.drawings[key] = json;
-    persistDrawingCloud(key,json);
+    appState.drawingDims[key] = { w: fc.width, h: fc.height };
+    persistDrawingCloud(key, json, fc.width, fc.height);
   }
   const ind = document.getElementById('readerToolbar').querySelector('[title="Kaydet (Ctrl+S)"]');
   if(ind) { ind.style.color='var(--green)'; setTimeout(()=>ind.style.color='',800); }

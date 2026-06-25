@@ -37,6 +37,7 @@ export const appState = {
   ],
   pdfDoc: null,
   drawings: {},
+  drawingDims: {},
   undoStack: [],
   redoStack: [],
   fabricCanvas: null,

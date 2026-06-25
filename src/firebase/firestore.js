@@ -151,11 +151,13 @@ function _persistYeniCozumler(uid){
   });
 }
 
-export function persistDrawingCloud(key,json){
+export function persistDrawingCloud(key,json,w,h){
   const uid=_getUserKey();
   if(!uid || !json || !window._firestoreReady) return;
   const ref=window._fsDoc(window._db,'kullanicilar',uid,'cizimler',_safeDocId(key));
-  window._fsSetDoc(ref,{key,json,fasikulId:appState.aktifFasikul?.id||'',updatedAt:new Date().toISOString()},{merge:true})
+  const payload={key,json,fasikulId:appState.aktifFasikul?.id||'',updatedAt:new Date().toISOString()};
+  if(w) payload.w=w; if(h) payload.h=h;
+  window._fsSetDoc(ref,payload,{merge:true})
     .catch(e=>console.warn('Çizim buluta kaydedilemedi:',e));
 }
 
@@ -302,7 +304,7 @@ export async function loadFromFirestore(){
       const drawings={...appState.drawings};
       drawingSnap.forEach(d=>{
         const c=d.data();
-        if(c.key && c.json) drawings[c.key]=c.json;
+        if(c.key && c.json){ drawings[c.key]=c.json; if(c.w && c.h) appState.drawingDims[c.key]={w:c.w,h:c.h}; }
       });
       appState.drawings=drawings;
     }catch(e){ console.warn('Çizimler yüklenemedi:',e); }
