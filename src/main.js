@@ -302,6 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initCardZoomPan();
   initTouchGestures();
+  initLongPressDraw();
 });
 
 // ══════════════════════════════

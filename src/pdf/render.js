@@ -824,6 +824,80 @@ function initTouchGestures() {
   wrap.addEventListener('touchcancel', commitGesture, { passive: false, capture: true });
 }
 
+// ══════════════════════════════════════════════════════════
+// TELEFON: tek parmak PAN/scroll · uzun basıp ÇİZ · 2 parmak zoom
+// Apple Pencil (touchType='stylus') doğrudan çizer. Serbest çizim
+// araçlarında (kalem/tükenmez/fosforlu) Fabric'in tek-parmak çizimini
+// devralır: hareket → pan, 250ms basılı tut → fırçayı manuel sür (çiz).
+// ══════════════════════════════════════════════════════════
+function initLongPressDraw(){
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap || wrap.dataset.lpDrawReady) return;
+  wrap.dataset.lpDrawReady = '1';
+
+  const FREE_DRAW = new Set(['pen','tukenmez','marker']);
+  const MOVE_THRESHOLD = 10; // px — bu kadar kayma = pan
+  const HOLD_MS = 250;
+  let s = null; // gesture state
+
+  function findFabricAt(x, y){
+    const els = document.elementsFromPoint(x, y) || [];
+    const all = Object.values(appState.fabricCanvases || {});
+    if(appState.fabricCanvas) all.push(appState.fabricCanvas);
+    for(const el of els){
+      for(const fc of all){
+        if(fc && (fc.upperCanvasEl === el || fc.wrapperEl?.contains(el))) return fc;
+      }
+    }
+    return appState.fabricCanvas || null;
+  }
+  function endStroke(){
+    if(s && s.mode === 'draw' && s.fc?.freeDrawingBrush){
+      try{ s.fc.freeDrawingBrush.onMouseUp({ e: null }); }catch(_e){}
+    }
+  }
+
+  wrap.addEventListener('touchstart', e => {
+    if(e.touches.length !== 1){ if(s){ endStroke(); s = null; } return; }
+    const t = e.touches[0];
+    if(t.touchType === 'stylus') return;          // Apple Pencil → Fabric doğrudan çizsin
+    if(!FREE_DRAW.has(appState.drawTool)) return;  // diğer araçlar mevcut davranış
+    e.preventDefault(); e.stopPropagation();        // Fabric bu dokunuşu almasın
+    appState._touchGestureActive = true;
+    s = { x0:t.clientX, y0:t.clientY, sl:wrap.scrollLeft, st:wrap.scrollTop, mode:'pending', fc:null, timer:null };
+    s.timer = setTimeout(()=>{
+      if(!s || s.mode !== 'pending') return;
+      s.mode = 'draw';
+      s.fc = findFabricAt(s.x0, s.y0);
+      if(s.fc?.freeDrawingBrush){
+        try{ s.fc.freeDrawingBrush.onMouseDown(s.fc.getPointer({clientX:s.x0, clientY:s.y0}), { e }); }catch(_e){}
+        navigator.vibrate?.(12);
+      }
+    }, HOLD_MS);
+  }, { passive:false, capture:true });
+
+  wrap.addEventListener('touchmove', e => {
+    if(!s || e.touches.length !== 1) return;
+    e.preventDefault(); e.stopPropagation();        // gesture boyunca Fabric'i bloke et
+    const t = e.touches[0];
+    if(s.mode === 'pending'){
+      if(Math.hypot(t.clientX - s.x0, t.clientY - s.y0) > MOVE_THRESHOLD){
+        clearTimeout(s.timer); s.mode = 'pan';
+      }
+    }
+    if(s.mode === 'pan'){
+      wrap.scrollLeft = s.sl - (t.clientX - s.x0);
+      wrap.scrollTop  = s.st - (t.clientY - s.y0);
+    } else if(s.mode === 'draw' && s.fc?.freeDrawingBrush){
+      try{ s.fc.freeDrawingBrush.onMouseMove(s.fc.getPointer({clientX:t.clientX, clientY:t.clientY}), { e }); }catch(_e){}
+    }
+  }, { passive:false, capture:true });
+
+  const onEnd = ()=>{ if(!s) return; clearTimeout(s.timer); endStroke(); s = null; appState._touchGestureActive = false; };
+  wrap.addEventListener('touchend',    onEnd, { passive:false, capture:true });
+  wrap.addEventListener('touchcancel', onEnd, { passive:false, capture:true });
+}
+
 
 // ── Bu modülün fonksiyonlarını window'a kaydet ──
 // main.js ve diğer modüller window.xxx ile çağırabilsin
@@ -846,6 +920,7 @@ window.setViewMode = setViewMode;
 window.openViewModeMenu = openViewModeMenu;
 window.initPDFContextMenu = initPDFContextMenu;
 window.initTouchGestures = initTouchGestures;
+window.initLongPressDraw = initLongPressDraw;
 window.buildMockPageContent = buildMockPageContent;
 window.changePage = changePage;
 window.goToPage = goToPage;
