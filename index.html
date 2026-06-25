@@ -556,6 +556,28 @@
 
   </div>
 
+  <!-- ═══ TELEFON: Tam ekran çözüm modu — yüzer/sürüklenebilir araç paleti ═══ -->
+  <div class="solve-palette" id="solvePalette">
+    <div class="sp-handle" id="spHandle" title="Taşı">⠿⠿</div>
+    <div class="sp-row sp-tools">
+      <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+      <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+      <span class="sp-sep"></span>
+      <div class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></div>
+      <div class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></div>
+      <div class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></div>
+      <div class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></div>
+      <span class="sp-sep"></span>
+      <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
+      <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
+    </div>
+    <div class="sp-row sp-answers" id="spAnswers"></div>
+    <div class="sp-row sp-actions">
+      <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
+      <button class="tool-btn sp-exit" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
+    </div>
+  </div>
+
   <!-- ═══ KONU SEÇİM MODAL (tüm ekran üstünde, toolbar altında) ═══ -->
   <div class="konu-modal-backdrop" id="konuModalBackdrop" onclick="closeKonuModal()" style="display:none"></div>
   <div class="konu-modal" id="konuModal" style="display:none">

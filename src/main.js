@@ -30,6 +30,7 @@ import './drawing/tools.js';
 import './reader/index.js';
 import './reader/toolbar.js';
 import './reader/panel.js';
+import './reader/solve.js';
 
 // ─── Faz 4 Modülleri ────────────────────────────────────
 import './ui/toast.js';

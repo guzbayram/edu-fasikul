@@ -136,6 +136,8 @@ function renderTekSoruKartEl(card, sorular, idx){
 function renderTekSoruKart(sorular, idx){
   const card = document.getElementById('tekSoruCard');
   renderTekSoruKartEl(card, sorular, idx);
+  // Çözüm modu paleti açıksa A–E cevaplarını da güncelle
+  window.renderSolveAnswers?.();
 }
 
 function renderSurekliMod(sorular){
