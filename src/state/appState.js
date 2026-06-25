@@ -23,6 +23,7 @@ export const appState = {
   timer2minLast: 0,
   altKonuStats: {},
   sorularState: {},
+  videoWatched: {},
   activeQuestionIdx: 0,
   soruListMode: 'tek',
   readingMode: false,
