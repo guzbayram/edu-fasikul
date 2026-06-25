@@ -2743,15 +2743,19 @@ a{color:inherit;text-decoration:none}
    ═══════════════════════════════════════════════════════════════════ */
 @media (orientation:portrait){
 
-  /* ── PANEL: toolbar altında sabit kuşak, overflow:hidden ── */
+  /* ── Üst araç çubuğu portrait'te GİZLİ — çizim araçları/çıkış/konu zaten panelde.
+     Panel ekranın en üstüne yapışsın (konu adı + ≡ en üstte). ── */
+  .reader-toolbar{display:none!important}
+  /* ── PANEL: ekranın en üstünde sabit kuşak, overflow:hidden ── */
   .reader-right{
     position:fixed!important;
-    top:56px!important;left:0!important;right:0!important;bottom:auto!important;
+    top:0!important;left:0!important;right:0!important;bottom:auto!important;
     width:100%!important;height:auto!important;max-height:none!important;
     display:flex!important;flex-direction:column!important;
     overflow:hidden!important;
     border:none!important;border-bottom:1.5px solid var(--border-strong)!important;
     z-index:350!important;background:var(--bg-1)!important;padding:0!important;gap:0!important;
+    padding-top:env(safe-area-inset-top)!important;
   }
   /* Konu section: portrait'te modal kullanılıyor, panel saklı */
   .rp-konu-section{display:none!important}
@@ -2765,9 +2769,9 @@ a{color:inherit;text-decoration:none}
      Tek birim --rp-row; 7 satır 1 birim, cevap (A–E) satırı 2 birim.
      Panel yüksekliği birimlerden türetilir; PDF ofseti hep senkron. ════ */
   #reader-overlay{
-    --rp-row:clamp(32px,4.4vh,44px);
-    /* Panel ekran yüksekliğinin %40'ını GEÇMEZ; 9 birim sığmazsa panel içinde kayar */
-    --rp-ph:min(40vh, calc(var(--rp-row) * 9 + 7px));
+    --rp-row:clamp(30px,4vh,42px);
+    /* Panel ekran yüksekliğinin %30'unu GEÇMEZ; 9 birim sığmazsa panel içinde kayar */
+    --rp-ph:min(30vh, calc(var(--rp-row) * 9 + 7px));
   }
 
   /* ── SATIR 1+2: Konu adı (sol) + Konu Listesi ikonu (sağ) / alt: soru·süre·Net ── */
@@ -2916,7 +2920,8 @@ a{color:inherit;text-decoration:none}
   /* ── CANVAS ofseti: panel yüksekliği = --rp-ph; taşarsa panel içinde kayar ── */
   .reader-right{height:var(--rp-ph)!important;max-height:var(--rp-ph)!important;overflow:hidden!important}
   .rp-soru-section{overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
-  .reader-center{padding-left:0!important;padding-top:56px!important;padding-right:0!important}
+  /* Toolbar gizli → reader-center üst boşluğu 0; canvas panel altından başlar */
+  .reader-center{padding-left:0!important;padding-top:0!important;padding-right:0!important}
   .reader-canvas-wrap{
     padding-top:calc(var(--rp-ph) + 4px)!important;
     padding-bottom:calc(44px + 8px)!important;
@@ -2946,12 +2951,12 @@ a{color:inherit;text-decoration:none}
   #reader-overlay.konu-modal-open .reader-right,
   #reader-overlay.konu-modal-open .reader-bottom-bar{display:none!important}
   #reader-overlay.konu-modal-open .konu-modal{
-    top:56px!important;
-    max-height:calc(100vh - 56px)!important;
-    min-height:calc(100vh - 56px)!important;
+    top:0!important;
+    max-height:100vh!important;
+    min-height:100vh!important;
     border-radius:0!important;width:100vw!important;
   }
-  #reader-overlay.konu-modal-open .konu-modal-backdrop{top:56px!important}
+  #reader-overlay.konu-modal-open .konu-modal-backdrop{top:0!important}
 }
 
 /* ═══════════════════════════════════════════════════════════════════
