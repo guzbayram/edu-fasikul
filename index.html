@@ -251,6 +251,11 @@
           </div>
         </div>
         <div class="profil-section">
+          <div class="profil-section-title">🎨 Simge Ayarları</div>
+          <div class="pref-sub" style="font-size:12px;color:var(--text-muted);margin:-4px 0 10px">Bu cihazda görünen simgeleri seç. (Yalnızca bu cihazı etkiler.)</div>
+          <div id="iconSettings"></div>
+        </div>
+        <div class="profil-section">
           <div class="profil-section-title">💾 Veri Yönetimi</div>
           <div class="pref-row">
             <span class="pref-label">Verilerimi Dışa Aktar</span>
@@ -398,7 +403,7 @@
       <div class="toolbar-spacer"></div>
       <!-- Right controls -->
       <div class="tool-group reader-meta-actions">
-        <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">🔗</button>
+        <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
         <label class="tool-btn" for="pdfFileInputToolbar" title="PDF Yükle / Değiştir" style="cursor:pointer">📂</label>
         <input type="file" id="pdfFileInputToolbar" accept=".pdf" style="display:none" onchange="handlePDFUpload(this)">
         <button class="tool-btn" id="viewModeBtn" onclick="openViewModeMenu(event)" title="Görünüm Modu">📄</button>
@@ -519,7 +524,7 @@
         <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
         <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
         <span class="rp-tools-sep"></span>
-        <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">🔗</button>
+        <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
       </div>
     </div>
 

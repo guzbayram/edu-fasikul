@@ -127,7 +127,7 @@ function renderTekSoruKartEl(card, sorular, idx){
       ${isKonuKart ? '' : `<div class="tsk-cevap-row">${btns}</div>`}
       <div class="tsk-actions" ${isKonuKart ? 'style="display:none"' : ''}>
         <button class="tsk-action-btn" onclick="skipQuestion('${s._uid||s.no}',${idx})">⏭️ Atla</button>
-        <button class="tsk-action-btn cozum-btn" onclick="showCozum(${idx})">👁️ Çözüm</button>
+        <button class="tsk-action-btn cozum-btn" onclick="showCozum(${idx})">${window.getUiIcon?.('cozum')||'🎥'} Çözüm</button>
       </div>
     </div>`;
 }
@@ -436,7 +436,7 @@ function showCozum(idx){
   const videoLinks = window.appData?.cozumVideoLinkleri || appState.aktifFasikul?.cozumVideoLinkleri || {};
   const videoUrl = soru.cozumVideoUrl || soru.cozumVideoURL || soru.cozumUrl || soru.videoUrl || videoLinks[soru.cozumLinkKey];
   if(videoUrl){
-    playVideoModal(videoUrl, { title:`👁️ S.${soru.no} Çözümü` });
+    playVideoModal(videoUrl, { title:`${window.getUiIcon?.('cozum')||'🎥'} S.${soru.no} Çözümü` });
     return;
   }
   const solution = getSolutionForQuestion(alt, soru);

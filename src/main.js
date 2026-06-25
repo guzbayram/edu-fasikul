@@ -259,6 +259,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const saved = localStorage.getItem('edu_theme');
   if(saved && saved !== appState.theme) toggleTheme();
   loadPreferences();
+  applyUiIcons();
+  renderIconSettings();
 
   // v4: Load persisted data
   loadPersistedData();
@@ -300,6 +302,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   initCardZoomPan();
   initTouchGestures();
 });
+
+// ══════════════════════════════
+// ÖZELLEŞTİRİLEBİLİR SİMGELER (cihaz başına; localStorage)
+// ══════════════════════════════
+const UI_ICONS = {
+  live:  { label:'📡 Canlı Ders',  def:'📡', opts:['📡','🔗','👥','🟢','🔄','🤝'] },
+  cozum: { label:'🎥 Çözüm',       def:'🎥', opts:['🎥','▶️','🎬','💡','📺','✅'] }
+};
+function _loadUiIcons(){ try{ return JSON.parse(localStorage.getItem('edu_ui_icons')||'{}'); }catch(e){ return {}; } }
+function getUiIcon(id){ const s=_loadUiIcons(); return s[id] || UI_ICONS[id]?.def || ''; }
+function setUiIcon(id, icon){
+  const s=_loadUiIcons(); s[id]=icon;
+  try{ localStorage.setItem('edu_ui_icons', JSON.stringify(s)); }catch(e){}
+  applyUiIcons(); renderIconSettings();
+}
+function applyUiIcons(){
+  document.querySelectorAll('.live-session-btn').forEach(b=>{ b.textContent = getUiIcon('live'); });
+  // Çözüm butonu dinamik render — açık soru kartı varsa yeniden çiz
+  if(appState.aktifAltKonu?.sorular && document.getElementById('tekSoruCard')){
+    window.renderTekSoruKart?.(appState.aktifAltKonu.sorular, appState.activeQuestionIdx);
+  }
+}
+function renderIconSettings(){
+  const wrap=document.getElementById('iconSettings'); if(!wrap) return;
+  wrap.innerHTML = Object.entries(UI_ICONS).map(([id,cfg])=>{
+    const cur=getUiIcon(id);
+    const opts=cfg.opts.map(o=>`<button class="icon-opt${o===cur?' active':''}" type="button" onclick="setUiIcon('${id}','${o}')">${o}</button>`).join('');
+    return `<div class="icon-row"><span class="icon-row-label">${cfg.label}</span><div class="icon-opts">${opts}</div></div>`;
+  }).join('');
+}
+window.getUiIcon = getUiIcon;
+window.setUiIcon = setUiIcon;
+window.applyUiIcons = applyUiIcons;
+window.renderIconSettings = renderIconSettings;
 
 function renderDate(){
   const d = new Date();
