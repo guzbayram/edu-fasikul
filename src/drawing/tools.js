@@ -16,6 +16,22 @@ function setEraserSize(btn, size){
   document.querySelectorAll('.eraser-size-btn').forEach(b=>{
     b.classList.toggle('active', Number(b.dataset.esize) === size);
   });
+  if(appState.drawTool === 'eraser') applyEraserCursor();
+}
+
+// Silgi imleci: seçili boyutta yuvarlak (CSS data-URI cursor)
+function eraserCursorCss(){
+  const r = Math.max(4, appState.eraserSize || 8);
+  const s = r * 2 + 4, c = s / 2;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}"><circle cx="${c}" cy="${c}" r="${r}" fill="rgba(244,63,94,0.12)" stroke="#f43f5e" stroke-width="1.5"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${c} ${c}, cell`;
+}
+function applyEraserCursor(){
+  const css = eraserCursorCss();
+  const canvases = appState.viewMode === 'scroll'
+    ? Object.values(appState.fabricCanvases)
+    : (appState.fabricCanvas ? [appState.fabricCanvas] : []);
+  canvases.forEach(fc => { if(fc?.upperCanvasEl) fc.upperCanvasEl.style.setProperty('cursor', css, 'important'); });
 }
 
 function applyTool(tool){
@@ -87,6 +103,7 @@ function applyTool(tool){
         fc.defaultCursor='cell';
         fc.hoverCursor='cell';
         setObjectsInteractive(fc, false);
+        applyEraserCursor();
         let _erasing = false, _eraseChanged = false;
         const _eraseAt = (opt)=>{
           const p = fc.getPointer(opt.e);
