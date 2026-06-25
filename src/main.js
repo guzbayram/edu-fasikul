@@ -345,10 +345,26 @@ const CAT_FACES = ['🐱','😺','😸','😻','😹','😽','🐈','😼','🐯
 const CAT_CHEERS = ['Harikasın! 🐾','Devam et! 💪','Süpersin! ⭐','Mükemmel! 🌟','Çok iyisin! 🎉','Aferin! 👏','Başaracaksın! 🚀','Mırr… odaklan! 😺'];
 const CAT_SPARKS = ['💖','⭐','✨','🐾','🎈','💫'];
 let _catIdx = 0;
+// Gerçek yavru kedi resmi (cataas.com — telifsiz, anahtarsız, her seferinde rastgele; ara sıra hareketli GIF)
+function _nextCatSrc(){
+  const t = Date.now() + Math.floor(Math.random()*1e6);
+  return Math.random() < 0.3
+    ? `https://cataas.com/cat/gif?t=${t}`
+    : `https://cataas.com/cat?width=160&height=160&t=${t}`;
+}
+function loadCatImage(){
+  const img = document.getElementById('catImg'); const emo = document.getElementById('catEmoji');
+  if(!img) return;
+  img.onload  = ()=>{ img.style.display='block'; if(emo) emo.style.display='none'; };
+  img.onerror = ()=>{ img.style.display='none';  if(emo) emo.style.display=''; }; // resim gelmezse emoji
+  img.src = _nextCatSrc();
+}
 function pokeCat(){
   const el = document.getElementById('catBuddy'); if(!el) return;
+  loadCatImage();
+  // Resim gelmezse görünecek emoji yüzünü de döndür
   _catIdx = (_catIdx + 1) % CAT_FACES.length;
-  el.textContent = CAT_FACES[_catIdx];
+  const emo = document.getElementById('catEmoji'); if(emo) emo.textContent = CAT_FACES[_catIdx];
   el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
   const s = document.createElement('span');
   s.className = 'cat-spark';
@@ -399,6 +415,7 @@ function initCatDrag(){
   };
   cat.addEventListener('pointerup', end);
   cat.addEventListener('pointercancel', end);
+  loadCatImage(); // başlangıçta gerçek bir kedi resmi göster
 }
 window.initCatDrag = initCatDrag;
 
