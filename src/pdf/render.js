@@ -155,6 +155,7 @@ function updateCurrentPageFromScroll(){
     document.getElementById('prevPageBtn').disabled = appState.currentPage === 1;
     document.getElementById('nextPageBtn').disabled = appState.currentPage === appState.totalPages;
     syncNavToPage(closest);
+    window.publishCanli?.();
   }
 }
 

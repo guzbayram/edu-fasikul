@@ -261,6 +261,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadPreferences();
   applyUiIcons();
   renderIconSettings();
+  initCatDrag();
 
   // v4: Load persisted data
   loadPersistedData();
@@ -359,6 +360,47 @@ function pokeCat(){
   if(Math.random() < 0.45) window.showToast?.(CAT_CHEERS[Math.floor(Math.random()*CAT_CHEERS.length)], 'success');
 }
 window.pokeCat = pokeCat;
+
+// Kedi: sürükle-taşı (yüzen pencere) + dokununca değiş; konum cihazda saklanır
+function initCatDrag(){
+  const cat = document.getElementById('catBuddy');
+  if(!cat || cat._dragInit) return;
+  cat._dragInit = true;
+  try{
+    const p = JSON.parse(localStorage.getItem('edu_cat_pos')||'null');
+    if(p && Number.isFinite(p.left) && Number.isFinite(p.top)){
+      cat.style.left=p.left+'px'; cat.style.top=p.top+'px'; cat.style.right='auto'; cat.style.bottom='auto';
+    }
+  }catch(e){}
+  let dragging=false, moved=false, sx=0, sy=0, ox=0, oy=0;
+  cat.addEventListener('pointerdown', e=>{
+    dragging=true; moved=false; sx=e.clientX; sy=e.clientY;
+    const pr=cat.parentElement.getBoundingClientRect(), r=cat.getBoundingClientRect();
+    ox=r.left-pr.left; oy=r.top-pr.top;
+    cat.setPointerCapture?.(e.pointerId);
+  });
+  cat.addEventListener('pointermove', e=>{
+    if(!dragging) return;
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>4 || Math.abs(dy)>4) moved=true;
+    const pr=cat.parentElement.getBoundingClientRect();
+    const nl=Math.max(0, Math.min(ox+dx, pr.width - cat.offsetWidth));
+    const nt=Math.max(0, Math.min(oy+dy, pr.height - cat.offsetHeight));
+    cat.style.left=nl+'px'; cat.style.top=nt+'px'; cat.style.right='auto'; cat.style.bottom='auto';
+  });
+  const end=e=>{
+    if(!dragging) return; dragging=false;
+    try{ cat.releasePointerCapture?.(e.pointerId); }catch(_e){}
+    if(moved){
+      try{ localStorage.setItem('edu_cat_pos', JSON.stringify({left:parseInt(cat.style.left)||0, top:parseInt(cat.style.top)||0})); }catch(_e){}
+    } else {
+      pokeCat(); // sadece dokunma → kedi değişsin
+    }
+  };
+  cat.addEventListener('pointerup', end);
+  cat.addEventListener('pointercancel', end);
+}
+window.initCatDrag = initCatDrag;
 
 function renderDate(){
   const d = new Date();

@@ -22,16 +22,17 @@ export function publishCanli(){
   if(!uid || !fas || !window._firestoreReady || !window._db) return;
   clearTimeout(_publishTimer);
   _publishTimer = setTimeout(()=>{
-    const ref = window._fsDoc(window._db,'kullanicilar',uid,'canli','durum');
-    window._fsSetDoc(ref, {
+    // Kullanıcı dokümanına yaz (cizimler/cozumler gibi kesinlikle izinli yol).
+    const ref = window._fsDoc(window._db,'kullanicilar',uid);
+    window._fsSetDoc(ref, { canli:{
       dersId: appState.aktifDers?.id || '',
       fasikulId: fas.id,
       page: appState.currentPage || 1,
       altKonuId: appState.aktifAltKonu?.id || '',
       by: _liveDeviceId(),
       ts: Date.now()
-    }, {merge:true}).catch(e=>console.warn('Canlı yayın hatası:',e));
-  }, 220);
+    }}, {merge:true}).catch(e=>console.warn('Canlı yayın hatası:',e));
+  }, 200);
 }
 
 async function _followCanli(d){
@@ -55,11 +56,13 @@ async function _followCanli(d){
 export function subscribeCanli(uid){
   unsubscribeCanli();
   if(!window._fsOnSnapshot || !window._db || !uid) return;
-  const ref = window._fsDoc(window._db,'kullanicilar',uid,'canli','durum');
+  const ref = window._fsDoc(window._db,'kullanicilar',uid);
   _canliUnsub = window._fsOnSnapshot(ref, (snap)=>{
     if(!snap.exists() || snap.metadata.hasPendingWrites) return;
-    const d = snap.data();
-    if(!d || d.by === _liveDeviceId()) return; // kendi yazdığımız
+    const d = snap.data()?.canli;
+    if(!d || d.by === _liveDeviceId()) return;             // kendi yazdığımız
+    if(d.ts && d.ts <= (appState._lastCanliTs||0)) return; // zaten uygulandı
+    appState._lastCanliTs = d.ts || Date.now();
     if(appState.liveSession) _followCanli(d);
   }, (err)=>console.warn('Canlı dinleme hatası:',err));
 }
