@@ -856,17 +856,26 @@ function initLongPressDraw(){
     }
     return appState.fabricCanvas || null;
   }
+  // Fabric brush'u manuel sürerken gerçek/null event geçmek _isMainEvent & getPointer'ı
+  // patlatıyor (boş touches). Sahte mouse event + rect tabanlı koordinat kullan.
+  const FAKE_E = { button: 0 };
+  function pointerFor(fc, clientX, clientY){
+    const rect = fc.upperCanvasEl.getBoundingClientRect();
+    const sx = rect.width  ? fc.width  / rect.width  : 1;
+    const sy = rect.height ? fc.height / rect.height : 1;
+    return new fabric.Point((clientX - rect.left) * sx, (clientY - rect.top) * sy);
+  }
   function startDraw(){
     s.mode = 'draw';
     s.fc = findFabricAt(s.x0, s.y0);
     if(s.fc?.freeDrawingBrush){
-      try{ s.fc.freeDrawingBrush.onMouseDown(s.fc.getPointer({clientX:s.x0, clientY:s.y0}), { e:null }); }catch(_e){}
+      try{ s.fc.freeDrawingBrush.onMouseDown(pointerFor(s.fc, s.x0, s.y0), { e:FAKE_E }); }catch(_e){}
       navigator.vibrate?.(10);
     }
   }
   function endStroke(){
     if(s && s.mode === 'draw' && s.fc?.freeDrawingBrush){
-      try{ s.fc.freeDrawingBrush.onMouseUp({ e: null }); }catch(_e){}
+      try{ s.fc.freeDrawingBrush.onMouseUp({ e: FAKE_E }); }catch(_e){}
     }
   }
   const isSolve = ()=> document.getElementById('reader-overlay')?.classList.contains('solve-mode');
@@ -900,7 +909,7 @@ function initLongPressDraw(){
       wrap.scrollLeft = s.sl - (t.clientX - s.x0);
       wrap.scrollTop  = s.st - (t.clientY - s.y0);
     } else if(s.mode === 'draw' && s.fc?.freeDrawingBrush){
-      try{ s.fc.freeDrawingBrush.onMouseMove(s.fc.getPointer({clientX:t.clientX, clientY:t.clientY}), { e }); }catch(_e){}
+      try{ s.fc.freeDrawingBrush.onMouseMove(pointerFor(s.fc, t.clientX, t.clientY), { e:FAKE_E }); }catch(_e){}
     }
   }, { passive:false, capture:true });
 

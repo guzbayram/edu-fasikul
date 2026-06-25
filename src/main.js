@@ -445,24 +445,45 @@ function initCatDrag(){
   });
   cat.addEventListener('pointermove', e=>{
     if(!dragging) return;
+    if(cat.classList.contains('cat-parked')) cat.classList.remove('cat-parked'); // sürükleyince park'tan çık
     const dx=e.clientX-sx, dy=e.clientY-sy;
     if(Math.abs(dx)>4 || Math.abs(dy)>4) moved=true;
     const pr=cat.parentElement.getBoundingClientRect();
-    const nl=Math.max(0, Math.min(ox+dx, pr.width - cat.offsetWidth));
+    // Sağa TAMAMEN kaydırılabilsin diye sağ sınır gevşek (sadece 10px sliver kalır)
+    const nl=Math.max(0, Math.min(ox+dx, pr.width - 10));
     const nt=Math.max(0, Math.min(oy+dy, pr.height - cat.offsetHeight));
     cat.style.left=nl+'px'; cat.style.top=nt+'px'; cat.style.right='auto'; cat.style.bottom='auto';
   });
+  const parkCat=()=>{
+    cat.classList.add('cat-parked');
+    cat.style.left=''; cat.style.right='0';
+    try{ localStorage.setItem('edu_cat_parked','1'); }catch(_e){}
+  };
+  const unparkCat=()=>{
+    cat.classList.remove('cat-parked');
+    const pr=cat.parentElement.getBoundingClientRect();
+    const nl=Math.max(0, pr.width - cat.offsetWidth - 16);
+    cat.style.left=nl+'px'; cat.style.right='auto';
+    try{ localStorage.setItem('edu_cat_parked','0'); localStorage.setItem('edu_cat_pos', JSON.stringify({left:nl, top:parseInt(cat.style.top)||0})); }catch(_e){}
+  };
+  cat._unparkCat = unparkCat;
   const end=e=>{
     if(!dragging) return; dragging=false;
     try{ cat.releasePointerCapture?.(e.pointerId); }catch(_e){}
     if(moved){
-      try{ localStorage.setItem('edu_cat_pos', JSON.stringify({left:parseInt(cat.style.left)||0, top:parseInt(cat.style.top)||0})); }catch(_e){}
+      const pr=cat.parentElement.getBoundingClientRect();
+      const left=parseInt(cat.style.left)||0;
+      // Yarıdan fazlası sağ kenardan taştıysa → park et (kenarda yarı saydam tab)
+      if(left + cat.offsetWidth*0.5 > pr.width){ parkCat(); return; }
+      try{ localStorage.setItem('edu_cat_pos', JSON.stringify({left, top:parseInt(cat.style.top)||0})); }catch(_e){}
     } else {
-      pokeCat(); // sadece dokunma → kedi değişsin
+      if(cat.classList.contains('cat-parked')) unparkCat(); // park'lı kediye dokun → geri gel
+      else pokeCat(); // sadece dokunma → kedi değişsin
     }
   };
   cat.addEventListener('pointerup', end);
   cat.addEventListener('pointercancel', end);
+  try{ if(localStorage.getItem('edu_cat_parked')==='1') cat.classList.add('cat-parked'); }catch(e){}
   applyCatVisibility();
   if(_catOn() && _catMode()==='canli') loadCatImage(); // başlangıçta gerçek bir kedi resmi göster
 }
