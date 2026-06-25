@@ -257,8 +257,15 @@ function getReaderFitScale(page, wrap){
   const rawW = container?.clientWidth || 0;
   const viewportW = Math.max(280, (rawW > 0 ? rawW : window.innerWidth) - padX - 2);
   const natural = page.getViewport({scale: 1});
-  const fitScale = viewportW / natural.width;
-  return Math.max(0.35, fitScale * zoomScale);
+  let base = viewportW / natural.width;
+  // Çözüm modu: sayfanın TAMAMI 16px boşluklu sığsın (contain — genişlik+yükseklik)
+  if(styles && document.getElementById('reader-overlay')?.classList.contains('solve-mode')){
+    const padY = parseFloat(styles.paddingTop || 0) + parseFloat(styles.paddingBottom || 0);
+    const rawH = container?.clientHeight || 0;
+    const viewportH = Math.max(160, (rawH > 0 ? rawH : window.innerHeight) - padY - 2);
+    base = Math.min(base, viewportH / natural.height);
+  }
+  return Math.max(0.35, base * zoomScale);
 }
 
 function sizeReaderStage(stage, wrap, displayW, displayH){

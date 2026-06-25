@@ -439,7 +439,8 @@ a{color:inherit;text-decoration:none}
    Sayfa-wrap inline 'margin:12px/16px auto' ile ortalanıyor; flexbox'ta margin:auto
    justify-content'i ezer. Bu yüzden çocukların sol margin'ini sıfırlıyoruz. */
 #reader-overlay.solve-mode .reader-page-stage{justify-content:flex-start!important}
-#reader-overlay.solve-mode .reader-page-stage > *{margin-left:0!important;margin-right:auto!important}
+#reader-overlay.solve-mode .reader-page-stage > *,
+#reader-overlay.solve-mode [id^="page-wrap-"]{margin-left:0!important;margin-right:auto!important}
 #reader-overlay.solve-mode .solve-palette{display:flex!important}
 
 .solve-palette{
