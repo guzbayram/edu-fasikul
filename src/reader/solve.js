@@ -79,24 +79,12 @@ function initSolvePaletteDrag(){
   handle.addEventListener('pointercancel', end);
 }
 
-// Çift dokunma / çift tık → çözüm modunu aç-kapat (yalnız telefon)
+// Görünüm Modu menüsü: telefonda 1sn sabit basışla açılır (initLongPressDraw içinde).
+// Burada yalnız masaüstü çift-tık desteklenir (yazarken kazara açılmasın diye dokunmada yok).
 function initSolveDoubleTap(){
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap || wrap.dataset.solveDtReady) return;
   wrap.dataset.solveDtReady = '1';
-  let lastTap = 0, lastX = 0, lastY = 0;
-  // Çift dokunma → Görünüm Modu menüsü (Tek Sayfa / Sürekli / Sayfaya Git / Tam Ekran)
-  wrap.addEventListener('touchend', e=>{
-    if(e.changedTouches.length !== 1) return;
-    const t = e.changedTouches[0];
-    const now = Date.now();
-    if(now - lastTap < 300 && Math.hypot(t.clientX - lastX, t.clientY - lastY) < 30){
-      lastTap = 0;
-      window.showContextMenu?.(t.clientX, t.clientY);
-    } else {
-      lastTap = now; lastX = t.clientX; lastY = t.clientY;
-    }
-  }, { passive:true });
   wrap.addEventListener('dblclick', e=>{ window.showContextMenu?.(e.clientX, e.clientY); });
 }
 

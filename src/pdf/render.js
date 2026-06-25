@@ -841,8 +841,10 @@ function initLongPressDraw(){
   wrap.dataset.lpDrawReady = '1';
 
   const FREE_DRAW = new Set(['pen','tukenmez','marker']);
-  const MOVE_THRESHOLD = 10; // px — bu kadar kayma = pan
-  const HOLD_MS = 250;
+  const MOVE_THRESHOLD = 10;  // px — bu kadar kayma = jest başladı
+  const DRAW_HOLD = 250;      // ilk hareket bu süreden önce/sonra → çiz/pan ayrımı
+  const MENU_HOLD = 1000;     // 1sn sabit basış → Görünüm Modu menüsü
+  const SWIPE_MIN = 90;       // tam ekranda soru geçişi için min kaydırma
   let s = null; // gesture state
 
   function findFabricAt(x, y){
@@ -881,29 +883,34 @@ function initLongPressDraw(){
   const isSolve = ()=> document.getElementById('reader-overlay')?.classList.contains('solve-mode');
 
   wrap.addEventListener('touchstart', e => {
-    if(e.touches.length !== 1){ if(s){ endStroke(); s = null; } return; }
+    if(e.touches.length !== 1){ if(s){ clearTimeout(s.menuTimer); endStroke(); s = null; } return; }
     const t = e.touches[0];
     if(t.touchType === 'stylus') return;          // Apple Pencil → Fabric doğrudan çizsin
     if(!FREE_DRAW.has(appState.drawTool)) return;  // diğer araçlar mevcut davranış
     e.preventDefault(); e.stopPropagation();        // Fabric bu dokunuşu almasın
     appState._touchGestureActive = true;
-    // inv = tam ekran çözüm modu → davranış ters: hareket=çiz, bekle=pan
-    s = { x0:t.clientX, y0:t.clientY, sl:wrap.scrollLeft, st:wrap.scrollTop, mode:'pending', fc:null, timer:null, inv:isSolve() };
-    s.timer = setTimeout(()=>{
+    s = { x0:t.clientX, y0:t.clientY, lastX:t.clientX, lastY:t.clientY,
+          sl:wrap.scrollLeft, st:wrap.scrollTop, t0:Date.now(),
+          mode:'pending', fc:null, inv:isSolve(), menuTimer:null };
+    // 1sn sabit basış → Görünüm Modu menüsü (çift-tık yerine — yazarken kazara açılmasın)
+    s.menuTimer = setTimeout(()=>{
       if(!s || s.mode !== 'pending') return;
-      if(s.inv) s.mode = 'pan';   // tam ekran: 250ms bekle → pan
-      else startDraw();           // normal: 250ms bekle → çiz
-    }, HOLD_MS);
+      s.mode = 'menu';
+      window.showContextMenu?.(s.x0, s.y0);
+      navigator.vibrate?.(15);
+    }, MENU_HOLD);
   }, { passive:false, capture:true });
 
   wrap.addEventListener('touchmove', e => {
     if(!s || e.touches.length !== 1) return;
     e.preventDefault(); e.stopPropagation();        // gesture boyunca Fabric'i bloke et
     const t = e.touches[0];
+    s.lastX = t.clientX; s.lastY = t.clientY;
     if(s.mode === 'pending' && Math.hypot(t.clientX - s.x0, t.clientY - s.y0) > MOVE_THRESHOLD){
-      clearTimeout(s.timer);
-      if(s.inv) startDraw();      // tam ekran: hareket → hemen çiz
-      else s.mode = 'pan';        // normal: hareket → pan
+      clearTimeout(s.menuTimer);
+      const fast = (Date.now() - s.t0) < DRAW_HOLD;
+      // normal: hızlı=pan, bekleyip-hareket=çiz · tam ekran(inv): hızlı=çiz, bekleyip-hareket=pan
+      if(s.inv ? fast : !fast) startDraw(); else s.mode = 'pan';
     }
     if(s.mode === 'pan'){
       wrap.scrollLeft = s.sl - (t.clientX - s.x0);
@@ -913,7 +920,20 @@ function initLongPressDraw(){
     }
   }, { passive:false, capture:true });
 
-  const onEnd = ()=>{ if(!s) return; clearTimeout(s.timer); endStroke(); s = null; appState._touchGestureActive = false; };
+  const onEnd = ()=>{
+    if(!s) return;
+    clearTimeout(s.menuTimer);
+    // Tam ekranda pan ile sağa/yukarı kaydır → sonraki soru (sol/aşağı → önceki)
+    if(s.inv && s.mode === 'pan'){
+      const dx = s.lastX - s.x0, dy = s.lastY - s.y0;
+      if(Math.max(Math.abs(dx), Math.abs(dy)) > SWIPE_MIN){
+        if(Math.abs(dx) >= Math.abs(dy)) (dx > 0 ? window.nextQuestion : window.prevQuestion)?.();
+        else                              (dy < 0 ? window.nextQuestion : window.prevQuestion)?.();
+      }
+    }
+    endStroke();
+    s = null; appState._touchGestureActive = false;
+  };
   wrap.addEventListener('touchend',    onEnd, { passive:false, capture:true });
   wrap.addEventListener('touchcancel', onEnd, { passive:false, capture:true });
 }
