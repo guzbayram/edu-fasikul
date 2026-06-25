@@ -115,6 +115,7 @@ function renderTekSoruKartEl(card, sorular, idx){
       <span class="tsk-no">${isKonuKart ? `K.${s.no}` : `S.${s.no}`}</span>
       <span class="tsk-badge ${badgeClass}">${badgeTxt}</span>
       ${isVideoFasikul() ? `<span class="tsk-page" style="cursor:default">${s.grup==='assessment'?'Değerlendirme':'Alıştırma'}</span>` : `<span class="tsk-page" onclick="goToPage(${s.sayfa||appState.currentPage})">Sayfa ${s.sayfa||'?'}</span>`}
+      <span class="tsk-copy" onclick="copySoruKart()" title="Soruyu kopyala — Gemini/GPT/Claude'a yapıştırıp çözüm sor">📋</span>
       <span class="tsk-star ${isStarred?'on':''}" onclick="toggleStar('${s._uid||s.no}')" title="Yıldızla">⭐</span>
     </div>
     <div class="tsk-body">
@@ -2030,6 +2031,40 @@ window.getSolutionForQuestion = getSolutionForQuestion;
 window.findQuestionFlowIndexByPage = findQuestionFlowIndexByPage;
 window.goToFlowItem = goToFlowItem;
 window.changeQuestionPage = changeQuestionPage;
+// Soruyu kopyala: mevcut PDF sayfasını (notlarla birlikte) görsel olarak panoya koy.
+// Kullanıcı Gemini/GPT/Claude gibi LLM'lere yapıştırıp çözüm isteyebilir.
+async function copySoruKart(){
+  try{
+    const pw = document.getElementById('page-wrap-' + appState.currentPage);
+    const pdfC = pw && [...pw.querySelectorAll('canvas')].find(c=>
+      !c.classList.contains('lower-canvas') && !c.classList.contains('upper-canvas') && !c.classList.contains('fabric-draw-canvas'));
+    if(pdfC && pdfC.width && navigator.clipboard && window.ClipboardItem){
+      const off=document.createElement('canvas'); off.width=pdfC.width; off.height=pdfC.height;
+      const ctx=off.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,off.width,off.height);
+      ctx.drawImage(pdfC,0,0);
+      const lc = pw.querySelector('canvas.lower-canvas') || pw.querySelector('canvas.fabric-draw-canvas');
+      if(lc){ try{ ctx.drawImage(lc,0,0,off.width,off.height); }catch(_e){} }
+      const blob = await new Promise(r=>off.toBlob(r,'image/png'));
+      if(blob){
+        await navigator.clipboard.write([new window.ClipboardItem({'image/png':blob})]);
+        showToast("Soru görseli kopyalandı — Gemini/GPT/Claude'a yapıştırıp çözüm iste 🐾",'success');
+        return;
+      }
+    }
+    throw new Error('no-image');
+  }catch(e){
+    copySoruKartText();
+  }
+}
+function copySoruKartText(){
+  const alt=appState.aktifAltKonu; const s=(alt?.sorular||[])[appState.activeQuestionIdx]||{};
+  const t=`Fasikül: ${appState.aktifFasikul?.ad||''}\nKonu: ${appState.aktifKonu?.ad||''}${alt?.ad?(' / '+alt.ad):''}\nSoru no: ${s.no||''}\n\nBu soruyu adım adım çöz ve net şekilde açıkla. (Sorunun görselini de ekleyebilirsin.)`;
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(t).then(()=>showToast('Soru bilgisi metin olarak kopyalandı','info')).catch(()=>showToast('Kopyalanamadı (tarayıcı izni gerekli)','error'));
+  } else { showToast('Kopyalanamadı','error'); }
+}
+window.copySoruKart = copySoruKart;
 window.showCozum = showCozum;
 window.isVideoFasikul = isVideoFasikul;
 window.isVideoWatched = isVideoWatched;

@@ -588,6 +588,11 @@ a{color:inherit;text-decoration:none}
 .cat-spark{position:absolute;pointer-events:none;font-size:18px;z-index:31;animation:catSpark .95s ease-out forwards}
 @keyframes catSpark{0%{opacity:1;transform:translateY(0) scale(.6)}100%{opacity:0;transform:translateY(-48px) scale(1.25)}}
 
+/* Soru kartı kopyala butonu */
+.tsk-copy{cursor:pointer;font-size:15px;opacity:.65;transition:opacity .15s,transform .15s;margin-left:2px}
+.tsk-copy:hover{opacity:1;transform:scale(1.14)}
+.tsk-copy:active{transform:scale(.92)}
+
 /* Simge ayarları (profil) */
 .icon-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;flex-wrap:wrap}
 .icon-row-label{font-size:13px;color:var(--text-0)}
