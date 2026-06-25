@@ -10,6 +10,32 @@ function isPhone(){
   return window.matchMedia('(orientation:portrait)').matches && window.innerWidth <= 820;
 }
 
+// Canvas alanını paletin boyutu kadar içeriden başlat → PDF palete kadar büyür,
+// altında gizlenmez/kesilmez (yatay: soldan, dikey: üstten).
+function fitCanvasToPalette(){
+  const ov = document.getElementById('reader-overlay');
+  const pal = document.getElementById('solvePalette');
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap) return;
+  if(!ov?.classList.contains('solve-mode') || !pal){
+    wrap.style.removeProperty('padding-left'); wrap.style.removeProperty('padding-top');
+    return;
+  }
+  const r = pal.getBoundingClientRect();
+  const portrait = window.matchMedia('(orientation:portrait)').matches;
+  // inline !important: yatay/landscape CSS padding kurallarını (örn. padding:...!important) ez
+  if(portrait){
+    wrap.style.setProperty('padding-top', (r.height + 10) + 'px', 'important');
+    wrap.style.setProperty('padding-left', '6px', 'important');
+  } else {
+    wrap.style.setProperty('padding-left', (r.width + 10) + 'px', 'important');
+    wrap.style.setProperty('padding-top', '6px', 'important');
+  }
+}
+function reflowSolve(){
+  fitCanvasToPalette();
+  try{ window.dispatchEvent(new Event('resize')); }catch(_e){}
+}
 function enterSolveMode(){
   const ov = document.getElementById('reader-overlay');
   if(!ov || !ov.classList.contains('open')) return;
@@ -18,13 +44,17 @@ function enterSolveMode(){
   // Tam ekrana girince varsayılan: ✋ Gez (pan/zoom/soru geçişi anında çalışsın)
   const gez = document.querySelector('.solve-palette [data-tool="select"]');
   if(gez && window.setTool) window.setTool(gez, 'select');
-  // PDF'in yeni alana göre yeniden boyutlanması için
-  setTimeout(()=>{ try{ window.dispatchEvent(new Event('resize')); }catch(_e){} }, 60);
+  // Palet ölçülüp canvas ona göre konumlansın, sonra PDF yeniden render/sığsın
+  setTimeout(reflowSolve, 60);
 }
 function exitSolveMode(){
   document.getElementById('reader-overlay')?.classList.remove('solve-mode');
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(wrap){ wrap.style.removeProperty('padding-left'); wrap.style.removeProperty('padding-top'); }
   setTimeout(()=>{ try{ window.dispatchEvent(new Event('resize')); }catch(_e){} }, 60);
 }
+window.addEventListener('resize', ()=>{ if(document.getElementById('reader-overlay')?.classList.contains('solve-mode')) fitCanvasToPalette(); });
+window.addEventListener('orientationchange', ()=>{ setTimeout(reflowSolve, 200); });
 function toggleSolveMode(){
   const ov = document.getElementById('reader-overlay');
   if(!ov) return;
