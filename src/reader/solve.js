@@ -18,23 +18,23 @@ function fitCanvasToPalette(){
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap) return;
   if(!ov?.classList.contains('solve-mode') || !pal){
-    wrap.style.removeProperty('padding-left'); wrap.style.removeProperty('padding-top');
+    ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k));
     return;
   }
   const r = pal.getBoundingClientRect();
   const portrait = window.matchMedia('(orientation:portrait)').matches;
-  // inline !important: yatay/landscape CSS padding kurallarını (örn. padding:...!important) ez
-  if(portrait){
-    wrap.style.setProperty('padding-top', (r.height + 10) + 'px', 'important');
-    wrap.style.setProperty('padding-left', '6px', 'important');
-  } else {
-    wrap.style.setProperty('padding-left', (r.width + 10) + 'px', 'important');
-    wrap.style.setProperty('padding-top', '6px', 'important');
-  }
+  const G = 16; // standart boşluk (palet + ekran kenarları)
+  const set = (k,v)=>wrap.style.setProperty(k, v, 'important'); // landscape CSS padding'i ez
+  set('padding-right',  G + 'px');
+  set('padding-bottom', G + 'px');
+  if(portrait){ set('padding-top', (r.height + G) + 'px'); set('padding-left', G + 'px'); }
+  else        { set('padding-left', (r.width + G) + 'px'); set('padding-top', G + 'px'); }
 }
 function reflowSolve(){
   fitCanvasToPalette();
+  // Padding değişti → PDF yeni alana sığacak şekilde yeniden render
   try{ window.dispatchEvent(new Event('resize')); }catch(_e){}
+  setTimeout(()=>{ try{ window.renderPages?.(); }catch(_e){} }, 90);
 }
 function enterSolveMode(){
   const ov = document.getElementById('reader-overlay');
@@ -50,7 +50,7 @@ function enterSolveMode(){
 function exitSolveMode(){
   document.getElementById('reader-overlay')?.classList.remove('solve-mode');
   const wrap = document.getElementById('readerCanvasWrap');
-  if(wrap){ wrap.style.removeProperty('padding-left'); wrap.style.removeProperty('padding-top'); }
+  if(wrap){ ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k)); }
   setTimeout(()=>{ try{ window.dispatchEvent(new Event('resize')); }catch(_e){} }, 60);
 }
 window.addEventListener('resize', ()=>{ if(document.getElementById('reader-overlay')?.classList.contains('solve-mode')) fitCanvasToPalette(); });
