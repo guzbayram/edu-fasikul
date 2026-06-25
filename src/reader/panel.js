@@ -2053,18 +2053,21 @@ async function copySoruKart(){
     const pdfC = pw && [...pw.querySelectorAll('canvas')].find(c=>
       !c.classList.contains('lower-canvas') && !c.classList.contains('upper-canvas') && !c.classList.contains('fabric-draw-canvas'));
     if(pdfC && pdfC.width && navigator.clipboard && window.ClipboardItem){
-      const off=document.createElement('canvas'); off.width=pdfC.width; off.height=pdfC.height;
-      const ctx=off.getContext('2d');
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,off.width,off.height);
-      ctx.drawImage(pdfC,0,0);
-      const lc = pw.querySelector('canvas.lower-canvas') || pw.querySelector('canvas.fabric-draw-canvas');
-      if(lc){ try{ ctx.drawImage(lc,0,0,off.width,off.height); }catch(_e){} }
-      const blob = await new Promise(r=>off.toBlob(r,'image/png'));
-      if(blob){
-        await navigator.clipboard.write([new window.ClipboardItem({'image/png':blob})]);
-        showToast("Soru görseli kopyalandı — Gemini/GPT/Claude'a yapıştırıp çözüm iste 🐾",'success');
-        return;
-      }
+      // Safari/iPadOS: blob'u önce 'await' etmek kullanıcı-jesti iznini düşürür.
+      // Bu yüzden blob üreten Promise'i doğrudan ClipboardItem'a veriyoruz;
+      // tek await clipboard.write üzerinde kalsın → izin korunur.
+      const blobPromise = new Promise((resolve, reject)=>{
+        const off=document.createElement('canvas'); off.width=pdfC.width; off.height=pdfC.height;
+        const ctx=off.getContext('2d');
+        ctx.fillStyle='#fff'; ctx.fillRect(0,0,off.width,off.height);
+        ctx.drawImage(pdfC,0,0);
+        const lc = pw.querySelector('canvas.lower-canvas') || pw.querySelector('canvas.fabric-draw-canvas');
+        if(lc){ try{ ctx.drawImage(lc,0,0,off.width,off.height); }catch(_e){} }
+        off.toBlob(b=> b ? resolve(b) : reject(new Error('no-blob')), 'image/png');
+      });
+      await navigator.clipboard.write([new window.ClipboardItem({'image/png':blobPromise})]);
+      showToast("Soru görseli kopyalandı — Gemini/GPT/Claude'a yapıştırıp çözüm iste 🐾",'success');
+      return;
     }
     throw new Error('no-image');
   }catch(e){
@@ -2075,8 +2078,27 @@ function copySoruKartText(){
   const alt=appState.aktifAltKonu; const s=(alt?.sorular||[])[appState.activeQuestionIdx]||{};
   const t=`Fasikül: ${appState.aktifFasikul?.ad||''}\nKonu: ${appState.aktifKonu?.ad||''}${alt?.ad?(' / '+alt.ad):''}\nSoru no: ${s.no||''}\n\nBu soruyu adım adım çöz ve net şekilde açıkla. (Sorunun görselini de ekleyebilirsin.)`;
   if(navigator.clipboard?.writeText){
-    navigator.clipboard.writeText(t).then(()=>showToast('Soru bilgisi metin olarak kopyalandı','info')).catch(()=>showToast('Kopyalanamadı (tarayıcı izni gerekli)','error'));
-  } else { showToast('Kopyalanamadı','error'); }
+    navigator.clipboard.writeText(t)
+      .then(()=>showToast('Soru bilgisi metin olarak kopyalandı','info'))
+      .catch(()=>{ if(!legacyCopyText(t)) showToast('Kopyalanamadı (tarayıcı izni gerekli)','error'); });
+  } else if(!legacyCopyText(t)){
+    // Güvensiz bağlam (ör. http://192.168.x.x): Clipboard API yok
+    showToast('Kopyalanamadı — siteyi HTTPS veya localhost üzerinden açın','error');
+  }
+}
+// Eski tarayıcı/güvensiz bağlam için yedek metin kopyalama (execCommand)
+function legacyCopyText(text){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text;
+    ta.style.position='fixed'; ta.style.top='-9999px'; ta.setAttribute('readonly','');
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, text.length);
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(ok){ showToast('Soru bilgisi metin olarak kopyalandı','info'); return true; }
+  }catch(_e){}
+  return false;
 }
 window.copySoruKart = copySoruKart;
 window.showCozum = showCozum;
