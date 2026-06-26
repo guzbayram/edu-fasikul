@@ -3084,12 +3084,14 @@ body.reader-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     background:var(--bg-1)!important;z-index:350!important;padding:0!important;gap:0!important;
   }
   .rp-konu-section{display:none!important}
-  /* Soru bölümü: dikey, taşarsa panel içinde kayar.
-     NOT: -webkit-overflow-scrolling:touch KULLANILMAZ — iOS'ta dokunma hedefini
-     kaydırma kadar kaydırıyordu (alt satıra basınca üst buton seçiliyordu). */
+  /* Soru bölümü: dikey, KAYDIRMAZ (overflow:hidden).
+     iOS, kaydırılabilir kapsayıcıda dokunma hedefini kaydırma kadar kaydırıyor →
+     alt satıra (undo/redo) basınca üstteki araç (kalem/silgi) seçiliyordu.
+     Scroll'u tamamen kapatınca bu mümkün değil; sıkışırsa soru-no satırı küçülür,
+     araç/cevap butonları asla kırpılmaz/şaşmaz. */
   .rp-soru-section{
     display:flex!important;flex-direction:column!important;
-    flex:1!important;min-height:0!important;overflow-y:auto!important;
+    flex:1!important;min-height:0!important;overflow:hidden!important;
     padding-bottom:0!important;
   }
   /* Satır birimi — içerik kaydırmaya gerek kalmadan 100vh'ye sığsın (cevap 1.4×) */
@@ -3163,8 +3165,8 @@ body.reader-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 
   /* ── SATIR 4 (daraltıldı 1.1×): Soru no + ABCDE — kazanılan yer alt bara margin ── */
   .soru-list{
-    width:100%!important;flex:none!important;flex-shrink:0!important;
-    height:calc(var(--rl-row) * 1.1)!important;min-height:calc(var(--rl-row) * 1.1)!important;
+    width:100%!important;flex:0 1 auto!important;
+    height:calc(var(--rl-row) * 1.1)!important;min-height:0!important;
     position:static!important;
     display:flex!important;align-items:center!important;justify-content:center!important;
     padding:0 10px!important;border-bottom:1px solid var(--border)!important;

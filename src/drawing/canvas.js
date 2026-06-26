@@ -35,15 +35,10 @@ function patchGetPointer(fc){
     const bounds = upperCanvasEl.getBoundingClientRect();
     const boundsWidth = bounds.width || 0, boundsHeight = bounds.height || 0;
     const te = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
-    // iOS: touch.clientX/Y VISUAL viewport'a göre; getBoundingClientRect ise (fixed
-    // overlay'de) LAYOUT viewport'a göre dönebiliyor. Adres çubuğu görününce aralarında
-    // visualViewport.offset oluşur ve çizim parmaktan YUKARI kayar (kullanıcının gördüğü).
-    // Standalone/tam ekranda offset=0 → etkisiz (kanıtlanmış doğru hâli bozulmaz).
-    const vv = window.visualViewport;
-    const vox = vv ? vv.offsetLeft : 0, voy = vv ? vv.offsetTop : 0;
-    // ÇIKAR: clientX/Y ile getBoundingClientRect farklı viewport çerçevesinde;
-    // cihazda ölçülen vvTop=-59 → çıkarınca çizim doğru yöne (aşağı) kayar.
-    let pointer = { x: (te.clientX - vox) - bounds.left, y: (te.clientY - voy) - bounds.top };
+    // Cihazda doğrulandı (IMG_5195/5197): HAM clientX/Y parmağın TAM ucunda ve çizginin
+    // başında. clientX/Y ile getBoundingClientRect zaten aynı çerçevede → visualViewport
+    // düzeltmesi GEREKSİZ ve kayma yaratıyordu; kaldırıldı. Sade fark = doğru.
+    let pointer = { x: te.clientX - bounds.left, y: te.clientY - bounds.top };
     if(!ignoreZoom) pointer = this.restorePointerVpt(pointer);
     const retina = this.getRetinaScaling();
     if(retina !== 1){ pointer.x /= retina; pointer.y /= retina; }
