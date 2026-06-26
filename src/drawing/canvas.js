@@ -25,7 +25,14 @@ window.applyDrawingScale = applyDrawingScale;
 function patchCalcOffset(fc){
   fc.calcOffset = function(){
     const r = this.lowerCanvasEl.getBoundingClientRect();
-    this._offset = { left: r.left + (window.pageXOffset||0), top: r.top + (window.pageYOffset||0) };
+    // getBoundingClientRect=LAYOUT, touch.clientX/Y=VISUAL viewport. Adres çubuğu görünüp
+    // kaybolunca aralarında visualViewport.offset oluşur ("ilk doğru, sonra kayıyor").
+    // Offset'i visual sisteme çevir: r - vv.offset + pageScroll.
+    const vv = window.visualViewport;
+    this._offset = {
+      left: r.left - (vv ? vv.offsetLeft : 0) + (window.pageXOffset || 0),
+      top:  r.top  - (vv ? vv.offsetTop  : 0) + (window.pageYOffset || 0)
+    };
     return this;
   };
   fc.calcOffset();
