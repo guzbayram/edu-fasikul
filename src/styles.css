@@ -3193,9 +3193,10 @@ a{color:inherit;text-decoration:none}
     padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
   }
 
-  /* ── SATIR 5: İlerleme çubuğu + (sağda soru·süre·net) ── */
+  /* ── SATIR 5: İlerleme çubuğu — cevap satırının hemen altına (margin-top:auto iptal) ── */
   .test-progress-bar{
     width:100%!important;flex-shrink:0!important;height:var(--rl-row)!important;flex:none!important;
+    margin-top:0!important;  /* başka medyadaki margin-top:auto'yu ez → ortadaki boş satır kalkar */
     display:flex!important;flex-direction:column!important;justify-content:center!important;
     gap:4px!important;padding:0 10px!important;border-bottom:1px solid var(--border)!important;overflow:hidden!important;
   }
