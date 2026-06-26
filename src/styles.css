@@ -2639,6 +2639,8 @@ a{color:inherit;text-decoration:none}
 }
 .rp-zoom-bar .page-nav-btn{width:30px;height:30px;border-radius:8px;font-size:15px;font-weight:700}
 .rp-zoom-bar .zoom-label{font-size:12px;color:var(--text-muted);min-width:38px;text-align:center}
+/* Sayfa ◀▶ yalnız yatay modda zoom barında görünür (dik+masaüstü alt barda) */
+.rp-zoom-bar .rp-page-nav{display:none}
 
 /* ══ DESKTOP: Sol panel (reader-right) tam boy, toolbar tam genişlik ══ */
 @media (min-width:769px){
@@ -3043,38 +3045,32 @@ a{color:inherit;text-decoration:none}
    ═══════════════════════════════════════════════════════════════════ */
 @media (orientation:landscape) and (max-height:500px){
 
-  /* Üst toolbar gizli (kanvas üstünde bar yok) */
+  /* Üst toolbar + alt sayfa-bar gizli (sayfa nav artık zoom barında) */
   .reader-toolbar{display:none!important}
-  /* Sayfa değiştir barı: panelin EN ALTINDA (sol ≤%30), kanvasa taşmaz */
-  .reader-bottom-bar{
-    display:flex!important;position:fixed!important;
-    left:0!important;right:auto!important;bottom:0!important;
-    width:min(30vw,300px)!important;height:34px!important;z-index:351!important;
-    border-top:1px solid var(--border)!important;border-right:1.5px solid var(--border-strong)!important;
-    background:var(--bg-1)!important;justify-content:center!important;align-items:center!important;gap:10px!important;padding:0!important;
-  }
+  .reader-bottom-bar{display:none!important}
 
-  /* PANEL: SOL kenarda dikey sütun, genişlik ekranın ≤ %30'u */
+  /* PANEL: SOL kenarda dikey sütun, genişlik ekranın %35'i */
   .reader-right{
     position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:auto!important;
-    width:min(30vw,300px)!important;max-width:30vw!important;height:100vh!important;
+    width:min(35vw,340px)!important;max-width:35vw!important;height:100vh!important;
     display:flex!important;flex-direction:column!important;
     overflow:hidden!important;
     border:none!important;border-right:1.5px solid var(--border-strong)!important;
     background:var(--bg-1)!important;z-index:350!important;padding:0!important;gap:0!important;
   }
   .rp-konu-section{display:none!important}
-  /* Soru bölümü: dikey, taşarsa panel içinde kayar */
+  /* Soru bölümü: dikey, taşarsa panel içinde kayar (zoom barı altta sabit akış satırı) */
   .rp-soru-section{
     display:flex!important;flex-direction:column!important;
     flex:1!important;min-height:0!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
+    padding-bottom:0!important;
   }
   /* Eşit yükseklik satır birimi (cevap satırı 1.4×) */
   #reader-overlay{--rl-row:clamp(34px,13.5vh,50px)}
 
   /* CANVAS: panelin sağında, etrafında 8px boşluk, üst/alt bar yok */
   .reader-center{padding:0!important}
-  .reader-canvas-wrap{padding:8px 8px 8px calc(min(30vw,300px) + 8px)!important}
+  .reader-canvas-wrap{padding:8px 8px 8px calc(min(35vw,340px) + 8px)!important}
 
   /* ── SATIR 1: Konu adı (sol) + ≡ (sağ) ── */
   .rp-header{
@@ -3164,12 +3160,12 @@ a{color:inherit;text-decoration:none}
   .tsk-badge,.tsk-star,.tsk-page,.tsk-copy{display:none!important}
   .tsk-cevap-row{
     display:flex!important;flex-wrap:nowrap!important;
-    gap:8px!important;justify-content:center!important;margin:0!important;
+    gap:6px!important;justify-content:center!important;margin:0!important;
   }
   .tsk-cevap-btn{
     flex:0 0 auto!important;
-    width:32px!important;min-width:32px!important;max-width:32px!important;
-    height:32px!important;min-height:32px!important;
+    width:30px!important;min-width:30px!important;max-width:30px!important;
+    height:30px!important;min-height:30px!important;
     border-radius:50%!important;font-size:13px!important;font-weight:700!important;
     padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
   }
@@ -3198,17 +3194,15 @@ a{color:inherit;text-decoration:none}
   .rp-tools-bar .tool-btn:hover{transform:none!important}  /* dokunmada kayma olmasın */
   .rp-tools-bar .eraser-size-group,.rp-tools-bar .rp-tools-sep{display:none!important}
 
-  /* ── ZOOM BAR: sayfa-bar'ın hemen üstünde (panel altı) ── */
+  /* ── ZOOM + SAYFA NAV: panel AKIŞINDA en alt satır (sabit değil → çakışma yok) ── */
   .rp-zoom-bar{
-    display:flex!important;position:fixed!important;
-    left:0!important;right:auto!important;bottom:34px!important;
-    width:min(30vw,300px)!important;height:34px!important;z-index:351!important;
-    border-top:1px solid var(--border)!important;border-right:1.5px solid var(--border-strong)!important;border-radius:0!important;
-    justify-content:center!important;align-items:center!important;gap:10px!important;
+    display:flex!important;position:static!important;flex-shrink:0!important;
+    width:100%!important;height:auto!important;
+    border-top:1px solid var(--border)!important;border-right:none!important;border-radius:0!important;
+    padding:7px 8px!important;justify-content:center!important;align-items:center!important;gap:8px!important;
     background:var(--bg-1)!important;
   }
-  /* Panel içeriği alttaki iki bara (zoom 34 + sayfa 34) girmesin */
-  .rp-soru-section{padding-bottom:70px!important}
+  .rp-zoom-bar .rp-page-nav{display:flex!important;align-items:center!important;justify-content:center!important}
   /* Konu modal: tam ekran (toolbar gizli → top:0) */
   #reader-overlay.konu-modal-open .reader-right{display:none!important}
   #reader-overlay.konu-modal-open .konu-modal{

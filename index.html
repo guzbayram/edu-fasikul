@@ -549,11 +549,13 @@
       </div>
     </div>
 
-    <!-- ZOOM — her zaman panelin altında -->
+    <!-- ZOOM + (yatayda) sayfa nav — her zaman panelin altında -->
     <div class="rp-zoom-bar">
+      <button class="page-nav-btn rp-page-nav" onclick="changePage(-1)" title="Önceki sayfa">◀</button>
       <button class="page-nav-btn" onclick="changeZoom(-10)" title="Uzaklaştır">−</button>
       <span class="zoom-label" id="zoomLabel">%100</span>
       <button class="page-nav-btn" onclick="changeZoom(10)" title="Yaklaştır">+</button>
+      <button class="page-nav-btn rp-page-nav" onclick="changePage(1)" title="Sonraki sayfa">▶</button>
     </div>
 
   </div>
