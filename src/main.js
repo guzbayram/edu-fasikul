@@ -388,7 +388,7 @@ function pokeCat(){
 window.pokeCat = pokeCat;
 
 // Kedi profil ayarları: aç/kapa + görünüm (emoji / canlı foto) — cihaz başına
-function _catOn(){ return localStorage.getItem('edu_cat_on') !== '0'; }   // varsayılan açık
+function _catOn(){ return localStorage.getItem('edu_cat_on') === '1'; }   // varsayılan KAPALI
 function _catMode(){ return localStorage.getItem('edu_cat_mode') || 'canli'; }
 function applyCatVisibility(){
   const c=document.getElementById('catBuddy'); if(c) c.style.display = _catOn() ? '' : 'none';
