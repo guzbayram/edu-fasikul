@@ -425,8 +425,13 @@ a{color:inherit;text-decoration:none}
 #reader-overlay{
   position:fixed;inset:0;z-index:200;background:var(--bg-0);
   display:none;flex-direction:column;overflow:hidden;
+  -webkit-touch-callout:none;  /* uzun-basışta iOS "Kopyala/Araştır" menüsü çıkmasın */
 }
 #reader-overlay.open{display:flex}
+/* Reader uygulama UI'si: metin seçilmesin, uzun-basış callout'u olmasın */
+#reader-overlay,#reader-overlay *{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+/* Panel/palet butonlarında çift-dokun-zoom'u kapat (çift dokununca ekran yakınlaşmasın) */
+.reader-right,.reader-right *,.solve-palette,.solve-palette *,.reader-toolbar,.reader-toolbar *{ touch-action:manipulation; }
 
 /* Özel tooltip balonu (uzun-basışta açılır, otomatik gizlenir) */
 .tip-bubble{
