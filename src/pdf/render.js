@@ -257,14 +257,9 @@ function getReaderFitScale(page, wrap){
   const rawW = container?.clientWidth || 0;
   const viewportW = Math.max(280, (rawW > 0 ? rawW : window.innerWidth) - padX - 2);
   const natural = page.getViewport({scale: 1});
-  let base = viewportW / natural.width;
-  // Çözüm modu: sayfanın TAMAMI 16px boşluklu sığsın (contain — genişlik+yükseklik)
-  if(styles && document.getElementById('reader-overlay')?.classList.contains('solve-mode')){
-    const padY = parseFloat(styles.paddingTop || 0) + parseFloat(styles.paddingBottom || 0);
-    const rawH = container?.clientHeight || 0;
-    const viewportH = Math.max(160, (rawH > 0 ? rawH : window.innerHeight) - padY - 2);
-    base = Math.min(base, viewportH / natural.height);
-  }
+  // Genişliğe sığdır (fill-width): kart sağ kenara kadar dolar; zoom ile daha da büyür
+  // (çözüm modunda da contain değil → sağda boşluk kalmaz, taşarsa dikey kayar).
+  const base = viewportW / natural.width;
   return Math.max(0.35, base * zoomScale);
 }
 
