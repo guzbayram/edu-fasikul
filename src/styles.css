@@ -3076,13 +3076,15 @@ body.reader-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 
   /* PANEL: SOL kenarda dikey sütun, genişlik ekranın %35'i */
   .reader-right{
-    position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:auto!important;
-    width:min(35vw,340px)!important;max-width:35vw!important;
+    /* height:100dvh ŞART — body.reader-locked (position:fixed) iOS'ta fixed çocukların
+       containing-block'unu kısaltıyor; top:0+bottom:0 ~%60 veriyordu. dvh viewport birimi
+       bunu yok sayıp tam boy verir (overlay de aynı yöntemi kullanıyor). */
+    position:fixed!important;top:0!important;left:0!important;bottom:auto!important;right:auto!important;
+    width:min(35vw,340px)!important;max-width:35vw!important;height:100dvh!important;
     display:flex!important;flex-direction:column!important;
     overflow:hidden!important;
     border:none!important;border-right:1.5px solid var(--border-strong)!important;
     background:var(--bg-1)!important;z-index:350!important;padding:0!important;gap:0!important;
-    outline:3px solid red!important;outline-offset:-3px!important; /* GEÇİCİ DEBUG: panel sınırı */
   }
   .rp-konu-section{display:none!important}
   /* Soru bölümü: içeriğe göre (büyümez/scroll yok) → tüm satırlar (araçlar dahil) görünür. */
@@ -3090,7 +3092,6 @@ body.reader-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     display:flex!important;flex-direction:column!important;
     flex:0 0 auto!important;min-height:0!important;overflow:visible!important;
     padding-bottom:0!important;
-    outline:3px solid blue!important;outline-offset:-3px!important; /* GEÇİCİ DEBUG: içerik bölümü */
   }
   /* Satır birimi — içerik kaydırmaya gerek kalmadan 100vh'ye sığsın (cevap 1.4×) */
   #reader-overlay{--rl-row:clamp(30px,11vh,44px)}
@@ -3230,7 +3231,6 @@ body.reader-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     border-top:1px solid var(--border)!important;border-right:none!important;border-radius:0!important;
     padding:7px 8px!important;justify-content:center!important;align-items:center!important;gap:8px!important;
     background:var(--bg-1)!important;
-    outline:3px solid green!important;outline-offset:-3px!important; /* GEÇİCİ DEBUG: zoom satırı */
   }
   .rp-zoom-bar .rp-page-nav{display:flex!important;align-items:center!important;justify-content:center!important}
   /* Konu modal: tam ekran (toolbar gizli → top:0) */
