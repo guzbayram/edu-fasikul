@@ -346,7 +346,9 @@ function changeQuestionPage(delta){
   if(!flow.length) return false;
   const currentIdx = findQuestionFlowIndexByPage(appState.currentPage);
   const nextIdx = currentIdx + delta;
-  if(nextIdx < 0 || nextIdx >= flow.length) return true;
+  // Akış sınırında: bloklama → false döndür ki changePage ham sayfayı değiştirsin
+  // (konu kartları ↔ soru kartları ↔ diğer testler arası geçiş)
+  if(nextIdx < 0 || nextIdx >= flow.length) return false;
   goToFlowItem(flow[nextIdx]);
   return true;
 }

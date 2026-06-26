@@ -577,8 +577,10 @@ function buildMockPageContent(pageNum, fas){
 
 function changePage(delta){
   if(changeQuestionPage(delta)) return;
+  // Tüm PDF boyunca serbest sayfa değişimi (bölüm sınırına takılma)
+  const maxPage = appState.pdfTotalPages || appState.totalPages;
   const newPage = appState.currentPage + delta;
-  if(newPage<1 || newPage>appState.totalPages) return;
+  if(newPage<1 || newPage>maxPage) return;
   saveDrawing();
   goToPage(newPage);
 }
@@ -947,8 +949,9 @@ function initLongPressDraw(){
     if(s.isNav && s.mode === 'pan'){
       const dx = s.lastX - s.x0, dy = s.lastY - s.y0, dur = Date.now() - s.t0;
       if(dur < FLICK_MAX_MS && Math.max(Math.abs(dx), Math.abs(dy)) > FLICK_MIN){
-        if(Math.abs(dx) >= Math.abs(dy)) (dx > 0 ? window.nextQuestion : window.prevQuestion)?.();
-        else                              (dy < 0 ? window.nextQuestion : window.prevQuestion)?.();
+        // Sağa/yukarı → sonraki sayfa, sol/aşağı → önceki (changePage tüm PDF'te serbest gezer)
+        const dir = (Math.abs(dx) >= Math.abs(dy)) ? (dx > 0 ? 1 : -1) : (dy < 0 ? 1 : -1);
+        window.changePage?.(dir);
       }
     }
     endStroke();

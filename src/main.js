@@ -34,6 +34,7 @@ import './reader/solve.js';
 
 // ─── Faz 4 Modülleri ────────────────────────────────────
 import './ui/toast.js';
+import './ui/tooltip.js';
 import './ui/router.js';
 import './ui/onboarding.js';
 import './panels/dashboard.js';
