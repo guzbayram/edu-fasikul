@@ -874,17 +874,20 @@ function initLongPressDraw(){
     }
     const dbg = e => {
       const t = e.touches && e.touches[0]; if(!t) return;
-      dot.style.left = t.clientX + 'px';
-      dot.style.top  = t.clientY + 'px';
+      const vv = window.visualViewport;
+      const vox = vv ? vv.offsetLeft : 0, voy = vv ? vv.offsetTop : 0;
+      // Kırmızı nokta = ÇİZİMİN gerçekte düştüğü ekran noktası (düzeltilmiş).
+      // Fix doğruysa nokta tam parmağın altında ve çizginin başında olmalı.
+      dot.style.left = (t.clientX - vox) + 'px';
+      dot.style.top  = (t.clientY - voy) + 'px';
       const fc = appState.fabricCanvas, up = fc && fc.upperCanvasEl;
       const r = up ? up.getBoundingClientRect() : {top:0,left:0,width:0,height:0};
-      const vv = window.visualViewport;
-      const ptrY = up ? (t.clientY - r.top) * (up.height/(r.height||1)) : 0;
+      const ptrY = up ? (t.clientY - voy - r.top) * (up.height/(r.height||1)) : 0;
       document.getElementById('__dbgHud').textContent =
         `clY:${t.clientY|0} rTop:${r.top|0} rH:${r.height|0}\n` +
         `cvH:${up?up.height:0} wrapScroll:${wrap.scrollTop|0}\n` +
         `vvTop:${vv?(vv.offsetTop|0):'-'} vvH:${vv?(vv.height|0):'-'}\n` +
-        `ptrY:${ptrY|0}`;
+        `ptrY:${ptrY|0} (nokta=mürekkep)`;
     };
     wrap.addEventListener('touchstart', dbg, { passive:true, capture:true });
     wrap.addEventListener('touchmove',  dbg, { passive:true, capture:true });

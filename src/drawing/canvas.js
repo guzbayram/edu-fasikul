@@ -41,7 +41,9 @@ function patchGetPointer(fc){
     // Standalone/tam ekranda offset=0 → etkisiz (kanıtlanmış doğru hâli bozulmaz).
     const vv = window.visualViewport;
     const vox = vv ? vv.offsetLeft : 0, voy = vv ? vv.offsetTop : 0;
-    let pointer = { x: (te.clientX + vox) - bounds.left, y: (te.clientY + voy) - bounds.top };
+    // ÇIKAR: clientX/Y ile getBoundingClientRect farklı viewport çerçevesinde;
+    // cihazda ölçülen vvTop=-59 → çıkarınca çizim doğru yöne (aşağı) kayar.
+    let pointer = { x: (te.clientX - vox) - bounds.left, y: (te.clientY - voy) - bounds.top };
     if(!ignoreZoom) pointer = this.restorePointerVpt(pointer);
     const retina = this.getRetinaScaling();
     if(retina !== 1){ pointer.x /= retina; pointer.y /= retina; }
