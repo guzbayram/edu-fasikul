@@ -634,13 +634,10 @@ function changeZoom(delta){
   const contentY = (wrap?.scrollTop || 0) + viewportY;
   appState.zoom = Math.max(40,Math.min(200,appState.zoom+delta));
   document.getElementById('zoomLabel').textContent = `%${appState.zoom}`;
-  scheduleCardZoomRender({
-    contentX,
-    contentY,
-    viewportX,
-    viewportY,
-    ratio: appState.zoom / renderedZoom
-  });
+  const ratio = appState.zoom / renderedZoom;
+  // Anlık görsel ölçek: render beklemeden zoom hissi (merkez = viewport ortası)
+  if(wrap){ const rect = wrap.getBoundingClientRect(); applyStageScale(ratio, rect.left + viewportX, rect.top + viewportY); }
+  scheduleCardZoomRender({ contentX, contentY, viewportX, viewportY, ratio });
 }
 
 function scheduleCardZoomRender(anchor){
@@ -665,6 +662,18 @@ function scheduleCardZoomRender(anchor){
       wrap.classList.remove('zoom-settling');
     });
   }, 90);
+}
+
+// Anlık görsel ölçek (transform) — render gelene kadar akıcı geri bildirim.
+// scale: render edilen boyuta göre oran; cx,cy: client koordinatında zoom merkezi.
+function applyStageScale(scale, cx, cy){
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap) return;
+  wrap.querySelectorAll('.reader-page-stage').forEach(stage=>{
+    const r = stage.getBoundingClientRect();
+    stage.style.transformOrigin = `${cx - r.left}px ${cy - r.top}px`;
+    stage.style.transform = `scale(${scale})`;
+  });
 }
 
 function initCardZoomPan(){
