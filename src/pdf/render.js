@@ -861,13 +861,22 @@ function initLongPressDraw(){
   // Nokta parmağın altındaysa: sorun canvas eşlemesinde. Değilse: iOS dokunma
   // koordinat sistemi (visual≠layout viewport). Tanı bitince kaldırılacak.
   if(window.__DRAW_DEBUG){
-    let dot = document.getElementById('__dbgDot');
-    if(!dot){
-      dot = document.createElement('div');
-      dot.id = '__dbgDot';
-      dot.style.cssText = 'position:fixed;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:rgba(255,40,40,.55);border:2px solid #fff;box-shadow:0 0 0 1px #000;z-index:99999;pointer-events:none;left:-99px;top:-99px';
-      document.body.appendChild(dot);
-      const hud = document.createElement('div');
+    const mk = (id, color) => {
+      let d = document.getElementById(id);
+      if(!d){
+        d = document.createElement('div');
+        d.id = id;
+        d.style.cssText = `position:fixed;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 0 0 1px #000;z-index:99999;pointer-events:none;left:-99px;top:-99px`;
+        document.body.appendChild(d);
+      }
+      return d;
+    };
+    // İKİ NOKTA — hangisi parmağının UCUNDA? YEŞİL=ham dokunma, KIRMIZI=düzeltilmiş.
+    const dotRaw  = mk('__dbgDotRaw',  'rgba(0,200,0,.45)');     // ham clientX/Y
+    const dotCorr = mk('__dbgDotCorr', 'rgba(255,40,40,.45)');   // vv düzeltmeli
+    let hud = document.getElementById('__dbgHud');
+    if(!hud){
+      hud = document.createElement('div');
       hud.id = '__dbgHud';
       hud.style.cssText = 'position:fixed;left:4px;top:4px;z-index:99999;background:rgba(0,0,0,.8);color:#0f0;font:11px/1.35 monospace;padding:5px 7px;border-radius:6px;pointer-events:none;white-space:pre';
       document.body.appendChild(hud);
@@ -876,18 +885,16 @@ function initLongPressDraw(){
       const t = e.touches && e.touches[0]; if(!t) return;
       const vv = window.visualViewport;
       const vox = vv ? vv.offsetLeft : 0, voy = vv ? vv.offsetTop : 0;
-      // Kırmızı nokta = ÇİZİMİN gerçekte düştüğü ekran noktası (düzeltilmiş).
-      // Fix doğruysa nokta tam parmağın altında ve çizginin başında olmalı.
-      dot.style.left = (t.clientX - vox) + 'px';
-      dot.style.top  = (t.clientY - voy) + 'px';
+      dotRaw.style.left  = t.clientX + 'px';
+      dotRaw.style.top   = t.clientY + 'px';
+      dotCorr.style.left = (t.clientX - vox) + 'px';
+      dotCorr.style.top  = (t.clientY - voy) + 'px';
       const fc = appState.fabricCanvas, up = fc && fc.upperCanvasEl;
       const r = up ? up.getBoundingClientRect() : {top:0,left:0,width:0,height:0};
-      const ptrY = up ? (t.clientY - voy - r.top) * (up.height/(r.height||1)) : 0;
       document.getElementById('__dbgHud').textContent =
         `clY:${t.clientY|0} rTop:${r.top|0} rH:${r.height|0}\n` +
-        `cvH:${up?up.height:0} wrapScroll:${wrap.scrollTop|0}\n` +
         `vvTop:${vv?(vv.offsetTop|0):'-'} vvH:${vv?(vv.height|0):'-'}\n` +
-        `ptrY:${ptrY|0} (nokta=mürekkep)`;
+        `YEŞİL=ham  KIRMIZI=düzeltilmiş`;
     };
     wrap.addEventListener('touchstart', dbg, { passive:true, capture:true });
     wrap.addEventListener('touchmove',  dbg, { passive:true, capture:true });
