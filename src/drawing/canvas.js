@@ -35,10 +35,13 @@ function patchGetPointer(fc){
     const bounds = upperCanvasEl.getBoundingClientRect();
     const boundsWidth = bounds.width || 0, boundsHeight = bounds.height || 0;
     const te = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
-    // Cihazda doğrulandı (IMG_5195/5197): HAM clientX/Y parmağın TAM ucunda ve çizginin
-    // başında. clientX/Y ile getBoundingClientRect zaten aynı çerçevede → visualViewport
-    // düzeltmesi GEREKSİZ ve kayma yaratıyordu; kaldırıldı. Sade fark = doğru.
-    let pointer = { x: te.clientX - bounds.left, y: te.clientY - bounds.top };
+    // iPhone 14 Pro MAX'te visualViewport.offsetTop=-59 ölçüldü (Pro'da 0 → orada etkisiz).
+    // position:fixed RENDER parmakla hizalı (yeşil nokta altında) ama getBoundingClientRect
+    // LAYOUT çerçevesinde → ikisi vvTop kadar ayrı; mürekkep parmağın ÜSTÜne kayıyordu.
+    // vvTop'u ÇIKAR → mürekkep aşağı, parmağa iner (vvTop<0 olduğundan +59 etki).
+    const vv = window.visualViewport;
+    const vox = vv ? vv.offsetLeft : 0, voy = vv ? vv.offsetTop : 0;
+    let pointer = { x: (te.clientX - bounds.left) - vox, y: (te.clientY - bounds.top) - voy };
     if(!ignoreZoom) pointer = this.restorePointerVpt(pointer);
     const retina = this.getRetinaScaling();
     if(retina !== 1){ pointer.x /= retina; pointer.y /= retina; }
