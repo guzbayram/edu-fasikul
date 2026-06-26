@@ -853,13 +853,8 @@ function initLongPressDraw(){
   if(!wrap || wrap.dataset.lpDrawReady) return;
   wrap.dataset.lpDrawReady = '1';
 
-  // Fabric'in önbelleğe aldığı canvas offset'i layout/scroll değişince bayatlayıp
-  // çizimi kaydırabiliyor → her dokunuştan ÖNCE (capture) tazele.
-  const refreshFabricOffsets = ()=>{
-    try{ appState.fabricCanvas?.calcOffset(); }catch(_e){}
-    Object.values(appState.fabricCanvases || {}).forEach(fc=>{ try{ fc.calcOffset(); }catch(_e){} });
-  };
-  wrap.addEventListener('touchstart', refreshFabricOffsets, { passive:true, capture:true });
+  // Not: Çizim koordinatı patchGetPointer (canvas.js) ile her olayda canlı
+  // getBoundingClientRect'ten hesaplanıyor; offset tazeleme/calcOffset gerekmez.
 
   const MOVE_THRESHOLD = 8;   // px — jest başladı eşiği
   const MENU_HOLD = 1000;     // 1sn sabit basış → Görünüm Modu menüsü

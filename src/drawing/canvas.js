@@ -18,34 +18,42 @@ function applyDrawingScale(fc, key){
 }
 window.applyDrawingScale = applyDrawingScale;
 
-// Fabric'in varsayılan calcOffset'i, iç-kaydırılabilir konteynerlerin (canvas-wrap)
-// scroll'unu ÇİFT sayıyor (getBoundingClientRect zaten kaydırmayı içerirken üstüne
-// ancestor scrollTop ekliyor) → yatayda kart kayınca çizim scroll kadar yukarı kayıyordu.
-// getBoundingClientRect + yalnız window scroll ile doğru hesapla.
-function patchCalcOffset(fc){
-  fc.calcOffset = function(){
-    const r = this.lowerCanvasEl.getBoundingClientRect();
-    // getBoundingClientRect=LAYOUT, touch.clientX/Y=VISUAL viewport. Adres çubuğu görünüp
-    // kaybolunca aralarında visualViewport.offset oluşur ("ilk doğru, sonra kayıyor").
-    // Offset'i visual sisteme çevir: r - vv.offset + pageScroll.
-    const vv = window.visualViewport;
-    this._offset = {
-      left: r.left - (vv ? vv.offsetLeft : 0) + (window.pageXOffset || 0),
-      top:  r.top  - (vv ? vv.offsetTop  : 0) + (window.pageYOffset || 0)
-    };
-    return this;
+// KÖK NEDEN (yatay çizim kayması): Fabric'in getPointer'ı, dokunma noktasını
+// `clientX + getScrollLeftTop(target)` (tüm üst elementlerin scroll toplamı, canvas-wrap
+// scrollTop'u dahil) - calcOffset offset'i ile hesaplıyor. Bizim canvas-wrap iç-scroll'u
+// bu toplama girince ve getBoundingClientRect zaten scroll'u yansıtınca aynı scroll ÇİFT
+// sayılıyor → kart aşağı kaydırılınca (yalnız yatayda gerekiyor) çizim ~2×scroll kayıyor.
+//
+// Çözüm: getPointer'ı tamamen değiştir; noktayı SADECE `clientX - rect.left` ile bul.
+// clientX/Y ve getBoundingClientRect aynı viewport koordinat sisteminde olduğundan hiçbir
+// scroll/offset terimi gerekmez; her olayda canlı rect ile hesaplanır (bayatlama yok).
+function patchGetPointer(fc){
+  fc.getPointer = function(e, ignoreZoom){
+    if(this._absolutePointer && !ignoreZoom) return this._absolutePointer;
+    if(this._pointer && ignoreZoom) return this._pointer;
+    const upperCanvasEl = this.upperCanvasEl;
+    const bounds = upperCanvasEl.getBoundingClientRect();
+    const boundsWidth = bounds.width || 0, boundsHeight = bounds.height || 0;
+    const te = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
+    let pointer = { x: te.clientX - bounds.left, y: te.clientY - bounds.top };
+    if(!ignoreZoom) pointer = this.restorePointerVpt(pointer);
+    const retina = this.getRetinaScaling();
+    if(retina !== 1){ pointer.x /= retina; pointer.y /= retina; }
+    const cssScale = (boundsWidth === 0 || boundsHeight === 0)
+      ? { width: 1, height: 1 }
+      : { width: upperCanvasEl.width / boundsWidth, height: upperCanvasEl.height / boundsHeight };
+    return { x: pointer.x * cssScale.width, y: pointer.y * cssScale.height };
   };
-  fc.calcOffset();
   return fc;
 }
-window.patchCalcOffset = patchCalcOffset;
+window.patchGetPointer = patchGetPointer;
 
 function initFabricForPage(canvasEl, w, h, pageNum){
   const fc = new fabric.Canvas(canvasEl, {
     isDrawingMode: false, selection: true,
     width: w, height: h, backgroundColor: 'transparent'
   });
-  patchCalcOffset(fc);
+  patchGetPointer(fc);
   fc._pageNum = pageNum;
   appState.fabricCanvases[pageNum] = fc;
 
@@ -146,7 +154,7 @@ function initFabricOnCanvas(canvasEl, w, h){
     height: h,
     backgroundColor: 'transparent'
   });
-  patchCalcOffset(fc);
+  patchGetPointer(fc);
   appState.fabricCanvas = fc;
 
   // Sayfa için kayıtlı çizim varsa yükle
