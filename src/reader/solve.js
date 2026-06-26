@@ -124,8 +124,9 @@ function toggleCardFill(){
   const availH = wrap.clientHeight - parseFloat(cs.paddingTop||0)  - parseFloat(cs.paddingBottom||0);
   const r = pw.getBoundingClientRect();
   if(!appState._fillBaseZoom){
-    const factor = Math.max(availW / r.width, availH / r.height); // alanı kapla (taşan eksen kayar)
-    if(factor > 1.02){
+    // Genişliğe sığdır: kartın sol/sağ kenarları alanın sol/sağ kenarıyla çakışsın
+    const factor = availW / r.width;
+    if(Math.abs(factor - 1) > 0.02){
       appState._fillBaseZoom = appState.zoom;
       appState.zoom = Math.max(40, Math.min(200, Math.round(appState.zoom * factor)));
     }

@@ -502,7 +502,7 @@ a{color:inherit;text-decoration:none}
 @media (orientation:landscape) and (max-height:560px){
   #reader-overlay.solve-mode .solve-palette{
     top:0;left:0;right:auto;bottom:auto;transform:none;
-    height:100vh;width:auto;max-width:none;border-radius:0 18px 18px 0;
+    height:100vh;height:100dvh;width:auto;max-width:none;border-radius:0 18px 18px 0;
     flex-direction:column;justify-content:flex-start;gap:10px;padding:6px 10px 12px;
     overflow-y:auto;overflow-x:hidden;touch-action:pan-y;
   }
@@ -3072,8 +3072,9 @@ a{color:inherit;text-decoration:none}
 
   /* PANEL: SOL kenarda dikey sütun, genişlik ekranın %35'i */
   .reader-right{
-    position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:auto!important;
-    width:min(35vw,340px)!important;max-width:35vw!important;height:100vh!important;
+    position:fixed!important;top:0!important;left:0!important;bottom:auto!important;right:auto!important;
+    width:min(35vw,340px)!important;max-width:35vw!important;
+    height:100vh!important;height:100dvh!important; /* dvh: iOS görünür viewport — dokunma kayması fix */
     display:flex!important;flex-direction:column!important;
     overflow:hidden!important;
     border:none!important;border-right:1.5px solid var(--border-strong)!important;
