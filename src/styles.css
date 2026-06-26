@@ -2487,6 +2487,13 @@ a{color:inherit;text-decoration:none}
 .rp-konu-toggle-btn:hover{background:var(--bg-4)}
 
 /* Konu Listesi butonu (soru paneli başlığında) */
+.rp-reset-btn{
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:28px;height:28px;border-radius:8px;
+  background:var(--bg-3);border:1px solid var(--border);color:var(--text-muted);
+  font-size:15px;line-height:1;cursor:pointer;transition:all .15s;
+}
+.rp-reset-btn:hover{background:var(--bg-4);color:var(--text-0)}
 .rp-konu-list-btn{
   display:flex;align-items:center;gap:6px;
   padding:6px 10px;border-radius:10px;flex-shrink:0;
@@ -2925,9 +2932,9 @@ a{color:inherit;text-decoration:none}
     font-size:11px!important;overflow-x:auto!important;overflow-y:hidden!important;
   }
 
-  /* ── SATIR 5 (1.4 BİRİM): ABCDE daire butonları ── */
+  /* ── SATIR 5 (1.4 BİRİM): Soru no + ABCDE daire butonları ── */
   .soru-list{
-    width:100%!important;flex-shrink:0!important;overflow:hidden!important;
+    width:100%!important;flex:none!important;flex-shrink:0!important;overflow:hidden!important;
     height:calc(var(--rp-row) * 1.4)!important;min-height:calc(var(--rp-row) * 1.4)!important;
     display:flex!important;align-items:center!important;justify-content:center!important;
     padding:0 12px!important;border-bottom:1px solid var(--border)!important;
@@ -2937,9 +2944,13 @@ a{color:inherit;text-decoration:none}
   .tek-soru-card{
     background:transparent!important;border:none!important;box-shadow:none!important;
     padding:0!important;margin:0!important;width:100%!important;max-width:none!important;
-    border-radius:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    border-radius:0!important;display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;gap:3px!important;
   }
-  .tsk-header{display:none!important}
+  /* Soru no görünür (hangi soruyu cevaplıyorsun) */
+  .tsk-header{display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;margin:0!important;min-height:0!important;border:none!important;background:none!important}
+  .tsk-no{display:inline-block!important;font-size:11px!important;font-weight:700!important;color:var(--text-1)!important;line-height:1!important}
+  .tsk-badge,.tsk-star,.tsk-page,.tsk-copy{display:none!important}
   .tsk-body{padding:0!important;width:100%!important}
   .tsk-cevap-row{
     display:flex!important;flex-wrap:nowrap!important;
@@ -3032,9 +3043,16 @@ a{color:inherit;text-decoration:none}
    ═══════════════════════════════════════════════════════════════════ */
 @media (orientation:landscape) and (max-height:500px){
 
-  /* Kanvasın üst/alt/sağında bar YOK: üst toolbar + alt sayfa-bar gizli */
+  /* Üst toolbar gizli (kanvas üstünde bar yok) */
   .reader-toolbar{display:none!important}
-  .reader-bottom-bar{display:none!important}
+  /* Sayfa değiştir barı: panelin EN ALTINDA (sol ≤%30), kanvasa taşmaz */
+  .reader-bottom-bar{
+    display:flex!important;position:fixed!important;
+    left:0!important;right:auto!important;bottom:0!important;
+    width:min(30vw,300px)!important;height:34px!important;z-index:351!important;
+    border-top:1px solid var(--border)!important;border-right:1.5px solid var(--border-strong)!important;
+    background:var(--bg-1)!important;justify-content:center!important;align-items:center!important;gap:10px!important;padding:0!important;
+  }
 
   /* PANEL: SOL kenarda dikey sütun, genişlik ekranın ≤ %30'u */
   .reader-right{
@@ -3120,9 +3138,9 @@ a{color:inherit;text-decoration:none}
     font-size:10px!important;overflow-x:auto!important;overflow-y:hidden!important;
   }
 
-  /* ── SATIR 4 (1.4×): ABCDE daire butonları ── */
+  /* ── SATIR 4 (1.4×): Soru no + ABCDE daire butonları ── */
   .soru-list{
-    width:100%!important;flex-shrink:0!important;
+    width:100%!important;flex:none!important;flex-shrink:0!important;
     height:calc(var(--rl-row) * 1.4)!important;min-height:calc(var(--rl-row) * 1.4)!important;
     position:static!important;
     display:flex!important;align-items:center!important;justify-content:center!important;
@@ -3133,14 +3151,17 @@ a{color:inherit;text-decoration:none}
   .tek-soru-card{
     background:transparent!important;border:none!important;box-shadow:none!important;
     padding:0!important;margin:0!important;width:100%!important;max-width:none!important;
-    border-radius:0!important;display:flex!important;align-items:center!important;
+    border-radius:0!important;display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;gap:3px!important;
   }
-  .tsk-header{display:none!important}
+  /* Soru no görünür (hangi soruyu cevaplıyorsun) — diğer header öğeleri gizli */
+  .tsk-header{display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;margin:0!important;min-height:0!important;border:none!important;background:none!important}
+  .tsk-no{display:inline-block!important;font-size:11px!important;font-weight:700!important;color:var(--text-1)!important;line-height:1!important}
   .tsk-body{padding:0!important;width:100%!important}
   .tsk-feedback{display:none!important}
   .tsk-actions{display:none!important}
   .tsk-nav-dots{display:none!important}
-  .tsk-badge,.tsk-star,.tsk-page{display:none!important}
+  .tsk-badge,.tsk-star,.tsk-page,.tsk-copy{display:none!important}
   .tsk-cevap-row{
     display:flex!important;flex-wrap:nowrap!important;
     gap:8px!important;justify-content:center!important;margin:0!important;
@@ -3174,17 +3195,17 @@ a{color:inherit;text-decoration:none}
     overflow-x:auto!important;overflow-y:hidden!important;
   }
 
-  /* ── ZOOM BAR: panel altına yapıştır ── */
+  /* ── ZOOM BAR: sayfa-bar'ın hemen üstünde (panel altı) ── */
   .rp-zoom-bar{
-    display:flex!important;
-    position:static!important;         /* fixed değil, panel içinde */
-    width:100%!important;height:36px!important;
-    border-top:1px solid var(--border)!important;border-right:none!important;
-    border-radius:0!important;
-    margin-top:auto!important;         /* kalan boşluğu doldur, aşağıya it */
+    display:flex!important;position:fixed!important;
+    left:0!important;right:auto!important;bottom:34px!important;
+    width:min(30vw,300px)!important;height:34px!important;z-index:351!important;
+    border-top:1px solid var(--border)!important;border-right:1.5px solid var(--border-strong)!important;border-radius:0!important;
     justify-content:center!important;align-items:center!important;gap:10px!important;
     background:var(--bg-1)!important;
   }
+  /* Panel içeriği alttaki iki bara (zoom 34 + sayfa 34) girmesin */
+  .rp-soru-section{padding-bottom:70px!important}
   /* Konu modal: tam ekran (toolbar gizli → top:0) */
   #reader-overlay.konu-modal-open .reader-right{display:none!important}
   #reader-overlay.konu-modal-open .konu-modal{

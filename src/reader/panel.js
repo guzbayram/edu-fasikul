@@ -1824,8 +1824,9 @@ function updateTestProgress(){
   const rpEl=document.getElementById('rpSoruSayisi');
   if(rpEl) rpEl.textContent=`${sorular.length} ${isKonuKartAltKonu(appState.aktifAltKonu)?'Kart':'Soru'}`;
 
-  // Bağımsız istatistik gösterimi
+  // Bağımsız istatistik gösterimi (Sıfırla butonu artık başlık satırında)
   const statsEl = document.getElementById('altKonuStatsDisplay');
+  const resetBtn = document.getElementById('altKonuResetBtn');
   if(statsEl){
     if(engaged > 0){
       const netStr = net.toFixed(1);
@@ -1835,10 +1836,11 @@ function updateTestProgress(){
         <div class="aks-stat red">❌ ${wrong}</div>
         <div class="aks-stat muted">⬜ ${blank}</div>
         <div class="aks-stat blue">Net ${netStr}</div>
-        <div class="aks-stat muted">%${pctStr}</div>
-        <button class="aks-reset-btn" onclick="resetAltKonuStats()" title="Bu alt konuyu sıfırla">↺ Sıfırla</button>`;
+        <div class="aks-stat muted">%${pctStr}</div>`;
+      if(resetBtn) resetBtn.style.display = '';
     } else {
       statsEl.innerHTML = `<span style="color:var(--text-muted);font-size:12px">Henüz soru çözülmedi</span>`;
+      if(resetBtn) resetBtn.style.display = 'none';
     }
   }
 }
