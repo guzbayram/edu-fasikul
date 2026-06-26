@@ -303,7 +303,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   initTouchGestures();
   if(localStorage.getItem('edu_draw_debug') === '1') window.__DRAW_DEBUG = true; // tanı (varsayılan KAPALI)
   initLongPressDraw();
-  initPanelTapFix();
+  // initPanelTapFix KALDIRILDI — panel artık position:fixed değil (flex çocuğu),
+  // butonlar native doğru seçilir; tap-fix aksine yanlış yönlendirirdi.
 });
 
 // ══════════════════════════════

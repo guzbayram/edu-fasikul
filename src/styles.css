@@ -3078,16 +3078,24 @@ body.reader-locked{overflow:hidden!important}
   .reader-toolbar{display:none!important}
   .reader-bottom-bar{display:none!important}
 
-  /* PANEL: SOL kenarda dikey sütun, genişlik ekranın %35'i */
+  /* ── YENİDEN TASARIM: panel position:fixed DEĞİL, overlay'in flex çocuğu ──
+     overlay = flex row → panel SOLDA, canvas SAĞDA. Panel flex ile overlay
+     yüksekliğine (tam boy) uzar; fixed-CB yükseklik sorunu YOK, fixed-hit-test
+     buton kayması YOK (butonlar native doğru seçilir). */
+  #reader-overlay.open{flex-direction:row!important;align-items:stretch!important}
   .reader-right{
-    /* body artık fixed değil → top:0+bottom:0 gerçek viewport'a yaslanır (tam boy). */
-    position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:auto!important;
-    width:min(35vw,340px)!important;max-width:35vw!important;height:auto!important;
+    position:static!important;order:-1!important;
+    width:min(35vw,340px)!important;max-width:35vw!important;
+    height:auto!important;max-height:none!important;min-height:0!important;align-self:stretch!important;
+    flex:0 0 auto!important;
     display:flex!important;flex-direction:column!important;
     overflow:hidden!important;
     border:none!important;border-right:1.5px solid var(--border-strong)!important;
-    background:var(--bg-1)!important;z-index:350!important;padding:0!important;gap:0!important;
+    background:var(--bg-1)!important;z-index:auto!important;padding:0!important;gap:0!important;
+    transform:none!important;inset:auto!important;
   }
+  .reader-center{flex:1 1 0%!important;min-width:0!important;min-height:0!important;
+    padding:0!important;order:0!important}
   .rp-konu-section{display:none!important}
   /* Soru bölümü: içeriğe göre (büyümez/scroll yok) → tüm satırlar (araçlar dahil) görünür. */
   .rp-soru-section{
@@ -3098,9 +3106,8 @@ body.reader-locked{overflow:hidden!important}
   /* Satır birimi — içerik kaydırmaya gerek kalmadan 100vh'ye sığsın (cevap 1.4×) */
   #reader-overlay{--rl-row:clamp(30px,11vh,44px)}
 
-  /* CANVAS: panelin sağında, etrafında 8px boşluk, üst/alt bar yok */
-  .reader-center{padding:0!important}
-  .reader-canvas-wrap{padding:8px 8px 8px calc(min(35vw,340px) + 8px)!important}
+  /* CANVAS: panel flex ile kendi yerini aldı → sol-padding hilesi YOK, sade 8px */
+  .reader-canvas-wrap{padding:8px!important}
 
   /* ── SATIR 1: Konu adı (sol) + ≡ (sağ) ── */
   .rp-header{
