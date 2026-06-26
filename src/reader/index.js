@@ -26,6 +26,10 @@ async function openReader(dersId, fasikulId){
   appState.currentPage = 1;
   appState.undoStack = [];
   appState.redoStack = [];
+  // Her fasikül açılışında varsayılan araç: ✋ Gez (pan/kaydır/soru geçişi)
+  // — PDF yüklenince canvas applyTool(appState.drawTool) ile uygular.
+  appState.drawTool = 'select';
+  document.querySelectorAll('.tool-btn[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool==='select'));
   // PDF state reset
   appState.pdfDoc = null;
   appState.pdfDocFasikulId = null;
