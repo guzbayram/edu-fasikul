@@ -70,8 +70,11 @@ async function openReader(dersId, fasikulId){
 
   // Open overlay
   document.getElementById('reader-overlay').classList.add('open');
-  // iOS: overlay'i görünür viewport'a oturt (dokunma kayması fix)
-  setTimeout(()=> window.syncReaderViewport?.(), 60);
+  // iOS: body kaydırılmışsa fixed overlay'de dokunma/çizim scrollY kadar kayıyor.
+  // Body'yi mevcut konumda kilitle (scrollY=0) → koordinat hizalı.
+  appState._savedScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.style.top = `-${appState._savedScrollY}px`;
+  document.body.classList.add('reader-locked');
   // Konu listesi görünür başlar
   document.getElementById('readerRight')?.classList.remove('soru-mode');
   document.getElementById('rpKonuSection')?.classList.remove('hidden');
@@ -217,7 +220,10 @@ function closeReader(){
   renderDerslerGrid();
   if(window.currentDrawerDers) renderFasikulCards(window.currentDrawerDers.fasikuller, window.currentDrawerDers);
   document.getElementById('reader-overlay').classList.remove('open');
-  window.clearReaderViewport?.();
+  // Body kilidini aç ve önceki scroll konumunu geri yükle
+  document.body.classList.remove('reader-locked');
+  document.body.style.top = '';
+  window.scrollTo(0, appState._savedScrollY || 0);
   appState.aktifFasikul = null;
   appState.aktifAltKonu = null;
   appState.pdfDoc = null;

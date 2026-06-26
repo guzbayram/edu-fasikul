@@ -429,6 +429,9 @@ a{color:inherit;text-decoration:none}
   -webkit-touch-callout:none;  /* uzun-basışta iOS "Kopyala/Araştır" menüsü çıkmasın */
 }
 #reader-overlay.open{display:flex}
+/* Reader açıkken body kaydırmayı kilitle: iOS'ta fixed overlay + kaydırılmış body =
+   dokunma/çizim koordinatı scrollY kadar kayıyordu. Kilitleyince scrollY=0 → hizalı. */
+body.reader-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 /* Reader uygulama UI'si: metin seçilmesin, uzun-basış callout'u olmasın */
 #reader-overlay,#reader-overlay *{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 /* Panel/palet butonlarında çift-dokun-zoom'u kapat (çift dokununca ekran yakınlaşmasın) */
