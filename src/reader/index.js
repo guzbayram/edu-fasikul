@@ -111,10 +111,6 @@ async function openReader(dersId, fasikulId){
   window.publishCanli?.();
 }
 
-function toggleMobileLeft(){
-  toggleRpKonuSection();
-}
-
 function openKonuList(){
   const backdrop = document.getElementById('konuModalBackdrop');
   const modal    = document.getElementById('konuModal');
@@ -499,7 +495,6 @@ function selectAltKonu(altKonu, itemId){
 // ── Bu modülün fonksiyonlarını window'a kaydet ──
 // main.js ve diğer modüller window.xxx ile çağırabilsin
 window.openReader = openReader;
-window.toggleMobileLeft = toggleMobileLeft;
 window.toggleRpKonuSection = toggleRpKonuSection;
 window.openKonuList = openKonuList;
 window.closeKonuModal = closeKonuModal;

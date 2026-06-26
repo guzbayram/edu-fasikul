@@ -1,10 +1,8 @@
-import { appState } from '../state/appState.js';
-
 const ONBOARD_STEPS=[
   {
     title:'Konu Navigatörü 📚',
     desc:'Sol panelden ana konu ve alt konuları seç. Her konu PDF\'deki ilgili sayfaya atlar.',
-    target:'readerLeft',
+    target:'readerRight',
     pos:{left:'300px',top:'120px'}
   },
   {
@@ -29,7 +27,7 @@ function startOnboarding(){
     // Open reader first then tour
     const firstDers=window.MANIFEST.dersler[0];
     const firstFas=firstDers.fasikuller[0];
-    openReader(firstDers, firstFas);
+    window.openReader(firstDers.id, firstFas.id);
     setTimeout(()=>showOnboardStep(0), 500);
   }
 }
@@ -72,7 +70,7 @@ function endOnboarding(){
   document.getElementById('onboardOverlay').style.display='none';
   document.getElementById('onboardTip').style.display='none';
   localStorage.setItem('edu_onboarded','1');
-  showToast('Tur tamamlandı! İyi çalışmalar 🎓','success');
+  window.showToast('Tur tamamlandı! İyi çalışmalar 🎓','success');
 }
 
 // ── Window exports ──

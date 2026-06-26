@@ -6,10 +6,6 @@ import { appState } from '../state/appState.js';
 // araç paleti (kalem/silgi/renkler · A–E · kopyala) ile çözülür.
 // ══════════════════════════════════════════════════════════
 
-function isPhone(){
-  return window.matchMedia('(orientation:portrait)').matches && window.innerWidth <= 820;
-}
-
 // Canvas alanını paletin boyutu kadar içeriden başlat → PDF palete kadar büyür,
 // altında gizlenmez/kesilmez (yatay: soldan, dikey: üstten).
 function fitCanvasToPalette(){
