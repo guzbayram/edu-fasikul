@@ -35,7 +35,13 @@ function patchGetPointer(fc){
     const bounds = upperCanvasEl.getBoundingClientRect();
     const boundsWidth = bounds.width || 0, boundsHeight = bounds.height || 0;
     const te = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
-    let pointer = { x: te.clientX - bounds.left, y: te.clientY - bounds.top };
+    // iOS: touch.clientX/Y VISUAL viewport'a göre; getBoundingClientRect ise (fixed
+    // overlay'de) LAYOUT viewport'a göre dönebiliyor. Adres çubuğu görününce aralarında
+    // visualViewport.offset oluşur ve çizim parmaktan YUKARI kayar (kullanıcının gördüğü).
+    // Standalone/tam ekranda offset=0 → etkisiz (kanıtlanmış doğru hâli bozulmaz).
+    const vv = window.visualViewport;
+    const vox = vv ? vv.offsetLeft : 0, voy = vv ? vv.offsetTop : 0;
+    let pointer = { x: (te.clientX + vox) - bounds.left, y: (te.clientY + voy) - bounds.top };
     if(!ignoreZoom) pointer = this.restorePointerVpt(pointer);
     const retina = this.getRetinaScaling();
     if(retina !== 1){ pointer.x /= retina; pointer.y /= retina; }
