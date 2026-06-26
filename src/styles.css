@@ -445,26 +445,28 @@ a{color:inherit;text-decoration:none}
 
 .solve-palette{
   position:fixed;z-index:400;left:50%;bottom:18px;transform:translateX(-50%);
-  flex-direction:column;gap:7px;align-items:stretch;
-  background:color-mix(in srgb,var(--bg-2) 95%,transparent);
-  border:1px solid var(--border-strong);border-radius:16px;padding:8px 8px 9px;
+  flex-direction:column;gap:8px;align-items:stretch;
+  background:color-mix(in srgb,var(--bg-2) 96%,transparent);
+  border:1px solid var(--border-strong);border-radius:16px;padding:8px 10px 10px;
   box-shadow:0 12px 36px rgba(0,0,0,.5);backdrop-filter:blur(12px);
   max-width:96vw;user-select:none;
 }
 .solve-palette.dragging{opacity:.92}
-.sp-handle{align-self:center;cursor:grab;color:var(--text-muted);font-size:13px;line-height:1;padding:1px 28px 4px;letter-spacing:1px;touch-action:none}
-.sp-row{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
-.sp-sep{width:1px;height:22px;background:var(--border);margin:0 2px}
+.sp-handle{align-self:center;cursor:grab;color:var(--text-muted);font-size:13px;line-height:1;padding:0 28px 4px;letter-spacing:1px;touch-action:none}
+/* Satırlar: öğeler eşit aralıkla dağılır (ortalı kümeleme yok) */
+.sp-row{display:flex;align-items:center;justify-content:space-evenly;gap:8px}
+/* Renkler her zaman 2×2 grid → hem satırda hem sütunda kompakt ve hizalı */
+.sp-colors{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;flex:0 0 auto}
+/* Tüm butonlar tek standart boyut → satırlar hizalı */
 .solve-palette .tool-btn{
-  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
-  font-size:17px;border-radius:10px;background:var(--bg-3);border:1px solid var(--border);cursor:pointer;
+  flex:0 0 auto;width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;border-radius:11px;background:var(--bg-3);border:1px solid var(--border);cursor:pointer;
 }
 .solve-palette .tool-btn.active{background:var(--mat-dim);border-color:var(--mat)}
-.solve-palette .color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent}
-.solve-palette .color-dot.selected{border-color:var(--text-0);transform:scale(1.1)}
-.sp-answers{gap:8px}
+.solve-palette .color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;display:block}
+.solve-palette .color-dot.selected{border-color:var(--text-0);transform:scale(1.12)}
 .sp-answers .sp-ans{
-  width:42px;height:42px;border-radius:50%;font-size:15px;font-weight:700;cursor:pointer;
+  flex:0 0 auto;width:40px;height:40px;border-radius:50%;font-size:15px;font-weight:700;cursor:pointer;
   background:var(--bg-3);border:1.5px solid var(--border);color:var(--text-0);
 }
 .sp-answers .sp-ans.correct-ans{background:var(--green);border-color:var(--green);color:#fff}
@@ -472,25 +474,23 @@ a{color:inherit;text-decoration:none}
 .sp-answers .sp-ans:disabled{cursor:default}
 .sp-exit{background:rgba(239,68,68,.16)!important;border-color:var(--red)!important}
 
-/* Dikey: palet EN ÜSTTE, tam genişlik, ihtiyaç yüksekliği */
+/* Dikey: palet EN ÜSTTE, tam genişlik — satırlar genişliğe eşit dağılır */
 @media (orientation:portrait){
   #reader-overlay.solve-mode .solve-palette{
     top:0;left:0;right:0;bottom:auto;transform:none;width:100%;max-width:none;
-    flex-direction:column;border-radius:0 0 16px 16px;
+    flex-direction:column;border-radius:0 0 18px 18px;padding:6px 14px 10px;
   }
-  #reader-overlay.solve-mode .solve-palette .sp-row{flex-direction:row}
+  #reader-overlay.solve-mode .solve-palette .sp-row{flex-direction:row;justify-content:space-evenly;width:100%}
 }
-/* Yatay telefon: palet SOL KENARDA, tam yükseklik, min genişlik (dikey sütun) */
+/* Yatay telefon: palet SOL KENARDA dikey sütun — öğeler ortalı, eşit genişlik */
 @media (orientation:landscape) and (max-height:560px){
   #reader-overlay.solve-mode .solve-palette{
     top:0;left:0;right:auto;bottom:auto;transform:none;
-    height:100vh;width:auto;max-width:none;border-radius:0 16px 16px 0;
-    flex-direction:column;justify-content:flex-start;gap:6px;
+    height:100vh;width:auto;max-width:none;border-radius:0 18px 18px 0;
+    flex-direction:column;justify-content:flex-start;gap:8px;padding:6px 8px 10px;
     overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch;
   }
-  #reader-overlay.solve-mode .solve-palette .sp-row{flex-direction:column;gap:6px}
-  #reader-overlay.solve-mode .solve-palette .sp-sep{width:22px;height:1px}
-  #reader-overlay.solve-mode .solve-palette .sp-handle{padding:4px 6px}
+  #reader-overlay.solve-mode .solve-palette .sp-row{flex-direction:column;gap:7px;justify-content:flex-start}
 }
 
 /* LEFT NAV */
