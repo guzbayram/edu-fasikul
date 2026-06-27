@@ -86,11 +86,15 @@ function applyTool(tool){
         fc._textToolHandler = (opt)=>{
           if(opt.target) return;
           const p = fc.getPointer(opt.e);
-          const t = new fabric.IText('Metin yaz…', {
+          const t = new fabric.IText('', {
             left:p.x, top:p.y, fontSize:14, fill:appState.drawColor,
             fontFamily:'DM Sans, sans-serif', editable:true
           });
-          fc.add(t); fc.setActiveObject(t); t.enterEditing(); fc.renderAll();
+          fc.add(t);
+          fc.setActiveObject(t);
+          t.enterEditing();
+          if(t.hiddenTextarea) t.hiddenTextarea.focus();
+          fc.renderAll();
           clearToolHandlers(fc);
         };
         fc.on('mouse:down', fc._textToolHandler);

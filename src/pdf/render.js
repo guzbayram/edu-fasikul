@@ -61,6 +61,7 @@ appState.viewMode = 'single'; // 'single' | 'scroll'
  */
 
 async function renderAllPages(){
+  window.flushActiveTextEditing?.();
   const wrap = document.getElementById('readerCanvasWrap');
   wrap.innerHTML = '';
 
@@ -285,6 +286,7 @@ function sizeReaderStage(stage, wrap, displayW, displayH){
 // ── renderPages: mod'a göre tek sayfa veya scroll
 
 function renderPages(){
+  window.flushActiveTextEditing?.();
   if(appState.viewMode === 'scroll'){
     return renderAllPages().then(()=>{
       appState._renderedZoom = appState.zoom;
@@ -300,6 +302,7 @@ function renderPages(){
 // ── Tek sayfa modu
 
 async function renderSinglePageMode(pageNum){
+  window.flushActiveTextEditing?.();
   const wrap = document.getElementById('readerCanvasWrap');
   wrap.innerHTML = '';
 

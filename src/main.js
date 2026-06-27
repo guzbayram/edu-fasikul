@@ -1137,6 +1137,14 @@ function showToast(msg, type='info'){
 document.addEventListener('keydown', e=>{
   // Reader shortcuts
   if(document.getElementById('reader-overlay').classList.contains('open')){
+    if(window.isFabricTextEditing?.()){
+      if(e.ctrlKey && e.key==='s'){
+        e.preventDefault();
+        window.flushActiveTextEditing?.();
+        showToast('Çizimler kaydedildi ✓','success');
+      }
+      return;
+    }
     // A-E answer
     if(['A','B','C','D','E'].includes(e.key.toUpperCase()) && !e.ctrlKey && !e.altKey){
       if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return;

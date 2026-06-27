@@ -96,6 +96,14 @@ function initFabricForPage(canvasEl, w, h, pageNum){
   fc.on('object:added', debounceSave);
   fc.on('object:modified', debounceSave);
   fc.on('object:removed', debounceSave);
+  fc.on('text:changed', debounceSave);
+  fc.on('text:editing:exited', opt=>{
+    const target = opt?.target;
+    if(target && target.type === 'i-text' && !String(target.text || '').trim()){
+      fc.remove(target);
+    }
+    saveDrawingForPage(pageNum);
+  });
   fc.on('object:added', ()=>{ appState.undoStack.push(JSON.stringify(fc)); appState.redoStack=[]; });
 }
 
@@ -174,6 +182,14 @@ function initFabricOnCanvas(canvasEl, w, h){
   fc.on('object:added', debounceAutoSave);
   fc.on('object:modified', debounceAutoSave);
   fc.on('object:removed', debounceAutoSave);
+  fc.on('text:changed', debounceAutoSave);
+  fc.on('text:editing:exited', opt=>{
+    const target = opt?.target;
+    if(target && target.type === 'i-text' && !String(target.text || '').trim()){
+      fc.remove(target);
+    }
+    saveDrawing();
+  });
 
   // Undo stack
   fc.on('object:added', ()=>{ appState.undoStack.push(JSON.stringify(fc)); appState.redoStack=[]; });
@@ -210,6 +226,32 @@ function saveDrawing(){
   if(ind) { ind.style.color='var(--green)'; setTimeout(()=>ind.style.color='',800); }
 }
 
+function getActiveTextObject(){
+  const canvases = appState.viewMode === 'scroll'
+    ? Object.values(appState.fabricCanvases || {})
+    : (appState.fabricCanvas ? [appState.fabricCanvas] : []);
+  for(const fc of canvases){
+    const active = fc?.getActiveObject?.();
+    if(active && active.type === 'i-text' && active.isEditing) return { fc, active };
+  }
+  return null;
+}
+
+function isFabricTextEditing(){
+  return !!getActiveTextObject();
+}
+
+function flushActiveTextEditing(){
+  const info = getActiveTextObject();
+  if(!info) return false;
+  info.active.setCoords();
+  info.fc.requestRenderAll();
+  const pageNum = Number(info.fc._pageNum || appState.currentPage);
+  if(appState.viewMode === 'scroll') saveDrawingForPage(pageNum);
+  else saveDrawing();
+  return true;
+}
+
 // ── Tools
 
 
@@ -223,3 +265,5 @@ window.initFabricCanvas = initFabricCanvas;
 window.initFabricOnCanvas = initFabricOnCanvas;
 window.debounceAutoSave = debounceAutoSave;
 window.saveDrawing = saveDrawing;
+window.isFabricTextEditing = isFabricTextEditing;
+window.flushActiveTextEditing = flushActiveTextEditing;
