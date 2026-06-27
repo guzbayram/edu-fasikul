@@ -11,14 +11,20 @@ import { appState } from '../state/appState.js';
 function fitCanvasToPalette(){
   const ov = document.getElementById('reader-overlay');
   const wrap = document.getElementById('readerCanvasWrap');
+  const panel = document.getElementById('solvePalette');  // sabit kenar panel
   if(!wrap) return;
-  // Pencereler kartın ÜSTÜNDE yüzer (sürüklenebilir); kart tüm alanı kullanıp ORTALANIR.
   if(!ov?.classList.contains('solve-mode')){
     ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k));
     return;
   }
-  const G = 14;
-  ['padding-left','padding-right','padding-top','padding-bottom'].forEach(k=>wrap.style.setProperty(k, G+'px', 'important'));
+  // Sabit panel kadar offset → kart panelin yanında/altında ORTALI; yüzer 3-buton palet üstte.
+  const G = 12;
+  const portrait = window.matchMedia('(orientation:portrait)').matches;
+  const pr = panel ? panel.getBoundingClientRect() : {width:0, height:0};
+  const set = (k,v)=>wrap.style.setProperty(k, v, 'important');
+  set('padding-right', G+'px'); set('padding-bottom', G+'px');
+  if(portrait){ set('padding-top', (Math.round(pr.height)+G)+'px'); set('padding-left', G+'px'); }
+  else        { set('padding-left', (Math.round(pr.width)+G)+'px'); set('padding-top', G+'px'); }
 }
 function reflowSolve(){
   fitCanvasToPalette();

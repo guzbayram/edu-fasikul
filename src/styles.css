@@ -423,8 +423,9 @@ a{color:inherit;text-decoration:none}
    READER OVERLAY
 ════════════════════════════════════════════════════════ */
 #reader-overlay{
-  position:fixed;top:0;left:0;right:0;z-index:200;background:var(--bg-0);
-  height:100vh;height:100dvh; /* dvh: görünür alanı kapla — alt boşluk + koordinat kayması fix */
+  position:fixed;inset:0;z-index:200;background:var(--bg-0);
+  /* inset:0 (top+bottom:0) → viewport'un TAMAMINI kaplar. height:100dvh bazen yataya
+     dönünce kısa kalıp altta dashboard şeridi bırakıyordu (alt butonlar çalışmıyordu). */
   display:none;flex-direction:column;overflow:hidden;
   -webkit-touch-callout:none;  /* uzun-basışta iOS "Kopyala/Araştır" menüsü çıkmasın */
 }
@@ -518,80 +519,57 @@ body.reader-locked{overflow:hidden!important}
 /* Şıkların başındaki soru no */
 .sp-no{display:inline-flex;align-items:center;font-weight:800;font-size:15px;color:var(--text-0);padding:0 8px 0 2px;white-space:nowrap}
 
-/* ── Köşe boyutlandırma tutamacı (solve pencereleri) ── */
-.sp-resize{display:none}
-#reader-overlay.solve-mode .sp-resize{
-  display:block;position:absolute;right:2px;bottom:2px;width:20px;height:20px;
-  cursor:nwse-resize;border-radius:0 0 14px 0;touch-action:none;z-index:2;
-  background:
-    linear-gradient(135deg,transparent 50%,var(--text-muted) 50%,var(--text-muted) 60%,transparent 60%,transparent 72%,var(--text-muted) 72%,var(--text-muted) 82%,transparent 82%);
-  opacity:.5;
-}
+/* ═══ TAM EKRAN (SOLVE): SABİT KENAR PANEL + 3-BUTON YÜZER PALET ═══ */
 .solve-palette{position:fixed;overflow:visible}
 
-/* ARAÇ PENCERESİ — butonlar flex-wrap ile şekle göre dizilir. Varsayılan SAĞ-ÜST.
-   width JS resize ile ayarlanır; içerik sarılır (geniş→satır, dar→ızgara). */
-.solve-tool-palette{
-  left:auto!important;right:14px!important;top:14px!important;bottom:auto!important;
-  transform:none!important;height:auto!important;max-width:none!important;
-  width:var(--sp-w,178px);
-  border-radius:16px!important;flex-direction:column!important;overflow:visible!important;
-  justify-content:flex-start!important;gap:6px!important;
+/* YÜZER ARAÇ PALETİ — yalnız pan/kalem/silgi; küçük, sürüklenebilir. Varsayılan sağ-alt.
+   (id+2class özgüllük → kenar-panel kurallarını ezer) */
+#reader-overlay.solve-mode .solve-tool-palette{
+  left:auto!important;right:16px!important;bottom:78px!important;top:auto!important;
+  transform:none!important;width:auto!important;height:auto!important;max-width:none!important;
+  flex-direction:column!important;border-radius:16px!important;overflow:visible!important;
+  gap:4px!important;padding:6px 8px 8px!important;
 }
-.solve-tool-palette .sp-tools-wrap{
+#reader-overlay.solve-mode .solve-tool-palette .sp-tools-wrap{
+  display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  align-items:center!important;justify-content:center!important;gap:7px!important;
+}
+#reader-overlay.solve-mode .solve-tool-palette .sp-handle{padding:0 14px 3px!important;align-self:center!important}
+
+/* SABİT KENAR PANEL (#solvePalette) — pan/kalem/silgi DIŞINDAKİ her şey. Sürüklenmez. */
+#reader-overlay.solve-mode #solvePalette{
+  z-index:360!important;background:var(--bg-1)!important;border-radius:0!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;gap:8px!important;
+  box-shadow:0 2px 16px rgba(0,0,0,.22)!important;
+}
+#reader-overlay.solve-mode #solvePalette .sp-row{
   display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
   align-items:center!important;justify-content:center!important;gap:7px!important;width:100%!important;
 }
-.solve-tool-palette .sp-handle{padding:0 16px 4px!important;align-self:center!important}
+#reader-overlay.solve-mode #solvePalette .sp-no{flex:1 0 100%!important;justify-content:center!important;padding:0 0 2px!important}
 
-/* ŞIK / KONTROL PENCERESİ — varsayılan ALT-ORTA; içerik şekle göre sarılır */
-#reader-overlay.solve-mode #solvePalette{
-  left:50%!important;right:auto!important;top:auto!important;bottom:16px!important;
-  transform:translateX(-50%)!important;height:auto!important;max-width:96vw!important;
-  width:var(--sp-w2,auto);
-  flex-direction:column!important;border-radius:16px!important;overflow:visible!important;
-}
-#reader-overlay.solve-mode #solvePalette .sp-row{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;width:100%!important}
-
-/* iPad / geniş yatay: şık penceresi SOL kenarda (2 sütun şıklar), araç penceresi SAĞ kenarda */
-@media (orientation:landscape) and (min-width:768px) and (min-height:600px){
+/* Yatay: panel SOL kenarda, tam yükseklik */
+@media (orientation:landscape){
   #reader-overlay.solve-mode #solvePalette{
-    left:14px!important;right:auto!important;top:14px!important;bottom:auto!important;
-    transform:none!important;width:var(--sp-w2,122px);
+    left:0!important;top:0!important;bottom:0!important;right:auto!important;transform:none!important;
+    width:clamp(132px,20vw,172px)!important;max-width:46vw!important;height:auto!important;justify-content:flex-start!important;
+    border-right:1.5px solid var(--border-strong)!important;padding:10px 8px!important;
+    overflow-y:auto!important;overflow-x:hidden!important;
   }
-  /* Şıklar dar pencerede 2 sütun, geniş pencerede tek satır → flex-wrap sağlar */
-  #reader-overlay.solve-mode #solvePalette .sp-answers{max-width:100%!important;gap:6px!important}
-  #reader-overlay.solve-mode #solvePalette .sp-no{flex:1 0 100%!important;justify-content:center!important;padding:0 0 2px!important}
+}
+/* Dikey: panel ÜST kenarda, tam genişlik */
+@media (orientation:portrait){
+  #reader-overlay.solve-mode #solvePalette{
+    top:0!important;left:0!important;right:0!important;bottom:auto!important;transform:none!important;
+    width:100%!important;max-width:none!important;height:auto!important;max-height:40vh!important;
+    border-bottom:1.5px solid var(--border-strong)!important;padding:8px 12px!important;
+  }
 }
 
-/* Kart: kalan alanın ORTASINDA, olabildiğince büyük (contain). Pencereler üstte yüzer. */
+/* Kart: kalan alanın ORTASINDA, contain ile olabildiğince büyük */
 #reader-overlay.solve-mode .reader-page-stage{justify-content:center!important;align-items:center!important}
 #reader-overlay.solve-mode .reader-page-stage > *,
 #reader-overlay.solve-mode [id^="page-wrap-"]{margin-left:auto!important;margin-right:auto!important}
-
-/* Dikey: palet EN ÜSTTE, tam genişlik — satırlar genişliğe eşit dağılır */
-@media (orientation:portrait){
-  #reader-overlay.solve-mode .solve-palette{
-    top:0;left:0;right:0;bottom:auto;transform:none;width:100%;max-width:none;
-    flex-direction:column;border-radius:0 0 18px 18px;padding:6px 14px 10px;
-  }
-  #reader-overlay.solve-mode .solve-palette .sp-row{flex-direction:row;justify-content:space-evenly;width:100%}
-}
-/* Yatay telefon: palet SOL KENARDA — 2 SÜTUN (araçlar rahat yerleşsin) */
-@media (orientation:landscape) and (max-height:560px){
-  #reader-overlay.solve-mode .solve-palette{
-    top:0;left:0;right:auto;bottom:auto;transform:none;
-    height:100%;width:auto;max-width:none;border-radius:0 18px 18px 0;
-    flex-direction:column;justify-content:flex-start;gap:10px;padding:6px 10px 12px;
-    overflow-y:auto;overflow-x:hidden;touch-action:pan-y;
-  }
-  /* Her satır 2 sütunlu grid → butonlar 2'şer 2'şer */
-  #reader-overlay.solve-mode .solve-palette .sp-row{
-    display:grid!important;grid-template-columns:repeat(2,40px);gap:8px;justify-items:center;justify-content:center;
-  }
-  /* Renkler zaten 2×2; iki sütuna yayılsın */
-  #reader-overlay.solve-mode .solve-palette .sp-colors{grid-column:1 / -1}
-}
 
 .custom-select-wrap{position:relative;margin:10px 10px 4px}
 .custom-select{
