@@ -484,6 +484,18 @@ body.reader-locked{overflow:hidden!important}
 }
 #reader-overlay.solve-mode .solve-zoombar .page-nav-btn:active{background:var(--bg-3)}
 #reader-overlay.solve-mode .solve-zoombar .zoom-label{min-width:46px;text-align:center;font-size:13px}
+/* Yatay: sol panel kadar sağa kaydır → kalan genişliğin ORTASINDA (ekran ortasında değil) */
+@media (orientation:landscape){
+  #reader-overlay.solve-mode .solve-zoombar{left:calc((100vw + var(--sp-panel-w,0px)) / 2)!important}
+}
+
+/* En çok kullanılan 3 araç (pan/kalem/silgi) — büyük, öncelikli, tek satır */
+#reader-overlay.solve-mode #solvePalette .sp-tools-row{flex-wrap:nowrap!important;gap:8px!important}
+#reader-overlay.solve-mode #solvePalette .sp-tools-row .tool-btn{width:46px!important;height:46px!important;font-size:23px!important;border-radius:13px!important}
+/* Geri/İleri her zaman yan yana (sarmasın) */
+#reader-overlay.solve-mode #solvePalette .sp-undoredo-row{flex-wrap:nowrap!important}
+/* Yardımcılar alt grup */
+#reader-overlay.solve-mode #solvePalette .sp-util-row{margin-top:2px!important}
 
 .solve-palette{
   position:fixed;z-index:400;left:50%;bottom:18px;transform:translateX(-50%);

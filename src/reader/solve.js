@@ -25,6 +25,8 @@ function fitCanvasToPalette(){
   set('padding-right', G+'px'); set('padding-bottom', G+'px');
   if(portrait){ set('padding-top', (Math.round(pr.height)+G)+'px'); set('padding-left', G+'px'); }
   else        { set('padding-left', (Math.round(pr.width)+G)+'px'); set('padding-top', G+'px'); }
+  // Alt zoom çubuğu, sol panelden sonraki KALAN genişlikte ortalansın (yatayda)
+  document.documentElement.style.setProperty('--sp-panel-w', (portrait ? 0 : Math.round(pr.width)) + 'px');
 }
 function reflowSolve(){
   fitCanvasToPalette();
