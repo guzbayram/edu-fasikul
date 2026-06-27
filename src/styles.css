@@ -3201,6 +3201,15 @@ body.reader-locked{overflow:hidden!important}
   .rp-tools-bar .color-dot{width:22px!important;height:22px!important;flex-shrink:0!important;pointer-events:auto!important}
   .rp-tools-bar .tool-btn:hover{transform:none!important}  /* dokunmada kayma olmasın */
   .rp-tools-bar .eraser-size-group,.rp-tools-bar .rp-tools-sep{display:none!important}
+  /* Sıra (flex order): 📋 Kopyala → 🗑️ Silgi'nin hemen SAĞINA. DOM bozulmaz. */
+  .rp-tools-bar [data-tool="select"]{order:1!important}
+  .rp-tools-bar [data-tool="pen"]{order:2!important}
+  .rp-tools-bar [data-tool="eraser"]{order:3!important}
+  .rp-tools-bar .rp-copy-btn{order:4!important}
+  .rp-tools-bar .color-dot{order:5!important}
+  .rp-tools-bar [onclick*="undoDraw"]{order:6!important}
+  .rp-tools-bar [onclick*="redoDraw"]{order:7!important}
+  .rp-tools-bar .live-session-btn{order:8!important}
 
   /* ── ZOOM + SAYFA NAV: panel AKIŞINDA en alt satır (sabit değil → çakışma yok) ── */
   /* Zoom/sayfa satırı: akışta, margin-top:auto ile panelin EN ALTINA. */
