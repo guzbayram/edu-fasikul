@@ -558,32 +558,32 @@
   </div>
 
   <!-- ═══ TELEFON: Tam ekran çözüm modu — yüzer/sürüklenebilir araç paleti ═══ -->
-  <!-- AYRI YÜZER PENCERE: kalem / silgi / pan + renkler -->
+  <!-- ARAÇ PENCERESİ (t-1): üst satır diğer butonlar, alt satır pan/kalem/silgi/geri/ileri -->
   <div class="solve-palette solve-tool-palette" id="solveToolPalette">
     <div class="sp-handle" id="spToolHandle" title="Taşı">⠿</div>
-    <div class="sp-row sp-tools">
-      <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · zoom · soru geçişi)">✋</button>
-      <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
-      <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+    <div class="sp-row sp-tools-top">
+      <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
       <div class="sp-colors">
         <span class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></span>
         <span class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></span>
         <span class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></span>
         <span class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></span>
       </div>
+      <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
+      <button class="tool-btn sp-exit" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
+    </div>
+    <div class="sp-row sp-tools-bottom">
+      <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · zoom)">✋</button>
+      <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+      <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+      <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
+      <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
     </div>
   </div>
 
-  <!-- ANA YÜZER PENCERE: soru no + şıklar + canlı/ileri-geri/kopyala/çıkış -->
+  <!-- ŞIK PENCERESİ: soru no + A–E -->
   <div class="solve-palette" id="solvePalette">
     <div class="sp-handle" id="spHandle" title="Taşı">⠿⠿</div>
-    <div class="sp-row sp-controls">
-      <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
-      <button class="tool-btn" onclick="prevQuestion();window.renderSolveAnswers&&renderSolveAnswers()" title="Önceki soru">◀</button>
-      <button class="tool-btn" onclick="nextQuestion();window.renderSolveAnswers&&renderSolveAnswers()" title="Sonraki soru">▶</button>
-      <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
-      <button class="tool-btn sp-exit" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
-    </div>
     <div class="sp-row sp-answers" id="spAnswers"></div>
   </div>
 

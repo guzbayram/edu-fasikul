@@ -71,6 +71,8 @@ async function openReader(dersId, fasikulId){
   // Open overlay
   document.getElementById('reader-overlay').classList.add('open');
   window.scheduleReaderViewportReflow?.();
+  // Cep telefonu YATAY ise otomatik tam ekran (solve) moduna geç
+  setTimeout(()=>window.autoSolveForLandscape?.(), 350);
   // iOS: body kaydırılmışsa fixed overlay'de dokunma/çizim scrollY kadar kayıyor.
   // Body'yi mevcut konumda kilitle (scrollY=0) → koordinat hizalı.
   appState._savedScrollY = window.scrollY || window.pageYOffset || 0;

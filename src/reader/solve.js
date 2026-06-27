@@ -44,13 +44,31 @@ function enterSolveMode(){
   setTimeout(reflowSolve, 60);
 }
 function exitSolveMode(){
+  // Cep telefonu YATAY modda sadece tam ekran var → çıkış reader'ı tamamen kapatır
+  if(isPhoneLandscape()){ window.closeReader?.(); return; }
   document.getElementById('reader-overlay')?.classList.remove('solve-mode');
   const wrap = document.getElementById('readerCanvasWrap');
   if(wrap){ ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k)); }
   setTimeout(()=>{ try{ window.dispatchEvent(new Event('resize')); }catch(_e){} }, 60);
 }
-window.addEventListener('resize', ()=>{ if(document.getElementById('reader-overlay')?.classList.contains('solve-mode')) fitCanvasToPalette(); });
-window.addEventListener('orientationchange', ()=>{ setTimeout(reflowSolve, 200); });
+
+// Cep telefonu yatay modu (kısa yükseklik) → tam ekran zorunlu
+function isPhoneLandscape(){
+  return window.matchMedia('(orientation:landscape) and (max-height:500px)').matches;
+}
+// Yatayda reader açıksa otomatik tam ekran (solve) moduna geç
+function autoSolveForLandscape(){
+  const ov = document.getElementById('reader-overlay');
+  if(!ov || !ov.classList.contains('open')) return;
+  if(isPhoneLandscape() && !ov.classList.contains('solve-mode')) enterSolveMode();
+}
+window.autoSolveForLandscape = autoSolveForLandscape;
+
+window.addEventListener('resize', ()=>{
+  autoSolveForLandscape();
+  if(document.getElementById('reader-overlay')?.classList.contains('solve-mode')) fitCanvasToPalette();
+});
+window.addEventListener('orientationchange', ()=>{ setTimeout(()=>{ autoSolveForLandscape(); reflowSolve(); }, 200); });
 function toggleSolveMode(){
   const ov = document.getElementById('reader-overlay');
   if(!ov) return;

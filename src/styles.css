@@ -518,16 +518,25 @@ body.reader-locked{overflow:hidden!important}
 /* Şıkların başındaki soru no */
 .sp-no{display:inline-flex;align-items:center;font-weight:800;font-size:15px;color:var(--text-0);padding:0 8px 0 2px;white-space:nowrap}
 
-/* ÇİZİM ARAÇLARI ayrı yüzer pencere — ana paletten bağımsız konum (varsayılan sağ-üst).
-   !important: yatay/dikey solve-palette konum kurallarını ezer (üst üste binmesin). */
+/* ARAÇ PENCERESİ (t-1) — iki satır, yatay; varsayılan ÜST-ORTA. Her iki yönelimde de
+   yatay kalsın (yatay-mod solve-palette kolon kuralını ez). */
 .solve-tool-palette{
-  left:auto!important;right:14px!important;top:14px!important;bottom:auto!important;
-  transform:none!important;width:auto!important;height:auto!important;max-width:none!important;
+  left:50%!important;right:auto!important;top:14px!important;bottom:auto!important;
+  transform:translateX(-50%)!important;width:auto!important;height:auto!important;max-width:96vw!important;
   border-radius:16px!important;flex-direction:column!important;overflow:visible!important;
-  justify-content:flex-start!important;
+  justify-content:flex-start!important;gap:6px!important;
 }
-.solve-tool-palette .sp-tools{flex-wrap:wrap!important;justify-content:center!important;max-width:150px!important;gap:6px!important}
-.solve-tool-palette .sp-handle{padding:0 16px 4px!important}
+.solve-tool-palette .sp-row{flex-direction:row!important;flex-wrap:nowrap!important;justify-content:center!important;gap:6px!important;width:auto!important}
+.solve-tool-palette .sp-colors{grid-template-columns:repeat(4,1fr)!important}
+.solve-tool-palette .sp-handle{padding:0 16px 4px!important;align-self:center!important}
+
+/* ŞIK PENCERESİ — her yönelimde ALT-ORTA, yatay satır (yatay-mod kolon kuralını ez) */
+#reader-overlay.solve-mode #solvePalette{
+  left:50%!important;right:auto!important;top:auto!important;bottom:16px!important;
+  transform:translateX(-50%)!important;width:auto!important;height:auto!important;max-width:96vw!important;
+  flex-direction:column!important;border-radius:16px!important;overflow:visible!important;
+}
+#reader-overlay.solve-mode #solvePalette .sp-row{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important}
 
 /* Dikey: palet EN ÜSTTE, tam genişlik — satırlar genişliğe eşit dağılır */
 @media (orientation:portrait){
