@@ -540,19 +540,15 @@ body.reader-locked{overflow:hidden!important}
 }
 #reader-overlay.open ~ .toast-container .toast{pointer-events:none!important}
 
-/* Tüm butonlar tek sarmalanan satırda. Boyut: dikeyde ~2 satır, yatayda ~3 satır olacak şekilde. */
-#reader-overlay.solve-mode #solvePalette .sp-allbtns{gap:7px!important}
-/* Dikey (geniş üst panel): butonlar büyükçe, 12 buton ~2 satıra sarsın */
-@media (orientation:portrait){
-  #reader-overlay.solve-mode #solvePalette .sp-allbtns .tool-btn{width:44px!important;height:44px!important;font-size:21px!important}
-  #reader-overlay.solve-mode #solvePalette .sp-allbtns .color-dot{width:26px!important;height:26px!important}
-}
-/* Yatay (dar sol panel): butonlar küçük, 12 buton ~3 satıra sarsın */
+/* Gruplu satırlar. pan/kalem/silgi (üst) öncelikli/büyük. Gruplar arasında boş satır (gap). */
+#reader-overlay.solve-mode #solvePalette{justify-content:center!important;gap:14px!important}
+#reader-overlay.solve-mode #solvePalette .sp-tools-row{flex-wrap:nowrap!important;gap:8px!important}
+#reader-overlay.solve-mode #solvePalette .sp-tools-row .tool-btn{width:46px!important;height:46px!important;font-size:23px!important;border-radius:13px!important}
+#reader-overlay.solve-mode #solvePalette .sp-actions-row{flex-wrap:nowrap!important}
+/* Telefon yatay (kısa): daha kompakt — gruplar arası boşluk az, butonlar küçük */
 @media (orientation:landscape) and (max-height:500px){
-  #reader-overlay.solve-mode #solvePalette .sp-allbtns{gap:6px!important}
-  #reader-overlay.solve-mode #solvePalette .sp-allbtns .tool-btn{width:34px!important;height:34px!important;font-size:17px!important;border-radius:9px!important}
-  #reader-overlay.solve-mode #solvePalette .sp-allbtns .color-dot{width:22px!important;height:22px!important}
-  #reader-overlay.solve-mode #solvePalette .sp-answers .sp-ans{width:34px!important;height:34px!important;font-size:13px!important}
+  #reader-overlay.solve-mode #solvePalette{gap:9px!important;justify-content:flex-start!important}
+  #reader-overlay.solve-mode #solvePalette .sp-tools-row .tool-btn{width:38px!important;height:38px!important;font-size:19px!important}
 }
 
 .solve-palette{
@@ -611,11 +607,15 @@ body.reader-locked{overflow:hidden!important}
 @media (orientation:landscape){
   #reader-overlay.solve-mode #solvePalette{
     left:0!important;top:0!important;bottom:0!important;right:auto!important;transform:none!important;
-    width:clamp(132px,20vw,172px)!important;max-width:46vw!important;height:auto!important;justify-content:flex-start!important;
+    width:clamp(132px,20vw,172px)!important;max-width:46vw!important;height:auto!important;justify-content:center!important;
     border-right:1.5px solid var(--border-strong)!important;padding:10px 8px!important;
     overflow-y:auto!important;overflow-x:hidden!important;
   }
   #reader-overlay.solve-mode #solvePalette .sp-no{flex:1 0 100%!important;padding:0 0 2px!important}
+}
+/* Telefon yatay (kısa): içerik taşabildiğinden dikey ortalama yerine üstten başla (kırpılmasın) */
+@media (orientation:landscape) and (max-height:500px){
+  #reader-overlay.solve-mode #solvePalette{justify-content:flex-start!important;gap:9px!important}
 }
 /* Dikey: panel ÜST kenarda, tam genişlik */
 @media (orientation:portrait){
@@ -626,10 +626,10 @@ body.reader-locked{overflow:hidden!important}
   }
 }
 
-/* Kart: kalan alanın ORTASINDA, contain ile olabildiğince büyük */
+/* Kart: kalan alanın ORTASINDA (yatay+dikey), contain ile olabildiğince büyük; kayık olmasın */
 #reader-overlay.solve-mode .reader-page-stage{justify-content:center!important;align-items:center!important}
 #reader-overlay.solve-mode .reader-page-stage > *,
-#reader-overlay.solve-mode [id^="page-wrap-"]{margin-left:auto!important;margin-right:auto!important}
+#reader-overlay.solve-mode [id^="page-wrap-"]{margin:auto!important}
 
 .custom-select-wrap{position:relative;margin:10px 10px 4px}
 .custom-select{

@@ -38,6 +38,8 @@ function enterSolveMode(){
   const ov = document.getElementById('reader-overlay');
   if(!ov || !ov.classList.contains('open')) return;
   ov.classList.add('solve-mode');
+  // Kart kalan alanı doldursun: zoom %100 → getReaderFitScale (solve) contain ile en büyük
+  appState.zoom = 100; appState._fillBaseZoom = null; window.setZoomLabel?.(100);
   renderSolveAnswers();
   // Tam ekrana girince varsayılan: ✋ Gez (pan/zoom/soru geçişi anında çalışsın)
   const gez = document.querySelector('.solve-palette [data-tool="select"]');

@@ -561,22 +561,28 @@
   <!-- SABİT KENAR PANEL (yatay: sol · dikey: üst). UX sırası: araçlar(üst,büyük) →
        renkler → geri/ileri → şıklar → yardımcılar(alt). ◀▶ soru kaldırıldı. -->
   <div class="solve-palette solve-fixed-panel" id="solvePalette">
-    <!-- Tüm butonlar tek sarmalanan satırda → dikey ~2 satır, yatay ~3 satır -->
-    <div class="sp-row sp-allbtns">
+    <!-- Gruplar (aralarında boş satır). UX: en çok kullanılan pan/kalem/silgi en üstte. -->
+    <div class="sp-row sp-tools-row">
       <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · zoom)">✋</button>
       <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
       <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
-      <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
-      <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
+    </div>
+    <div class="sp-row sp-colors-row">
       <span class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></span>
       <span class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></span>
       <span class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></span>
       <span class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></span>
+    </div>
+    <div class="sp-row sp-actions-row">
+      <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
+      <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
+    </div>
+    <div class="sp-row sp-answers" id="spAnswers"></div>
+    <div class="sp-row sp-util-row">
       <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
       <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
       <button class="tool-btn sp-exit" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
     </div>
-    <div class="sp-row sp-answers" id="spAnswers"></div>
   </div>
 
   <!-- Tam ekran (solve) modunda sayfa/zoom çubuğu — sayfanın en altında ortada -->
