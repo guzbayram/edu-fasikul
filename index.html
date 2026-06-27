@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduFasikül — Dijital Çalışma Platformu v4</title>
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22EduFasik%C3%BCl%22%2C%22short_name%22%3A%22EduFas%22%2C%22theme_color%22%3A%22%236366f1%22%2C%22background_color%22%3A%22%230a0a0f%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22.%22%7D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/edu-fasikul/assets/index-CzB7hHzy.js"></script>
+  <link rel="modulepreload" crossorigin href="/edu-fasikul/assets/firebase-BS1Bc0jk.js">
+  <link rel="modulepreload" crossorigin href="/edu-fasikul/assets/pdf-CLZbMu_j.js">
+  <link rel="modulepreload" crossorigin href="/edu-fasikul/assets/fabric-ENfsqM82.js">
+  <link rel="modulepreload" crossorigin href="/edu-fasikul/assets/chart-BR_H7_9u.js">
+  <link rel="stylesheet" crossorigin href="/edu-fasikul/assets/index-BajvuyWO.css">
+</head>
+<body>
+
+<!-- ═══════════════════ LOGIN SCREEN ═══════════════════ -->
+<div class="screen active" id="screen-login">
+  <div class="login-left">
+    <div class="math-symbols" id="mathSymbols"></div>
+    <div class="login-brand">
+      <div class="logo-big">EduFasikül</div>
+      <p>Dijital Fasikül · Gerçek Başarı</p>
+      <div class="features-grid" style="margin-top:36px">
+        <div class="feat-card"><div class="feat-icon">✏️</div><div class="feat-title">Üzerine Yaz</div><div class="feat-desc">PDF üzerinde kalem, vurgulayıcı ve metin ile not al</div></div>
+        <div class="feat-card"><div class="feat-icon">📊</div><div class="feat-title">Performans</div><div class="feat-desc">Konu bazlı istatistikler ve radar grafikleri</div></div>
+        <div class="feat-card"><div class="feat-icon">⭐</div><div class="feat-title">Hatalılar</div><div class="feat-desc">Yanlış sorular otomatik, tekrar modu ile pekiştir</div></div>
+        <div class="feat-card"><div class="feat-icon">🎯</div><div class="feat-title">Akıllı Test</div><div class="feat-desc">TYT/AYT net hesabı, zamanlayıcı, anlık geri bildirim</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="login-right">
+    <button class="theme-toggle-login icon-btn" onclick="toggleTheme()" id="themeToggle">☀️</button>
+    <div class="login-form-wrap">
+      <h2>Hoş Geldin 👋</h2>
+      <p>Dijital çalışma ortamına giriş yap</p>
+      <div class="role-toggle" style="display:none">
+        <button class="role-btn active" onclick="setRole('ogrenci',this)">🎓 Öğrenci</button>
+        <button class="role-btn" onclick="setRole('ogretmen',this)">👨‍🏫 Öğretmen</button>
+      </div>
+      <div class="form-group">
+        <label>E-posta</label>
+        <input type="email" id="emailInput" placeholder="ornek@mail.com">
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="passInput" placeholder="••••••••">
+        <div class="form-error" id="formError">Şifre en az 6 karakter olmalıdır.</div>
+      </div>
+      <button class="btn-login" onclick="doLogin()">Giriş Yap →</button>
+      <button class="btn-guest" onclick="doGuest()">Misafir olarak devam et</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ APP SCREEN ═══════════════════ -->
+<div class="screen" id="screen-app">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">📚</div>
+      <span class="sidebar-brand-name">EduFasikül</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Menü</div>
+      <div class="nav-item active" onclick="showPanel('dashboard',this)">
+        <span class="nav-icon">🏠</span><span class="nav-label">Anasayfa</span>
+      </div>
+      <div class="nav-item" onclick="showPanel('stats',this)">
+        <span class="nav-icon">📊</span><span class="nav-label">İstatistikler</span>
+      </div>
+      <div class="nav-item" onclick="showPanel('hatalilar',this)">
+        <span class="nav-icon">⭐</span><span class="nav-label">Hatalılar</span>
+        <span class="nav-badge" id="hataliCount">3</span>
+      </div>
+      <div class="nav-item" onclick="showPanel('profil',this)">
+        <span class="nav-icon">👤</span><span class="nav-label">Profil</span>
+      </div>
+      <div class="nav-item" id="navAdminBtn" onclick="showPanel('admin',this)" style="display:none">
+        <span class="nav-icon">🛠️</span><span class="nav-label">Yönetim</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="streak-bar">
+        <div class="streak-top">
+          <span class="streak-title">🔥 Günlük Seri</span>
+          <span class="streak-count" id="sidebarStreakCount">7 Gün</span>
+        </div>
+        <div class="streak-dots" id="streakDots"></div>
+      </div>
+      <div class="sidebar-actions">
+        <button class="sidebar-action-btn" onclick="toggleTheme()">
+          <span id="themeIcon">🌙</span><span class="nav-label">Tema</span>
+        </button>
+        <button class="sidebar-action-btn" onclick="showKbModal()" title="Kısayollar">
+          <span>⌨️</span><span class="nav-label">Kısayollar</span>
+        </button>
+        <button class="collapse-btn" onclick="toggleSidebar()" title="Daralt">◀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="top-bar">
+      <div class="top-bar-title" id="topBarTitle">Anasayfa</div>
+      <div class="top-bar-actions">
+        <button class="icon-btn" id="appFullscreenBtn" onclick="toggleAppFullscreen()" title="Tam Ekran">⛶</button>
+        <button class="icon-btn" title="Arama (yakında)">🔍</button>
+        <button class="icon-btn" title="Bildirimler">🔔</button>
+        <div class="avatar-btn" onclick="showPanel('profil',null)" id="avatarBtn">🎓</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h1>Merhaba, <span id="welcomeName">Öğrenci</span>! 🎉</h1>
+          <p>Bugün <span id="todayDate"></span> · Hedefin: <span id="goalDisplay">100 soru</span> çözmek</p>
+        </div>
+        <div class="welcome-emoji">📐</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-value" id="statStreak">7</div><div class="stat-label">Günlük Seri</div><div class="stat-delta" id="statStreakDelta">↗ Devam et!</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="totalSolved">142</div><div class="stat-label">Toplam Çözülen</div><div class="stat-delta" id="statSolvedDelta">↗ +12 bugün</div></div>
+        <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-value" id="statWeekly">38</div><div class="stat-label">Bu Hafta</div><div class="stat-delta" id="statWeeklyDelta">↗ +8 geçen hafta</div></div>
+        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-value" id="statAccuracy">%74</div><div class="stat-label">Ort. Başarı</div><div class="stat-delta" id="statAccuracyDelta">↗ +5% geçen ay</div></div>
+      </div>
+
+      <!-- Son Açılan -->
+      <div class="last-open-banner" id="lastOpenBanner" onclick="openLastFasikul()">
+        <div class="last-open-thumb" style="background:linear-gradient(135deg,#312e81,#1e1b4b)">📐</div>
+        <div class="last-open-info">
+          <div class="lo-label">📖 Son Çalıştığın</div>
+          <div class="lo-name">Analitik Düzlem</div>
+          <div class="lo-meta">Matematik · 10. Sınıf · Test-5 · Eğim bıraktın</div>
+        </div>
+        <div class="last-open-prog">
+          <div class="lo-pct">%45</div>
+          <div class="lo-pct-lbl">tamamlandı</div>
+          <div class="lo-pbar"><div class="lo-pbar-fill" style="width:45%"></div></div>
+        </div>
+        <div class="last-open-arrow">→</div>
+      </div>
+
+      <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <span style="display:flex;align-items:center;gap:10px">Derslerim <span id="derslerSayac" style="font-size:13px;font-weight:400;color:var(--text-muted);font-family:var(--font-ui)">6 ders aktif</span></span>
+        <button class="devam-btn" id="addDersButton" style="background:var(--mat-dim);color:var(--mat);font-size:13px;padding:7px 16px;border-radius:99px;font-weight:600" onclick="openDersModal()">+ Ders Ekle</button>
+      </div>
+      <div class="dersler-grid" id="derslerGrid"></div>
+    </div>
+
+    <!-- STATS -->
+    <div class="panel" id="panel-stats">
+      <div class="section-title" style="margin-bottom:20px">📊 İstatistiklerim</div>
+      <div class="stats-kpi">
+        <div class="kpi-card"><div class="kpi-label">Toplam Çözülen</div><div class="kpi-val" id="kpiTotalSolved" style="color:var(--mat)">142</div><div class="kpi-sub" id="kpiSolvedSub">↗ Bu hafta +38</div></div>
+        <div class="kpi-card"><div class="kpi-label">Ort. Doğruluk</div><div class="kpi-val" id="kpiAccuracy" style="color:var(--green)">%74</div><div class="kpi-sub" id="kpiAccuracySub">↗ +5% geçen haftaya</div></div>
+        <div class="kpi-card"><div class="kpi-label">Toplam Süre</div><div class="kpi-val" id="kpiTime" style="color:var(--fiz)">18s</div><div class="kpi-sub" id="kpiTimeSub">Bu ay 18 saat</div></div>
+        <div class="kpi-card"><div class="kpi-label">En Uzun Seri</div><div class="kpi-val" id="kpiLongestStreak" style="color:var(--orange)">12🔥</div><div class="kpi-sub" id="kpiLongestSub">Kişisel rekor</div></div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card"><h4>📅 Haftalık Aktivite</h4><canvas id="chartWeekly" height="200"></canvas></div>
+        <div class="chart-card"><h4>🎯 Konu Performansı</h4><canvas id="chartRadar" height="200"></canvas></div>
+      </div>
+      <div class="konu-table">
+        <table>
+          <thead><tr><th>Konu</th><th>Çözülen</th><th>Doğru %</th><th>Net</th><th>Trend</th></tr></thead>
+          <tbody id="konuTableBody"></tbody>
+        </table>
+      </div>
+      <div class="streak-calendar"><h4>📆 Çalışma Takvimi (Son 35 Gün)</h4><div class="cal-grid" id="calGrid"></div></div>
+      <div class="section-title" style="margin-bottom:12px">🏆 Rozetler</div>
+      <div class="badges-grid" id="badgesGrid"></div>
+    </div>
+
+    <!-- HATALILAR -->
+    <div class="panel" id="panel-hatalilar">
+      <div class="hatali-header">
+        <div class="section-title" style="margin-bottom:0">⭐ Hatalılar Defteri</div>
+        <span class="hatali-count-chip" id="hataliCountBig">3 Soru</span>
+        <button class="tekrar-modu-btn" onclick="startTekrarModu()">🔁 Tekrar Modu</button>
+      </div>
+      <div class="hatali-filters">
+        <select class="hatali-filter-select" id="hataliDersFilter" onchange="renderHatalilar()">
+          <option value="">Tüm Dersler</option>
+          <option value="mat">Matematik</option>
+          <option value="fiz">Fizik</option>
+          <option value="kim">Kimya</option>
+        </select>
+        <select class="hatali-filter-select" id="hataliSortFilter" onchange="renderHatalilar()">
+          <option value="tarih">Tarihe Göre</option>
+          <option value="yanlis">En Çok Yanlış</option>
+          <option value="ders">Derse Göre</option>
+        </select>
+      </div>
+      <div id="hataliList"></div>
+    </div>
+
+    <!-- PROFİL -->
+    <div class="panel" id="panel-profil">
+      <div class="section-title" style="margin-bottom:24px">👤 Profilim</div>
+      <div class="profil-wrap">
+        <div class="profil-left-column">
+          <div class="profil-avatar-card">
+            <div class="profil-avatar-emoji" id="profilAvatar" onclick="cycleAvatar()" title="Değiştirmek için tıkla">🎓</div>
+            <div class="profil-name" id="profileName">Demo Kullanıcı</div>
+            <div class="profil-sub" id="profileSub">Öğrenci · demo@edufasikuler.com</div>
+            <div class="profil-stats-row">
+              <div class="profil-stat"><div class="profil-stat-val" id="profileSolved" style="color:var(--mat)">0</div><div class="profil-stat-lbl">Soru</div></div>
+              <div class="profil-stat"><div class="profil-stat-val" id="profileStreak" style="color:var(--orange)">0🔥</div><div class="profil-stat-lbl">Seri</div></div>
+              <div class="profil-stat"><div class="profil-stat-val" id="profileAccuracy" style="color:var(--green)">%0</div><div class="profil-stat-lbl">Başarı</div></div>
+            </div>
+          </div>
+          <div class="app-info-card">
+            <div class="app-info-icon">📚</div>
+            <div class="app-info-title">EduFasikül Hakkında</div>
+            <p>Dijital fasiküllerinizi okuyabileceğiniz, soruları çözebileceğiniz ve gelişiminizi takip edebileceğiniz kişisel çalışma alanınız.</p>
+            <div class="app-info-features">
+              <span>✍️ PDF üzerinde not alma</span>
+              <span>🎯 Akıllı test ve tekrar</span>
+              <span>📊 Ayrıntılı performans takibi</span>
+            </div>
+            <div class="app-info-version">EduFasikül · Sürüm 4</div>
+          </div>
+        </div>
+        <div class="profil-right-column">
+        <div class="profil-section">
+          <div class="profil-section-title">⚙️ Tercihler</div>
+          <div class="pref-row">
+            <span class="pref-label">🌙 Karanlık Tema</span>
+            <button class="pref-action pref-toggle off" id="themeTogglePref" onclick="toggleTheme()">Kapalı</button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">🔊 Cevap Sesi</span>
+            <button class="pref-action pref-toggle" id="soundToggle" onclick="toggleSound(this)">Açık</button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">⏭️ Otomatik Sonraki Soru</span>
+            <button class="pref-action pref-toggle" id="autoNextToggle" onclick="toggleAutoNext(this)">Açık</button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">🔔 Sesli 2 Dakika Uyarısı</span>
+            <button class="pref-action pref-toggle" id="timerAlertToggle" onclick="toggleTimerAlert(this)">Açık</button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">🎯 Günlük Hedef</span>
+            <div class="goal-slider-wrap">
+              <input type="range" min="5" max="300" step="5" value="100" id="goalSlider" oninput="updateGoal(this.value)">
+              <div class="goal-val" id="goalVal">100 soru</div>
+            </div>
+          </div>
+        </div>
+        <div class="profil-section">
+          <div class="profil-section-title">🎨 Simge Ayarları</div>
+          <div class="pref-sub" style="font-size:12px;color:var(--text-muted);margin:-4px 0 10px">Bu cihazda görünen simgeleri seç. (Yalnızca bu cihazı etkiler.)</div>
+          <div id="iconSettings"></div>
+        </div>
+        <div class="profil-section">
+          <div class="profil-section-title">🐱 Motivasyon Kedisi</div>
+          <div class="pref-row">
+            <span class="pref-label">🐾 Kedi</span>
+            <button class="pref-action pref-toggle" id="catOnToggle" onclick="toggleCatOn()">Açık</button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">🖼️ Görünüm</span>
+            <div class="icon-opts">
+              <button class="icon-opt" data-catmode="canli" onclick="setCatMode('canli')" title="Gerçek kedi fotoğrafı">🐱</button>
+              <button class="icon-opt" data-catmode="emoji" onclick="setCatMode('emoji')" title="Emoji">😺</button>
+            </div>
+          </div>
+        </div>
+        <div class="profil-section">
+          <div class="profil-section-title">💾 Veri Yönetimi</div>
+          <div class="pref-row">
+            <span class="pref-label">Verilerimi Dışa Aktar</span>
+            <button class="pref-action pref-chip" onclick="exportData()">JSON İndir</button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">🧪 Demo Verileri</span>
+            <button class="pref-action pref-toggle" id="demoDataToggle" onclick="toggleDemoData(this)">Açık</button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">Tüm verileri sıfırla</span>
+            <button class="pref-action pref-chip" style="background:var(--red-dim);color:var(--red)" onclick="resetAllData()">🗑️ Sıfırla</button>
+          </div>
+        </div>
+        <div class="profil-section" id="eduDirSection">
+          <div class="profil-section-title" id="eduDirTitle">📁 PDF Klasörü</div>
+          <div id="eduDirHelp" style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.7;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);border-left:3px solid var(--mat)">
+            <b style="color:var(--text-0)">Bir kez yapmanız yeterli:</b><br>
+            Bilgisayarınızda bir klasör oluşturun (örn: <code style="background:var(--bg-4);padding:1px 5px;border-radius:3px">Edu-Fasikul</code>) ve PDF dosyalarını oraya koyun. Aşağıdan o klasörü seçin — uygulama PDF'leri buradan okur.<br><br>
+            <b style="color:var(--green)">✓ JSON dosyaları</b> GitHub'dan <b>otomatik</b> indirilir, sizin bir şey yapmanıza gerek yok.
+          </div>
+          <div class="pref-row">
+            <span class="pref-label" style="flex:1">
+              <span id="eduDirStatus">Klasör bağlı değil</span><br>
+              <span style="font-size:11px;color:var(--text-muted)" id="eduDirSubStatus">PDF klasörünüzü seçin</span>
+            </span>
+            <button class="pref-action pref-chip" id="eduDirButton" onclick="selectEduDir()">📂 Klasör Seç</button>
+            <input type="file" id="eduPdfFilesInput" accept=".pdf,application/pdf" multiple style="display:none" onchange="handleBulkPdfImport(this)">
+          </div>
+          <div id="eduDirFileList" style="display:none;margin-top:10px"></div>
+        </div>
+        <button id="profilAdminBtn" onclick="showPanel('admin',document.getElementById('navAdminBtn'))" style="display:none;width:100%;padding:14px;margin-bottom:10px;background:var(--mat-dim);color:var(--mat);border:1.5px solid var(--mat);border-radius:var(--radius);font-size:15px;font-weight:600;cursor:pointer">🛠️ Kullanıcı Yönetimi</button>
+        <button class="btn-danger" onclick="doLogout()">Çıkış Yap</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN / YÖNETİM -->
+    <div class="panel" id="panel-admin">
+      <div class="section-title" style="margin-bottom:8px">🛠️ Kullanıcı Yönetimi</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;padding:10px 14px;background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-sm);max-width:760px;line-height:1.7">
+        🔒 <b style="color:var(--green)">Firebase Authentication aktif</b> — Şifreler artık Firestore'da <b>düz metin olarak tutulmuyor</b>; Firebase'in güvenli sunucularında şifreli olarak saklanıyor.<br>
+        Kullanıcı eklenirken Firebase Auth'ta hesap oluşturulur ve e-posta/şifre doğrulaması sunucu taraflı yapılır.<br>
+        Silinen kullanıcılar Firestore erişimini hemen kaybeder. · Admin hesabı: Firebase Console &gt; Authentication üzerinden yönetilir.
+      </div>
+      <div class="profil-section" style="max-width:560px;margin-bottom:20px">
+        <div class="profil-section-title">➕ Yeni Kullanıcı Ekle</div>
+        <div class="form-group">
+          <label>Ad Soyad</label>
+          <input type="text" id="adminNewName" placeholder="Ahmet Yılmaz">
+        </div>
+        <div class="form-group">
+          <label>E-posta</label>
+          <input type="email" id="adminNewEmail" placeholder="ornek@mail.com">
+        </div>
+        <div class="form-group">
+          <label>Geçici Şifre <span style="font-weight:400;color:var(--text-muted)">(kullanıcı daha sonra değiştirebilir)</span></label>
+          <input type="text" id="adminNewPass" placeholder="en az 6 karakter">
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select id="adminNewRole" style="width:100%;padding:13px 16px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px">
+            <option value="ogrenci">🎓 Öğrenci</option>
+            <option value="ogretmen">👨‍🏫 Öğretmen</option>
+            <option value="admin">🔑 Yönetici</option>
+          </select>
+        </div>
+        <div class="form-error" id="adminFormError"></div>
+        <button class="btn-login" id="adminAddBtn" onclick="addKullanici()">Kullanıcı Ekle</button>
+      </div>
+      <div class="profil-section" style="max-width:760px">
+        <div class="profil-section-title">👥 Eklenen Kullanıcılar (<span id="adminUserCount">0</span>)</div>
+        <div id="adminUserList" style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <div style="color:var(--text-muted);font-size:13px">Yükleniyor…</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /main-content -->
+</div><!-- /screen-app -->
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <button class="drawer-back" onclick="closeDrawer()">←</button>
+    <h3 id="drawerTitle">Matematik Fasikülleri</h3>
+    <button class="devam-btn" id="addFasikulButton" style="margin-left:auto;background:var(--mat-dim);color:var(--mat);font-size:12px;padding:6px 13px;border-radius:99px;font-weight:600;white-space:nowrap" onclick="openFasikulModal()">+ Fasikül Ekle</button>
+  </div>
+  <div class="drawer-search">
+    <input type="text" id="drawerSearch" placeholder="🔍 Fasikül ara…" oninput="filterFasikuller(this.value)">
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<!-- READER OVERLAY -->
+<div id="reader-overlay">
+
+  <!-- Center -->
+  <div class="reader-center" id="readerCenter">
+    <!-- Top Toolbar -->
+    <div class="reader-toolbar" id="readerToolbar">
+      <!-- Nav group -->
+      <div class="tool-group toolbar-nav-group">
+        <button class="tool-btn reader-back-btn" onclick="closeReader()" title="Fasiküllere dön">←</button>
+        <span class="toolbar-fasikul-name" id="toolbarFasikulAd">—</span>
+      </div>
+      <div class="toolbar-spacer"></div>
+      <!-- Drawing tools -->
+      <div class="tool-group reader-tool-palette" id="toolGroup">
+        <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Seç / Taşı">🖱️</button>
+        <button class="tool-btn active" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+        <button class="tool-btn" data-tool="tukenmez" onclick="setTool(this,'tukenmez')" title="Tükenmez">🖊️</button>
+        <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
+        <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
+        <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+      </div>
+      <div class="tool-group eraser-size-group" style="display:none">
+        <button class="tool-btn eraser-size-btn" data-esize="8" onclick="setEraserSize(this,8)" title="Küçük silgi"><span style="font-size:9px;line-height:1">⬤</span></button>
+        <button class="tool-btn eraser-size-btn active" data-esize="22" onclick="setEraserSize(this,22)" title="Orta silgi"><span style="font-size:14px;line-height:1">⬤</span></button>
+        <button class="tool-btn eraser-size-btn" data-esize="48" onclick="setEraserSize(this,48)" title="Büyük silgi"><span style="font-size:20px;line-height:1">⬤</span></button>
+      </div>
+      <div class="tool-divider"></div>
+      <!-- Color & size -->
+      <div class="tool-group reader-color-palette" id="colorGroup">
+        <div class="color-dot selected" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></div>
+        <div class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></div>
+        <div class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></div>
+        <div class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></div>
+        <div class="color-dot" style="background:#d97706" data-color="#d97706" onclick="setColor(this)" title="Turuncu"></div>
+        <div class="color-dot" style="background:#7c3aed" data-color="#7c3aed" onclick="setColor(this)" title="Mor"></div>
+        <div class="color-dot" style="background:#db2777" data-color="#db2777" onclick="setColor(this)" title="Pembe"></div>
+        <input type="range" class="size-slider" id="brushSize" min="1" max="20" value="3" title="Kalınlık">
+      </div>
+      <div class="tool-divider"></div>
+      <!-- History & actions -->
+      <div class="tool-group reader-history-palette">
+        <button class="tool-btn" onclick="undoDraw()" title="Geri Al (Ctrl+Z)">↩️</button>
+        <button class="tool-btn" onclick="redoDraw()" title="İleri Al (Ctrl+Y)">↪️</button>
+        <button class="tool-btn" onclick="clearPage()" title="Sayfayı Temizle">🧹</button>
+        <button class="tool-btn" onclick="saveDrawing()" title="Kaydet (Ctrl+S)">💾</button>
+      </div>
+      <div class="toolbar-spacer"></div>
+      <!-- Right controls -->
+      <div class="tool-group reader-meta-actions">
+        <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
+        <label class="tool-btn" for="pdfFileInputToolbar" title="PDF Yükle / Değiştir" style="cursor:pointer">📂</label>
+        <input type="file" id="pdfFileInputToolbar" accept=".pdf" style="display:none" onchange="handlePDFUpload(this)">
+        <button class="tool-btn" id="viewModeBtn" onclick="openViewModeMenu(event)" title="Görünüm Modu">📄</button>
+        <button class="tool-btn" onclick="toggleReadingMode()" id="readingModeBtn" title="Okuma Modu">☀️</button>
+        <button class="tool-btn" onclick="toggleReaderPanel('left')" title="Sol Paneli Aç/Kapat">☰</button>
+        <button class="tool-btn" onclick="toggleReaderPanel('right')" title="Soru Panelini Aç/Kapat">⇥</button>
+        <button class="tool-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="Tam Ekran (F11)">⛶</button>
+      </div>
+    </div>
+
+    <!-- PDF Upload Zone (shown when no PDF loaded) -->
+    <div id="pdfUploadZone" class="pdf-upload-zone">
+      <div class="pdf-upload-inner">
+        <div class="pdf-upload-icon">📄</div>
+        <div class="pdf-upload-title">PDF Yükle</div>
+        <div class="pdf-upload-sub">Fasiküllünü seç ve üzerine çiz</div>
+        <label class="pdf-upload-btn" for="pdfFileInput">📂 PDF Seç</label>
+        <input type="file" id="pdfFileInput" accept=".pdf" style="display:none" onchange="handlePDFUpload(this)">
+        <div class="pdf-upload-hint">veya dosyayı buraya sürükle &amp; bırak</div>
+      </div>
+    </div>
+
+    <!-- Canvas area -->
+    <div class="reader-canvas-wrap" id="readerCanvasWrap" style="display:none"></div>
+
+    <!-- Bottom nav (sadece sayfa navigasyonu — zoom sol panele taşındı) -->
+    <div class="reader-bottom-bar">
+      <button class="page-nav-btn" onclick="changePage(-1)" id="prevPageBtn" title="Önceki Sayfa (←)">◀</button>
+      <button class="page-nav-btn rbb-zoom" onclick="changeZoom(-10)" title="Uzaklaştır">−</button>
+      <span class="zoom-label js-zoom-pct rbb-zoom">%100</span>
+      <span class="page-indicator js-page-ind" id="pageIndicator" onclick="promptPageJump()">1 / 5</span>
+      <button class="page-nav-btn rbb-zoom" onclick="changeZoom(10)" title="Yaklaştır">+</button>
+      <button class="page-nav-btn" onclick="changePage(1)" id="nextPageBtn" title="Sonraki Sayfa (→)">▶</button>
+    </div>
+  </div>
+
+  <!-- Sol Panel: Konu navigator + Soru içeriği + Zoom -->
+  <div class="reader-right" id="readerRight">
+
+    <!-- BÖLÜM A: Konu Navigator — masaüstünde yan panel, tablette modal açılır -->
+    <div class="rp-konu-section" id="rpKonuSection">
+      <div class="rp-konu-hdr">
+        <div class="rp-konu-hdr-info">
+          <h4 id="readerFasikulAd">—</h4>
+          <p id="readerFasikulMeta">—</p>
+        </div>
+      </div>
+      <div class="rp-konu-footer">
+        <button class="rp-back-fasikul-btn" onclick="closeReader()" title="Fasiküllere Dön">← Fasiküllere Dön</button>
+      </div>
+      <!-- Hidden select for backward-compat JS -->
+      <select id="anaKonuSelect" onchange="onAnaKonuChange()" style="display:none"></select>
+    </div>
+
+    <!-- BÖLÜM B: Soru Paneli (test seçilince görünür) -->
+    <div class="rp-soru-section" id="rpSoruSection">
+      <div class="rp-header">
+        <div class="rp-header-top">
+          <div class="rp-title" id="rpTitle">Test Seç</div>
+          <button class="rp-reset-btn" id="altKonuResetBtn" onclick="resetAltKonuStats()" title="Bu testi sıfırla" style="display:none">↺</button>
+          <button class="rp-konu-list-btn" onclick="openKonuList()" title="Konu Listesi">
+            <span class="kl-bars"><i></i><i></i><i></i></span>
+            <span class="kl-label">Konu Listesi</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Otomatik timer -->
+      <div class="auto-timer-bar">
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <span class="afk-indicator" id="afkIndicator" style="display:none" title="5 dk hareketsizlik — cevap işaretlediğinde devam eder">⏸ AFK</span>
+        <button class="tsk-action-btn" onclick="finishTest()" title="Sonuçları Gör">📊 Bitir</button>
+        <button class="atb-cikis" onclick="closeReader()" title="Fasiküllere Dön">← Çık</button>
+      </div>
+
+      <!-- Alt konu istatistikleri -->
+      <div class="altkonu-stats-bar" id="altKonuStatsDisplay">
+        <span style="color:var(--text-muted);font-size:12px">Henüz soru çözülmedi</span>
+      </div>
+
+      <!-- Soru kartı (ABCDE + tsk-header) -->
+      <div class="soru-list" id="soruList">
+        <div class="tek-soru-card" id="tekSoruCard">
+          <div style="text-align:center;padding:32px;color:var(--text-muted)">
+            <div style="font-size:28px;margin-bottom:8px">☰</div>
+            <div style="font-size:13px">Sol üstteki ☰ ile konu listesi aç</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- İlerleme + Önceki/Sonraki -->
+      <div class="test-progress-bar">
+        <div class="tp-label">
+          <span id="tpProgress">0 / 0 çözüldü</span>
+          <div class="rp-stats-row">
+            <div class="rp-stat">📝 <span id="rpSoruSayisi">0 Soru</span></div>
+            <div class="rp-stat">⏱️ <span id="rpSure">0:00</span></div>
+            <div class="rp-stat">Net: <span id="rpNet">—</span></div>
+          </div>
+          <span id="tpNet">Net: —</span>
+        </div>
+        <div class="tp-track"><div class="tp-fill" id="tpFill" style="width:0%"></div></div>
+        <div class="tp-nav">
+          <button class="tp-nav-btn tp-portrait-konu" onclick="openKonuList()" title="Konu Listesi">☰</button>
+          <button class="tp-nav-btn" onclick="prevQuestion()" title="Önceki soru">←</button>
+          <button class="tp-nav-btn" onclick="nextQuestion()" title="Sonraki soru">→</button>
+          <button class="rp-back-fasikul-btn" onclick="closeReader()" title="Fasiküllere Dön">← Çık</button>
+        </div>
+      </div>
+
+      <!-- Portrait çizim araçları satırı (portrait modda görünür) -->
+      <div class="rp-tools-bar" id="rpToolsBar">
+        <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · soru geçişi)">✋</button>
+        <button class="tool-btn active" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+        <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+        <span class="eraser-size-group" style="display:none;gap:4px;align-items:center">
+          <button class="tool-btn eraser-size-btn" data-esize="8" onclick="setEraserSize(this,8)" title="Küçük silgi"><span style="font-size:9px;line-height:1">⬤</span></button>
+          <button class="tool-btn eraser-size-btn active" data-esize="22" onclick="setEraserSize(this,22)" title="Orta silgi"><span style="font-size:14px;line-height:1">⬤</span></button>
+          <button class="tool-btn eraser-size-btn" data-esize="48" onclick="setEraserSize(this,48)" title="Büyük silgi"><span style="font-size:20px;line-height:1">⬤</span></button>
+        </span>
+        <span class="rp-tools-sep"></span>
+        <div class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></div>
+        <div class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></div>
+        <div class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></div>
+        <div class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></div>
+        <span class="rp-tools-sep"></span>
+        <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
+        <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
+        <span class="rp-tools-sep"></span>
+        <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
+        <button class="tool-btn rp-copy-btn" onclick="copySoruKart()" title="Soruyu kopyala — Gemini/GPT/Claude'a yapıştırıp çözüm sor">📋</button>
+      </div>
+    </div>
+
+    <!-- ZOOM + (yatayda) sayfa nav — her zaman panelin altında -->
+    <div class="rp-zoom-bar">
+      <button class="page-nav-btn rp-page-nav" onclick="changePage(-1)" title="Önceki sayfa">◀</button>
+      <button class="page-nav-btn" onclick="changeZoom(-10)" title="Uzaklaştır">−</button>
+      <span class="zoom-label js-zoom-pct" id="zoomLabel">%100</span>
+      <span class="page-ind-mini js-page-ind" title="Sayfa">1 / 1</span>
+      <button class="page-nav-btn" onclick="changeZoom(10)" title="Yaklaştır">+</button>
+      <button class="page-nav-btn rp-page-nav" onclick="changePage(1)" title="Sonraki sayfa">▶</button>
+    </div>
+
+  </div>
+
+  <!-- ═══ TELEFON: Tam ekran çözüm modu — yüzer/sürüklenebilir araç paleti ═══ -->
+  <!-- SABİT KENAR PANEL (yatay: sol · dikey: üst). UX sırası: araçlar(üst,büyük) →
+       renkler → geri/ileri → şıklar → yardımcılar(alt). ◀▶ soru kaldırıldı. -->
+  <div class="solve-palette solve-fixed-panel" id="solvePalette">
+    <!-- Gruplar (aralarında boş satır). UX: en çok kullanılan pan/kalem/silgi en üstte. -->
+    <div class="sp-row sp-tools-row">
+      <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · zoom)">✋</button>
+      <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+      <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+    </div>
+    <div class="sp-row sp-colors-row">
+      <span class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></span>
+      <span class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></span>
+      <span class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></span>
+      <span class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></span>
+    </div>
+    <div class="sp-row sp-actions-row">
+      <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
+      <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
+    </div>
+    <div class="sp-row sp-answers" id="spAnswers"></div>
+    <div class="sp-row sp-util-row">
+      <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
+      <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
+      <button class="tool-btn" onclick="resetAltKonuStats()" title="Bu testi sıfırla">↺</button>
+      <button class="tool-btn sp-exit" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
+    </div>
+  </div>
+
+  <!-- Tam ekran (solve) modunda sayfa/zoom çubuğu — sayfanın en altında ortada -->
+  <div class="solve-zoombar" id="solveZoomBar">
+    <button class="page-nav-btn rp-page-nav" onclick="changePage(-1)" title="Önceki sayfa">◀</button>
+    <button class="page-nav-btn" onclick="changeZoom(-10)" title="Uzaklaştır">−</button>
+    <span class="zoom-label js-zoom-pct">%100</span>
+    <span class="page-ind-mini js-page-ind" title="Sayfa">1 / 1</span>
+    <button class="page-nav-btn" onclick="changeZoom(10)" title="Yaklaştır">+</button>
+    <button class="page-nav-btn rp-page-nav" onclick="changePage(1)" title="Sonraki sayfa">▶</button>
+  </div>
+
+  <!-- Hızlı erişim araçları (solve): tel yatay → sağ kenar ortası dikey 3 buton;
+       tel dikey → zoom çubuğunun hemen üstünde yatay 3 buton -->
+  <div class="solve-quick-tools" id="solveQuickTools">
+    <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+    <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır">✋</button>
+    <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+  </div>
+
+  <!-- ═══ KONU SEÇİM MODAL (tüm ekran üstünde, toolbar altında) ═══ -->
+  <div class="konu-modal-backdrop" id="konuModalBackdrop" onclick="closeKonuModal()" style="display:none"></div>
+  <div class="konu-modal" id="konuModal" style="display:none">
+    <div class="konu-modal-header" id="konuModalHeader">
+      <div class="konu-modal-title" id="konuModalTitle">Konu Seç</div>
+      <button class="konu-modal-close" onclick="closeKonuModal()">✕</button>
+    </div>
+    <!-- Panel A: Ana konu listesi -->
+    <div class="konu-modal-body" id="konuModalBodyA">
+      <div class="ana-konu-list" id="anaKonuList"></div>
+    </div>
+    <!-- Panel B: AltKonu listesi (ileri tıkta) -->
+    <div class="konu-modal-body hidden" id="konuModalBodyB">
+      <div class="alt-konu-list" id="altKonuList"></div>
+    </div>
+    <div class="konu-modal-footer">
+      <button class="rp-back-fasikul-btn" id="konuModalBackBtn" onclick="showKonuPanel()" style="display:none">‹ Tüm Konular</button>
+      <button class="rp-back-fasikul-btn" onclick="closeReader();closeKonuModal()">← Fasiküllere Dön</button>
+    </div>
+  </div>
+
+  <!-- Motivasyon kedisi: dokun (değişir/zıplar) · sürükle (taşı) · köşeden boyutlandır 🐾 -->
+  <button id="catBuddy" class="cat-buddy" style="display:none" title="Dokun · sürükle · köşeden boyutlandır 🐾" aria-label="Motivasyon kedisi">
+    <img id="catImg" alt="kedi"><span id="catEmoji">🐱</span>
+    <span id="catResize" class="cat-resize" title="Boyutlandır">⤡</span>
+  </button>
+
+</div><!-- /reader-overlay -->
+
+<!-- ═══════ MODALS ═══════ -->
+
+<!-- Result Modal -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal-box">
+    <h2 id="resultEmoji">Test Tamamlandı! 🎉</h2>
+    <p class="modal-sub" id="modalSub">Süre: 04:32</p>
+    <div class="result-kpi-row">
+      <div class="result-kpi correct"><div class="rk-val" id="modalCorrect">0</div><div class="rk-label">✅ Doğru</div></div>
+      <div class="result-kpi wrong"><div class="rk-val" id="modalWrong">0</div><div class="rk-label">❌ Yanlış</div></div>
+      <div class="result-kpi"><div class="rk-val" id="modalBlank">0</div><div class="rk-label">⬜ Boş</div></div>
+      <div class="result-kpi net"><div class="rk-val" id="modalNet">—</div><div class="rk-label">📊 Net</div></div>
+      <div class="result-kpi time"><div class="rk-val" id="modalTime">—</div><div class="rk-label">⏱️ Süre</div></div>
+    </div>
+    <div class="modal-badges-row" id="modalBadges"></div>
+    <div class="modal-chart-wrap"><canvas id="resultChart" height="160"></canvas></div>
+    <div class="modal-btns">
+      <button class="modal-btn mb-primary" onclick="closeModal('resultModal')">✓ Kapat</button>
+      <button class="modal-btn mb-secondary" onclick="resetTest()">🔁 Tekrar</button>
+      <button class="modal-btn mb-danger" onclick="retryWrong()">❌ Hataları Çöz</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cevap Görüntüleme Modal -->
+<div class="modal-overlay" id="cevapModal">
+  <div class="modal-box">
+    <h2>Çözüm 📖</h2>
+    <div class="cevap-modal-answer">
+      <div>
+        <div class="cma-val" id="cmaVal">B</div>
+        <div class="cma-lbl">Doğru Cevap</div>
+      </div>
+      <div style="width:1px;height:50px;background:var(--border)"></div>
+      <div style="text-align:left">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:3px">KONU</div>
+        <div id="cmaKonu" style="font-size:13px;font-weight:600;color:var(--text-0)">—</div>
+      </div>
+    </div>
+    <div class="cevap-modal-hint" id="cmaHint" style="display:none"></div>
+    <div class="cozum-baslik">📝 Adım Adım Çözüm</div>
+    <div class="cozum-adimlar" id="cozumAdimlar">
+      <div class="cozum-yok">Bu soru için çözüm adımları yükleniyor...</div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn mb-primary" onclick="closeModal('cevapModal')">✓ Anladım</button>
+      <button class="modal-btn mb-secondary" onclick="goToSoruPage()">📄 PDF'de Gör</button>
+    </div>
+  </div>
+</div>
+
+<!-- Video Oynatıcı Modal (konu videosu + çözüm videosu) -->
+<div class="modal-overlay" id="videoModal" onclick="event.target===this&&closeVideoModal()">
+  <div class="modal-box" style="max-width:860px;width:94vw;padding:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+      <h2 id="videoModalTitle" style="margin:0;font-size:16px">🎬 Video</h2>
+      <button class="modal-btn mb-secondary" onclick="closeVideoModal()" style="padding:6px 12px">✕ Kapat</button>
+    </div>
+    <video id="videoModalPlayer" controls playsinline preload="metadata"
+      style="width:100%;max-height:72vh;background:#000;border-radius:12px;display:block"></video>
+    <div id="videoModalNote" style="font-size:12px;color:var(--text-muted);margin-top:8px;display:none"></div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcuts Modal -->
+<div class="modal-overlay" id="kbModal" onclick="event.target===this&&closeModal('kbModal')">
+  <div class="modal-box" id="kbModal">
+    <h2>⌨️ Klavye Kısayolları</h2>
+    <p class="modal-sub">Reader ekranındayken aktiftir</p>
+    <div class="kb-grid">
+      <div class="kb-item"><span class="kb-desc">Cevap seç</span><span class="kb-key">A / B / C / D / E</span></div>
+      <div class="kb-item"><span class="kb-desc">Sonraki soru</span><span class="kb-key">→ / Space</span></div>
+      <div class="kb-item"><span class="kb-desc">Önceki soru</span><span class="kb-key">←</span></div>
+      <div class="kb-item"><span class="kb-desc">Sonraki sayfa</span><span class="kb-key">Ctrl + →</span></div>
+      <div class="kb-item"><span class="kb-desc">Önceki sayfa</span><span class="kb-key">Ctrl + ←</span></div>
+      <div class="kb-item"><span class="kb-desc">Geri al</span><span class="kb-key">Ctrl + Z</span></div>
+      <div class="kb-item"><span class="kb-desc">İleri al</span><span class="kb-key">Ctrl + Y</span></div>
+      <div class="kb-item"><span class="kb-desc">Kaydet</span><span class="kb-key">Ctrl + S</span></div>
+      <div class="kb-item"><span class="kb-desc">Kalem modu</span><span class="kb-key">P</span></div>
+      <div class="kb-item"><span class="kb-desc">Silgi modu</span><span class="kb-key">E</span></div>
+      <div class="kb-item"><span class="kb-desc">Reader kapat</span><span class="kb-key">Esc</span></div>
+      <div class="kb-item"><span class="kb-desc">Bu ekran</span><span class="kb-key">?</span></div>
+    </div>
+    <div style="margin-top:20px">
+      <button class="modal-btn mb-primary" onclick="closeModal('kbModal')" style="width:100%">Tamam</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Onboarding overlay -->
+<div id="onboardOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:340;backdrop-filter:blur(2px)"></div>
+<div id="onboardTip" class="onboard-tip" style="display:none">
+  <h4 id="onboardTitle">Hoş Geldin! 👋</h4>
+  <p id="onboardDesc">EduFasikül'e hoş geldin. Sana kısa bir tur yapayım.</p>
+  <div class="onboard-nav">
+    <div class="onboard-dots" id="onboardDots"></div>
+    <button class="onboard-btn" id="onboardNextBtn" onclick="onboardNext()">İleri →</button>
+  </div>
+</div>
+
+<!-- ═══════ DERS CRUD MODAL ═══════ -->
+<div class="modal-overlay" id="dersModal" onclick="event.target===this&&closeDersModal()">
+  <div class="modal-box" style="max-width:440px">
+    <h2 id="dersModalTitle">➕ Ders Ekle</h2>
+    <p class="modal-sub">Dersler, otomatik JSON fasiküllerini gruplandırır. PDF dosyası burada yüklenmez.</p>
+    <input type="hidden" id="dersEditId">
+    <div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Ders Adı</label>
+      <input type="text" id="dersAdInput" placeholder="örn: Matematik" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px;outline:none">
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">İkon (Emoji)</label>
+      <input type="text" id="dersIkonInput" placeholder="örn: 🔢" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:20px;outline:none">
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Renk</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="dersRenkPicker">
+        <div class="color-dot" style="background:#818cf8" data-renk="var(--mat)" onclick="selectDersRenk(this,'var(--mat)')"></div>
+        <div class="color-dot" style="background:#22d3ee" data-renk="var(--fiz)" onclick="selectDersRenk(this,'var(--fiz)')"></div>
+        <div class="color-dot" style="background:#34d399" data-renk="var(--kim)" onclick="selectDersRenk(this,'var(--kim)')"></div>
+        <div class="color-dot" style="background:#fb923c" data-renk="var(--bio)" onclick="selectDersRenk(this,'var(--bio)')"></div>
+        <div class="color-dot" style="background:#f472b6" data-renk="var(--tar)" onclick="selectDersRenk(this,'var(--tar)')"></div>
+        <div class="color-dot" style="background:#a78bfa" data-renk="var(--edb)" onclick="selectDersRenk(this,'var(--edb)')"></div>
+      </div>
+      <input type="hidden" id="dersRenkValue" value="var(--mat)">
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn mb-primary" onclick="saveDers()">💾 Kaydet</button>
+      <button class="modal-btn mb-secondary" onclick="closeDersModal()">İptal</button>
+      <button class="modal-btn mb-danger" id="dersSilBtn" onclick="silDers()" style="display:none">🗑️ Dersi Sil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ FASİKÜL CRUD MODAL ═══════ -->
+<div class="modal-overlay" id="fasikulModal" onclick="event.target===this&&closeFasikulModal()">
+  <div class="modal-box" style="max-width:460px">
+    <h2 id="fasikulModalTitle">📚 Fasikül Ekle</h2>
+    <p class="modal-sub">Fasikül, GitHub'dan otomatik alınan JSON ile bu cihazdaki aynı adlı PDF eşleşmesinden oluşur.</p>
+    <input type="hidden" id="fasikulEditId">
+    <div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Fasikül Seç</label>
+      <select id="fasikulSourceSelect" onchange="applyBundledSourceToForm(this.value)" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:13px;outline:none">
+        <option value="">JSON + PDF eşleşmesi seçin</option>
+      </select>
+      <div id="fasikulSourceHint" style="font-size:11px;color:var(--text-muted);margin-top:7px">GitHub JSON kataloğu otomatik okunur; yalnızca PDF'si bu cihazda hazır olan fasiküller listelenir.</div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Fasikül Adı</label>
+      <input type="text" id="fasikulAdInput" placeholder="örn: Analitik Düzlem" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px;outline:none">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Sınıf</label>
+        <input type="number" id="fasikulSinifInput" min="9" max="12" value="10" placeholder="10" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px;outline:none">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Soru Sayısı</label>
+        <input type="number" id="fasikulSoruInput" min="1" value="0" placeholder="0" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:14px;outline:none">
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Thumb İkon (Emoji)</label>
+      <input type="text" id="fasikulThumbInput" placeholder="örn: 📐" style="width:100%;padding:11px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:20px;outline:none">
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn mb-primary" onclick="saveFasikul()">💾 Kaydet</button>
+      <button class="modal-btn mb-secondary" onclick="closeFasikulModal()">İptal</button>
+      <button class="modal-btn mb-danger" id="fasikulSilBtn" onclick="silFasikul()" style="display:none">🗑️ Fasiküle Sil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ KÜTÜPHANEDen FASİKÜL EKLE MODAL ═══════ -->
+<div class="modal-overlay" id="kutuphaneFasikulModal" onclick="event.target===this&&closeKutuphaneFasikulModal()">
+  <div class="modal-box" style="max-width:560px;max-height:80vh;display:flex;flex-direction:column">
+    <h2>📚 Fasikül Kütüphanesi</h2>
+    <p class="modal-sub">GitHub'dan otomatik indirilen JSON fasikülleri — PDF klasörünüzden bulunup açılır.</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <input type="text" id="kutuphaneFasikulSearch" placeholder="🔍 Fasikül ara…" oninput="filterKutuphaneFasikuller(this.value)"
+        style="flex:1;padding:9px 14px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:13px;outline:none">
+      <select id="kutuphaneDersFilter" onchange="filterKutuphaneFasikuller(document.getElementById('kutuphaneFasikulSearch').value)"
+        style="padding:9px 12px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text-0);font-size:13px;outline:none">
+        <option value="">Tüm Dersler</option>
+      </select>
+    </div>
+    <div id="kutuphaneFasikulListWrap" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px">
+      <div style="text-align:center;padding:32px;color:var(--text-muted)">Yükleniyor…</div>
+    </div>
+    <div class="modal-btns" style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+      <button class="modal-btn mb-secondary" onclick="closeKutuphaneFasikulModal()">Kapat</button>
+      <button class="modal-btn mb-primary" id="kutuphaneDersSecBtn" onclick="kutuphaneDersSec()" style="display:none">📥 Seçileni Bu Derse Ekle</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+   JAVASCRIPT
+═══════════════════════════════════════════════════ -->
+</body>
+</html>
