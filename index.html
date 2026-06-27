@@ -597,6 +597,14 @@
     <button class="page-nav-btn rp-page-nav" onclick="changePage(1)" title="Sonraki sayfa">▶</button>
   </div>
 
+  <!-- Hızlı erişim araçları (solve): tel yatay → sağ kenar ortası dikey 3 buton;
+       tel dikey → zoom çubuğunun hemen üstünde yatay 3 buton -->
+  <div class="solve-quick-tools" id="solveQuickTools">
+    <button class="tool-btn" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+    <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır">✋</button>
+    <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+  </div>
+
   <!-- ═══ KONU SEÇİM MODAL (tüm ekran üstünde, toolbar altında) ═══ -->
   <div class="konu-modal-backdrop" id="konuModalBackdrop" onclick="closeKonuModal()" style="display:none"></div>
   <div class="konu-modal" id="konuModal" style="display:none">

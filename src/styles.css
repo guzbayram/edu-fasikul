@@ -489,6 +489,36 @@ body.reader-locked{overflow:hidden!important}
   #reader-overlay.solve-mode .solve-zoombar{left:calc((100vw + var(--sp-panel-w,0px)) / 2)!important}
 }
 
+/* Zoom/sayfa çubukları HER ZAMAN yatay tek satır (dikey tablette dikey yığılmasın) */
+.rp-zoom-bar,.solve-zoombar{flex-direction:row!important;flex-wrap:nowrap!important;white-space:nowrap}
+
+/* ── HIZLI ERİŞİM ARAÇ PALETİ (solve): pan/kalem/silgi ── */
+.solve-quick-tools{display:none}
+.solve-quick-tools .tool-btn{
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;border-radius:12px;background:var(--bg-3);border:1px solid var(--border);cursor:pointer;flex:0 0 auto;
+}
+.solve-quick-tools .tool-btn.active{background:var(--mat-dim);border-color:var(--mat)}
+/* Telefon YATAY: SAĞ kenar ortası, dikey tek sütun 3 buton */
+@media (orientation:landscape) and (max-height:500px){
+  #reader-overlay.solve-mode .solve-quick-tools{
+    display:flex;flex-direction:column;gap:8px;
+    position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:410;
+    background:var(--bg-1);border:1px solid var(--border-strong);border-radius:14px;
+    padding:7px 6px;box-shadow:var(--shadow-lg);
+  }
+}
+/* Telefon DİKEY: zoom çubuğunun hemen ÜSTÜNDE, yatay 3 buton */
+@media (orientation:portrait) and (max-width:768px){
+  #reader-overlay.solve-mode .solve-quick-tools{
+    display:flex;flex-direction:row;gap:10px;justify-content:center;
+    position:fixed;left:50%;transform:translateX(-50%);z-index:410;
+    bottom:calc(12px + env(safe-area-inset-bottom) + 54px);
+    background:var(--bg-1);border:1px solid var(--border-strong);border-radius:14px;
+    padding:6px 12px;box-shadow:var(--shadow-lg);
+  }
+}
+
 /* En çok kullanılan 3 araç (pan/kalem/silgi) — büyük, öncelikli, tek satır */
 #reader-overlay.solve-mode #solvePalette .sp-tools-row{flex-wrap:nowrap!important;gap:8px!important}
 #reader-overlay.solve-mode #solvePalette .sp-tools-row .tool-btn{width:46px!important;height:46px!important;font-size:23px!important;border-radius:13px!important}
