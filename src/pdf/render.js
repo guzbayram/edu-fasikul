@@ -622,6 +622,12 @@ function promptPageJump(){
   goToPage(target);
 }
 
+// Tüm zoom etiketlerini (panel + solve modu çubuğu) tek noktadan güncelle
+function setZoomLabel(v){
+  document.querySelectorAll('.js-zoom-pct').forEach(el => el.textContent = `%${v}`);
+}
+window.setZoomLabel = setZoomLabel;
+
 function changeZoom(delta){
   const wrap = document.getElementById('readerCanvasWrap');
   const renderedZoom = appState._renderedZoom || appState.zoom;
@@ -630,7 +636,7 @@ function changeZoom(delta){
   const contentX = (wrap?.scrollLeft || 0) + viewportX;
   const contentY = (wrap?.scrollTop || 0) + viewportY;
   appState.zoom = Math.max(40,Math.min(200,appState.zoom+delta));
-  document.getElementById('zoomLabel').textContent = `%${appState.zoom}`;
+  setZoomLabel(appState.zoom);
   const ratio = appState.zoom / renderedZoom;
   // Anlık görsel ölçek: render beklemeden zoom hissi (merkez = viewport ortası)
   if(wrap){ const rect = wrap.getBoundingClientRect(); applyStageScale(ratio, rect.left + viewportX, rect.top + viewportY); }
@@ -703,7 +709,7 @@ function initCardZoomPan(){
       const delta = e.deltaY < 0 ? 5 : -5;
       appState.zoom = Math.max(40, Math.min(200, appState.zoom + delta));
       if(appState.zoom === oldZoom) return;
-      document.getElementById('zoomLabel').textContent = `%${appState.zoom}`;
+      setZoomLabel(appState.zoom);
       scheduleCardZoomRender({
         contentX: relX,
         contentY: relY,
@@ -825,7 +831,7 @@ function initTouchGestures() {
       const contentX = g.startMid.x - wrapRect.left + wrap.scrollLeft;
       const contentY = g.startMid.y - wrapRect.top  + wrap.scrollTop;
       appState.zoom = newZoom;
-      document.getElementById('zoomLabel').textContent = `%${newZoom}`;
+      setZoomLabel(newZoom);
       scheduleCardZoomRender({
         contentX,
         contentY,

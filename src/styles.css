@@ -467,6 +467,23 @@ body.reader-locked{overflow:hidden!important}
 #reader-overlay.solve-mode [id^="page-wrap-"]{margin-left:0!important;margin-right:auto!important}
 #reader-overlay.solve-mode .solve-palette{display:flex!important}
 
+/* Tam ekran (solve) modu: sayfa/zoom çubuğu — ekranın en altında ortada */
+.solve-zoombar{display:none}
+#reader-overlay.solve-mode .solve-zoombar{
+  display:flex;position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);z-index:410;
+  align-items:center;gap:8px;padding:6px 10px;
+  background:var(--bg-1);border:1px solid var(--border-strong);border-radius:14px;
+  box-shadow:var(--shadow-lg);
+}
+#reader-overlay.solve-mode .solve-zoombar .page-nav-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:9px;font-size:16px;font-weight:700;
+  background:var(--bg-2);border:1px solid var(--border);color:var(--text-0);cursor:pointer;
+}
+#reader-overlay.solve-mode .solve-zoombar .page-nav-btn:active{background:var(--bg-3)}
+#reader-overlay.solve-mode .solve-zoombar .zoom-label{min-width:46px;text-align:center;font-size:13px}
+
 .solve-palette{
   position:fixed;z-index:400;left:50%;bottom:18px;transform:translateX(-50%);
   flex-direction:column;gap:8px;align-items:stretch;

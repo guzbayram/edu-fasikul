@@ -129,7 +129,7 @@ function toggleCardFill(){
   } else {
     appState.zoom = appState._fillBaseZoom; appState._fillBaseZoom = null;
   }
-  const zl = document.getElementById('zoomLabel'); if(zl) zl.textContent = `%${appState.zoom}`;
+  window.setZoomLabel?.(appState.zoom);
   window.renderPages?.();
 }
 window.toggleCardFill = toggleCardFill;

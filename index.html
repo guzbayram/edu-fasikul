@@ -549,7 +549,7 @@
     <div class="rp-zoom-bar">
       <button class="page-nav-btn rp-page-nav" onclick="changePage(-1)" title="Önceki sayfa">◀</button>
       <button class="page-nav-btn" onclick="changeZoom(-10)" title="Uzaklaştır">−</button>
-      <span class="zoom-label" id="zoomLabel">%100</span>
+      <span class="zoom-label js-zoom-pct" id="zoomLabel">%100</span>
       <button class="page-nav-btn" onclick="changeZoom(10)" title="Yaklaştır">+</button>
       <button class="page-nav-btn rp-page-nav" onclick="changePage(1)" title="Sonraki sayfa">▶</button>
     </div>
@@ -570,10 +570,18 @@
         <span class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></span>
       </div>
       <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
-      <button class="tool-btn" onclick="toggleFullscreen()" title="Tam Ekran">⛶</button>
       <button class="tool-btn sp-exit" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
     </div>
     <div class="sp-row sp-answers" id="spAnswers"></div>
+  </div>
+
+  <!-- Tam ekran (solve) modunda sayfa/zoom çubuğu — sayfanın en altında ortada -->
+  <div class="solve-zoombar" id="solveZoomBar">
+    <button class="page-nav-btn rp-page-nav" onclick="changePage(-1)" title="Önceki sayfa">◀</button>
+    <button class="page-nav-btn" onclick="changeZoom(-10)" title="Uzaklaştır">−</button>
+    <span class="zoom-label js-zoom-pct">%100</span>
+    <button class="page-nav-btn" onclick="changeZoom(10)" title="Yaklaştır">+</button>
+    <button class="page-nav-btn rp-page-nav" onclick="changePage(1)" title="Sonraki sayfa">▶</button>
   </div>
 
   <!-- ═══ KONU SEÇİM MODAL (tüm ekran üstünde, toolbar altında) ═══ -->
