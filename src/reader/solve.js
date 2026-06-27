@@ -17,8 +17,8 @@ function fitCanvasToPalette(){
     ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k));
     return;
   }
-  // Sabit panel kadar offset → kart panelin yanında/altında ORTALI; yüzer 3-buton palet üstte.
-  const G = 12;
+  // Sabit panel kadar offset → kart panelin hemen yanında/altında (boşluksuz), ORTALI.
+  const G = 2;
   const portrait = window.matchMedia('(orientation:portrait)').matches;
   const pr = panel ? panel.getBoundingClientRect() : {width:0, height:0};
   const set = (k,v)=>wrap.style.setProperty(k, v, 'important');

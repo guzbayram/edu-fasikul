@@ -442,7 +442,10 @@
     <!-- Bottom nav (sadece sayfa navigasyonu — zoom sol panele taşındı) -->
     <div class="reader-bottom-bar">
       <button class="page-nav-btn" onclick="changePage(-1)" id="prevPageBtn" title="Önceki Sayfa (←)">◀</button>
-      <span class="page-indicator" id="pageIndicator" onclick="promptPageJump()">Sayfa 1 / 5</span>
+      <button class="page-nav-btn rbb-zoom" onclick="changeZoom(-10)" title="Uzaklaştır">−</button>
+      <span class="zoom-label js-zoom-pct rbb-zoom">%100</span>
+      <span class="page-indicator js-page-ind" id="pageIndicator" onclick="promptPageJump()">1 / 5</span>
+      <button class="page-nav-btn rbb-zoom" onclick="changeZoom(10)" title="Yaklaştır">+</button>
       <button class="page-nav-btn" onclick="changePage(1)" id="nextPageBtn" title="Sonraki Sayfa (→)">▶</button>
     </div>
   </div>
@@ -581,6 +584,7 @@
     <div class="sp-row sp-util-row">
       <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
       <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
+      <button class="tool-btn" onclick="resetAltKonuStats()" title="Bu testi sıfırla">↺</button>
       <button class="tool-btn sp-exit" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
     </div>
   </div>
