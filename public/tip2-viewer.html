@@ -797,6 +797,10 @@
             <button class="acc-mcq-btn" data-opt="C" onclick="PDFKV.selectMcq(this)" style="width:48px;height:48px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#94a3b8;background:#fff;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(80,51,151,.15);transition:all .15s;flex-shrink:0;">C</button>
             <button class="acc-mcq-btn" data-opt="D" onclick="PDFKV.selectMcq(this)" style="width:48px;height:48px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#94a3b8;background:#fff;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(80,51,151,.15);transition:all .15s;flex-shrink:0;">D</button>
             <button class="acc-mcq-btn" data-opt="E" onclick="PDFKV.selectMcq(this)" style="width:48px;height:48px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#94a3b8;background:#fff;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(80,51,151,.15);transition:all .15s;flex-shrink:0;">E</button>
+            <!-- Önceki / Sonraki SORU butonları -->
+            <div style="width:2px;height:34px;background:#e2e8f0;margin:0 6px;flex-shrink:0;"></div>
+            <button id="mcq-prev" onclick="PDFKV.goQ(-1)" title="Önceki soru" style="width:44px;height:44px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;color:#503397;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;"><span class="material-symbols-outlined" style="font-size:22px;">chevron_left</span></button>
+            <button id="mcq-next" onclick="PDFKV.goQ(1)" title="Sonraki soru" style="width:44px;height:44px;border-radius:50%;border:2px solid #503397;background:#503397;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;"><span class="material-symbols-outlined" style="font-size:22px;">chevron_right</span></button>
           </div>
           <!-- Text answer row -->
           <div id="ans-text" style="display:none; width:100%; align-items:center; gap:10px; flex-wrap:nowrap; overflow:hidden;">
@@ -2712,12 +2716,24 @@ var PDFKV = (function(){
     st.cur=ni;
     if(sec.type==='mcq')renderMcqQ(sec,st);else renderTextQ(sec,st);
   }
+  function setMcqNavBtn(id,disabled){
+    var b=el(id); if(!b)return;
+    b.disabled=disabled;
+    b.style.opacity=disabled?'.35':'1';
+    b.style.cursor=disabled?'default':'pointer';
+  }
   function updateQNav(){
-    if(!state.currentSection){el('qprev').disabled=true;el('qnext').disabled=true;return;}
+    if(!state.currentSection){
+      el('qprev').disabled=true;el('qnext').disabled=true;
+      setMcqNavBtn('mcq-prev',true);setMcqNavBtn('mcq-next',true);
+      return;
+    }
     var sec=state.currentSection.sec,st=state.sectionStates[sec.id];
     var total=getQTotal(sec);
     el('qprev').disabled=(st.cur===0);
     el('qnext').disabled=(st.cur>=total-1);
+    setMcqNavBtn('mcq-prev',st.cur===0);
+    setMcqNavBtn('mcq-next',st.cur>=total-1);
   }
 
   /* ── DOTS ── */
