@@ -2601,6 +2601,11 @@ var PDFKV = (function(){
         else if(b.dataset.opt===opt)b.classList.add('wrong-ans');
       });
       updateStats();renderAttempts(st);renderDots(sec,st);renderProgressCard();
+      // Yanlış cevapta da doğru şıkkı gösterdikten sonra sonraki soruya otomatik geç.
+      // (Biraz daha uzun bekle ki öğrenci doğru cevabı görebilsin.)
+      setTimeout(function(){
+        if(st.cur<getQTotal(sec)-1){st.cur++;renderMcqQ(sec,st);}
+      },1900);
     }
   }
 
