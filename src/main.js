@@ -1548,29 +1548,27 @@ function buildTip2ViewerData(raw){
   const k = raw.kitap || {};
   const title = [k.ad, k.fasikul, k.tema].filter(Boolean).join(' · ');
   const sections = { hocan:[], ara:[], test:[] };
-  // Konular → "Konu Listesi": sayfa atlamalı gezinme bölümleri
+  // tip2Nav: konu + test öğeleri sayfa sırasına göre birleşik gezinme listesi.
+  // Sol menü bu listeyi düz (kategori grubu olmadan) çizer.
+  const nav = [];
   (raw.konular||[]).forEach((ko,i)=>{
-    sections.hocan.push({
-      id:'konu_'+i, name:ko.ad || ('Konu '+(i+1)),
-      sub: ko.sayfa ? ('Sayfa '+ko.sayfa) : '',
-      gun:1, type:'text', tabType:'hocan', questions:[], page:ko.sayfa || null
-    });
+    nav.push({ kind:'konu', name:ko.ad || ('Konu '+(i+1)), page:ko.sayfa || null, id:'konu_'+i });
   });
-  // Testler → Testler sekmesi: cevap anahtarı + MCQ kontrol
+  // Testler → hem cevap anahtarı paneli (sections.test) hem de nav öğesi.
   (raw.testler||[]).forEach((t,i)=>{
     const correct = {};
     Object.keys(t.cevaplar||{}).forEach(no=>{ correct[String(no)] = t.cevaplar[no]; });
-    const sub = t.ilkSayfa
-      ? ('Sayfa '+t.ilkSayfa + (t.sonSayfa && t.sonSayfa!==t.ilkSayfa ? '–'+t.sonSayfa : ''))
-      : '';
+    const id = t.id || ('test_'+i);
+    const qc = t.soruSayisi || Object.keys(correct).length;
     sections.test.push({
-      id: t.id || ('test_'+i), name: t.ad || ('Test '+(i+1)), sub,
+      id, name: t.ad || ('Test '+(i+1)), sub: title,
       gun:1, type:'mcq', tabType:'test',
-      questionCount: t.soruSayisi || Object.keys(correct).length,
-      correctAnswers: correct, page: t.ilkSayfa || null
+      questionCount: qc, correctAnswers: correct, page: t.ilkSayfa || null
     });
+    nav.push({ kind:'test', name: t.ad || ('Test '+(i+1)), page: t.ilkSayfa || null, id, questionCount: qc });
   });
-  return { title, meta:{ title }, sections };
+  nav.sort((a,b)=>(a.page||99999)-(b.page||99999));
+  return { title, meta:{ title }, sections, tip2Nav:nav };
 }
 
 // Tip-2 fasikülü tam ekran iframe görüntüleyicide aç; PDF + adapte JSON'ı
