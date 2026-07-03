@@ -2210,9 +2210,10 @@ var PDFKV = (function(){
     if(!state.tip2Nav||!state.tip2Nav.length)return;
     if(Date.now()<state.manualSectionLockUntil)return;
     var owner=tip2OwnerForPage(pageNum);
+    // Yalnızca sol menü vurgusunu güncelle; açık test cevap panelini KAPATMA
+    // (test birden çok sayfaya yayılabilir; scroll ederken bar kaybolmasın).
     if(owner && owner.id!==state.tip2ActiveId){
       state.tip2ActiveId=owner.id;
-      if(owner.kind==='konu'){ state.currentSection=null; var qp=el('q-panel'); if(qp)qp.style.display='none'; }
       renderTip2Nav();
     }
   }
