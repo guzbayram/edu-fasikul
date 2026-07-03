@@ -1117,6 +1117,8 @@ var PDFKV = (function(){
         state.customSections=secs;
         /* Tip-2 (konu · test · PDF): sol menü için düz gezinme listesi */
         state.tip2Nav=Array.isArray(data.tip2Nav)?data.tip2Nav:null;
+        /* Başlangıçta ilk konu başlığı seçili olsun (ilk test değil) */
+        state.tip2ActiveId=(state.tip2Nav&&state.tip2Nav[0])?state.tip2Nav[0].id:null;
         /* Konu kartları için days verisini sakla */
         if(Array.isArray(data.days))state.kkJsonDays=data.days;
         else state.kkJsonDays=null;
@@ -1547,6 +1549,7 @@ var PDFKV = (function(){
 	    return match;
 	  }
 	  function syncSectionToPage(pageNum){
+	    if(state.tip2Nav && state.tip2Nav.length){ syncTip2NavToPage(pageNum); return; }
 	    if(state.isPageAutoSync)return;
 	    if(state.currentSection&&sectionPage(state.currentSection.sec)===pageNum&&Date.now()<state.manualSectionLockUntil)return;
 	    var match=findSectionForPagePosition(pageNum);
@@ -2195,23 +2198,48 @@ var PDFKV = (function(){
 
   function navEscG(v){return String(v).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
   /* ── TİP-2 DÜZ GEZİNME: konu + test öğeleri, sayfa sırasına göre ── */
+  // Sayfayı sahiplenen tip2Nav öğesini bul (page<=pageNum olan en büyük; yoksa ilk öğe)
+  function tip2OwnerForPage(pageNum){
+    if(!state.tip2Nav||!state.tip2Nav.length)return null;
+    var owner=state.tip2Nav[0];
+    state.tip2Nav.forEach(function(it){ if(it.page && it.page<=pageNum) owner=it; });
+    return owner;
+  }
+  // Sayfa değiştikçe seçili konu/test'i o sayfaya göre güncelle (highlight takibi)
+  function syncTip2NavToPage(pageNum){
+    if(!state.tip2Nav||!state.tip2Nav.length)return;
+    if(Date.now()<state.manualSectionLockUntil)return;
+    var owner=tip2OwnerForPage(pageNum);
+    if(owner && owner.id!==state.tip2ActiveId){
+      state.tip2ActiveId=owner.id;
+      if(owner.kind==='konu'){ state.currentSection=null; var qp=el('q-panel'); if(qp)qp.style.display='none'; }
+      renderTip2Nav();
+    }
+  }
   function renderTip2Nav(){
     var list=el('sb-section-list'); if(!list)return;
     list.innerHTML='';
+    var activeBtn=null;
     (state.tip2Nav||[]).forEach(function(item){
       var isTest=item.kind==='test';
-      var isActive=isTest&&state.currentSection&&state.currentSection.id===item.id;
+      var isActive=(item.id===state.tip2ActiveId);
+      var actColor=isTest?'#0f766e':'#503397';
       var btn=document.createElement('button');
       btn.style.cssText='display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;'+
-        'border:1px solid '+(isActive?'#0f766e':'transparent')+';'+
-        'background:'+(isActive?'#0f766e':(isTest?'#ecfdf5':'rgba(255,255,255,.6)'))+';'+
+        'border:1px solid '+(isActive?actColor:'transparent')+';'+
+        'background:'+(isActive?actColor:(isTest?'#ecfdf5':'rgba(255,255,255,.6)'))+';'+
         'color:'+(isActive?'#fff':'#1f2937')+';width:100%;text-align:left;transition:all .12s;margin-bottom:5px;';
       btn.onmouseenter=function(){if(!isActive)this.style.background=isTest?'#d1fae5':'rgba(255,255,255,.95)';};
       btn.onmouseleave=function(){if(!isActive)this.style.background=isTest?'#ecfdf5':'rgba(255,255,255,.6)';};
       btn.onclick=(function(it){return function(){
+        state.tip2ActiveId=it.id;
         if(it.page)jumpToPage(it.page);
-        if(it.kind==='test'){var sec=findSectionById(it.id);if(sec)selectSection(sec,'test');}
-        else{state.currentSection=null;}
+        if(it.kind==='test'){
+          var sec=findSectionById(it.id); if(sec)selectSection(sec,'test');
+        }else{
+          state.currentSection=null; var qp=el('q-panel'); if(qp)qp.style.display='none';
+          state.manualSectionLockUntil=Date.now()+1800;
+        }
         renderTip2Nav();
       };})(item);
       var icon=isTest?'quiz':'menu_book';
@@ -2225,7 +2253,10 @@ var PDFKV = (function(){
           subLine+
         '</div>'+pageTag;
       list.appendChild(btn);
+      if(isActive)activeBtn=btn;
     });
+    // Aktif öğeyi sol menüde görünür tut
+    if(activeBtn&&activeBtn.scrollIntoView){try{activeBtn.scrollIntoView({block:'nearest'});}catch(e){}}
   }
   function renderTopicTree(){
     var list=el('sb-section-list');
