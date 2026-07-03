@@ -2210,12 +2210,21 @@ var PDFKV = (function(){
     if(!state.tip2Nav||!state.tip2Nav.length)return;
     if(Date.now()<state.manualSectionLockUntil)return;
     var owner=tip2OwnerForPage(pageNum);
-    // Yalnızca sol menü vurgusunu güncelle; açık test cevap panelini KAPATMA
-    // (test birden çok sayfaya yayılabilir; scroll ederken bar kaybolmasın).
-    if(owner && owner.id!==state.tip2ActiveId){
-      state.tip2ActiveId=owner.id;
-      renderTip2Nav();
+    if(!owner)return;
+    var changed=(owner.id!==state.tip2ActiveId);
+    state.tip2ActiveId=owner.id;
+    if(owner.kind==='test'){
+      // Cevap panelini bulunulan sayfanın testine geçir (sayfayı zıplatmadan).
+      if(!state.currentSection || state.currentSection.id!==owner.id){
+        var found=findSectionById(owner.id);
+        if(found)selectSection(found.sec, found.tab, true, {skipPageRender:true});
+      }
+    }else if(state.currentSection){
+      // Konu (okuma) sayfası: açık test cevap panelini gizle.
+      state.currentSection=null;
+      var qp=el('q-panel'); if(qp)qp.style.display='none';
     }
+    if(changed)renderTip2Nav();
   }
   function renderTip2Nav(){
     var list=el('sb-section-list'); if(!list)return;
