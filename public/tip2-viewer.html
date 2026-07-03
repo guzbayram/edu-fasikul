@@ -788,6 +788,10 @@
         <div style="display:flex; flex-direction:column; gap:12px;">
           <!-- MCQ options (shown for MCQ type) -->
           <div id="mcq-opts" style="display:none; align-items:center; gap:8px; flex-shrink:0;">
+            <div id="mcq-label" style="flex-shrink:0; max-width:230px; margin-right:8px; padding-right:12px; border-right:2px solid #e2e8f0; display:flex; flex-direction:column; gap:1px; line-height:1.2;">
+              <span id="mcq-test-name" style="font-family:'Manrope',sans-serif; font-weight:800; font-size:12px; color:#0f766e; white-space:normal; overflow:hidden;"></span>
+              <span id="mcq-q-no" style="font-weight:800; font-size:11px; color:#64748b;"></span>
+            </div>
             <button class="acc-mcq-btn" data-opt="A" onclick="PDFKV.selectMcq(this)" style="width:48px;height:48px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#94a3b8;background:#fff;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(80,51,151,.15);transition:all .15s;flex-shrink:0;">A</button>
             <button class="acc-mcq-btn" data-opt="B" onclick="PDFKV.selectMcq(this)" style="width:48px;height:48px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#94a3b8;background:#fff;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(80,51,151,.15);transition:all .15s;flex-shrink:0;">B</button>
             <button class="acc-mcq-btn" data-opt="C" onclick="PDFKV.selectMcq(this)" style="width:48px;height:48px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#94a3b8;background:#fff;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(80,51,151,.15);transition:all .15s;flex-shrink:0;">C</button>
@@ -2542,6 +2546,8 @@ var PDFKV = (function(){
     var qNum=st.cur+1;
     el('q-num').textContent='S'+qNum;
     el('q-label').textContent=qNum+'. Soru';
+    var _mn=el('mcq-test-name'); if(_mn)_mn.textContent=sec.name||'';
+    var _mq=el('mcq-q-no'); if(_mq)_mq.textContent=qNum+'. soru';
     var isDone=!!st.locked[st.cur];
     var correctAns=sec.correctAnswers?sec.correctAnswers[qNum]:null;
     var selected=st.selectedMcq[st.cur];
