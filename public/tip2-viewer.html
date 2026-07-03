@@ -2236,7 +2236,8 @@ var PDFKV = (function(){
         state.tip2ActiveId=it.id;
         if(it.page)jumpToPage(it.page);
         if(it.kind==='test'){
-          var sec=findSectionById(it.id); if(sec)selectSection(sec,'test');
+          // findSectionById → {tab, sec} sarmalayıcısı; selectSection section nesnesi bekler
+          var found=findSectionById(it.id); if(found)selectSection(found.sec, found.tab);
         }else{
           state.currentSection=null; var qp=el('q-panel'); if(qp)qp.style.display='none';
           state.manualSectionLockUntil=Date.now()+1800;
