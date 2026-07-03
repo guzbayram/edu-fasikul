@@ -25,6 +25,14 @@ async function openReader(dersId, fasikulId){
     }
   }
 
+  // Tip-2 fasiküller (konu · test · PDF) ayrı tam ekran görüntüleyicide açılır.
+  if(fasikul.fasikulTip==='tip2'){
+    appState.aktifDers = ders;
+    appState.aktifFasikul = fasikul;
+    await window.openTip2Reader?.(ders, fasikul);
+    return;
+  }
+
   appState.aktifDers = ders;
   appState.aktifFasikul = fasikul;
   normalizeFasikulKonular(fasikul.konular || []);

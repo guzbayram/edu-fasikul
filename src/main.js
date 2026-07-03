@@ -228,7 +228,8 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'tyt-denemeleri-1',dersId:'tyt',json:'8-tyt-denemeleri-1-cards.json',pdf:'8-tyt-denemeleri-1-cards.pdf'},
   {id:'tyt-denemeleri-2',dersId:'tyt',json:'9-tyt-denemeleri-2-cards.json',pdf:'9-tyt-denemeleri-2-cards.pdf'},
   {id:'matematik-destek',dersId:'mat',json:'12-Matematik (Destek)-kart.json',pdf:'12-Matematik (Destek).pdf',type:'video'},
-  {id:'mof-10-matematik-5',dersId:'mat',json:'Möf-10.Sınıf-Matematik-5.Fasikül.json',pdf:'Möf-10.Sınıf-Matematik-5.Fasikül.pdf'}
+  {id:'mof-10-matematik-5',dersId:'mat',json:'Möf-10.Sınıf-Matematik-5.Fasikül.json',pdf:'Möf-10.Sınıf-Matematik-5.Fasikül.pdf'},
+  {id:'mof-9-matematik-1',dersId:'mat',json:'Möf-9.Sınıf-Matematik-1.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-1.Fasikül.pdf',fasikulTip:'tip2'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';
@@ -253,6 +254,7 @@ function saveCustomGithubSource(source){
     json: source.json,
     pdf: source.pdf,
     type: source.type || undefined,
+    fasikulTip: source.fasikulTip || undefined,
     custom: true
   };
   const existingIndex = sources.findIndex(s=>s.id===clean.id || s.json===clean.json);
@@ -1516,6 +1518,117 @@ async function ensureReaderPdfLoaded(targetPage=1){
   }
 }
 
+// ══════════════════════════════
+// TİP-2 GÖRÜNTÜLEYİCİ (PDF-sayfa tabanlı, Temel_Matematik formatı)
+// ══════════════════════════════
+// Fasikülün PDF'ini ham Blob olarak getir (klasör veya cihaz DB'si).
+async function getFasikulPdfFileBlob(fas, ders){
+  if(appState.eduDirHandle){
+    try{
+      const permission = await appState.eduDirHandle.queryPermission({mode:'read'});
+      if(permission==='granted'){
+        const pdfName = fas.pdfFile || FASIKUL_PDF_MAP[fas.id] || (fas.id + '.pdf');
+        const fh = await findPdfFileHandle(pdfName);
+        return await fh.getFile();
+      }
+    }catch(e){ /* klasörde yoksa DB'ye düş */ }
+  }
+  const dersId = (ders && ders.id) || appState.aktifDers?.id;
+  let cached = dersId ? await getPDFFromDB(dersId, fas.id) : null;
+  if(!cached){
+    const src = BUNDLED_FASIKUL_SOURCES.find(s=>s.id===fas.id);
+    if(src) cached = await getPDFFromDB(src.dersId, fas.id);
+  }
+  return cached?.blob || null;
+}
+
+// Möf-9 (Tip-2) ham şemasını Temel_Matematik görüntüleyicisinin
+// beklediği { title, meta, sections:{hocan,ara,test} } formatına çevir.
+function buildTip2ViewerData(raw){
+  const k = raw.kitap || {};
+  const title = [k.ad, k.fasikul, k.tema].filter(Boolean).join(' · ');
+  const sections = { hocan:[], ara:[], test:[] };
+  // Konular → "Konu Listesi": sayfa atlamalı gezinme bölümleri
+  (raw.konular||[]).forEach((ko,i)=>{
+    sections.hocan.push({
+      id:'konu_'+i, name:ko.ad || ('Konu '+(i+1)),
+      sub: ko.sayfa ? ('Sayfa '+ko.sayfa) : '',
+      gun:1, type:'text', tabType:'hocan', questions:[], page:ko.sayfa || null
+    });
+  });
+  // Testler → Testler sekmesi: cevap anahtarı + MCQ kontrol
+  (raw.testler||[]).forEach((t,i)=>{
+    const correct = {};
+    Object.keys(t.cevaplar||{}).forEach(no=>{ correct[String(no)] = t.cevaplar[no]; });
+    const sub = t.ilkSayfa
+      ? ('Sayfa '+t.ilkSayfa + (t.sonSayfa && t.sonSayfa!==t.ilkSayfa ? '–'+t.sonSayfa : ''))
+      : '';
+    sections.test.push({
+      id: t.id || ('test_'+i), name: t.ad || ('Test '+(i+1)), sub,
+      gun:1, type:'mcq', tabType:'test',
+      questionCount: t.soruSayisi || Object.keys(correct).length,
+      correctAnswers: correct, page: t.ilkSayfa || null
+    });
+  });
+  return { title, meta:{ title }, sections };
+}
+
+// Tip-2 fasikülü tam ekran iframe görüntüleyicide aç; PDF + adapte JSON'ı
+// görüntüleyici hazır olduğunda postMessage ile gönder.
+async function openTip2Reader(ders, fasikul){
+  const raw = fasikul.tip2Raw;
+  if(!raw){ showToast('Tip-2 fasikül verisi yüklenemedi','error'); return; }
+  const overlay = document.getElementById('tip2-overlay');
+  const frame = document.getElementById('tip2-frame');
+  if(!overlay || !frame){ showToast('Tip-2 görüntüleyici bulunamadı','error'); return; }
+  const titleEl = document.getElementById('tip2Title');
+  if(titleEl) titleEl.textContent = fasikul.ad || 'Fasikül';
+
+  const json = buildTip2ViewerData(raw);
+  const blob = await getFasikulPdfFileBlob(fasikul, ders);
+  let pdfBuf = null;
+  if(blob){ try{ pdfBuf = await blob.arrayBuffer(); }catch(e){} }
+
+  let sent = false;
+  function send(){
+    if(sent) return; sent = true;
+    const payload = { type:'TIP2_BOOT', json };
+    if(pdfBuf) payload.pdf = pdfBuf;
+    try{
+      frame.contentWindow.postMessage(payload, '*', pdfBuf ? [pdfBuf] : []);
+    }catch(e){
+      try{ frame.contentWindow.postMessage(payload, '*'); }catch(e2){}
+    }
+  }
+  function onMsg(ev){
+    if(ev.data && ev.data.type==='TIP2_READY'){
+      send();
+      window.removeEventListener('message', onMsg);
+    }
+  }
+  window.addEventListener('message', onMsg);
+
+  const base = (import.meta.env && import.meta.env.BASE_URL) || '/';
+  frame.src = base + 'tip2-viewer.html?ts=' + Date.now();
+  overlay.classList.add('open');
+  document.body.classList.add('reader-locked');
+  // READY gelmezse (ör. mesaj kaçtıysa) yedek gönderim
+  setTimeout(send, 2000);
+  if(!blob){
+    showToast('PDF bulunamadı — Profil sayfasından PDF klasörünü seçin. Konu/test verileri yine de görünür.','info');
+  }
+}
+function closeTip2Reader(){
+  const overlay = document.getElementById('tip2-overlay');
+  const frame = document.getElementById('tip2-frame');
+  if(frame) frame.src = 'about:blank';
+  if(overlay) overlay.classList.remove('open');
+  document.body.classList.remove('reader-locked');
+}
+window.openTip2Reader = openTip2Reader;
+window.closeTip2Reader = closeTip2Reader;
+window.buildTip2ViewerData = buildTip2ViewerData;
+
 function findHataliContext(h){
   const wantedKeys = [h.soruKey, h.uid, h.soruNo].filter(v=>v!==undefined && v!==null).map(v=>String(v));
   for(const ders of MANIFEST.dersler){
@@ -2251,6 +2364,7 @@ async function addProfileGithubJsonFasikul(){
     return;
   }
   const dersId = document.getElementById('profileGithubJsonDers')?.value || 'mat';
+  const tipSel = document.getElementById('profileGithubJsonTip')?.value || 'auto';
   const jsonInput = document.getElementById('profileGithubJsonFile');
   const pdfInput = document.getElementById('profileGithubPdfFile');
   const idInput = document.getElementById('profileGithubSourceId');
@@ -2268,6 +2382,7 @@ async function addProfileGithubJsonFasikul(){
     return;
   }
   const source = { id, dersId, json, pdf, custom:true };
+  if(tipSel==='tip1' || tipSel==='tip2') source.fasikulTip = tipSel;
   setProfileGithubJsonStatus('GitHub JSON okunuyor ve format kontrol ediliyor...', 'loading');
   try{
     bundledSourceCache.delete(json);
@@ -2277,6 +2392,8 @@ async function addProfileGithubJsonFasikul(){
       showToast('JSON okunamadı veya format hatalı','error');
       return;
     }
+    // Otomatik seçiliyse şemadan algıla; kaynağa yaz ki sonraki açılışlarda sabit kalsın.
+    if(!source.fasikulTip) source.fasikulTip = detectFasikulTip(raw);
     const savedSource = saveCustomGithubSource(source);
     let ders = MANIFEST.dersler.find(d=>d.id===dersId);
     if(!ders){
@@ -2506,8 +2623,41 @@ function bundledSinif(value){
   if(Number.isFinite(n)) return n;
   return String(value||'').toUpperCase().includes('LGS') ? 8 : 12;
 }
+// Fasikül tipini şemadan otomatik algıla.
+// Tip-2 (konu · test · PDF): kitap + testler alanları var, konular düz (altKonular yok).
+// Tip-1 (kart kart): konular içinde altKonular/sorular hiyerarşisi var.
+function detectFasikulTip(raw){
+  if(raw && raw.kitap && Array.isArray(raw.testler)) return 'tip2';
+  return 'tip1';
+}
+function resolveFasikulTip(raw, source){
+  const explicit = source?.fasikulTip;
+  if(explicit==='tip1' || explicit==='tip2') return explicit;
+  return detectFasikulTip(raw);
+}
+// Tip-2 hydrate: ağır soru/kart yerine PDF-sayfa tabanlı meta + ham veri saklanır.
+// Görüntüleyici (tip2-viewer) bu ham veriyi adaptörden geçirip kullanır.
+function hydrateTip2Fasikul(fas,raw,source){
+  const k = raw.kitap || {};
+  const o = raw.ozet || {};
+  fas.ad = fas.ad || [k.ad, k.fasikul].filter(Boolean).join(' ') || raw.ad || source.id;
+  fas.thumb = fas.thumb || '📘';
+  fas.thumbBg = fas.thumbBg || 'linear-gradient(135deg,#0f766e,#134e4a)';
+  fas.sinif = fas.sinif || bundledSinif(k.sinif ?? raw.sinif);
+  fas.konular = [];                       // Tip-1 nav'ı devre dışı bırak
+  fas.konuSayisi = o.konuSayisi || (raw.konular||[]).length;
+  fas.soruSayisi = o.toplamTestSorusu || 0;
+  fas.jsonFile = source.json;
+  fas.pdfFile = source.pdf;
+  fas.sourceType = 'bundled';
+  fas.fasikulTip = 'tip2';
+  fas.tip2Raw = raw;                        // adaptör + görüntüleyici için ham veri
+  return fas;
+}
 function hydrateBundledFasikul(fas,raw,source){
+  if(resolveFasikulTip(raw, source)==='tip2') return hydrateTip2Fasikul(fas,raw,source);
   const konular=normalizeFasikulKonular(raw.konular||[]);
+  fas.fasikulTip = 'tip1';
   fas.ad = fas.ad || raw.ad || source.id;
   fas.thumb = fas.thumb || raw.thumb || '📄';
   fas.thumbBg = fas.thumbBg || 'linear-gradient(135deg,#312e81,#1e1b4b)';

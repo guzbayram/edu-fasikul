@@ -335,6 +335,13 @@
               <label>Ders
                 <select id="profileGithubJsonDers"></select>
               </label>
+              <label>Fasikül tipi
+                <select id="profileGithubJsonTip">
+                  <option value="auto">Otomatik algıla</option>
+                  <option value="tip1">Tip-1 (kart kart)</option>
+                  <option value="tip2">Tip-2 (konu · test · PDF)</option>
+                </select>
+              </label>
               <label>JSON dosya adı
                 <input id="profileGithubJsonFile" type="text" placeholder="ornek-fasikul-kart.json">
               </label>
@@ -439,6 +446,15 @@
     <input type="text" id="drawerSearch" placeholder="🔍 Fasikül ara…" oninput="filterFasikuller(this.value)">
   </div>
   <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<!-- TİP-2 GÖRÜNTÜLEYİCİ (PDF-sayfa tabanlı, gömülü iframe) -->
+<div id="tip2-overlay">
+  <div class="tip2-bar">
+    <button class="tip2-close" onclick="closeTip2Reader()">← Kapat</button>
+    <span id="tip2Title" class="tip2-title"></span>
+  </div>
+  <iframe id="tip2-frame" title="Fasikül görüntüleyici" allow="fullscreen; clipboard-read; clipboard-write"></iframe>
 </div>
 
 <!-- READER OVERLAY -->
