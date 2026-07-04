@@ -5,15 +5,57 @@
  "soruSayisi": 168,
  "toplamSoru": 168,
  "konuSayisi": 15,
+ "testSayisi": 15,
  "thumb": "📘",
  "pdf": "Möf-9.Sınıf-Matematik-1.Fasikül.pdf",
- "not": "Testler tip-1 kart okuyucu için sayfa-bazlı üretildi (kaynak: tip-2 testler+cevaplar).",
+ "not": "tip-1 sayfa-bazlı; TOC başlıkları + testler iç içe.",
  "konular": [
+  {
+   "id": "konu-1-hatirlatma-sorulari",
+   "ad": "Hatırlatma Soruları",
+   "sayfa": 5,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-2-uslu-i-fade-tanimi-ve-ozellikleri",
+   "ad": "Üslü İfade Tanımı ve Özellikleri",
+   "sayfa": 7,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-3-uslu-i-fadelerde-toplama-ve-cikarma-i-slemi",
+   "ad": "Üslü İfadelerde Toplama ve Çıkarma İşlemi",
+   "sayfa": 8,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-4-bilimsel-gosterim",
+   "ad": "Bilimsel Gösterim",
+   "sayfa": 10,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-5-uslu-i-fadelerde-carpma-ve-bolme-i-slemi",
+   "ad": "Üslü İfadelerde Çarpma ve Bölme İşlemi",
+   "sayfa": 11,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-6-uslu-i-fadelerin-ussu",
+   "ad": "Üslü İfadelerin Üssü",
+   "sayfa": 15,
+   "tur": "konu",
+   "altKonular": []
+  },
   {
    "id": "test-1-surec-degerlendirme-testi-1",
    "ad": "Süreç Değerlendirme Testi 1",
-   "anaKonu": "Süreç Değerlendirme Testi 1",
-   "konu": "Süreç Değerlendirme Testi 1",
+   "tur": "test",
    "sayfa": 18,
    "sayfaBasl": 18,
    "sayfaBitis": 19,
@@ -208,8 +250,7 @@
   {
    "id": "test-2-surec-degerlendirme-testi-2",
    "ad": "Süreç Değerlendirme Testi 2",
-   "anaKonu": "Süreç Değerlendirme Testi 2",
-   "konu": "Süreç Değerlendirme Testi 2",
+   "tur": "test",
    "sayfa": 20,
    "sayfaBasl": 20,
    "sayfaBitis": 21,
@@ -404,8 +445,7 @@
   {
    "id": "test-3-beceri-temelli-tema-testi-3",
    "ad": "Beceri Temelli Tema Testi 3",
-   "anaKonu": "Beceri Temelli Tema Testi 3",
-   "konu": "Beceri Temelli Tema Testi 3",
+   "tur": "test",
    "sayfa": 22,
    "sayfaBasl": 22,
    "sayfaBitis": 22,
@@ -466,10 +506,51 @@
    ]
   },
   {
+   "id": "konu-7-koklu-i-fadelerin-tanimi",
+   "ad": "Köklü İfadelerin Tanımı",
+   "sayfa": 23,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-8-koklu-ve-uslu-i-fadelerin-birbiri-cinsinden-yazilisi-kok-disina-cikarma",
+   "ad": "Köklü ve Üslü İfadelerin Birbiri Cinsinden Yazılışı / Kök Dışına Çıkarma",
+   "sayfa": 25,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-9-koklu-i-fadelerde-toplama-ve-cikarma-i-slemi",
+   "ad": "Köklü İfadelerde Toplama ve Çıkarma İşlemi",
+   "sayfa": 26,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-10-koklu-i-fadelerde-carpma-ve-bolme-i-slemi",
+   "ad": "Köklü İfadelerde Çarpma ve Bölme İşlemi",
+   "sayfa": 28,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-11-koklu-i-fadelerde-sadelestirme-genisletme-yaklasik-deger",
+   "ad": "Köklü İfadelerde Sadeleştirme-Genişletme / Yaklaşık Değer",
+   "sayfa": 29,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-12-koklu-i-fadelerde-eslenik-paydayi-rasyonel-yapma",
+   "ad": "Köklü İfadelerde Eşlenik (Paydayı Rasyonel Yapma)",
+   "sayfa": 31,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-4-surec-degerlendirme-testi-4",
    "ad": "Süreç Değerlendirme Testi 4",
-   "anaKonu": "Süreç Değerlendirme Testi 4",
-   "konu": "Süreç Değerlendirme Testi 4",
+   "tur": "test",
    "sayfa": 33,
    "sayfaBasl": 33,
    "sayfaBitis": 34,
@@ -664,8 +745,7 @@
   {
    "id": "test-5-surec-degerlendirme-testi-5",
    "ad": "Süreç Değerlendirme Testi 5",
-   "anaKonu": "Süreç Değerlendirme Testi 5",
-   "konu": "Süreç Değerlendirme Testi 5",
+   "tur": "test",
    "sayfa": 35,
    "sayfaBasl": 35,
    "sayfaBitis": 36,
@@ -860,8 +940,7 @@
   {
    "id": "test-6-beceri-temelli-tema-testi-6",
    "ad": "Beceri Temelli Tema Testi 6",
-   "anaKonu": "Beceri Temelli Tema Testi 6",
-   "konu": "Beceri Temelli Tema Testi 6",
+   "tur": "test",
    "sayfa": 37,
    "sayfaBasl": 37,
    "sayfaBitis": 38,
@@ -966,10 +1045,23 @@
    ]
   },
   {
+   "id": "konu-13-kumelerin-farkli-gosterimi-ve-ozellikleri",
+   "ad": "Kümelerin Farklı Gösterimi ve Özellikleri",
+   "sayfa": 39,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-14-alt-kume-kumelerde-kesisim-birlesim-fark-i-slemi-tumleyen",
+   "ad": "Alt Küme / Kümelerde Kesişim, Birleşim, Fark İşlemi / Tümleyen",
+   "sayfa": 40,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-7-surec-degerlendirme-testi-7",
    "ad": "Süreç Değerlendirme Testi 7",
-   "anaKonu": "Süreç Değerlendirme Testi 7",
-   "konu": "Süreç Değerlendirme Testi 7",
+   "tur": "test",
    "sayfa": 42,
    "sayfaBasl": 42,
    "sayfaBitis": 42,
@@ -1074,10 +1166,16 @@
    ]
   },
   {
+   "id": "konu-15-aralik-kavrami",
+   "ad": "Aralık Kavramı",
+   "sayfa": 43,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-8-surec-degerlendirme-testi-8",
    "ad": "Süreç Değerlendirme Testi 8",
-   "anaKonu": "Süreç Değerlendirme Testi 8",
-   "konu": "Süreç Değerlendirme Testi 8",
+   "tur": "test",
    "sayfa": 47,
    "sayfaBasl": 47,
    "sayfaBitis": 48,
@@ -1226,10 +1324,16 @@
    ]
   },
   {
+   "id": "konu-16-mutlak-degerli-esitsizlikler",
+   "ad": "Mutlak Değerli Eşitsizlikler",
+   "sayfa": 49,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-9-surec-degerlendirme-testi-9",
    "ad": "Süreç Değerlendirme Testi 9",
-   "anaKonu": "Süreç Değerlendirme Testi 9",
-   "konu": "Süreç Değerlendirme Testi 9",
+   "tur": "test",
    "sayfa": 51,
    "sayfaBasl": 51,
    "sayfaBitis": 51,
@@ -1336,8 +1440,7 @@
   {
    "id": "test-10-beceri-temelli-tema-testi-10",
    "ad": "Beceri Temelli Tema Testi 10",
-   "anaKonu": "Beceri Temelli Tema Testi 10",
-   "konu": "Beceri Temelli Tema Testi 10",
+   "tur": "test",
    "sayfa": 52,
    "sayfaBasl": 52,
    "sayfaBitis": 53,
@@ -1442,10 +1545,37 @@
    ]
   },
   {
+   "id": "konu-17-sayi-kumelerinde-sirali-olma-ve-i-ki-sayi-arasindaki-sayilari-belirleme",
+   "ad": "Sayı Kümelerinde Sıralı Olma ve İki Sayı Arasındaki Sayıları Belirleme",
+   "sayfa": 54,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-18-siralama-ozellikleri",
+   "ad": "Sıralama Özellikleri",
+   "sayfa": 55,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-19-sayi-kumelerinin-arada-olma-ozelligini-i-nceleme",
+   "ad": "Sayı Kümelerinin Arada Olma Özelliğini İnceleme",
+   "sayfa": 58,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-20-sayi-kumelerinin-dort-i-sleme-gore-kapaliligi",
+   "ad": "Sayı Kümelerinin Dört İşleme Göre Kapalılığı",
+   "sayfa": 59,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-11-surec-degerlendirme-testi-11",
    "ad": "Süreç Değerlendirme Testi 11",
-   "anaKonu": "Süreç Değerlendirme Testi 11",
-   "konu": "Süreç Değerlendirme Testi 11",
+   "tur": "test",
    "sayfa": 60,
    "sayfaBasl": 60,
    "sayfaBitis": 60,
@@ -1528,10 +1658,23 @@
    ]
   },
   {
+   "id": "konu-21-onerme-kavrami",
+   "ad": "Önerme Kavramı",
+   "sayfa": 61,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-22-gercel-sayilarin-i-slem-ozellikleri",
+   "ad": "Gerçel Sayıların İşlem Özellikleri",
+   "sayfa": 63,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-12-surec-degerlendirme-testi-12",
    "ad": "Süreç Değerlendirme Testi 12",
-   "anaKonu": "Süreç Değerlendirme Testi 12",
-   "konu": "Süreç Değerlendirme Testi 12",
+   "tur": "test",
    "sayfa": 66,
    "sayfaBasl": 66,
    "sayfaBitis": 67,
@@ -1680,10 +1823,23 @@
    ]
   },
   {
+   "id": "konu-23-gercel-sayilardaki-i-slemlerin-cebirsel-i-fadelerdeki-karsiliklari",
+   "ad": "Gerçel Sayılardaki İşlemlerin Cebirsel İfadelerdeki Karşılıkları",
+   "sayfa": 68,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-24-a-b-2-a-b-bicimindeki-i-fadeler",
+   "ad": "√(a+b±2√(a·b)) Biçimindeki İfadeler",
+   "sayfa": 72,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-13-surec-degerlendirme-testi-13",
    "ad": "Süreç Değerlendirme Testi 13",
-   "anaKonu": "Süreç Değerlendirme Testi 13",
-   "konu": "Süreç Değerlendirme Testi 13",
+   "tur": "test",
    "sayfa": 73,
    "sayfaBasl": 73,
    "sayfaBitis": 74,
@@ -1876,10 +2032,16 @@
    ]
   },
   {
+   "id": "konu-25-uslu-denklem",
+   "ad": "Üslü Denklem",
+   "sayfa": 75,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-14-surec-degerlendirme-testi-14",
    "ad": "Süreç Değerlendirme Testi 14",
-   "anaKonu": "Süreç Değerlendirme Testi 14",
-   "konu": "Süreç Değerlendirme Testi 14",
+   "tur": "test",
    "sayfa": 76,
    "sayfaBasl": 76,
    "sayfaBitis": 77,
@@ -2052,8 +2214,7 @@
   {
    "id": "test-15-beceri-temelli-tema-testi-15",
    "ad": "Beceri Temelli Tema Testi 15",
-   "anaKonu": "Beceri Temelli Tema Testi 15",
-   "konu": "Beceri Temelli Tema Testi 15",
+   "tur": "test",
    "sayfa": 78,
    "sayfaBasl": 78,
    "sayfaBitis": 79,

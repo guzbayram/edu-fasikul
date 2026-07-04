@@ -5,15 +5,71 @@
  "soruSayisi": 155,
  "toplamSoru": 155,
  "konuSayisi": 9,
+ "testSayisi": 9,
  "thumb": "📘",
  "pdf": "Möf-9.Sınıf-Matematik-2.Fasikül.pdf",
- "not": "Testler tip-1 kart okuyucu için sayfa-bazlı üretildi (kaynak: tip-2 testler+cevaplar).",
+ "not": "tip-1 sayfa-bazlı; TOC başlıkları + testler iç içe.",
  "konular": [
+  {
+   "id": "konu-1-hatirlatma-sorulari",
+   "ad": "Hatırlatma Soruları",
+   "sayfa": 5,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-2-f-x-x-bicimindeki-dogrusal-fonksiyonlar",
+   "ad": "f(x) = x Biçimindeki Doğrusal Fonksiyonlar",
+   "sayfa": 7,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-3-g-x-a-f-x-r-k-bicimindeki-dogrusal-fonksiyonlar",
+   "ad": "g(x) = a·f(x ± r) ± k Biçimindeki Doğrusal Fonksiyonlar",
+   "sayfa": 9,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-4-g-x-x-b-bicimindeki-dogrusal-fonksiyonlar",
+   "ad": "g(x) = x + b Biçimindeki Doğrusal Fonksiyonlar",
+   "sayfa": 13,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-5-sabit-fonksiyon",
+   "ad": "Sabit Fonksiyon",
+   "sayfa": 16,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-6-g-x-ax-b-bicimindeki-dogrusal-fonksiyonlar",
+   "ad": "g(x) = ax + b Biçimindeki Doğrusal Fonksiyonlar",
+   "sayfa": 17,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-7-g-x-a-x-r-k-bicimindeki-dogrusal-fonksiyonlar",
+   "ad": "g(x) = a·(x ± r) ± k Biçimindeki Doğrusal Fonksiyonlar",
+   "sayfa": 22,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-8-parcali-fonksiyon",
+   "ad": "Parçalı Fonksiyon",
+   "sayfa": 26,
+   "tur": "konu",
+   "altKonular": []
+  },
   {
    "id": "test-1-surec-degerlendirme-testi-1",
    "ad": "Süreç Değerlendirme Testi 1",
-   "anaKonu": "Süreç Değerlendirme Testi 1",
-   "konu": "Süreç Değerlendirme Testi 1",
+   "tur": "test",
    "sayfa": 33,
    "sayfaBasl": 33,
    "sayfaBitis": 34,
@@ -208,8 +264,7 @@
   {
    "id": "test-2-surec-degerlendirme-testi-2",
    "ad": "Süreç Değerlendirme Testi 2",
-   "anaKonu": "Süreç Değerlendirme Testi 2",
-   "konu": "Süreç Değerlendirme Testi 2",
+   "tur": "test",
    "sayfa": 35,
    "sayfaBasl": 35,
    "sayfaBitis": 36,
@@ -382,8 +437,7 @@
   {
    "id": "test-3-beceri-temelli-tema-testi-3",
    "ad": "Beceri Temelli Tema Testi 3",
-   "anaKonu": "Beceri Temelli Tema Testi 3",
-   "konu": "Beceri Temelli Tema Testi 3",
+   "tur": "test",
    "sayfa": 37,
    "sayfaBasl": 37,
    "sayfaBitis": 41,
@@ -598,10 +652,30 @@
    ]
   },
   {
+   "id": "konu-9-g-x-x-bicimindeki-mutlak-deger-fonksiyonunun-grafik-temsili-ve-nitel-ozellikleri",
+   "ad": "g(x) = ±|x| Biçimindeki Mutlak Değer Fonksiyonunun Grafik Temsili ve Nitel Özellikleri",
+   "sayfa": 42,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-10-g-x-ax-b-bicimindeki-mutlak-deger-fonksiyonunun-grafik-temsili-ve-nitel-ozellikleri",
+   "ad": "g(x) = ±|ax ± b| Biçimindeki Mutlak Değer Fonksiyonunun Grafik Temsili ve Nitel Özellikleri",
+   "sayfa": 43,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-11-f-x-ax-b-c-bicimindeki-mutlak-deger-fonksiyonlarinin-grafikleri",
+   "ad": "f(x) = ±|ax + b| ± c Biçimindeki Mutlak Değer Fonksiyonlarının Grafikleri",
+   "sayfa": 48,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-4-surec-degerlendirme-testi-4",
    "ad": "Süreç Değerlendirme Testi 4",
-   "anaKonu": "Süreç Değerlendirme Testi 4",
-   "konu": "Süreç Değerlendirme Testi 4",
+   "tur": "test",
    "sayfa": 58,
    "sayfaBasl": 58,
    "sayfaBitis": 59,
@@ -730,8 +804,7 @@
   {
    "id": "test-5-surec-degerlendirme-testi-5",
    "ad": "Süreç Değerlendirme Testi 5",
-   "anaKonu": "Süreç Değerlendirme Testi 5",
-   "konu": "Süreç Değerlendirme Testi 5",
+   "tur": "test",
    "sayfa": 60,
    "sayfaBasl": 60,
    "sayfaBitis": 63,
@@ -937,8 +1010,7 @@
   {
    "id": "test-6-beceri-temelli-tema-testi-6",
    "ad": "Beceri Temelli Tema Testi 6",
-   "anaKonu": "Beceri Temelli Tema Testi 6",
-   "konu": "Beceri Temelli Tema Testi 6",
+   "tur": "test",
    "sayfa": 64,
    "sayfaBasl": 64,
    "sayfaBitis": 67,
@@ -1142,10 +1214,23 @@
    ]
   },
   {
+   "id": "konu-12-dogrusal-fonksiyonlarla-i-fade-edilebilen-denklem-ve-esitsizlik-i-ceren-problemler",
+   "ad": "Doğrusal Fonksiyonlarla İfade Edilebilen Denklem ve Eşitsizlik İçeren Problemler",
+   "sayfa": 68,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
+   "id": "konu-13-mutlak-degerli-denklem-ve-esitsizlik-i-ceren-problemler",
+   "ad": "Mutlak Değerli Denklem ve Eşitsizlik İçeren Problemler",
+   "sayfa": 78,
+   "tur": "konu",
+   "altKonular": []
+  },
+  {
    "id": "test-7-surec-degerlendirme-testi-7",
    "ad": "Süreç Değerlendirme Testi 7",
-   "anaKonu": "Süreç Değerlendirme Testi 7",
-   "konu": "Süreç Değerlendirme Testi 7",
+   "tur": "test",
    "sayfa": 81,
    "sayfaBasl": 81,
    "sayfaBitis": 83,
@@ -1384,8 +1469,7 @@
   {
    "id": "test-8-surec-degerlendirme-testi-8",
    "ad": "Süreç Değerlendirme Testi 8",
-   "anaKonu": "Süreç Değerlendirme Testi 8",
-   "konu": "Süreç Değerlendirme Testi 8",
+   "tur": "test",
    "sayfa": 84,
    "sayfaBasl": 84,
    "sayfaBitis": 86,
@@ -1624,8 +1708,7 @@
   {
    "id": "test-9-beceri-temelli-tema-testi-9",
    "ad": "Beceri Temelli Tema Testi 9",
-   "anaKonu": "Beceri Temelli Tema Testi 9",
-   "konu": "Beceri Temelli Tema Testi 9",
+   "tur": "test",
    "sayfa": 87,
    "sayfaBasl": 87,
    "sayfaBitis": 91,

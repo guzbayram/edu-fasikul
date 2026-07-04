@@ -932,6 +932,25 @@ body.reader-locked{overflow:hidden!important}
 .kdd-name{font-size:12px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kdd-chip{font-size:10px;font-weight:700;color:var(--text-muted);flex-shrink:0}
 .kdd-item.active .kdd-chip{color:var(--mat)}
+/* TOC başlığı (soru yok, sayfaya git) */
+.kdd-topic{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:6px 12px 6px 14px;cursor:pointer;transition:background .15s;
+  border-left:2px solid var(--border);
+}
+.kdd-topic:hover{background:var(--bg-3)}
+.kdd-topic .kdd-name{font-size:12px;font-weight:500;color:var(--text-1)}
+.kdd-topic .kdd-chip{font-size:10px;color:var(--text-muted)}
+.kdd-item.kdd-test .kdd-name{font-weight:700}
+/* Sağdaki PDF'in bulunduğu konu/test başlığı — S.N satırının üstünde */
+.page-crumb{
+  display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:7px 12px;
+  background:var(--mat-dim);border-radius:9px;
+  font-size:12px;font-weight:700;color:var(--mat);
+}
+.page-crumb .pc-ico{flex-shrink:0}
+.page-crumb .pc-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.page-crumb .pc-page{flex-shrink:0;font-size:11px;font-weight:800;opacity:.85}
 
 /* Trend mini bar */
 .trend-bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--bg-4);width:70px}

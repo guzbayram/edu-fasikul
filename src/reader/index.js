@@ -253,7 +253,30 @@ function closeReader(){
 // ── Konu Nav
 // ── Sayfa numarasına göre sol paneli (ana konu + alt konu) senkronize et
 
+// Sağdaki PDF'in bulunduğu konu/test başlığını "S.N / Sayfa" satırının üstünde göster.
+function updatePageCrumb(pageNum){
+  const el = document.getElementById('pageCrumb');
+  if(!el) return;
+  const fas = appState.aktifFasikul;
+  const page = pageNum || appState.currentPage;
+  if(!fas?.konular?.length || !page){ el.style.display='none'; return; }
+  let owner = null;
+  // Önce sayfayı kapsayan test
+  for(const k of fas.konular){
+    if(k.sayfaBasl && k.sayfaBitis && page>=k.sayfaBasl && page<=k.sayfaBitis){ owner=k; break; }
+  }
+  // Yoksa sayfası <= mevcut sayfa olan en son başlık (o an bulunulan konu)
+  if(!owner){
+    for(const k of fas.konular){ if((k.sayfa||0)<=page && (!owner || (k.sayfa||0)>=(owner.sayfa||0))) owner=k; }
+  }
+  if(!owner){ el.style.display='none'; return; }
+  const isTest = owner.tur==='test' || (owner.altKonular||[]).some(ak=>(ak.sorular||[]).length);
+  el.innerHTML = `<span class="pc-ico">${isTest?'📝':'📄'}</span><span class="pc-text">${owner.ad}</span><span class="pc-page">s.${page}</span>`;
+  el.style.display='';
+}
+
 function syncNavToPage(pageNum){
+  updatePageCrumb(pageNum);
   if(appState._suppressNavSync) return;
   const fas = appState.aktifFasikul;
   if(!fas || !fas.konular) return;

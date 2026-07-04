@@ -532,7 +532,31 @@ function buildKonuDropdown(){
   menu.innerHTML = '';
   fas.konular.forEach(konu => {
     const altKonular = (konu.altKonular||[]).filter(ak=>!isCozumAltKonu(ak) && (ak.sorular||[]).length);
-    if(!altKonular.length) return;
+    // Soru içermeyen konu başlığı (TOC) → tıklanınca ilgili PDF sayfasına git
+    if(!altKonular.length){
+      if(konu.sayfa){
+        const topic = document.createElement('div');
+        topic.className = 'kdd-topic';
+        topic.innerHTML = `<span class="kdd-name">📄 ${konu.ad}</span><span class="kdd-chip">s.${konu.sayfa}</span>`;
+        topic.onclick = () => { menu.classList.remove('open'); goToPage(konu.sayfa); };
+        menu.appendChild(topic);
+      }
+      return;
+    }
+    // Tek altKonu'lu test → doğrudan tıklanır item (başlık tekrarı olmasın)
+    if(altKonular.length === 1){
+      const ak = altKonular[0];
+      const solved = (ak.sorular||[]).filter(s=>appState.sorularState[s._uid||s.no]?.answered).length;
+      const total = ak.sorular?.length || 0;
+      const isActive = ak === appState.aktifAltKonu || ak.id === appState.aktifAltKonu?.id;
+      const item = document.createElement('div');
+      item.className = 'kdd-item kdd-test' + (isActive ? ' active' : '');
+      item.innerHTML = `<span class="kdd-name">📝 ${konu.ad}</span><span class="kdd-chip">${solved}/${total}</span>`;
+      item.onclick = () => selectKonuFromDropdown(konu, ak);
+      menu.appendChild(item);
+      return;
+    }
+    // Çok altKonu'lu → başlık + alt item'lar
     const header = document.createElement('div');
     header.className = 'kdd-konu';
     header.textContent = konu.ad;
@@ -564,6 +588,13 @@ function selectKonuFromDropdown(konu, altKonu){
   renderSoruList(altKonu.sorular||[]);
   updateKonuDropdownLabel();
   updateTestProgress();
+  // İlk seçimde de PDF ilk soruya gitsin (önceden ikinci tıklama gerekiyordu)
+  const firstQ = (altKonu.sorular||[])[0];
+  if(firstQ?.sayfa){
+    appState._suppressNavSync = true;
+    goToPage(firstQ.sayfa);
+    setTimeout(()=>{ appState._suppressNavSync = false; }, 600);
+  }
 }
 
 function updateKonuDropdownLabel(){
