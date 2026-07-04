@@ -2033,7 +2033,7 @@ async function populateFasikulSourceSelect(editId=''){
   }
   select.disabled = availableCount===0 && !editId;
 }
-function applyBundledSourceToForm(sourceId,fillValues=true){
+async function applyBundledSourceToForm(sourceId,fillValues=true){
   const source=BUNDLED_FASIKUL_SOURCES.find(s=>s.id===sourceId);
   const hint=document.getElementById('fasikulSourceHint');
   const sinif=document.getElementById('fasikulSinifInput');
@@ -2044,7 +2044,9 @@ function applyBundledSourceToForm(sourceId,fillValues=true){
     if(soru) soru.readOnly=false;
     return;
   }
-  const raw=bundledSourceCache.get(source.json);
+  // Cache'de yoksa JSON'ı burada yükle — otomatik doldurma cache zamanlamasına takılmasın.
+  let raw=bundledSourceCache.get(source.json);
+  if(!raw){ try{ raw=await readBundledJson(source); }catch(e){} }
   if(fillValues && raw){
     // Tip-2'de ad/sinif/soru üst düzeyde değil kitap+ozet içinde gelir.
     const isTip2=detectFasikulTip(raw)==='tip2';
