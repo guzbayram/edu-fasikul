@@ -291,6 +291,12 @@ function addDeletedBundledId(id){
   const s=getDeletedBundledIds(); s.add(id);
   localStorage.setItem(DELETED_BUNDLED_IDS_KEY, JSON.stringify([...s]));
 }
+// Bastırılmış bir fasikülü geri getir (ör. tekrar eklenince) — aksi halde
+// loadBundledFasikuller onu bir daha yüklemez ve sayaçlar 0 kalır.
+function removeDeletedBundledId(id){
+  const s=getDeletedBundledIds();
+  if(s.delete(id)) localStorage.setItem(DELETED_BUNDLED_IDS_KEY, JSON.stringify([...s]));
+}
 // Admin: fasikülü kütüphaneden sil (manifest + custom kaynak + gerekiyorsa bastır).
 function deleteFasikul(dersId, fasikulId){
   if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
@@ -2059,6 +2065,9 @@ function saveFasikul(){
   if(!editId && !source){ showToast('Fasikül eklemek için GitHub JSON kaynağı seçin','error'); return; }
   if(!ad){ showToast('Fasikül adı gerekli','error'); return; }
   // Fasikül tipini JSON içeriğinden otomatik belirle (Tip-1 kart / Tip-2 PDF sayfa)
+  // Daha önce silinip bastırılmış bir bundled fasikül yeniden ekleniyorsa,
+  // bastırmayı kaldır ki loadBundledFasikuller onu tekrar yükleyip sayaçları doldursun.
+  if(source) removeDeletedBundledId(source.id);
   const detectedTip = source ? (source.fasikulTip || (sourceRaw ? detectFasikulTip(sourceRaw) : 'tip1')) : '';
   const isTip2 = detectedTip==='tip2';
   const tip2SoruSayisi = isTip2 ? (sourceRaw?.ozet?.toplamTestSorusu || soruSayisi) : soruSayisi;

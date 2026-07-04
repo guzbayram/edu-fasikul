@@ -2140,7 +2140,9 @@ var PDFKV = (function(){
   }
 
   function initSections(){
-    var base=state.customSections||DEFAULT_SECTIONS;
+    // Gömülü Tip-2 modunda gerçek fasikül JSON'u gelene kadar boş kal —
+    // aksi halde eski "Temel Matematik" demo içeriği (DEFAULT_SECTIONS) sol navda görünür.
+    var base=state.customSections||{hocan:[],ara:[],test:[]};
     state.sections=JSON.parse(JSON.stringify(base));
     ['hocan','ara','test'].forEach(function(tab){
       (state.sections[tab]||[]).forEach(function(sec){
@@ -2952,8 +2954,8 @@ var PDFKV = (function(){
     var secSrc=state.sections;
     var hasData=(secSrc.hocan&&secSrc.hocan.length)||(secSrc.ara&&secSrc.ara.length)||(secSrc.test&&secSrc.test.length);
     if(!hasData){
-      var tmp=DEFAULT_SECTIONS;
-      state.kkJsonDays=buildDaysFromSectionsCustom(tmp);
+      /* Veri yoksa eski Temel Matematik demosunu YÜKLEME — boş bırak */
+      state.kkJsonDays=[];
     } else if(state.kkJsonDays&&Array.isArray(state.kkJsonDays)&&state.kkJsonDays[0]&&state.kkJsonDays[0].alt_konular!==undefined){
       /* JSON days — koru */
     } else {
