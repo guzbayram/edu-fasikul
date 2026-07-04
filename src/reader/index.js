@@ -335,6 +335,35 @@ function syncNavToPage(pageNum){
     }
   }
 
+  // Test/alt konu bulunamadıysa → bu bir KONU (anlatım) sayfası olabilir.
+  // Sol paneli o konuya çevir ki eski testin kartında takılı kalmasın.
+  if(!targetAlt){
+    let owner = null;
+    for(const k of fas.konular){
+      if(k.sayfaBasl && k.sayfaBitis && pageNum>=k.sayfaBasl && pageNum<=k.sayfaBitis){ owner=k; break; }
+    }
+    if(!owner){
+      for(const k of fas.konular){ if((k.sayfa||0)<=pageNum && (!owner || (k.sayfa||0)>=(owner.sayfa||0))) owner=k; }
+    }
+    const ownerIsTest = owner && (owner.tur==='test' || (owner.altKonular||[]).some(ak=>(ak.sorular||[]).length));
+    if(owner && !ownerIsTest){
+      if(appState.aktifKonu?.id !== owner.id || appState.aktifAltKonu){
+        appState.aktifKonu = owner;
+        appState.aktifAltKonu = null;
+        appState.activeQuestionIdx = 0;
+        const select = document.getElementById('anaKonuSelect');
+        if(select) select.value = owner.id;
+        renderAltKonuList(owner);
+        updateRightPanelTitle(owner.ad);
+        const rpSay = document.getElementById('rpSoruSayisi');
+        if(rpSay) rpSay.textContent = 'Konu';
+        const list = document.getElementById('soruList');
+        if(list) list.innerHTML = `<div class="tek-soru-card" style="text-align:center;padding:32px 18px;color:var(--text-muted)"><div style="font-size:30px;margin-bottom:8px">📄</div><div style="font-size:13px;font-weight:600;color:var(--text)">${owner.ad}</div><div style="font-size:12px;margin-top:6px;opacity:.75">Konu anlatım sayfası — bu bölümde çözülecek soru yok.</div></div>`;
+      }
+      return;
+    }
+  }
+
   // Hiç bulunamazsa ilk konuya düş
   if(!targetKonu) targetKonu = fas.konular[0];
 
@@ -429,7 +458,7 @@ function buildKonuNav(fasikul){
         // TOC başlığı (soru yok) → tıklayınca ilgili PDF sayfasına git, modalı kapat
         item.className = 'ana-konu-item ana-konu-topic';
         item.innerHTML = `<span class="anak-name">📄 ${k.ad}</span>${k.sayfa ? `<span class="anak-chip">s.${k.sayfa}</span>` : ''}`;
-        item.onclick = () => { if(k.sayfa) goToPage(k.sayfa); closeKonuModal(); };
+        item.onclick = () => { appState._suppressNavSync = false; if(k.sayfa) goToPage(k.sayfa); closeKonuModal(); };
       } else {
         item.className = 'ana-konu-item ana-konu-test';
         item.innerHTML = `<span class="anak-name">📝 ${k.ad}</span><span class="anak-chip">${solvable.reduce((s,ak)=>s+(ak.sorular||[]).length,0)}</span>`;
