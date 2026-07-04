@@ -46,7 +46,6 @@ function toggleTheme(){
   scheduleCloudPersist();
 }
 // GUEST_DEMO_FASIKUL_IDS → window.GUEST_DEMO_FASIKUL_IDS (main.js'de tanımlı)
-function isGuestSession(){ return appState.user?.email==='misafir@demo.com'; }
 function visibleFasikullerFor(ders){
   const base = isGuestSession()
     ? (ders.fasikuller||[]).filter(f=>window.GUEST_DEMO_FASIKUL_IDS.has(f.id))
@@ -70,166 +69,13 @@ function formatNet(value){
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
 }
 
-function renderDerslerGrid(){
-  const grid = document.getElementById('derslerGrid');
-  grid.innerHTML = '';
-  const stats = getDashboardStats();
-  const visibleDersler=window.MANIFEST.dersler.filter(d=>visibleFasikullerFor(d).length>0 || !isGuestSession());
-  const sayac = document.getElementById('derslerSayac');
-  if(sayac) sayac.textContent = `${visibleDersler.length} ders aktif`;
-  visibleDersler.forEach(ders => {
-    const card = document.createElement('div');
-    card.className = 'ders-card';
-    card.dataset.ders = ders.id;
-    const dersPerf = perfSummary(stats.dersler?.[ders.id]);
-    const visibleFasikuller=visibleFasikullerFor(ders);
-    const fasSayisi = visibleFasikuller.length;
-    const soruSayisi = visibleFasikuller.reduce((a,f)=>a+f.soruSayisi,0);
-    const r = 20; const circ = 2*Math.PI*r;
-    const offset = circ * (1 - ders.progPct/100);
-    const renkVar = ders.renk;
-    card.innerHTML = `
-      <button class="ders-edit-btn" onclick="openDersModal('${ders.id}',event)" title="Düzenle">✏️</button>
-      <div class="ders-card-top">
-        <span class="ders-card-icon">${ders.ikon}</span>
-        <div class="ders-card-titles">
-          <div class="ders-card-name">${ders.ad}</div>
-          <div class="ders-card-meta">${fasSayisi} fasikül · ${soruSayisi} soru</div>
-        </div>
-      </div>
-      <div class="progress-ring-wrap">
-        <svg class="progress-ring" width="48" height="48" viewBox="0 0 48 48">
-          <circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--bg-4)" stroke-width="3.5"/>
-          <circle cx="24" cy="24" r="${r}" fill="none" stroke="${renkVar}" stroke-width="3.5"
-            stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
-        </svg>
-        <div>
-          <div class="progress-ring-label" style="color:${renkVar}">${ders.progPct}%</div>
-          <div class="progress-ring-sub">tamamlandı</div>
-        </div>
-      </div>
-      <div class="ders-card-footer">
-        <span>${dersPerf.total ? `${dersPerf.solved} çözüldü · %${dersPerf.accuracy} · Net ${formatNet(dersPerf.net)}` : (visibleFasikuller[0]?.sonCalisma||'—')}</span>
-        <button class="devam-btn" onclick="openDrawer(event,'${ders.id}')">Devam Et →</button>
-      </div>`;
-    grid.appendChild(card);
-  });
-}
-
 // ══════════════════════════════
 // DRAWER
 // ══════════════════════════════
-function openDrawer(e, dersId){
-  if(e?.stopPropagation) e.stopPropagation();
-  const ders = window.MANIFEST.dersler.find(d=>d.id===dersId);
-  if(!ders) return;
-  window.currentDrawerDers = ders;
-  document.getElementById('drawerTitle').textContent = `${ders.ikon} ${ders.ad} Fasikülleri`;
-  document.getElementById('drawerSearch').value='';
-  renderFasikulCards(visibleFasikullerFor(ders), ders);
-  document.getElementById('drawerOverlay').classList.add('open');
-  document.getElementById('drawer').classList.add('open');
-}
-function closeDrawer(){
-  document.getElementById('drawerOverlay').classList.remove('open');
-  document.getElementById('drawer').classList.remove('open');
-}
 function filterFasikuller(q){
   if(!window.currentDrawerDers) return;
   const filtered = visibleFasikullerFor(window.currentDrawerDers).filter(f=>f.ad.toLowerCase().includes(q.toLowerCase()));
   renderFasikulCards(filtered, window.currentDrawerDers);
-}
-function renderFasikulCards(fasikuller, ders){
-  const body = document.getElementById('drawerBody');
-  body.innerHTML = '';
-  const sortable = fasikuller.length === ders.fasikuller.length;
-  body.classList.toggle('is-filtered', !sortable);
-  if(fasikuller.length===0){
-    body.innerHTML='<div style="text-align:center;padding:32px;color:var(--text-muted)">Fasikül bulunamadı</div>';
-    return;
-  }
-  fasikuller.forEach(fas => {
-    const card = document.createElement('div');
-    card.className='fasikul-card';
-    card.dataset.fasikulId=fas.id;
-    card.draggable=sortable;
-    const fasPerf = perfSummary(fas._perf);
-    const soruCozulen = fasPerf.total ? fasPerf.solved : (fas._solvedCount ?? Math.floor(fas.soruSayisi * fas.progPct/100));
-    const renkCSS = fas.temaRenk || ders.renk;
-    card.style.setProperty('--fas-accent', renkCSS);
-    const hasKonular = fas.konular && fas.konular.length > 0;
-    const isBundled = fas.sourceType === 'bundled';
-    const jsonPillHtml = hasKonular
-      ? `<span class="fasikul-json-pill ok">✓ ${isBundled?'JSON otomatik':'JSON yüklü'}</span>`
-      : '';
-    card.innerHTML=`
-      <div class="fasikul-card-top">
-        <div class="fasikul-drag-handle" title="Sürükleyerek sırala" aria-hidden="true">⣿</div>
-        <div class="fasikul-thumb" style="background:color-mix(in srgb,${renkCSS} 16%,transparent)">${fas.thumb}</div>
-        <div class="fasikul-info">
-          <div class="fasikul-name">${fas.ad}</div>
-          <div class="fasikul-meta">
-            <span class="fasikul-meta-chip">📚 ${fas.konuSayisi} konu</span>
-            <span class="fasikul-meta-chip">📝 ${fas.soruSayisi} soru</span>
-            <span class="fasikul-meta-chip">🕐 ${fas.sonCalisma||'—'}</span>
-          </div>
-        </div>
-        <button class="fasikul-card-menu-btn" type="button" aria-label="Fasikül seçenekleri" title="Fasikül seçenekleri" onclick="event.stopPropagation();toggleFasikulMenu(this)">⋮</button>
-        <div class="fasikul-card-menu">
-          <button onclick="event.stopPropagation();resetFasikulData('${ders.id}','${fas.id}')" style="color:var(--red)">🗑️ Çalışmayı sıfırla</button>
-          <div class="fasikul-menu-divider"></div>
-          <div class="fasikul-color-label">Kart rengi</div>
-          <div class="fasikul-color-grid">
-            ${FASIKUL_THEME_COLORS.map(c=>`<button class="fasikul-color-swatch${renkCSS===c?' selected':''}" style="--swatch:${c}" title="Bu rengi kullan" aria-label="Kart rengini değiştir" onclick="event.stopPropagation();setFasikulTheme('${ders.id}','${fas.id}','${c}')"></button>`).join('')}
-          </div>
-          <div class="fasikul-menu-divider"></div>
-          <div class="fasikul-order-actions">
-            <button onclick="event.stopPropagation();moveFasikul('${ders.id}','${fas.id}',-1)">↑ Üste taşı</button>
-            <button onclick="event.stopPropagation();moveFasikul('${ders.id}','${fas.id}',1)">↓ Alta taşı</button>
-          </div>
-        </div>
-      </div>
-      <div class="fasikul-progress">
-        <div class="prog-bar"><div class="prog-fill" style="width:${fas.progPct}%;background:${renkCSS}"></div></div>
-        <div class="prog-pct">${fas.progPct}%</div>
-      </div>
-      <div class="fasikul-card-footer">
-        <div class="fasikul-card-stats">
-          <span>${fasPerf.total ? `${soruCozulen}/${fas.soruSayisi} · %${fasPerf.accuracy} · Net ${formatNet(fasPerf.net)}` : `${soruCozulen}/${fas.soruSayisi} çözüldü`}</span>
-          ${jsonPillHtml}
-        </div>
-        <button class="fasikul-open-btn" style="background:${renkCSS};color:#fff"
-          onclick="event.stopPropagation();openReader('${ders.id}','${fas.id}')">Aç →</button>
-      </div>`;
-    card.addEventListener('click', (e)=>{
-      if(e.target.closest('.fasikul-card-menu')||e.target.closest('.fasikul-card-menu-btn')) return;
-      if(fasikulWasDragged){ fasikulWasDragged=false; return; }
-      openReader(ders.id, fas.id);
-    });
-    if(sortable){
-      card.addEventListener('dragstart', e=>{
-        draggedFasikulId=fas.id; fasikulWasDragged=true;
-        card.classList.add('dragging');
-        e.dataTransfer.effectAllowed='move';
-        e.dataTransfer.setData('text/plain',fas.id);
-      });
-      card.addEventListener('dragend', ()=>{
-        card.classList.remove('dragging');
-        document.querySelectorAll('.fasikul-card.drag-over').forEach(c=>c.classList.remove('drag-over'));
-        draggedFasikulId=null;
-      });
-      card.addEventListener('dragover', e=>{
-        e.preventDefault();
-        if(draggedFasikulId && draggedFasikulId!==fas.id) card.classList.add('drag-over');
-      });
-      card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
-      card.addEventListener('drop', e=>{
-        e.preventDefault(); card.classList.remove('drag-over');
-        reorderFasikulByDrop(ders.id,draggedFasikulId,fas.id);
-      });
-    }
-    body.appendChild(card);
-  });
 }
 function setFasikulTheme(dersId,fasikulId,color){
   const ders=window.MANIFEST.dersler.find(d=>d.id===dersId);
@@ -306,129 +152,9 @@ function calcCurrentStreak(counts){
   }
   return streak;
 }
-function updateDashboard(){
-  const stats=getDashboardStats();
-  const total=stats.toplam||0;
-  const correct=stats.dogru||0;
-  const wrong=stats.yanlis||0;
-  const accuracy=total ? Math.round((correct/total)*100) : 0;
-  const records=stats.records||[];
-  const daily=getDailyCounts(records);
-  const today=new Date();
-  const weekKeys=[];
-  for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); weekKeys.push(d.toISOString().slice(0,10)); }
-  const weeklyData=weekKeys.map(k=>daily[k]||0);
-  const weeklyTotal=weeklyData.reduce((a,b)=>a+b,0);
-  const streak=calcCurrentStreak(daily);
-  const totalSec=records.reduce((sum,r)=>sum+Number(r.timeSec||0),0);
-  const totalMin=Math.round(totalSec/60);
-  const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-  set('sidebarStreakCount', `${streak} Gün`);
-  set('statStreak', streak);
-  set('statStreakDelta', streak ? '↗ Devam et!' : '—');
-  set('totalSolved', total);
-  set('statSolvedDelta', weeklyTotal ? `↗ Bu hafta +${weeklyTotal}` : '—');
-  set('statWeekly', weeklyTotal);
-  set('statWeeklyDelta', weeklyTotal ? '↗ Aktif hafta' : '—');
-  set('statAccuracy', `%${accuracy}`);
-  set('statAccuracyDelta', total ? `${correct} doğru · ${wrong} yanlış` : '—');
-  set('kpiTotalSolved', total);
-  set('kpiSolvedSub', weeklyTotal ? `Bu hafta +${weeklyTotal}` : 'Henüz haftalık çözüm yok');
-  set('kpiAccuracy', `%${accuracy}`);
-  set('kpiAccuracySub', total ? `${correct}/${total} doğru` : 'Henüz veri yok');
-  set('kpiTime', totalMin>=60 ? `${Math.floor(totalMin/60)}s ${totalMin%60}d` : `${totalMin}d`);
-  set('kpiTimeSub', totalSec ? 'Çözüm sürelerinden hesaplandı' : 'Henüz süre yok');
-  set('kpiLongestStreak', `${streak}🔥`);
-  set('kpiLongestSub', streak ? 'Güncel seri' : 'Seri oluşmadı');
-  set('profileSolved', total);
-  set('profileStreak', `${streak}🔥`);
-  set('profileAccuracy', `%${accuracy}`);
-  document.querySelectorAll('.streak-dot').forEach((d,i)=>d.classList.toggle('done', i<Math.min(streak,7)));
-
-  if(window._chartWeekly){
-    window._chartWeekly.data.datasets[0].data=weeklyData;
-    window._chartWeekly.update();
-  }
-  const konuDagilimi = stats.konuDagilimi || stats.konular || {};
-  const topicRows=Object.entries(konuDagilimi).map(([name,k])=>{
-    const d=Number(k.dogru||0), y=Number(k.yanlis||0), solved=d+y;
-    const label = k.dersAd && k.fasikulAd
-      ? `${k.dersAd} / ${k.fasikulAd} / ${k.konu || k.label || name}`
-      : (k.konu || k.label || name);
-    return {name:label,dogru:d,yanlis:y,solved,accuracy:solved?Math.round(d/solved*100):0,net:d-y*0.25};
-  }).filter(r=>r.solved>0).sort((a,b)=>b.solved-a.solved);
-  if(window._chartRadar){
-    const radarRows=topicRows.slice(0,6);
-    window._chartRadar.data.labels=radarRows.length ? radarRows.map(r=>r.name.length>16?r.name.slice(0,15)+'…':r.name) : ['Konu 1','Konu 2','Konu 3','Konu 4','Konu 5','Konu 6'];
-    window._chartRadar.data.datasets[0].data=radarRows.length ? radarRows.map(r=>r.accuracy) : [0,0,0,0,0,0];
-    window._chartRadar.update();
-  }
-  const tbody=document.getElementById('konuTableBody');
-  if(tbody){
-    if(!topicRows.length){
-      tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:28px">Henüz konu performansı oluşmadı.</td></tr>';
-    }else{
-      tbody.innerHTML=topicRows.slice(0,12).map(r=>{
-        const dPct=r.solved?Math.round(r.dogru/r.solved*100):0;
-        const yPct=r.solved?Math.round(r.yanlis/r.solved*100):0;
-        const trend=`<div class="trend-bar"><div class="tb-d" style="width:${dPct}%" title="Doğru %${dPct}"></div><div class="tb-y" style="width:${yPct}%" title="Yanlış %${yPct}"></div></div>`;
-        return `<tr><td>${r.name}</td><td>${r.solved}</td><td>%${r.accuracy}</td><td>${Number.isInteger(r.net)?r.net:r.net.toFixed(2)}</td><td>${trend}</td></tr>`;
-      }).join('');
-    }
-  }
-  const cal=document.getElementById('calGrid');
-  if(cal){
-    cal.innerHTML='';
-    for(let i=34;i>=0;i--){
-      const d=new Date(today); d.setDate(today.getDate()-i);
-      const count=daily[d.toISOString().slice(0,10)]||0;
-      const level=count>=20?4:count>=10?3:count>=4?2:count>0?1:0;
-      const el=document.createElement('div');
-      el.className='cal-day'+(level?` level-${level}`:'');
-      el.title=`${count} soru`;
-      cal.appendChild(el);
-    }
-  }
-  const badges=[
-    {icon:'🔥',name:'7 Günlük Seri',earned:streak>=7},
-    {icon:'⚡',name:'Hız Rekoru',earned:records.some(r=>Number(r.timeSec||999)<=20)},
-    {icon:'💯',name:'Mükemmel Test',earned:total>=10&&accuracy===100},
-    {icon:'🦉',name:'Gece Kuşu',earned:records.some(r=>{const d=new Date(r.tarih||0);return !Number.isNaN(d.getTime())&&d.getHours()>=22;})},
-    {icon:'🎯',name:'Keskin Nişancı',earned:total>=20&&accuracy>=85},
-    {icon:'📚',name:'Kitap Kurdu',earned:total>=100},
-    {icon:'🚀',name:'Roket Hızı',earned:weeklyTotal>=50},
-    {icon:'🏆',name:'Şampiyon',earned:total>=300},
-    {icon:'🧠',name:'Dahi',earned:Object.keys(konuDagilimi).length>=5},
-    {icon:'⭐',name:'Süper Star',earned:total>=500}
-  ];
-  const bg=document.getElementById('badgesGrid');
-  if(bg){
-    bg.innerHTML=badges.map(b=>`<div class="badge-item${b.earned?' earned':' locked'}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div></div>`).join('');
-  }
-}
-
 // ══════════════════════════════
 // FASİKÜL İLERLEME HESAPLAMA
 // ══════════════════════════════
-function recalcFasikulProgress(){
-  const stats = getDashboardStats();
-  window.MANIFEST.dersler.forEach(ders => {
-    let dersTotal = 0, dersSolved = 0;
-    ders._perf = stats.dersler?.[ders.id] || null;
-    ders.fasikuller.forEach(fas => {
-      fas._perf = stats.fasikuller?.[fas.id] || null;
-      const p = perfSummary(fas._perf);
-      const solved = p.solved || 0;
-      const total = fas.soruSayisi || 0;
-      fas._solvedCount = solved;
-      fas.progPct = total > 0 ? Math.min(100, Math.round((solved / total) * 100)) : 0;
-      dersTotal += total;
-      dersSolved += solved;
-    });
-    ders.progPct = dersTotal > 0 ? Math.min(100, Math.round((dersSolved / dersTotal) * 100)) : 0;
-  });
-}
-
 // ══════════════════════════════
 // FASİKÜL VERİ SIFIRLAMA
 // ══════════════════════════════
@@ -1120,13 +846,8 @@ window.renderDate = renderDate;
 window.renderMathSymbols = renderMathSymbols;
 window.renderStreakDots = renderStreakDots;
 window.toggleTheme = toggleTheme;
-window.isGuestSession = isGuestSession;
 window.visibleFasikullerFor = visibleFasikullerFor;
-window.renderDerslerGrid = renderDerslerGrid;
-window.openDrawer = openDrawer;
-window.closeDrawer = closeDrawer;
 window.filterFasikuller = filterFasikuller;
-window.renderFasikulCards = renderFasikulCards;
 window.setFasikulTheme = setFasikulTheme;
 window.moveFasikul = moveFasikul;
 window.reorderFasikulByDrop = reorderFasikulByDrop;
@@ -1135,8 +856,6 @@ window.openLastFasikul = openLastFasikul;
 window.safeDateKey = safeDateKey;
 window.getDailyCounts = getDailyCounts;
 window.calcCurrentStreak = calcCurrentStreak;
-window.updateDashboard = updateDashboard;
-window.recalcFasikulProgress = recalcFasikulProgress;
 window.resetFasikulData = resetFasikulData;
 window.applyDemoStats = applyDemoStats;
 window.applyDemoMode = applyDemoMode;
