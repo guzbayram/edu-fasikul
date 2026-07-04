@@ -2002,14 +2002,20 @@ async function populateFasikulSourceSelect(editId=''){
   // Anahtar, fasikül başka bir derse eklenince değişebilir. Bu nedenle iPad'de
   // asıl eşleşmeyi kaydedilen File.name üzerinden yap.
   const cachedPdfNames = new Set(cachedRecords.map(r=>normalizePdfFileName(r?.name || r?.blob?.name)));
-  for(const source of BUNDLED_FASIKUL_SOURCES){
+  // Tüm JSON'ları PARALEL yükle — 20+ kaynağı sırayla çekmek dropdown'ı
+  // dakikalarca boş/takılı bırakabiliyordu. Biri hata verse diğerleri etkilenmez.
+  const loaded = await Promise.all(BUNDLED_FASIKUL_SOURCES.map(async source=>{
+    let raw=bundledSourceCache.get(source.json);
+    if(!raw){ try{ raw=await readBundledJson(source); }catch(e){ raw=null; } }
+    const folderPdfFound = hasFolder ? await hasLocalPdfFile(source.pdf).catch(()=>false) : false;
+    return {source, raw, folderPdfFound};
+  }));
+  for(const {source, raw, folderPdfFound} of loaded){
     // JSON geçerli olan her kaynağı listele; PDF cihazda olmasa bile eklenebilir
     // (bundled fasiküllerin PDF'i açılırken klasörden/görüntüleyiciden yüklenir).
-    const raw=bundledSourceCache.get(source.json) || await readBundledJson(source);
     if(!raw && source.id!==editId) continue;
     const cachedPdfFound = cachedKeys.has(`${source.dersId}_${source.id}`)
       || cachedPdfNames.has(normalizePdfFileName(source.pdf));
-    const folderPdfFound = hasFolder ? await hasLocalPdfFile(source.pdf) : false;
     const pdfFound = cachedPdfFound || folderPdfFound;
     // Tip-2 fasiküller (PDF sayfa tabanlı) cihazda PDF olmadan da eklenebilir;
     // PDF, açılırken klasörden/görüntüleyiciden yüklenir. Tip-1 kaynaklar için
@@ -2681,7 +2687,12 @@ async function readBundledJson(source){
   if(location.protocol !== 'file:'){
     try{
       const url = buildGithubRawUrl(source.json);
-      const response = await fetch(url);
+      // Takılan istek tüm listeyi bekletmesin diye 10 sn zaman aşımı
+      const ctrl = new AbortController();
+      const timer = setTimeout(()=>ctrl.abort(), 10000);
+      let response;
+      try{ response = await fetch(url, {signal: ctrl.signal}); }
+      finally{ clearTimeout(timer); }
       if(response.ok) raw = await response.json();
       else {
         // GitHub başarısız olursa eski relative path'i dene
