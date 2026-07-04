@@ -241,8 +241,11 @@ function safeParseCustomGithubSources(){
   }catch(e){ return []; }
 }
 function mergeCustomGithubSources(){
+  const norm = v => String(v||'').normalize('NFC');
   safeParseCustomGithubSources().forEach(source=>{
-    const existingIndex = BUNDLED_FASIKUL_SOURCES.findIndex(s=>s.id===source.id || s.json===source.json);
+    // json'u NFC ile karşılaştır: sabit kaynak NFC, form girdisi NFD olabilir →
+    // aksi halde aynı fasikül iki ayrı kaynak olarak eklenip çift kart oluşturur.
+    const existingIndex = BUNDLED_FASIKUL_SOURCES.findIndex(s=>s.id===source.id || norm(s.json)===norm(source.json));
     if(existingIndex >= 0) BUNDLED_FASIKUL_SOURCES[existingIndex] = {...BUNDLED_FASIKUL_SOURCES[existingIndex], ...source, custom:true};
     else BUNDLED_FASIKUL_SOURCES.push({...source, custom:true});
   });
@@ -265,6 +268,47 @@ function saveCustomGithubSource(source){
   mergeCustomGithubSources();
   return clean;
 }
+// Bir özel (custom) GitHub kaynağını localStorage'dan ve bellekten kaldır.
+// Böylece silinen fasikül sonraki açılışta merge ile geri gelmez.
+function removeCustomGithubSource(fasikulId, jsonFile){
+  const jn = String(jsonFile||'').normalize('NFC');
+  const sources = safeParseCustomGithubSources()
+    .filter(s => s.id!==fasikulId && String(s.json||'').normalize('NFC')!==jn);
+  localStorage.setItem(CUSTOM_GITHUB_FASIKUL_SOURCES_KEY, JSON.stringify(sources));
+  for(let i=BUNDLED_FASIKUL_SOURCES.length-1;i>=0;i--){
+    const s=BUNDLED_FASIKUL_SOURCES[i];
+    if(s.custom && (s.id===fasikulId || String(s.json||'').normalize('NFC')===jn))
+      BUNDLED_FASIKUL_SOURCES.splice(i,1);
+  }
+}
+// Sabit (kod içi) bir fasikülü kalıcı gizlemek için bastırma listesi.
+const DELETED_BUNDLED_IDS_KEY = 'edu_deleted_bundled_ids';
+function getDeletedBundledIds(){
+  try{ return new Set(JSON.parse(localStorage.getItem(DELETED_BUNDLED_IDS_KEY)||'[]')); }
+  catch(e){ return new Set(); }
+}
+function addDeletedBundledId(id){
+  const s=getDeletedBundledIds(); s.add(id);
+  localStorage.setItem(DELETED_BUNDLED_IDS_KEY, JSON.stringify([...s]));
+}
+// Admin: fasikülü kütüphaneden sil (manifest + custom kaynak + gerekiyorsa bastır).
+function deleteFasikul(dersId, fasikulId){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
+  const ders=MANIFEST.dersler.find(d=>d.id===dersId);
+  const fas=ders?.fasikuller.find(f=>f.id===fasikulId);
+  if(!ders||!fas) return;
+  if(!confirm(`"${fas.ad}" fasikülü kütüphaneden silinecek. Emin misiniz?`)) return;
+  const jsonFile=fas.jsonFile;
+  ders.fasikuller = ders.fasikuller.filter(f=>f.id!==fasikulId);
+  removeCustomGithubSource(fasikulId, jsonFile);
+  // Kod içinde sabit tanımlı (custom olmayan) bir kaynaksa geri gelmesin diye bastır.
+  if(BUNDLED_FASIKUL_SOURCES.some(s=>!s.custom && s.id===fasikulId)) addDeletedBundledId(fasikulId);
+  persistManifest();
+  renderFasikulCards(visibleFasikullerFor(ders), ders);
+  renderDerslerGrid();
+  showToast('Fasikül silindi ✓','success');
+}
+window.deleteFasikul = deleteFasikul;
 mergeCustomGithubSources();
 
 // Demo verilerinin orijinal anlık görüntüsü (Demo Verileri açma/kapama ve sıfırlama için)
@@ -744,6 +788,7 @@ function renderFasikulCards(fasikuller, ders){
     card.style.setProperty('--fas-accent', renkCSS);
     const hasKonular = fas.konular && fas.konular.length > 0;
     const isBundled = fas.sourceType === 'bundled';
+    const isAdmin = appState.user?.role === 'admin';
     const jsonPillHtml = hasKonular
       ? `<span class="fasikul-json-pill ok">✓ ${isBundled?'JSON otomatik':'JSON yüklü'}</span>`
       : '';
@@ -761,6 +806,8 @@ function renderFasikulCards(fasikuller, ders){
         </div>
         <button class="fasikul-card-menu-btn" type="button" aria-label="Fasikül seçenekleri" title="Fasikül seçenekleri" onclick="event.stopPropagation();toggleFasikulMenu(this)">⋮</button>
         <div class="fasikul-card-menu">
+          ${isAdmin?`<button onclick="event.stopPropagation();deleteFasikul('${ders.id}','${fas.id}')" style="color:var(--red);font-weight:800">❌ Fasikülü sil (admin)</button>
+          <div class="fasikul-menu-divider"></div>`:''}
           <button onclick="event.stopPropagation();resetFasikulData('${ders.id}','${fas.id}')" style="color:var(--red)">🗑️ Çalışmayı sıfırla</button>
           <div class="fasikul-menu-divider"></div>
           <div class="fasikul-color-label">Kart rengi</div>
@@ -2673,7 +2720,10 @@ function hydrateBundledFasikul(fas,raw,source){
 }
 async function loadBundledFasikuller(){
   let loaded = 0;
+  const deletedIds = getDeletedBundledIds();
+  const norm = v => String(v||'').normalize('NFC');
   for(const source of BUNDLED_FASIKUL_SOURCES){
+    if(deletedIds.has(source.id)) continue; // admin sildi → geri gelmesin
     const raw = await readBundledJson(source);
     if(!raw || !Array.isArray(raw.konular)) continue;
     let ders = MANIFEST.dersler.find(d=>d.id===source.dersId);
@@ -2682,7 +2732,9 @@ async function loadBundledFasikuller(){
       ders = {id:source.dersId,ad:cfg.ad,ikon:cfg.ikon,renk:cfg.renk,progPct:0,fasikuller:[]};
       MANIFEST.dersler.push(ders);
     }
-    let canonical = ders.fasikuller.find(f=>f.id===source.id);
+    // Aynı JSON'a sahip mevcut kaydı yeniden kullan (id farklı olsa bile) —
+    // aksi halde farklı id'li kalıcı kayıt + yeni canonical = çift kart olur.
+    let canonical = ders.fasikuller.find(f=>f.id===source.id || norm(f.jsonFile)===norm(source.json));
     if(!canonical){
       canonical = {id:source.id,progPct:0,sonCalisma:'Henüz çalışılmadı',temaRenk:null};
       ders.fasikuller.push(canonical);
@@ -2693,7 +2745,7 @@ async function loadBundledFasikuller(){
     const copies=[];
     for(const manifestDers of MANIFEST.dersler){
       for(const fas of manifestDers.fasikuller||[]){
-        if(fas.id===source.id || fas.jsonFile===source.json) copies.push(fas);
+        if(fas.id===source.id || norm(fas.jsonFile)===norm(source.json)) copies.push(fas);
       }
     }
     if(!copies.includes(canonical)) copies.push(canonical);
