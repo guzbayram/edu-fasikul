@@ -1,0 +1,544 @@
+{
+  "kitap": {
+    "ad": "MÖF 9. Sınıf Matematik",
+    "yayin": "mikro Orijinal — Mikro Öğreten Fasiküller (MÖF)",
+    "fasikul": "2. Fasikül",
+    "tema": "2. TEMA: NİCELİKLER VE DEĞİŞİMLER",
+    "sinif": 9,
+    "isbn": "978-625-6531-47-5",
+    "pdfAdi": "Möf-9.Sınıf-Matematik-2.Fasikül.pdf",
+    "toplamSayfa": 96,
+    "yazarlar": [
+      "Haldun Kutlu",
+      "Mehmet Emin Biçen",
+      "Hüseyin Çapar",
+      "Atılım Derinpınar"
+    ]
+  },
+  "ozet": {
+    "konuSayisi": 13,
+    "testSayisi": 9,
+    "toplamTestSorusu": 155
+  },
+  "konular": [
+    {
+      "ad": "Hatırlatma Soruları",
+      "sayfa": 5
+    },
+    {
+      "ad": "f(x) = x Biçimindeki Doğrusal Fonksiyonlar",
+      "sayfa": 7
+    },
+    {
+      "ad": "g(x) = a·f(x ± r) ± k Biçimindeki Doğrusal Fonksiyonlar",
+      "sayfa": 9
+    },
+    {
+      "ad": "g(x) = x + b Biçimindeki Doğrusal Fonksiyonlar",
+      "sayfa": 13
+    },
+    {
+      "ad": "Sabit Fonksiyon",
+      "sayfa": 16
+    },
+    {
+      "ad": "g(x) = ax + b Biçimindeki Doğrusal Fonksiyonlar",
+      "sayfa": 17
+    },
+    {
+      "ad": "g(x) = a·(x ± r) ± k Biçimindeki Doğrusal Fonksiyonlar",
+      "sayfa": 22
+    },
+    {
+      "ad": "Parçalı Fonksiyon",
+      "sayfa": 26
+    },
+    {
+      "ad": "g(x) = ±|x| Biçimindeki Mutlak Değer Fonksiyonunun Grafik Temsili ve Nitel Özellikleri",
+      "sayfa": 42
+    },
+    {
+      "ad": "g(x) = ±|ax ± b| Biçimindeki Mutlak Değer Fonksiyonunun Grafik Temsili ve Nitel Özellikleri",
+      "sayfa": 43
+    },
+    {
+      "ad": "f(x) = ±|ax + b| ± c Biçimindeki Mutlak Değer Fonksiyonlarının Grafikleri",
+      "sayfa": 48
+    },
+    {
+      "ad": "Doğrusal Fonksiyonlarla İfade Edilebilen Denklem ve Eşitsizlik İçeren Problemler",
+      "sayfa": 68
+    },
+    {
+      "ad": "Mutlak Değerli Denklem ve Eşitsizlik İçeren Problemler",
+      "sayfa": 78
+    }
+  ],
+  "testler": [
+    {
+      "id": "t1",
+      "ad": "Süreç Değerlendirme Testi 1",
+      "tur": "surec",
+      "ilkSayfa": 33,
+      "sonSayfa": 34,
+      "soruSayisi": 16,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 33,
+          "ilkSoru": 1,
+          "sonSoru": 8
+        },
+        {
+          "sayfa": 34,
+          "ilkSoru": 9,
+          "sonSoru": 16
+        }
+      ],
+      "cevaplar": {
+        "1": "A",
+        "2": "E",
+        "3": "A",
+        "4": "B",
+        "5": "B",
+        "6": "A",
+        "7": "E",
+        "8": "B",
+        "9": "D",
+        "10": "A",
+        "11": "A",
+        "12": "E",
+        "13": "B",
+        "14": "E",
+        "15": "C",
+        "16": "B"
+      },
+      "cevapAnahtariSayfasi": 34
+    },
+    {
+      "id": "t2",
+      "ad": "Süreç Değerlendirme Testi 2",
+      "tur": "surec",
+      "ilkSayfa": 35,
+      "sonSayfa": 36,
+      "soruSayisi": 14,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 35,
+          "ilkSoru": 1,
+          "sonSoru": 7
+        },
+        {
+          "sayfa": 36,
+          "ilkSoru": 8,
+          "sonSoru": 14
+        }
+      ],
+      "cevaplar": {
+        "1": "A",
+        "2": "E",
+        "3": "D",
+        "4": "A",
+        "5": "B",
+        "6": "A",
+        "7": "C",
+        "8": "B",
+        "9": "C",
+        "10": "A",
+        "11": "A",
+        "12": "B",
+        "13": "C",
+        "14": "B"
+      },
+      "cevapAnahtariSayfasi": 36
+    },
+    {
+      "id": "t3",
+      "ad": "Beceri Temelli Tema Testi 3",
+      "tur": "beceri",
+      "ilkSayfa": 37,
+      "sonSayfa": 41,
+      "soruSayisi": 18,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 37,
+          "ilkSoru": 1,
+          "sonSoru": 4
+        },
+        {
+          "sayfa": 38,
+          "ilkSoru": 5,
+          "sonSoru": 8
+        },
+        {
+          "sayfa": 39,
+          "ilkSoru": 9,
+          "sonSoru": 12
+        },
+        {
+          "sayfa": 40,
+          "ilkSoru": 13,
+          "sonSoru": 15
+        },
+        {
+          "sayfa": 41,
+          "ilkSoru": 16,
+          "sonSoru": 18
+        }
+      ],
+      "cevaplar": {
+        "1": "A",
+        "2": "C",
+        "3": "D",
+        "4": "C",
+        "5": "D",
+        "6": "A",
+        "7": "E",
+        "8": "E",
+        "9": "C",
+        "10": "B",
+        "11": "B",
+        "12": "E",
+        "13": "D",
+        "14": "D",
+        "15": "C",
+        "16": "E",
+        "17": "A",
+        "18": "D"
+      },
+      "cevapAnahtariSayfasi": 41
+    },
+    {
+      "id": "t4",
+      "ad": "Süreç Değerlendirme Testi 4",
+      "tur": "surec",
+      "ilkSayfa": 58,
+      "sonSayfa": 59,
+      "soruSayisi": 10,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 58,
+          "ilkSoru": 1,
+          "sonSoru": 5
+        },
+        {
+          "sayfa": 59,
+          "ilkSoru": 6,
+          "sonSoru": 10
+        }
+      ],
+      "cevaplar": {
+        "1": "B",
+        "2": "D",
+        "3": "A",
+        "4": "E",
+        "5": "B",
+        "6": "D",
+        "7": "A",
+        "8": "B",
+        "9": "A",
+        "10": "B"
+      },
+      "cevapAnahtariSayfasi": 59
+    },
+    {
+      "id": "t5",
+      "ad": "Süreç Değerlendirme Testi 5",
+      "tur": "surec",
+      "ilkSayfa": 60,
+      "sonSayfa": 63,
+      "soruSayisi": 17,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 60,
+          "ilkSoru": 1,
+          "sonSoru": 5
+        },
+        {
+          "sayfa": 61,
+          "ilkSoru": 6,
+          "sonSoru": 9
+        },
+        {
+          "sayfa": 62,
+          "ilkSoru": 10,
+          "sonSoru": 13
+        },
+        {
+          "sayfa": 63,
+          "ilkSoru": 14,
+          "sonSoru": 17
+        }
+      ],
+      "cevaplar": {
+        "1": "A",
+        "2": "B",
+        "3": "E",
+        "4": "B",
+        "5": "C",
+        "6": "A",
+        "7": "D",
+        "8": "D",
+        "9": "E",
+        "10": "C",
+        "11": "E",
+        "12": "E",
+        "13": "A",
+        "14": "C",
+        "15": "B",
+        "16": "A",
+        "17": "E"
+      },
+      "cevapAnahtariSayfasi": 63
+    },
+    {
+      "id": "t6",
+      "ad": "Beceri Temelli Tema Testi 6",
+      "tur": "beceri",
+      "ilkSayfa": 64,
+      "sonSayfa": 67,
+      "soruSayisi": 17,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 64,
+          "ilkSoru": 1,
+          "sonSoru": 5
+        },
+        {
+          "sayfa": 65,
+          "ilkSoru": 6,
+          "sonSoru": 9
+        },
+        {
+          "sayfa": 66,
+          "ilkSoru": 10,
+          "sonSoru": 13
+        },
+        {
+          "sayfa": 67,
+          "ilkSoru": 14,
+          "sonSoru": 17
+        }
+      ],
+      "cevaplar": {
+        "1": "D",
+        "2": "E",
+        "3": "E",
+        "4": "A",
+        "5": "A",
+        "6": "A",
+        "7": "A",
+        "8": "A",
+        "9": "A",
+        "10": "B",
+        "11": "A",
+        "12": "C",
+        "13": "A",
+        "14": "B",
+        "15": "A",
+        "16": "E",
+        "17": "E"
+      },
+      "cevapAnahtariSayfasi": 67
+    },
+    {
+      "id": "t7",
+      "ad": "Süreç Değerlendirme Testi 7",
+      "tur": "surec",
+      "ilkSayfa": 81,
+      "sonSayfa": 83,
+      "soruSayisi": 20,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 81,
+          "ilkSoru": 1,
+          "sonSoru": 7
+        },
+        {
+          "sayfa": 82,
+          "ilkSoru": 8,
+          "sonSoru": 14
+        },
+        {
+          "sayfa": 83,
+          "ilkSoru": 15,
+          "sonSoru": 20
+        }
+      ],
+      "cevaplar": {
+        "1": "A",
+        "2": "B",
+        "3": "C",
+        "4": "D",
+        "5": "A",
+        "6": "B",
+        "7": "A",
+        "8": "B",
+        "9": "A",
+        "10": "B",
+        "11": "C",
+        "12": "A",
+        "13": "A",
+        "14": "B",
+        "15": "C",
+        "16": "E",
+        "17": "C",
+        "18": "B",
+        "19": "A",
+        "20": "C"
+      },
+      "cevapAnahtariSayfasi": 83
+    },
+    {
+      "id": "t8",
+      "ad": "Süreç Değerlendirme Testi 8",
+      "tur": "surec",
+      "ilkSayfa": 84,
+      "sonSayfa": 86,
+      "soruSayisi": 20,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 84,
+          "ilkSoru": 1,
+          "sonSoru": 7
+        },
+        {
+          "sayfa": 85,
+          "ilkSoru": 8,
+          "sonSoru": 14
+        },
+        {
+          "sayfa": 86,
+          "ilkSoru": 15,
+          "sonSoru": 20
+        }
+      ],
+      "cevaplar": {
+        "1": "C",
+        "2": "A",
+        "3": "B",
+        "4": "A",
+        "5": "A",
+        "6": "C",
+        "7": "A",
+        "8": "B",
+        "9": "A",
+        "10": "D",
+        "11": "A",
+        "12": "A",
+        "13": "B",
+        "14": "C",
+        "15": "E",
+        "16": "A",
+        "17": "D",
+        "18": "C",
+        "19": "B",
+        "20": "A"
+      },
+      "cevapAnahtariSayfasi": 86
+    },
+    {
+      "id": "t9",
+      "ad": "Beceri Temelli Tema Testi 9",
+      "tur": "beceri",
+      "ilkSayfa": 87,
+      "sonSayfa": 91,
+      "soruSayisi": 23,
+      "sayfaDagilimi": [
+        {
+          "sayfa": 87,
+          "ilkSoru": 1,
+          "sonSoru": 5
+        },
+        {
+          "sayfa": 88,
+          "ilkSoru": 6,
+          "sonSoru": 10
+        },
+        {
+          "sayfa": 89,
+          "ilkSoru": 11,
+          "sonSoru": 15
+        },
+        {
+          "sayfa": 90,
+          "ilkSoru": 16,
+          "sonSoru": 19
+        },
+        {
+          "sayfa": 91,
+          "ilkSoru": 20,
+          "sonSoru": 23
+        }
+      ],
+      "cevaplar": {
+        "1": "A",
+        "2": "A",
+        "3": "C",
+        "4": "A",
+        "5": "A",
+        "6": "C",
+        "7": "A",
+        "8": "A",
+        "9": "A",
+        "10": "D",
+        "11": "A",
+        "12": "A",
+        "13": "C",
+        "14": "B",
+        "15": "A",
+        "16": "E",
+        "17": "B",
+        "18": "C",
+        "19": "E",
+        "20": "A",
+        "21": "E",
+        "22": "B",
+        "23": "E"
+      },
+      "cevapAnahtariSayfasi": 91
+    }
+  ],
+  "cevapKapatma": {
+    "renk": "#ee7d1f",
+    "y0": 0.906,
+    "y1": 0.942,
+    "sayfalar": {
+      "34": {
+        "x0": 0.09,
+        "x1": 0.9
+      },
+      "36": {
+        "x0": 0.09,
+        "x1": 0.8
+      },
+      "41": {
+        "x0": 0.08,
+        "x1": 0.97
+      },
+      "59": {
+        "x0": 0.09,
+        "x1": 0.62
+      },
+      "63": {
+        "x0": 0.08,
+        "x1": 0.94
+      },
+      "67": {
+        "x0": 0.09,
+        "x1": 0.7
+      },
+      "83": {
+        "x0": 0.08,
+        "x1": 0.96
+      },
+      "86": {
+        "x0": 0.08,
+        "x1": 0.96
+      },
+      "91": {
+        "x0": 0.09,
+        "x1": 0.8
+      }
+    }
+  }
+}
