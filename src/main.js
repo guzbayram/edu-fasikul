@@ -230,7 +230,7 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'matematik-destek',dersId:'mat',json:'12-Matematik (Destek)-kart.json',pdf:'12-Matematik (Destek).pdf',type:'video'},
   {id:'mof-10-matematik-5',dersId:'mat',json:'Möf-10.Sınıf-Matematik-5.Fasikül.json',pdf:'Möf-10.Sınıf-Matematik-5.Fasikül.pdf'},
   {id:'mof-9-matematik-1',dersId:'mat',json:'Möf-9.Sınıf-Matematik-1.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-1.Fasikül.pdf',fasikulTip:'tip2'},
-  {id:'mof-9-matematik-2',dersId:'mat',json:'Möf-9.Sınıf-Matematik-2.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-2.Fasikül.pdf',fasikulTip:'tip2'}
+  {id:'mof-9-matematik-2',dersId:'mat',json:'Möf-9.Sınıf-Matematik-2.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-2.Fasikül.pdf'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';
