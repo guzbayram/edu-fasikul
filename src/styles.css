@@ -3096,6 +3096,11 @@ body.reader-locked{overflow:hidden!important}
   border-radius:10px;padding:2px 7px;
 }
 .ana-konu-item.active .anak-chip{background:rgba(129,140,248,0.2);color:var(--mat)}
+/* TOC başlığı (soru yok) — daha soluk, testler öne çıksın */
+.ana-konu-item.ana-konu-topic{opacity:.82}
+.ana-konu-item.ana-konu-topic .anak-name{font-weight:500}
+.ana-konu-item.ana-konu-topic::after{content:''}
+.ana-konu-item.ana-konu-test .anak-name{font-weight:700}
 
 /* Alt panel başlığı (geri butonu + konu adı) */
 .alt-panel-hdr{

@@ -104,7 +104,11 @@ async function openReader(dersId, fasikulId){
   const konular = fasikul.konular || [];
   const lastKonuId = fasikul._lastKonuId;
   const lastAltKonuId = fasikul._lastAltKonuId;
-  let startKonu = (lastKonuId && konular.find(k => k.id === lastKonuId)) || konular[0];
+  const hasSolvable = k => (k?.altKonular||[]).some(ak => ak.ad !== 'Çözümlü Sorular - Çözümler' && (ak.sorular||[]).length);
+  // İlk konu artık soru içermeyen bir TOC başlığı olabilir (topics+tests karışık).
+  // Başlangıçta ilk ÇÖZÜLEBİLİR konuyu (test) seç ki soru paneli açılsın.
+  let startKonu = (lastKonuId && konular.find(k => k.id === lastKonuId && hasSolvable(k)))
+    || konular.find(hasSolvable) || konular[0];
   const visibleAlts = (startKonu?.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler');
   let startAlt = (lastAltKonuId && visibleAlts.find(ak => ak.id === lastAltKonuId)) || visibleAlts[0] || null;
   if(startKonu){
@@ -419,11 +423,18 @@ function buildKonuNav(fasikul){
     // Görünür liste öğesi
     if(list){
       const item = document.createElement('div');
-      item.className = 'ana-konu-item';
       item.id = `anak-${k.id || k.ad}`;
-      const altCount = (k.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler').length;
-      item.innerHTML = `<span class="anak-name">${k.ad}</span>${altCount > 0 ? `<span class="anak-chip">${altCount}</span>` : ''}`;
-      item.onclick = () => selectAnaKonu(k);
+      const solvable = (k.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler' && (ak.sorular||[]).length);
+      if(!solvable.length){
+        // TOC başlığı (soru yok) → tıklayınca ilgili PDF sayfasına git, modalı kapat
+        item.className = 'ana-konu-item ana-konu-topic';
+        item.innerHTML = `<span class="anak-name">📄 ${k.ad}</span>${k.sayfa ? `<span class="anak-chip">s.${k.sayfa}</span>` : ''}`;
+        item.onclick = () => { if(k.sayfa) goToPage(k.sayfa); closeKonuModal(); };
+      } else {
+        item.className = 'ana-konu-item ana-konu-test';
+        item.innerHTML = `<span class="anak-name">📝 ${k.ad}</span><span class="anak-chip">${solvable.reduce((s,ak)=>s+(ak.sorular||[]).length,0)}</span>`;
+        item.onclick = () => selectAnaKonu(k);
+      }
       list.appendChild(item);
     }
   });
