@@ -3840,22 +3840,3 @@ body.reader-locked{overflow:hidden!important}
   }
   #reader-overlay.konu-modal-open .konu-modal-backdrop{top:0!important}
 }
-
-/* ══ TİP-2 GÖMÜLÜ GÖRÜNTÜLEYİCİ (iframe overlay) ══ */
-#tip2-overlay{
-  position:fixed;inset:0;z-index:300;background:var(--bg-0,#0b1020);
-  display:none;flex-direction:column;overflow:hidden;
-}
-#tip2-overlay.open{display:flex}
-#tip2-overlay .tip2-bar{
-  flex:0 0 auto;display:flex;align-items:center;gap:12px;
-  padding:8px 12px;background:#0f172a;color:#e2e8f0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-#tip2-overlay .tip2-close{
-  cursor:pointer;border:none;background:#1e293b;color:#e2e8f0;
-  font-weight:800;font-size:13px;padding:8px 14px;border-radius:10px;
-}
-#tip2-overlay .tip2-close:hover{background:#334155}
-#tip2-overlay .tip2-title{font-weight:800;font-size:13px;opacity:.9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#tip2-overlay #tip2-frame{flex:1 1 auto;width:100%;border:0;background:#fff}

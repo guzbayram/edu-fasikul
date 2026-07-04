@@ -21,18 +21,9 @@ async function openReader(dersId, fasikulId){
     const source=window.BUNDLED_FASIKUL_SOURCES?.find(s=>s.id===fasikul.id || s.json===fasikul.jsonFile);
     if(source){
       const raw=await readBundledJson(source);
-      // Tip-1'de konular, Tip-2'de kitap/testler gelir; her iki durumda da
-      // hydrateBundledFasikul doğru tipe (tip2 için tip2Raw'ı da) kurar.
+      // GitHub kataloğundaki konu/soru hiyerarşisini fasiküle bağla.
       if(raw) hydrateBundledFasikul(fasikul,raw,source);
     }
-  }
-
-  // Tip-2 fasiküller (konu · test · PDF) ayrı tam ekran görüntüleyicide açılır.
-  if(fasikul.fasikulTip==='tip2'){
-    appState.aktifDers = ders;
-    appState.aktifFasikul = fasikul;
-    await window.openTip2Reader?.(ders, fasikul);
-    return;
   }
 
   appState.aktifDers = ders;

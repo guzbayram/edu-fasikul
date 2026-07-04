@@ -164,6 +164,22 @@ function updateCurrentPageFromScroll(){
  * Tek bir PDF sayfasını render eder (lazy)
  */
 
+// Cevap anahtarı maskeleme: bu fasiküllerin PDF'lerinde testlerin son sayfasının
+// altında yatay bir cevap anahtarı şeridi var. Öğrenci görmesin diye o şeridi
+// turuncu opak kutuyla kaplıyoruz. (Sadece aşağıdaki fasikül id'leri için.)
+const CEVAP_MASK_FASIKULLER = new Set(['mof-9-matematik-1', 'mof-9-matematik-2', 'mof-9-matematik-3', 'mof-9-matematik-4']);
+// Oransal band (sayfa genişlik/yüksekliğine göre). Gerekirse ince ayar yapılabilir.
+const CEVAP_MASK_RECT = { x: 0.038, y: 0.902, w: 0.924, h: 0.044 };
+const CEVAP_MASK_RENK = '#f97316';
+
+// pageNum bir testin son (sayfaBitis) sayfasıysa cevap anahtarı maskesini döndür.
+function getCevapMaskRects(pageNum){
+  const fas = appState.aktifFasikul;
+  if(!fas || !CEVAP_MASK_FASIKULLER.has(fas.id) || !Array.isArray(fas.konular)) return [];
+  const testBiter = fas.konular.some(k => k.tur === 'test' && (k.sayfaBitis || k.sayfa) === pageNum);
+  return testBiter ? [CEVAP_MASK_RECT] : [];
+}
+
 async function renderSinglePDFPage(pageNum, pageWrap){
   if(!appState.pdfDoc) return;
   try{
@@ -190,6 +206,18 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     const ctx2d = pdfCanvas.getContext('2d');
     if(!ctx2d) throw new Error('Canvas 2D context alınamadı');
     await page.render({ canvasContext: ctx2d, viewport }).promise;
+
+    // Cevap anahtarını gizle: turuncu opak maske (PDF katmanının üstüne, çizim
+    // katmanının altına bastığımız için öğrenci silemez/taşıyamaz).
+    const cevapMasks = getCevapMaskRects(pageNum);
+    if(cevapMasks.length){
+      ctx2d.save();
+      ctx2d.fillStyle = CEVAP_MASK_RENK;
+      for(const m of cevapMasks){
+        ctx2d.fillRect(m.x * pdfCanvas.width, m.y * pdfCanvas.height, m.w * pdfCanvas.width, m.h * pdfCanvas.height);
+      }
+      ctx2d.restore();
+    }
 
     // Fabric çizim canvas
     const drawEl = document.createElement('canvas');

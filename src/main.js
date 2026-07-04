@@ -230,7 +230,9 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'matematik-destek',dersId:'mat',json:'12-Matematik (Destek)-kart.json',pdf:'12-Matematik (Destek).pdf',type:'video'},
   {id:'mof-10-matematik-5',dersId:'mat',json:'Möf-10.Sınıf-Matematik-5.Fasikül.json',pdf:'Möf-10.Sınıf-Matematik-5.Fasikül.pdf'},
   {id:'mof-9-matematik-1',dersId:'mat',json:'Möf-9.Sınıf-Matematik-1.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-1.Fasikül.pdf'},
-  {id:'mof-9-matematik-2',dersId:'mat',json:'Möf-9.Sınıf-Matematik-2.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-2.Fasikül.pdf'}
+  {id:'mof-9-matematik-2',dersId:'mat',json:'Möf-9.Sınıf-Matematik-2.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-2.Fasikül.pdf'},
+  {id:'mof-9-matematik-3',dersId:'mat',json:'Möf-9.Sınıf-Matematik-3.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-3.Fasikül.pdf'},
+  {id:'mof-9-matematik-4',dersId:'mat',json:'Möf-9.Sınıf-Matematik-4.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-4.Fasikül.pdf'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';
@@ -706,9 +708,11 @@ const FASIKUL_THEME_COLORS = ['#7c73ff','#ec6471','#f59e0b','#22c55e','#14b8a6',
 let draggedFasikulId = null;
 let fasikulWasDragged = false;
 
-function openDrawer(e, dersId){
+function openDrawer(e, dersId, dersObj){
   if(e?.stopPropagation) e.stopPropagation();
-  const ders = MANIFEST.dersler.find(d=>d.id===dersId);
+  // dersObj verilirse onu kullan: çağıran (ör. saveFasikul) fasikülü hangi objeye
+  // eklediyse render de o objeden yapılsın; MANIFEST.find farklı/kopuk obje bulabilir.
+  const ders = dersObj || MANIFEST.dersler.find(d=>d.id===dersId);
   if(!ders) return;
   window.currentDrawerDers = ders;
   document.getElementById('drawerTitle').textContent = `${ders.ikon} ${ders.ad} Fasikülleri`;
@@ -731,6 +735,7 @@ function renderFasikulCards(fasikuller, ders){
     return;
   }
   fasikuller.forEach(fas => {
+   try{
     const card = document.createElement('div');
     card.className='fasikul-card';
     card.dataset.fasikulId=fas.id;
@@ -814,6 +819,11 @@ function renderFasikulCards(fasikuller, ders){
       });
     }
     body.appendChild(card);
+   }catch(err){
+    // Bir kartın render'ı patlarsa forEach durmasın — diğer fasiküller (ve yeni
+    // eklenen) yine görünsün. Kök nedeni görmek için konsola yaz.
+    console.error('Fasikül kartı render hatası:', fas?.id, err);
+   }
   });
 }
 document.addEventListener('click', (e)=>{
@@ -1384,119 +1394,6 @@ async function ensureReaderPdfLoaded(targetPage=1){
   }
 }
 
-// ══════════════════════════════
-// TİP-2 GÖRÜNTÜLEYİCİ (PDF-sayfa tabanlı, Temel_Matematik formatı)
-// ══════════════════════════════
-// Fasikülün PDF'ini ham Blob olarak getir (klasör veya cihaz DB'si).
-async function getFasikulPdfFileBlob(fas, ders){
-  if(appState.eduDirHandle){
-    try{
-      const permission = await appState.eduDirHandle.queryPermission({mode:'read'});
-      if(permission==='granted'){
-        const pdfName = fas.pdfFile || FASIKUL_PDF_MAP[fas.id] || (fas.id + '.pdf');
-        const fh = await findPdfFileHandle(pdfName);
-        return await fh.getFile();
-      }
-    }catch(e){ /* klasörde yoksa DB'ye düş */ }
-  }
-  const dersId = (ders && ders.id) || appState.aktifDers?.id;
-  let cached = dersId ? await getPDFFromDB(dersId, fas.id) : null;
-  if(!cached){
-    const src = BUNDLED_FASIKUL_SOURCES.find(s=>s.id===fas.id);
-    if(src) cached = await getPDFFromDB(src.dersId, fas.id);
-  }
-  return cached?.blob || null;
-}
-
-// Möf-9 (Tip-2) ham şemasını Temel_Matematik görüntüleyicisinin
-// beklediği { title, meta, sections:{hocan,ara,test} } formatına çevir.
-function buildTip2ViewerData(raw){
-  const k = raw.kitap || {};
-  const title = [k.ad, k.fasikul, k.tema].filter(Boolean).join(' · ');
-  const sections = { hocan:[], ara:[], test:[] };
-  // tip2Nav: konu + test öğeleri sayfa sırasına göre birleşik gezinme listesi.
-  // Sol menü bu listeyi düz (kategori grubu olmadan) çizer.
-  const nav = [];
-  (raw.konular||[]).forEach((ko,i)=>{
-    nav.push({ kind:'konu', name:ko.ad || ('Konu '+(i+1)), page:ko.sayfa || null, id:'konu_'+i });
-  });
-  // Testler → hem cevap anahtarı paneli (sections.test) hem de nav öğesi.
-  (raw.testler||[]).forEach((t,i)=>{
-    const correct = {};
-    Object.keys(t.cevaplar||{}).forEach(no=>{ correct[String(no)] = t.cevaplar[no]; });
-    const id = t.id || ('test_'+i);
-    const qc = t.soruSayisi || Object.keys(correct).length;
-    sections.test.push({
-      id, name: t.ad || ('Test '+(i+1)), sub: title,
-      gun:1, type:'mcq', tabType:'test',
-      questionCount: qc, correctAnswers: correct, page: t.ilkSayfa || null
-    });
-    nav.push({ kind:'test', name: t.ad || ('Test '+(i+1)), page: t.ilkSayfa || null, id, questionCount: qc });
-  });
-  nav.sort((a,b)=>(a.page||99999)-(b.page||99999));
-  return { title, meta:{ title }, sections, tip2Nav:nav };
-}
-
-// Tip-2 fasikülü tam ekran iframe görüntüleyicide aç; PDF + adapte JSON'ı
-// görüntüleyici hazır olduğunda postMessage ile gönder.
-async function openTip2Reader(ders, fasikul){
-  const raw = fasikul.tip2Raw;
-  if(!raw){ showToast('Tip-2 fasikül verisi yüklenemedi','error'); return; }
-  const overlay = document.getElementById('tip2-overlay');
-  const frame = document.getElementById('tip2-frame');
-  if(!overlay || !frame){ showToast('Tip-2 görüntüleyici bulunamadı','error'); return; }
-  const titleEl = document.getElementById('tip2Title');
-  if(titleEl) titleEl.textContent = fasikul.ad || 'Fasikül';
-
-  const json = buildTip2ViewerData(raw);
-  const blob = await getFasikulPdfFileBlob(fasikul, ders);
-  let pdfBuf = null;
-  if(blob){ try{ pdfBuf = await blob.arrayBuffer(); }catch(e){} }
-
-  let sent = false;
-  function send(){
-    if(sent) return; sent = true;
-    const payload = { type:'TIP2_BOOT', json };
-    if(pdfBuf) payload.pdf = pdfBuf;
-    try{
-      frame.contentWindow.postMessage(payload, '*', pdfBuf ? [pdfBuf] : []);
-    }catch(e){
-      try{ frame.contentWindow.postMessage(payload, '*'); }catch(e2){}
-    }
-  }
-  function onMsg(ev){
-    if(ev.data && ev.data.type==='TIP2_READY'){
-      send();
-      window.removeEventListener('message', onMsg);
-    }
-  }
-  window.addEventListener('message', onMsg);
-
-  const base = (import.meta.env && import.meta.env.BASE_URL) || '/';
-  frame.src = base + 'tip2-viewer.html?ts=' + Date.now();
-  overlay.classList.add('open');
-  document.body.classList.add('reader-locked');
-  // READY gelmezse (ör. mesaj kaçtıysa) yedek gönderim
-  setTimeout(send, 2000);
-  if(!blob){
-    showToast('PDF bulunamadı — Profil sayfasından PDF klasörünü seçin. Konu/test verileri yine de görünür.','info');
-  }
-}
-function closeTip2Reader(){
-  const overlay = document.getElementById('tip2-overlay');
-  const frame = document.getElementById('tip2-frame');
-  if(frame) frame.src = 'about:blank';
-  if(overlay) overlay.classList.remove('open');
-  document.body.classList.remove('reader-locked');
-}
-window.openTip2Reader = openTip2Reader;
-window.closeTip2Reader = closeTip2Reader;
-window.buildTip2ViewerData = buildTip2ViewerData;
-// Görüntüleyicideki "🏠 Anasayfa" butonu iframe'den 'closeFrame' mesajı yollar;
-// burada yakalayıp tam ekran tip-2 katmanını kapatıyoruz.
-window.addEventListener('message', function(ev){
-  if(ev.data==='closeFrame' || ev.data?.type==='closeFrame') closeTip2Reader();
-});
 
 function findHataliContext(h){
   const wantedKeys = [h.soruKey, h.uid, h.soruNo].filter(v=>v!==undefined && v!==null).map(v=>String(v));
@@ -1725,7 +1622,7 @@ async function addProfileGithubJsonFasikul(){
     return;
   }
   const source = { id, dersId, json, pdf, custom:true };
-  if(tipSel==='tip1' || tipSel==='tip2') source.fasikulTip = tipSel;
+  if(tipSel==='tip1') source.fasikulTip = tipSel;
   setProfileGithubJsonStatus('GitHub JSON okunuyor ve format kontrol ediliyor...', 'loading');
   try{
     bundledSourceCache.delete(json);
@@ -1736,7 +1633,7 @@ async function addProfileGithubJsonFasikul(){
       return;
     }
     // Otomatik seçiliyse şemadan algıla; kaynağa yaz ki sonraki açılışlarda sabit kalsın.
-    if(!source.fasikulTip) source.fasikulTip = detectFasikulTip(raw);
+    if(!source.fasikulTip) source.fasikulTip = 'tip1';
     const savedSource = saveCustomGithubSource(source);
     let ders = MANIFEST.dersler.find(d=>d.id===dersId);
     if(!ders){
@@ -1971,39 +1868,7 @@ function bundledSinif(value){
   if(Number.isFinite(n)) return n;
   return String(value||'').toUpperCase().includes('LGS') ? 8 : 12;
 }
-// Fasikül tipini şemadan otomatik algıla.
-// Tip-2 (konu · test · PDF): kitap + testler alanları var, konular düz (altKonular yok).
-// Tip-1 (kart kart): konular içinde altKonular/sorular hiyerarşisi var.
-function detectFasikulTip(raw){
-  if(raw && raw.kitap && Array.isArray(raw.testler)) return 'tip2';
-  return 'tip1';
-}
-function resolveFasikulTip(raw, source){
-  const explicit = source?.fasikulTip;
-  if(explicit==='tip1' || explicit==='tip2') return explicit;
-  return detectFasikulTip(raw);
-}
-// Tip-2 hydrate: ağır soru/kart yerine PDF-sayfa tabanlı meta + ham veri saklanır.
-// Görüntüleyici (tip2-viewer) bu ham veriyi adaptörden geçirip kullanır.
-function hydrateTip2Fasikul(fas,raw,source){
-  const k = raw.kitap || {};
-  const o = raw.ozet || {};
-  fas.ad = fas.ad || [k.ad, k.fasikul].filter(Boolean).join(' ') || raw.ad || source.id;
-  fas.thumb = fas.thumb || '📘';
-  fas.thumbBg = fas.thumbBg || 'linear-gradient(135deg,#0f766e,#134e4a)';
-  fas.sinif = fas.sinif || bundledSinif(k.sinif ?? raw.sinif);
-  fas.konular = [];                       // Tip-1 nav'ı devre dışı bırak
-  fas.konuSayisi = o.konuSayisi || (raw.konular||[]).length;
-  fas.soruSayisi = o.toplamTestSorusu || 0;
-  fas.jsonFile = source.json;
-  fas.pdfFile = source.pdf;
-  fas.sourceType = 'bundled';
-  fas.fasikulTip = 'tip2';
-  fas.tip2Raw = raw;                        // adaptör + görüntüleyici için ham veri
-  return fas;
-}
 function hydrateBundledFasikul(fas,raw,source){
-  if(resolveFasikulTip(raw, source)==='tip2') return hydrateTip2Fasikul(fas,raw,source);
   const konular=normalizeFasikulKonular(raw.konular||[]);
   fas.fasikulTip = 'tip1';
   fas.ad = fas.ad || raw.ad || source.id;
