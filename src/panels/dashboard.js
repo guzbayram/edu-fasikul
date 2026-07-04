@@ -659,8 +659,9 @@ async function openFasikulModal(fasikulId){
   document.getElementById('fasikulSinifInput').value = '10';
   document.getElementById('fasikulSoruInput').value = '0';
   document.getElementById('fasikulThumbInput').value = '';
-  document.getElementById('fasikulSinifInput').readOnly = true;
-  document.getElementById('fasikulSoruInput').readOnly = true;
+  // Sınıf/soru kaynak seçilince otomatik dolar ama elle değiştirilebilsin.
+  document.getElementById('fasikulSinifInput').readOnly = false;
+  document.getElementById('fasikulSoruInput').readOnly = false;
   await populateFasikulSourceSelect(fasikulId);
   silBtn.style.display = 'none';
   document.getElementById('fasikulModalTitle').textContent = '📚 Fasikül Ekle';
@@ -693,8 +694,10 @@ async function populateFasikulSourceSelect(editId=''){
   const hint=document.getElementById('fasikulSourceHint');
   if(!select) return;
   select.disabled=false;
-  select.innerHTML='<option value="">JSON + PDF eşleşmesi seçin</option>';
+  select.innerHTML='<option value="">Fasikül kaynağı seçin</option>';
   let availableCount=0;
+  let noPdfCount=0;
+  const isTip2Raw = r => !!(r && r.kitap && Array.isArray(r.testler));
   const permission = appState.eduDirHandle ? await appState.eduDirHandle.queryPermission({mode:'read'}).catch(()=>null) : null;
   const hasFolder = !!appState.eduDirHandle && permission==='granted';
   const cachedKeys = await getCachedPDFKeys();
@@ -702,54 +705,66 @@ async function populateFasikulSourceSelect(editId=''){
   // Anahtar, fasikül başka bir derse eklenince değişebilir. Bu nedenle iPad'de
   // asıl eşleşmeyi kaydedilen File.name üzerinden yap.
   const cachedPdfNames = new Set(cachedRecords.map(r=>normalizePdfFileName(r?.name || r?.blob?.name)));
-  if(!hasFolder && cachedKeys.size===0 && cachedPdfNames.size===0){
-    select.disabled=true;
-    if(hint) hint.innerHTML='Önce profil sayfasından PDF dosyalarınızı seçin. GitHub JSON adresi uygulama tarafından otomatik kullanılır.';
-    return;
-  }
-  for(const source of window.BUNDLED_FASIKUL_SOURCES){
+  // Tüm JSON'ları PARALEL yükle — sırayla 20+ kaynağı çekmek dropdown'ı takıyordu.
+  const loaded = await Promise.all(window.BUNDLED_FASIKUL_SOURCES.map(async source=>{
+    let raw=bundledSourceCache.get(source.json);
+    if(!raw){ try{ raw=await readBundledJson(source); }catch(e){ raw=null; } }
+    const folderPdfFound = hasFolder ? await hasLocalPdfFile(source.pdf).catch(()=>false) : false;
+    return {source, raw, folderPdfFound};
+  }));
+  for(const {source, raw, folderPdfFound} of loaded){
+    if(!raw && source.id!==editId) continue;
     const cachedPdfFound = cachedKeys.has(`${source.dersId}_${source.id}`)
       || cachedPdfNames.has(normalizePdfFileName(source.pdf));
-    const folderPdfFound = hasFolder ? await hasLocalPdfFile(source.pdf) : false;
     const pdfFound = cachedPdfFound || folderPdfFound;
-    if(!pdfFound && source.id!==editId) continue;
-    const raw=bundledSourceCache.get(source.json) || await readBundledJson(source);
-    if(!raw && source.id!==editId) continue;
+    // Tip-2 fasiküller (PDF sayfa tabanlı) cihazda PDF olmadan da eklenebilir.
+    const isTip2 = source.fasikulTip==='tip2' || isTip2Raw(raw);
+    if(!pdfFound && !isTip2 && source.id!==editId) continue;
+    if(!pdfFound) noPdfCount++;
     const dersAd=window.MANIFEST.dersler.find(d=>d.id===source.dersId)?.ad || source.dersId;
     const option=document.createElement('option');
     option.value=source.id;
-    option.textContent=`${raw?.ad || source.json.replace(/\.json$/,'')} · ${dersAd}`;
+    option.textContent=`${raw?.ad || source.json.replace(/\.json$/,'')} · ${dersAd}${pdfFound?'':' · PDF yok'}`;
     availableCount++;
     select.appendChild(option);
   }
   if(hint){
     hint.textContent = availableCount
-      ? `${availableCount} GitHub JSON + PDF eşleşmesi bulundu. Bilgiler seçiminizle otomatik doldurulur.`
-      : 'Bu cihazdaki PDF adlarıyla eşleşen GitHub JSON fasikülü bulunamadı.';
+      ? (noPdfCount
+          ? `${availableCount} fasikül kaynağı bulundu (${noPdfCount} tanesinin PDF'i bu cihazda yok — yine de eklenebilir).`
+          : `${availableCount} fasikül kaynağı bulundu. Bilgiler seçiminizle otomatik doldurulur.`)
+      : 'Eklenebilecek GitHub JSON fasikülü bulunamadı.';
   }
   select.disabled = availableCount===0 && !editId;
 }
-function applyBundledSourceToForm(sourceId,fillValues=true){
+async function applyBundledSourceToForm(sourceId,fillValues=true){
   const source=window.BUNDLED_FASIKUL_SOURCES.find(s=>s.id===sourceId);
   const hint=document.getElementById('fasikulSourceHint');
   const sinif=document.getElementById('fasikulSinifInput');
   const soru=document.getElementById('fasikulSoruInput');
   if(!source){
-    if(hint) hint.textContent='Fasikül eklemek için JSON + PDF eşleşmesi seçin.';
-    if(sinif) sinif.readOnly=true;
-    if(soru) soru.readOnly=true;
+    if(hint) hint.textContent='Fasikül eklemek için bir kaynak seçin.';
+    if(sinif) sinif.readOnly=false;
+    if(soru) soru.readOnly=false;
     return;
   }
-  const raw=bundledSourceCache.get(source.json);
+  // Cache'de yoksa JSON'ı burada yükle — otomatik doldurma cache zamanlamasına takılmasın.
+  let raw=bundledSourceCache.get(source.json);
+  if(!raw){ try{ raw=await readBundledJson(source); }catch(e){} }
   if(fillValues && raw){
-    document.getElementById('fasikulAdInput').value=raw.ad||'';
-    sinif.value=bundledSinif(raw.sinif);
-    soru.value=raw.soruSayisi||raw.toplamSoru||0;
-    document.getElementById('fasikulThumbInput').value=raw.thumb||'📄';
+    // Tip-2'de ad/sinif/soru üst düzeyde değil kitap+ozet içinde gelir.
+    const isTip2=!!(raw.kitap && Array.isArray(raw.testler));
+    const k=raw.kitap||{};
+    const tip2Ad=[k.ad,k.fasikul].filter(Boolean).join(' ');
+    document.getElementById('fasikulAdInput').value=raw.ad||(isTip2?tip2Ad:'')||source.json.replace(/\.json$/,'');
+    sinif.value=bundledSinif(raw.sinif ?? k.sinif);
+    soru.value=raw.soruSayisi||raw.toplamSoru||raw.ozet?.toplamTestSorusu||0;
+    document.getElementById('fasikulThumbInput').value=raw.thumb||(isTip2?'📘':'📄');
   }
-  sinif.readOnly=true;
-  soru.readOnly=true;
-  if(hint) hint.innerHTML=`GitHub JSON: <b>${source.json}</b><br>Bu cihazdaki PDF: <b>${source.pdf}</b>`;
+  // Otomatik dolduruldu ama kullanıcı elle değiştirebilsin.
+  sinif.readOnly=false;
+  soru.readOnly=false;
+  if(hint) hint.innerHTML=`GitHub JSON: <b>${source.json}</b><br>PDF: <b>${source.pdf}</b> <span style="opacity:.7">(cihazda yoksa açılırken yüklenir)</span>`;
 }
 function closeFasikulModal(){
   document.getElementById('fasikulModal').classList.remove('open');
@@ -773,50 +788,68 @@ function saveFasikul(){
   if(!window.currentDrawerDers) window.currentDrawerDers = ders; // sonraki render'lar doğru dersi hedeflesin
   if(!editId && !source){ showToast('Fasikül eklemek için GitHub JSON kaynağı seçin','error'); return; }
   if(!ad){ showToast('Fasikül adı gerekli','error'); return; }
+  // Daha önce silinip bastırılmış bir bundled fasikül yeniden ekleniyorsa bastırmayı kaldır
+  // (yoksa loadBundledFasikuller onu bir daha yüklemez, sayaçlar 0 kalır).
+  if(source){ try{ const K='edu_deleted_bundled_ids'; const s=new Set(JSON.parse(localStorage.getItem(K)||'[]')); if(s.delete(source.id)) localStorage.setItem(K, JSON.stringify([...s])); }catch(e){} }
+  // Fasikül tipini JSON'dan otomatik belirle (Tip-2: kitap + testler var).
+  const detectedTip = source ? (source.fasikulTip || (sourceRaw && sourceRaw.kitap && Array.isArray(sourceRaw.testler) ? 'tip2' : 'tip1')) : '';
+  const isTip2 = detectedTip==='tip2';
+  const tip2SoruSayisi = isTip2 ? (sourceRaw?.ozet?.toplamTestSorusu || soruSayisi) : soruSayisi;
+  const tip2KonuSayisi = isTip2 ? (sourceRaw?.ozet?.konuSayisi || 0) : 0;
   const thumbBgMap = {'var(--mat)':'linear-gradient(135deg,#312e81,#1e1b4b)','var(--fiz)':'linear-gradient(135deg,#164e63,#0c4a6e)','var(--kim)':'linear-gradient(135deg,#064e3b,#052e16)','var(--bio)':'linear-gradient(135deg,#431407,#450a0a)','var(--tar)':'linear-gradient(135deg,#500724,#2d1657)','var(--edb)':'linear-gradient(135deg,#2e1065,#1a0533)'};
   const thumbBg = thumbBgMap[ders.renk] || 'linear-gradient(135deg,#312e81,#1e1b4b)';
   if(editId){
     const fas = ders.fasikuller.find(f=>f.id===editId);
     if(fas){
       fas.ad=ad; fas.sinif=sinif; fas.soruSayisi=soruSayisi; fas.thumb=thumb; fas.thumbBg=thumbBg; fas.konuSayisi=fas.konular?.length||0;
-      if(source){ fas.jsonFile=source.json;fas.pdfFile=source.pdf;fas.sourceType='bundled'; }
+      if(source){ fas.jsonFile=source.json;fas.pdfFile=source.pdf;fas.sourceType='bundled';
+        if(detectedTip){ fas.fasikulTip=detectedTip; }
+        if(isTip2){ fas.soruSayisi=tip2SoruSayisi; fas.konuSayisi=tip2KonuSayisi; fas.tip2Raw=sourceRaw; } }
     }
     showToast(`${ad} güncellendi ✓`,'success');
   } else {
     const existing = source ? ders.fasikuller.find(f=>f.id===source.id) : null;
     if(existing){
-      const konular = sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular) : (existing.konular||[]);
+      const konular = isTip2 ? [] : (sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular) : (existing.konular||[]));
       existing.ad=ad;
       existing.thumb=thumb;
       existing.thumbBg=thumbBg;
       existing.sinif=sinif;
-      existing.konuSayisi=konular.length;
-      existing.soruSayisi=soruSayisi;
+      existing.konuSayisi=isTip2 ? tip2KonuSayisi : konular.length;
+      existing.soruSayisi=isTip2 ? tip2SoruSayisi : soruSayisi;
       existing.konular=konular;
       existing.jsonFile=source.json;
       existing.pdfFile=source.pdf;
       existing.sourceType='bundled';
+      if(detectedTip){ existing.fasikulTip=detectedTip; }
+      if(isTip2){ existing.tip2Raw=sourceRaw; }
       persistKonular(ders.id,existing.id,konular).catch(()=>{});
       showToast(`${ad} zaten vardı, bilgiler yenilendi ✓`,'success');
       persistManifest();
-      renderFasikulCards(ders.fasikuller, ders);
       renderDerslerGrid();
       closeFasikulModal();
+      openDrawer(null, ders.id);
       return;
     }
     const newId = source?.id || ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
-    const konular = sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular) : [];
+    const konular = isTip2 ? [] : (sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular) : []);
     ders.fasikuller.push({
-      id:newId,ad,thumb,thumbBg,sinif,konuSayisi:konular.length,soruSayisi,progPct:0,sonCalisma:'Yeni eklendi',konular,
-      jsonFile:source?.json||null,pdfFile:source?.pdf||null,sourceType:source?'bundled':null
+      id:newId,ad,thumb,thumbBg,sinif,
+      konuSayisi:isTip2 ? tip2KonuSayisi : konular.length,
+      soruSayisi:isTip2 ? tip2SoruSayisi : soruSayisi,
+      progPct:0,sonCalisma:'Yeni eklendi',konular,
+      jsonFile:source?.json||null,pdfFile:source?.pdf||null,sourceType:source?'bundled':null,
+      ...(detectedTip?{fasikulTip:detectedTip}:{}),
+      ...(isTip2?{tip2Raw:sourceRaw}:{})
     });
     if(source) persistKonular(ders.id,newId,konular).catch(()=>{});
     showToast(`${ad} eklendi ✓`,'success');
   }
   persistManifest();
-  renderFasikulCards(ders.fasikuller, ders);
   renderDerslerGrid();
   closeFasikulModal();
+  // Modalı kapat + dersin fasikül panelini aç, eklenen fasikül görünsün.
+  openDrawer(null, ders.id);
 }
 function silFasikul(){
   if(!window.currentDrawerDers) return;
