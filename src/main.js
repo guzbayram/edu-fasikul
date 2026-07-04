@@ -2046,11 +2046,14 @@ function applyBundledSourceToForm(sourceId,fillValues=true){
   }
   const raw=bundledSourceCache.get(source.json);
   if(fillValues && raw){
-    document.getElementById('fasikulAdInput').value=raw.ad||'';
-    sinif.value=bundledSinif(raw.sinif);
-    // Tip-2'de soru sayısı ozet'ten gelir (raw.soruSayisi yok)
+    // Tip-2'de ad/sinif/soru üst düzeyde değil kitap+ozet içinde gelir.
+    const isTip2=detectFasikulTip(raw)==='tip2';
+    const k=raw.kitap||{};
+    const tip2Ad=[k.ad,k.fasikul].filter(Boolean).join(' ');
+    document.getElementById('fasikulAdInput').value=raw.ad||(isTip2?tip2Ad:'')||source.json.replace(/\.json$/,'');
+    sinif.value=bundledSinif(raw.sinif ?? k.sinif);
     soru.value=raw.soruSayisi||raw.toplamSoru||raw.ozet?.toplamTestSorusu||0;
-    document.getElementById('fasikulThumbInput').value=raw.thumb||'📄';
+    document.getElementById('fasikulThumbInput').value=raw.thumb||(isTip2?'📘':'📄');
   }
   // Otomatik dolduruldu ama kullanıcı elle değiştirebilsin
   sinif.readOnly=false;
