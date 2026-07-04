@@ -2093,9 +2093,9 @@ function saveFasikul(){
       persistKonular(window.currentDrawerDers.id,existing.id,konular).catch(()=>{});
       showToast(`${ad} zaten vardı, bilgiler yenilendi ✓`,'success');
       persistManifest();
-      renderFasikulCards(window.currentDrawerDers.fasikuller, window.currentDrawerDers);
       renderDerslerGrid();
       closeFasikulModal();
+      openDrawer(null, window.currentDrawerDers.id);
       return;
     }
     const newId = source?.id || ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
@@ -2113,9 +2113,11 @@ function saveFasikul(){
     showToast(`${ad} eklendi ✓`,'success');
   }
   persistManifest();
-  renderFasikulCards(window.currentDrawerDers.fasikuller, window.currentDrawerDers);
   renderDerslerGrid();
   closeFasikulModal();
+  // Modalı kapat ve dersin fasikülleri panelini (drawer) yeniden aç/göster,
+  // eklenen fasikül listede görünsün.
+  openDrawer(null, window.currentDrawerDers.id);
 }
 function silFasikul(){
   if(!window.currentDrawerDers) return;
@@ -2814,7 +2816,8 @@ function buildManifestMeta(){
       id:f.id, ad:f.ad, thumb:f.thumb, thumbBg:f.thumbBg,
       sinif:f.sinif, konuSayisi:f.konuSayisi, soruSayisi:f.soruSayisi,
       progPct:f.progPct, sonCalisma:f.sonCalisma, temaRenk:f.temaRenk||null,
-      jsonFile:f.jsonFile||null, pdfFile:f.pdfFile||null, sourceType:f.sourceType||null
+      jsonFile:f.jsonFile||null, pdfFile:f.pdfFile||null, sourceType:f.sourceType||null,
+      fasikulTip:f.fasikulTip||null
     }))
   }));
 }
@@ -2833,7 +2836,7 @@ function loadManifestMeta(){
         existing.ad=sd.ad; existing.ikon=sd.ikon; existing.renk=sd.renk; existing.progPct=sd.progPct;
         sd.fasikuller.forEach(sf=>{
           const ef = existing.fasikuller.find(f=>f.id===sf.id);
-          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; ef.jsonFile=sf.jsonFile||null; ef.pdfFile=sf.pdfFile||null; ef.sourceType=sf.sourceType||null; }
+          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; ef.jsonFile=sf.jsonFile||null; ef.pdfFile=sf.pdfFile||null; ef.sourceType=sf.sourceType||null; if(sf.fasikulTip) ef.fasikulTip=sf.fasikulTip; }
           else { existing.fasikuller.push({...sf, konular:[]}); }
         });
         const savedOrder=sd.fasikuller.map(sf=>sf.id);

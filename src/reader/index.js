@@ -21,7 +21,9 @@ async function openReader(dersId, fasikulId){
     const source=window.BUNDLED_FASIKUL_SOURCES?.find(s=>s.id===fasikul.id || s.json===fasikul.jsonFile);
     if(source){
       const raw=await readBundledJson(source);
-      if(raw?.konular) hydrateBundledFasikul(fasikul,raw,source);
+      // Tip-1'de konular, Tip-2'de kitap/testler gelir; her iki durumda da
+      // hydrateBundledFasikul doğru tipe (tip2 için tip2Raw'ı da) kurar.
+      if(raw) hydrateBundledFasikul(fasikul,raw,source);
     }
   }
 
