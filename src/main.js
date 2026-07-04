@@ -1680,6 +1680,11 @@ function closeTip2Reader(){
 window.openTip2Reader = openTip2Reader;
 window.closeTip2Reader = closeTip2Reader;
 window.buildTip2ViewerData = buildTip2ViewerData;
+// Görüntüleyicideki "🏠 Anasayfa" butonu iframe'den 'closeFrame' mesajı yollar;
+// burada yakalayıp tam ekran tip-2 katmanını kapatıyoruz.
+window.addEventListener('message', function(ev){
+  if(ev.data==='closeFrame' || ev.data?.type==='closeFrame') closeTip2Reader();
+});
 
 function findHataliContext(h){
   const wantedKeys = [h.soruKey, h.uid, h.soruNo].filter(v=>v!==undefined && v!==null).map(v=>String(v));
@@ -1959,8 +1964,9 @@ async function openFasikulModal(fasikulId){
   document.getElementById('fasikulSinifInput').value = '10';
   document.getElementById('fasikulSoruInput').value = '0';
   document.getElementById('fasikulThumbInput').value = '';
-  document.getElementById('fasikulSinifInput').readOnly = true;
-  document.getElementById('fasikulSoruInput').readOnly = true;
+  // Sınıf ve soru sayısı kaynak seçilince otomatik dolar ama kullanıcı elle değiştirebilsin.
+  document.getElementById('fasikulSinifInput').readOnly = false;
+  document.getElementById('fasikulSoruInput').readOnly = false;
   await populateFasikulSourceSelect(fasikulId);
   silBtn.style.display = 'none';
   document.getElementById('fasikulModalTitle').textContent = '📚 Fasikül Ekle';
@@ -2034,19 +2040,21 @@ function applyBundledSourceToForm(sourceId,fillValues=true){
   const soru=document.getElementById('fasikulSoruInput');
   if(!source){
     if(hint) hint.textContent='Fasikül eklemek için JSON + PDF eşleşmesi seçin.';
-    if(sinif) sinif.readOnly=true;
-    if(soru) soru.readOnly=true;
+    if(sinif) sinif.readOnly=false;
+    if(soru) soru.readOnly=false;
     return;
   }
   const raw=bundledSourceCache.get(source.json);
   if(fillValues && raw){
     document.getElementById('fasikulAdInput').value=raw.ad||'';
     sinif.value=bundledSinif(raw.sinif);
-    soru.value=raw.soruSayisi||raw.toplamSoru||0;
+    // Tip-2'de soru sayısı ozet'ten gelir (raw.soruSayisi yok)
+    soru.value=raw.soruSayisi||raw.toplamSoru||raw.ozet?.toplamTestSorusu||0;
     document.getElementById('fasikulThumbInput').value=raw.thumb||'📄';
   }
-  sinif.readOnly=true;
-  soru.readOnly=true;
+  // Otomatik dolduruldu ama kullanıcı elle değiştirebilsin
+  sinif.readOnly=false;
+  soru.readOnly=false;
   if(hint) hint.innerHTML=`GitHub JSON: <b>${source.json}</b><br>PDF: <b>${source.pdf}</b> <span style="opacity:.7">(cihazda yoksa açılırken klasörden/görüntüleyiciden yüklenir)</span>`;
 }
 function closeFasikulModal(){
