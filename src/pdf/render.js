@@ -178,9 +178,10 @@ const CEVAP_MASK_CONFIG = {
   // Yarıçap TYT Problemler: cevap daireleri birçok sayfanın sağ-altında; her sayfada kapat.
   'yaricap-tyt-problemler': {
     rects: [
-      { x: 0.54, y: 0.872, w: 0.42, h: 0.062 },
+      { x: 0.54, y: 0.897, w: 0.42, h: 0.037 },
     ],
-    herSayfa: true,
+    yalnizCevapSayfasi: true,
+    cevapSayfalari: [45, 47],
   },
 };
 
@@ -191,6 +192,17 @@ function getCevapMaskRects(pageNum){
   if(!cfg || !Array.isArray(fas.konular)) return [];
   const rects = cfg.rects || (cfg.rect ? [cfg.rect] : []);
   if(cfg.herSayfa) return rects;
+  if(Array.isArray(cfg.cevapSayfalari) && cfg.cevapSayfalari.includes(pageNum)) return rects;
+  if(cfg.yalnizCevapSayfasi){
+    const bolumCevabiVar = fas.konular.some(k => (k.altKonular || []).some(ak =>
+      String(ak.id || '').startsWith('bp-page-') &&
+      (ak.sayfa || ak.sayfaBitis) === pageNum
+    ));
+    const testBuSayfadaBiter = fas.konular.some(k =>
+      k.tur === 'test' && (k.sayfaBitis || k.sayfa) === pageNum
+    );
+    return bolumCevabiVar || testBuSayfadaBiter ? rects : [];
+  }
   const testBiter = fas.konular.some(k => k.tur === 'test' && (k.sayfaBitis || k.sayfa) === pageNum);
   return testBiter ? rects : [];
 }
@@ -302,15 +314,17 @@ function getReaderFitScale(page, wrap){
   const viewportW = Math.max(280, (rawW > 0 ? rawW : window.innerWidth) - padX - 2);
   const natural = page.getViewport({scale: 1});
   const base = viewportW / natural.width;
-  // Tam ekran (solve) modu: kartı kalan alana CONTAIN sığdır → olabildiğince büyük ve
-  // tamamı görünür, ortalanır (genişlik VE yüksekliğin küçük olanına göre).
+  // Tam ekran (solve) modu: kartı kalan alana COVER doldur → gri boşluk kalmaz,
+  // sayfa her yönde ekranı doldurur (genişlik VE yüksekliğin BÜYÜK olanına göre).
+  // Sayfanın oranı kutununkinden farklıysa bir kenarı ekran dışına taşabilir —
+  // ortalanır (align/justify-content:center) ve pan/scroll ile ulaşılır.
   const ov = document.getElementById('reader-overlay');
   if(ov?.classList.contains('solve-mode')){
     const padY = styles ? parseFloat(styles.paddingTop || 0) + parseFloat(styles.paddingBottom || 0) : 0;
     const rawH = container?.clientHeight || 0;
     const viewportH = Math.max(280, (rawH > 0 ? rawH : window.innerHeight) - padY - 2);
     const baseH = viewportH / natural.height;
-    return Math.max(0.35, Math.min(base, baseH) * zoomScale);
+    return Math.max(0.35, Math.max(base, baseH) * zoomScale);
   }
   // Normal: genişliğe sığdır (fill-width)
   return Math.max(0.35, base * zoomScale);
