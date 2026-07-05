@@ -1683,6 +1683,18 @@ function slugifyId(text, fallback='item'){
 function derivePdfNameFromJson(jsonName){
   return String(jsonName || '').replace(/\.json$/i, '.pdf');
 }
+function normalizeGithubJsonFileName(value){
+  const name = String(value || '').trim().normalize('NFC');
+  if(!name) return '';
+  if(/\.json$/i.test(name)) return name;
+  if(/\.js$/i.test(name)) return name.replace(/\.js$/i, '.json');
+  return `${name.replace(/\.+$/,'')}.json`;
+}
+function normalizeGithubPdfFileName(value, jsonName){
+  const name = String(value || '').trim().normalize('NFC');
+  if(/\.pdf$/i.test(name)) return name;
+  return derivePdfNameFromJson(jsonName);
+}
 function ensureGithubSourceId(jsonName, fallback='fasikul'){
   return slugifyId(String(jsonName || '').replace(/\.json$/i, ''), fallback);
 }
@@ -1721,9 +1733,11 @@ async function addProfileGithubJsonFasikul(){
   const jsonInput = document.getElementById('profileGithubJsonFile');
   const pdfInput = document.getElementById('profileGithubPdfFile');
   const idInput = document.getElementById('profileGithubSourceId');
-  const json = (jsonInput?.value || '').trim().normalize('NFC');
-  const pdf = ((pdfInput?.value || '').trim() || derivePdfNameFromJson(json)).normalize('NFC');
+  const json = normalizeGithubJsonFileName(jsonInput?.value || '');
+  const pdf = normalizeGithubPdfFileName(pdfInput?.value || '', json);
   const id = ensureGithubSourceId((idInput?.value || '').trim() || json, 'github-fasikul');
+  if(jsonInput) jsonInput.value = json;
+  if(pdfInput) pdfInput.value = pdf;
   if(!json.endsWith('.json')){
     setProfileGithubJsonStatus('JSON dosya adı .json ile bitmeli.', 'error');
     showToast('JSON dosya adı .json olmalı','error');
@@ -1938,6 +1952,20 @@ async function persistKonular(dersId, fasikulId, konular){
 }
 
 const bundledSourceCache = new Map();
+async function fetchLocalJsonVariants(filename){
+  const names = [...new Set([
+    String(filename || ''),
+    String(filename || '').normalize('NFC'),
+    String(filename || '').normalize('NFD'),
+  ].filter(Boolean))];
+  for(const name of names){
+    try{
+      const response = await fetch(encodeURIComponent(name));
+      if(response.ok) return await response.json();
+    }catch(e){}
+  }
+  return null;
+}
 async function readBundledJson(source){
   if(bundledSourceCache.has(source.json)) return bundledSourceCache.get(source.json);
   let raw = null;
@@ -1953,17 +1981,14 @@ async function readBundledJson(source){
       finally{ clearTimeout(timer); }
       if(response.ok) raw = await response.json();
       else {
-        // GitHub başarısız olursa eski relative path'i dene
-        const fallback = await fetch(encodeURIComponent(source.json.normalize('NFC')));
-        if(fallback.ok) raw = await fallback.json();
+        // GitHub başarısız olursa aynı sunucudaki dosyayı dene.
+        raw = await fetchLocalJsonVariants(source.json);
       }
     }catch(e){
-      try{
-        const fallback = await fetch(encodeURIComponent(source.json.normalize('NFC')));
-        if(fallback.ok) raw = await fallback.json();
-      }catch(e2){}
+      raw = await fetchLocalJsonVariants(source.json);
     }
   }
+  if(!raw) raw = await fetchLocalJsonVariants(source.json);
   // 2. Gzip bundle varsa oradan
   if(!raw && window.EDU_FASIKUL_GZIP?.[source.json]){
     try{
