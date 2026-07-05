@@ -503,7 +503,7 @@
       <div class="tool-group reader-meta-actions">
         <button class="tool-btn solution-card-btn" onclick="toggleCozumKart()" title="Çözüm Kartı / Soru Kartı">💡</button>
         <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
-        <button class="tool-btn canli-roster-btn" id="canliRosterBtn" onclick="toggleCanliRoster()" title="Bu fasikülde canlı olanlar — birini seçip izle">👁️<span class="crb-count" id="canliRosterCount"></span></button>
+        <button class="tool-btn canli-roster-btn" onclick="toggleCanliRoster()" title="Bu fasikülde canlı olanlar — birini seçip izle">👁️<span class="crb-count"></span></button>
         <label class="tool-btn" for="pdfFileInputToolbar" title="PDF Yükle / Değiştir" style="cursor:pointer">📂</label>
         <input type="file" id="pdfFileInputToolbar" accept=".pdf" style="display:none" onchange="handlePDFUpload(this)">
         <button class="tool-btn" id="viewModeBtn" onclick="openViewModeMenu(event)" title="Görünüm Modu">📄</button>
@@ -637,6 +637,7 @@
         <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
         <span class="rp-tools-sep"></span>
         <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
+        <button class="tool-btn canli-roster-btn" onclick="toggleCanliRoster()" title="Bu fasikülde canlı olanlar — birini seçip izle">👁️<span class="crb-count"></span></button>
         <button class="tool-btn rp-copy-btn" onclick="copySoruKart()" title="Soruyu kopyala — Gemini/GPT/Claude'a yapıştırıp çözüm sor">📋</button>
         <button class="tool-btn solution-card-btn" onclick="toggleCozumKart()" title="Çözüm Kartı / Soru Kartı">💡</button>
       </div>
@@ -677,6 +678,7 @@
     <div class="sp-row sp-answers" id="spAnswers"></div>
     <div class="sp-row sp-util-row">
       <button class="tool-btn live-session-btn" onclick="toggleLiveSession()" title="Canlı Ders — iki cihazda sayfayı eşitle">📡</button>
+      <button class="tool-btn canli-roster-btn" onclick="toggleCanliRoster()" title="Bu fasikülde canlı olanlar — birini seçip izle">👁️<span class="crb-count"></span></button>
       <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
       <button class="tool-btn solution-card-btn" onclick="toggleCozumKart()" title="Çözüm Kartı / Soru Kartı">💡</button>
       <button class="tool-btn" onclick="resetAltKonuStats()" title="Bu testi sıfırla">↺</button>

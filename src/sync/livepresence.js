@@ -205,13 +205,13 @@ function _renderRoster(){
 function _updateRosterButton(){
   const me = _me();
   const n = _roster.filter(m => m.uid !== me?.uid).length;
-  const btn = document.getElementById('canliRosterBtn');
-  const cnt = document.getElementById('canliRosterCount');
-  if(cnt) cnt.textContent = n > 0 ? String(n) : '';
-  if(btn){
+  // Üç yerleşimde de buton var (masaüstü toolbar, soru paneli, telefon paleti) → hepsini güncelle
+  document.querySelectorAll('.canli-roster-btn').forEach(btn=>{
     btn.classList.toggle('has-live', n > 0);
     btn.classList.toggle('following', !!_followUid);
-  }
+    const cnt = btn.querySelector('.crb-count');
+    if(cnt) cnt.textContent = n > 0 ? String(n) : '';
+  });
 }
 export function toggleCanliRoster(){
   const p = _ensurePanel();
