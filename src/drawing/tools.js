@@ -129,11 +129,13 @@ function applyTool(tool){
           const p = fc.getPointer(opt.e);
           const r = appState.eraserSize || 8;
           let changed = false;
-          // 1) İmlecin tam altındaki nesneyi sil (hassas)
+          // 1) İmlecin tam altındaki nesneyi sil (hassas). Ortak tahtada BAŞKASININ
+          //    kalemi (_owner) silinmez — yoksa yerel silinip senkronla geri gelir.
           const t = opt.target || fc.findTarget(opt.e, false);
-          if(t){ fc.remove(t); changed = true; }
-          // 2) Silgi yarıçapı içindeki nesneleri de sil
+          if(t && !t._owner){ fc.remove(t); changed = true; }
+          // 2) Silgi yarıçapı içindeki KENDİ nesnelerini de sil
           fc.getObjects().slice().forEach(obj=>{
+            if(obj._owner) return;   // başkasının kalemi — dokunma
             const b = obj.getBoundingRect();
             const dx = Math.max(b.left - p.x, 0, p.x - (b.left + b.width));
             const dy = Math.max(b.top - p.y, 0, p.y - (b.top + b.height));
@@ -197,10 +199,10 @@ function undoDraw(){
   if(appState.undoStack.length > 1){
     appState.redoStack.push(appState.undoStack.pop());
     const prev = appState.undoStack[appState.undoStack.length-1];
-    fc.loadFromJSON(prev,()=>fc.renderAll());
+    fc.loadFromJSON(prev,()=>{ fc.renderAll(); window.refreshSharedBoard?.(); });
   } else if(appState.undoStack.length===1){
     appState.redoStack.push(appState.undoStack.pop());
-    fc.clear(); fc.renderAll();
+    fc.clear(); fc.renderAll(); window.refreshSharedBoard?.();
   }
 }
 
@@ -208,7 +210,7 @@ function redoDraw(){
   const fc = appState.fabricCanvas;
   if(!fc || !appState.redoStack.length) return;
   const next = appState.redoStack.pop();
-  fc.loadFromJSON(next,()=>fc.renderAll());
+  fc.loadFromJSON(next,()=>{ fc.renderAll(); window.refreshSharedBoard?.(); });
   appState.undoStack.push(next);
 }
 

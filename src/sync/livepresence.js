@@ -224,26 +224,19 @@ function _syncSharedBoard(){
   const me = _me();
   const curKey = `drawing_${fas.id}_p${appState.currentPage}`;
   const members = _roster.filter(m => m.uid !== me?.uid && m.drawKey === curKey && m.draw);
-  const token = Date.now() + Math.random();
-  fc._sbToken = token;                       // eşzamanlı/bayat sync'leri ayırt et
-  fc._applyingRemoteDrawing = true;
-  fc.getObjects().filter(o=>o._owner).forEach(o=>fc.remove(o));   // eski overlay'i temizle
-  const finish = ()=>{ if(fc._sbToken === token){ fc._applyingRemoteDrawing = false; fc.requestRenderAll(); } };
-  // Guard bayrağı hiçbir koşulda takılı kalmasın
-  setTimeout(()=>{ if(fc._sbToken === token) fc._applyingRemoteDrawing = false; }, 2500);
-  let pending = members.length;
-  if(!pending){ finish(); return; }
+  const token = (fc._sbToken = Date.now() + Math.random());   // eşzamanlı/bayat sync ayrımı
   const localW = fc.width, localH = fc.height;
-  const done = ()=>{ if(--pending <= 0) finish(); };
-  members.forEach(m=>{
+
+  // ÖNCE herkesin nesnelerini enliven et (async), SONRA tek seferde takas et.
+  // Böylece "önce hepsi kaybolur sonra geri gelir" (flicker/toplu silinme) OLMAZ.
+  const tasks = members.map(m => new Promise(resolve=>{
     let objs;
     try{ objs = (JSON.parse(m.draw)?.objects) || []; }catch(e){ objs = []; }
-    if(!objs.length){ done(); return; }
+    if(!objs.length){ resolve([]); return; }
     const rx = (m.dw && localW) ? localW / m.dw : 1;
     const ry = (m.dh && localH) ? localH / m.dh : 1;
     try{
       F.util.enlivenObjects(objs, (arr)=>{
-        if(fc._sbToken !== token) return;    // daha yeni bir sync başladı → bayat sonucu at
         arr.forEach(o=>{
           o.set({
             left:(o.left||0)*rx, top:(o.top||0)*ry,
@@ -252,12 +245,20 @@ function _syncSharedBoard(){
           });
           o._owner = m.uid;
           o.setCoords?.();
-          fc.add(o);
         });
-        done();
+        resolve(arr);
       }, '');
-    }catch(e){ console.warn('Ortak tahta nesne hatası:',e); done(); }
-  });
+    }catch(e){ resolve([]); }
+  }));
+
+  Promise.all(tasks).then(groups=>{
+    if(fc._sbToken !== token) return;                 // daha yeni bir sync başladı → bu bayat
+    fc._applyingRemoteDrawing = true;
+    fc.getObjects().filter(o=>o._owner).forEach(o=>fc.remove(o));  // eskiyi çıkar
+    groups.forEach(arr=>arr.forEach(o=>fc.add(o)));                // yeniyi ekle (aynı senkron blok)
+    fc._applyingRemoteDrawing = false;
+    fc.requestRenderAll();
+  }).catch(()=>{ fc._applyingRemoteDrawing = false; });
 }
 
 // ── Roster UI ──────────────────────────────────────────
