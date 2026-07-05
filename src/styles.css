@@ -511,33 +511,6 @@ body.reader-locked .main-content{visibility:hidden!important}
 /* Zoom/sayfa çubukları HER ZAMAN yatay tek satır (dikey tablette dikey yığılmasın) */
 .rp-zoom-bar,.solve-zoombar{flex-direction:row!important;flex-wrap:nowrap!important;white-space:nowrap}
 
-/* ── HIZLI ERİŞİM ARAÇ PALETİ (solve): pan/kalem/silgi ── */
-.solve-quick-tools{display:none}
-.solve-quick-tools .tool-btn{
-  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
-  font-size:22px;border-radius:12px;background:var(--bg-3);border:1px solid var(--border);cursor:pointer;flex:0 0 auto;
-}
-.solve-quick-tools .tool-btn.active{background:var(--mat-dim);border-color:var(--mat)}
-/* Telefon YATAY: SAĞ kenar ortası, dikey tek sütun 3 buton */
-@media (orientation:landscape) and (max-height:500px){
-  #reader-overlay.solve-mode .solve-quick-tools{
-    display:flex!important;flex-direction:column;gap:8px;
-    position:fixed;right:6px!important;left:auto!important;top:50%;transform:translateY(-50%);z-index:410;
-    background:var(--bg-1);border:1px solid var(--border-strong);border-radius:14px;
-    padding:7px 6px;box-shadow:var(--shadow-lg);
-  }
-}
-/* Telefon DİKEY: zoom çubuğunun hemen ÜSTÜNDE, yatay 3 buton */
-@media (orientation:portrait) and (max-width:768px){
-  #reader-overlay.solve-mode .solve-quick-tools{
-    display:flex;flex-direction:row;gap:10px;justify-content:center;
-    position:fixed;left:50%;transform:translateX(-50%);z-index:410;
-    bottom:calc(12px + env(safe-area-inset-bottom) + 54px);
-    background:var(--bg-1);border:1px solid var(--border-strong);border-radius:14px;
-    padding:6px 12px;box-shadow:var(--shadow-lg);
-  }
-}
-
 /* Telefon YATAY: zoom/sayfa çubuğu SOL araç panelinin EN ALT satırı (panelin altına bitişik).
    Panel bottom:84px'te biter, çubuk altındaki 84px'i doldurur → temiz ayrım, scroll baskısı az. */
 @media (orientation:landscape) and (max-height:500px){
@@ -2524,7 +2497,12 @@ body.reader-locked .main-content{visibility:hidden!important}
 }
 
 /* Tablet: soru kartı araç çubuğunun hemen altından başlar. */
-@media (min-width: 769px) and (max-width: 1366px) {
+/* min-height:501px → telefon yatay-kısa modunu (max-height:500px) dışarıda bırak.
+   iPhone gibi telefonlar yatayda genişlik 769-1366 aralığına girebiliyor; bu kural
+   olmadan tablet düzeni sızıp kart-üst boşluğunu asimetrik bırakıyordu (align-items
+   solve-mode'da !important ile center'a dönüyor ama padding-top:0 kazanıp kartı
+   yukarı itiyor, boşluk yalnız altta kalıyordu). */
+@media (min-width: 769px) and (max-width: 1366px) and (min-height:501px) {
   .reader-canvas-wrap{padding-top:8px}
   .reader-page-stage{align-items:flex-start;padding-top:0}
   .reader-page-stage .pdf-page-wrap{margin-top:0!important}

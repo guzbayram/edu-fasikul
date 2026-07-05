@@ -176,7 +176,12 @@ const CEVAP_MASK_CONFIG = {
   'mof-9-matematik-3': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   'mof-9-matematik-4': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   // Yarıçap TYT Problemler: cevap daireleri birçok sayfanın sağ-altında; her sayfada kapat.
-  'yaricap-tyt-problemler': { rect: { x: 0.25, y: 0.918, w: 0.73, h: 0.068 }, herSayfa: true },
+  'yaricap-tyt-problemler': {
+    rects: [
+      { x: 0.54, y: 0.872, w: 0.42, h: 0.062 },
+    ],
+    herSayfa: true,
+  },
 };
 
 // pageNum için cevap anahtarı maskesi gerekiyorsa dikdörtgeni döndür.
@@ -184,9 +189,10 @@ function getCevapMaskRects(pageNum){
   const fas = appState.aktifFasikul;
   const cfg = fas && CEVAP_MASK_CONFIG[fas.id];
   if(!cfg || !Array.isArray(fas.konular)) return [];
-  if(cfg.herSayfa) return [cfg.rect];
+  const rects = cfg.rects || (cfg.rect ? [cfg.rect] : []);
+  if(cfg.herSayfa) return rects;
   const testBiter = fas.konular.some(k => k.tur === 'test' && (k.sayfaBitis || k.sayfa) === pageNum);
-  return testBiter ? [cfg.rect] : [];
+  return testBiter ? rects : [];
 }
 
 async function renderSinglePDFPage(pageNum, pageWrap){
@@ -975,8 +981,13 @@ function initLongPressDraw(){
     if(t.touchType === 'stylus') return;
     e.preventDefault(); e.stopPropagation();
     appState._touchGestureActive = true;
+    // Kart zoom'lanmış (kaydırılacak fazla içerik var) → bu jest SADECE pan'dir,
+    // hızlı/uzun sürüklemeyi sayfa-geçişi flick'i sanmayalım (yoksa zum'da belirli
+    // bir noktaya yaklaşmaya çalışırken sayfa değişiverir). Flick sadece %100/sığdır
+    // zumda (kaydıracak içerik yokken) sayfa geçişi anlamına gelir.
+    const scrollable = (wrap.scrollWidth > wrap.clientWidth + 1) || (wrap.scrollHeight > wrap.clientHeight + 1);
     s = { x0:t.clientX, y0:t.clientY, lastX:t.clientX, lastY:t.clientY,
-          sl:wrap.scrollLeft, st:wrap.scrollTop, t0:Date.now(), mode:'pending', menuTimer:null };
+          sl:wrap.scrollLeft, st:wrap.scrollTop, t0:Date.now(), mode:'pending', menuTimer:null, scrollable };
     s.menuTimer = setTimeout(()=>{
       if(!s || s.mode !== 'pending') return;
       s.mode = 'menu';
@@ -1003,7 +1014,8 @@ function initLongPressDraw(){
     if(!s) return;
     clearTimeout(s.menuTimer);
     // Sol/yukarı flick → sonraki sayfa, sağ/aşağı → önceki (changePage tüm PDF'te serbest)
-    if(s.mode === 'pan'){
+    // Yalnız zum'lanmamışken (kaydıracak içerik yokken) — zum'da flick sadece pan'dir.
+    if(s.mode === 'pan' && !s.scrollable){
       const dx = s.lastX - s.x0, dy = s.lastY - s.y0, dur = Date.now() - s.t0;
       if(dur < FLICK_MAX_MS && Math.max(Math.abs(dx), Math.abs(dy)) > FLICK_MIN){
         const dir = (Math.abs(dx) >= Math.abs(dy)) ? (dx < 0 ? 1 : -1) : (dy < 0 ? 1 : -1);
@@ -1017,11 +1029,13 @@ function initLongPressDraw(){
 }
 
 // iPhone 14 Pro MAX (visualViewport.offsetTop≠0): position:fixed panelde iOS native
-// hit-test'i offset kadar şaşırıyor (undo→kalem, redo→silgi). RENDER parmakla hizalı
-// olduğundan, görsel konumdaki gerçek butonu elementFromPoint ile bulup tetikleriz.
-// Ofset 0 ise (iPhone Pro, masaüstü, standalone) hiç devreye girmez → native davranış.
-function initPanelTapFix(){
-  const panel = document.getElementById('readerRight');
+// hit-test'i offset kadar şaşırıyor (undo→kalem, redo→silgi; renk/araç butonları da
+// aynı şekilde kayar). RENDER parmakla hizalı olduğundan, görsel konumdaki gerçek
+// butonu elementFromPoint ile bulup tetikleriz. Ofset 0 ise (iPhone Pro, masaüstü,
+// standalone) hiç devreye girmez → native davranış. Hem masaüstü/tablet paneli
+// (#readerRight) hem de telefon tam-ekran çözüm paleti (#solvePalette) kapsanır.
+function initPanelTapFix(panelId){
+  const panel = document.getElementById(panelId);
   if(!panel || panel.dataset.tapFix) return;
   panel.dataset.tapFix = '1';
   let sx = 0, sy = 0, moved = false;
@@ -1049,6 +1063,10 @@ function initPanelTapFix(){
   }, { passive:false, capture:true });
 }
 window.initPanelTapFix = initPanelTapFix;
+document.addEventListener('DOMContentLoaded', ()=>{
+  initPanelTapFix('readerRight');
+  initPanelTapFix('solvePalette');
+});
 
 
 // ── Bu modülün fonksiyonlarını window'a kaydet ──
