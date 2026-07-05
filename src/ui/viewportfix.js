@@ -2,17 +2,25 @@
 // iOS Safari viewport fix: adres çubuğu yüzünden görünür viewport,
 // layout viewport'tan kısa olunca position:fixed reader-overlay görünürden
 // uzun kalıyor; içerik dağılınca dokunma noktası ~bir satır yukarı kayıyor.
-// Overlay'i visualViewport boyut/konumuna oturtarak hizalarız.
+// Overlay'i visualViewport KONUMUNA (top/left) oturturuz — BOYUTU (height/
+// width) KASITLI OLARAK vv.height/width'e SABİTLEMEYİZ: bazı cihazlarda
+// (ör. iPhone Pro Max, negatif visualViewport.offsetTop) vv.height, CSS'in
+// kendi doğal inset:0 boyutlandırmasından (right:0;bottom:0 → containing
+// block'u tam doldurur) DAHA KISA/DAR olabiliyor ve bu da altta/sağda gri
+// boşluk YARATIYORDU (çözmek yerine). Ayrıca panel/palet artık position:
+// static (gerçek flex çocuğu, bkz. .solve-left-col/.reader-right) olduğundan
+// dokunma-hedefi kayması sorunu zaten kökten çözüldü — bu fonksiyonun asıl
+// işi artık yalnızca konum (offset) telafisi, boyut değil.
 // (Kesin çözüm: Ana Ekrana Ekle → standalone; o zaman bu zaten devreye girmez.)
 // ══════════════════════════════════════════════════════════
 function syncReaderViewport(){
   const vv = window.visualViewport;
   const ov = document.getElementById('reader-overlay');
   if(!vv || !ov || !ov.classList.contains('open')) return;
-  ov.style.height = vv.height + 'px';
-  ov.style.width  = vv.width + 'px';
-  ov.style.top    = vv.offsetTop + 'px';
-  ov.style.left   = vv.offsetLeft + 'px';
+  ov.style.removeProperty('height');
+  ov.style.removeProperty('width');
+  ov.style.top  = vv.offsetTop + 'px';
+  ov.style.left = vv.offsetLeft + 'px';
 }
 function reflowReaderViewport(){
   syncReaderViewport();
