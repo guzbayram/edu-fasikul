@@ -91,16 +91,17 @@ function setGithubConfig(cfg){
 }
 function buildGithubRawUrl(filename){
   const cfg = getGithubConfig();
-  // Türkçe ve özel karakterleri NFC'ye normalize et (macOS NFD → GitHub NFC)
-  const normFile = filename.normalize('NFC');
+  return buildGithubRawUrlForName(cfg, filename);
+}
+function buildGithubRawUrlForName(cfg, filename){
   if(!cfg.repo){
     // Repo ayarlanmamış: relative path kullan (local / aynı sunucu)
     const p = (cfg.path || '').replace(/\/$/,'');
-    return p ? `${p}/${encodeURIComponent(normFile)}` : encodeURIComponent(normFile);
+    return p ? `${p}/${encodeURIComponent(filename)}` : encodeURIComponent(filename);
   }
   const branch = cfg.branch || 'main';
   const path = (cfg.path || '').replace(/^\/+|\/+$/g,'');
-  const filePart = path ? `${path}/${encodeURIComponent(normFile)}` : encodeURIComponent(normFile);
+  const filePart = path ? `${path}/${encodeURIComponent(filename)}` : encodeURIComponent(filename);
   return `https://raw.githubusercontent.com/${cfg.repo}/${branch}/${filePart}`;
 }
 function onGithubRepoInput(){
@@ -1952,13 +1953,30 @@ async function persistKonular(dersId, fasikulId, konular){
 }
 
 const bundledSourceCache = new Map();
-async function fetchLocalJsonVariants(filename){
-  const names = [...new Set([
+function sourceFileNameVariants(filename){
+  return [...new Set([
     String(filename || ''),
     String(filename || '').normalize('NFC'),
     String(filename || '').normalize('NFD'),
   ].filter(Boolean))];
-  for(const name of names){
+}
+async function fetchGithubJsonVariants(filename){
+  const cfg = getGithubConfig();
+  if(!cfg.repo || location.protocol === 'file:') return null;
+  for(const name of sourceFileNameVariants(filename)){
+    try{
+      const ctrl = new AbortController();
+      const timer = setTimeout(()=>ctrl.abort(), 10000);
+      let response;
+      try{ response = await fetch(buildGithubRawUrlForName(cfg, name), {signal: ctrl.signal}); }
+      finally{ clearTimeout(timer); }
+      if(response.ok) return await response.json();
+    }catch(e){}
+  }
+  return null;
+}
+async function fetchLocalJsonVariants(filename){
+  for(const name of sourceFileNameVariants(filename)){
     try{
       const response = await fetch(encodeURIComponent(name));
       if(response.ok) return await response.json();
@@ -1970,29 +1988,13 @@ async function readBundledJson(source){
   if(bundledSourceCache.has(source.json)) return bundledSourceCache.get(source.json);
   let raw = null;
   // 1. GitHub veya yapılandırılmış URL'den çek
-  if(location.protocol !== 'file:'){
-    try{
-      const url = buildGithubRawUrl(source.json);
-      // Takılan istek tüm listeyi bekletmesin diye 10 sn zaman aşımı
-      const ctrl = new AbortController();
-      const timer = setTimeout(()=>ctrl.abort(), 10000);
-      let response;
-      try{ response = await fetch(url, {signal: ctrl.signal}); }
-      finally{ clearTimeout(timer); }
-      if(response.ok) raw = await response.json();
-      else {
-        // GitHub başarısız olursa aynı sunucudaki dosyayı dene.
-        raw = await fetchLocalJsonVariants(source.json);
-      }
-    }catch(e){
-      raw = await fetchLocalJsonVariants(source.json);
-    }
-  }
+  raw = await fetchGithubJsonVariants(source.json);
   if(!raw) raw = await fetchLocalJsonVariants(source.json);
   // 2. Gzip bundle varsa oradan
-  if(!raw && window.EDU_FASIKUL_GZIP?.[source.json]){
+  const gzipKey = sourceFileNameVariants(source.json).find(name => window.EDU_FASIKUL_GZIP?.[name]);
+  if(!raw && gzipKey){
     try{
-      const binary = atob(window.EDU_FASIKUL_GZIP[source.json]);
+      const binary = atob(window.EDU_FASIKUL_GZIP[gzipKey]);
       const bytes = Uint8Array.from(binary, c=>c.charCodeAt(0));
       const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
       raw = JSON.parse(await new Response(stream).text());
