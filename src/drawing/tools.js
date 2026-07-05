@@ -147,7 +147,7 @@ function applyTool(tool){
           _erasing = false;
           if(_eraseChanged){
             saveDrawingForPage(Number(fc._pageNum || appState.currentPage));
-            appState.undoStack.push(JSON.stringify(fc));
+            appState.undoStack.push(window._localCanvasJSON?.(fc) ?? JSON.stringify(fc));
             appState.redoStack = [];
             _eraseChanged = false;
             // Silme bitince otomatik kaleme dön (tekrar kalem seçmeye gerek kalmasın)
@@ -217,7 +217,8 @@ function clearPage(){
   const pageNum = appState.currentPage;
   const fc = appState.fabricCanvases?.[pageNum] || appState.fabricCanvas;
   if(fc){
-    fc.getObjects().slice().forEach(obj=>fc.remove(obj));
+    // Yalnız KENDİ nesnelerini sil; ortak tahtadaki başkalarının kalemine dokunma
+    fc.getObjects().slice().forEach(obj=>{ if(!obj._owner) fc.remove(obj); });
     fc.discardActiveObject();
     fc.requestRenderAll();
   }
@@ -225,7 +226,7 @@ function clearPage(){
   window.markLocalDrawingEdit?.(pageNum);
   delete appState.drawings[key];
   deleteDrawingCloud(key);
-  appState.undoStack.push(fc ? JSON.stringify(fc) : '{}');
+  appState.undoStack.push(fc ? (window._localCanvasJSON?.(fc) ?? JSON.stringify(fc)) : '{}');
   appState.redoStack = [];
   showToast('Sayfa temizlendi','info');
 }

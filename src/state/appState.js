@@ -29,6 +29,7 @@ export const appState = {
   autoPublishLive: false,   // öğrenci: konumunu öğretmenin izlemesi için sürekli otomatik yayınlar
   watchMode: false,         // öğretmen: bir öğrenciyi canlı izliyor (yalnız dinler, yayın yapmaz)
   _watchStudentUid: null,
+  sharedBoard: false,       // ortak tahta: aynı sayfadaki herkesin kalemi birleşir
   activeQuestionIdx: 0,
   soruListMode: 'tek',
   readingMode: false,

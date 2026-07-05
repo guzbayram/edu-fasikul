@@ -18,6 +18,17 @@ function applyDrawingScale(fc, key){
 }
 window.applyDrawingScale = applyDrawingScale;
 
+// Ortak tahta: başka kullanıcıların çizim nesneleri canvas'a _owner ile işaretlenip
+// eklenir (overlay). Kaydederken/undo alırken YALNIZ kendi (yerel) nesnelerimizi
+// serialize et — başkasının kalemi ne buluta kaydedilsin ne de bize ait sayılsın.
+function localCanvasJSON(fc){
+  if(!fc) return '{}';
+  const data = fc.toJSON(['_owner']);
+  if(Array.isArray(data.objects)) data.objects = data.objects.filter(o=>!o._owner);
+  return JSON.stringify(data);
+}
+window._localCanvasJSON = localCanvasJSON;
+
 // KÖK NEDEN (yatay çizim kayması): Fabric'in getPointer'ı, dokunma noktasını
 // `clientX + getScrollLeftTop(target)` (tüm üst elementlerin scroll toplamı, canvas-wrap
 // scrollTop'u dahil) - calcOffset offset'i ile hesaplıyor. Bizim canvas-wrap iç-scroll'u
@@ -99,7 +110,8 @@ function initFabricForPage(canvasEl, w, h, pageNum){
   // Kayıtlı çizim varsa yükle
   const key = drawingKeyForPage(pageNum);
   const saved = appState.drawings[key];
-  if(saved){ try{ fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); applyTool(appState.drawTool); fc.renderAll(); }); }catch(e){} }
+  if(saved){ try{ fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); applyTool(appState.drawTool); fc.renderAll(); window.refreshSharedBoard?.(); }); }catch(e){} }
+  else { window.refreshSharedBoard?.(); }
 
   // Tıklandığında aktif canvas olarak seç
   fc._pageSelectHandler = ()=>{
@@ -141,14 +153,14 @@ function initFabricForPage(canvasEl, w, h, pageNum){
     }
     saveDrawingForPage(pageNum);
   });
-  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(JSON.stringify(fc)); appState.redoStack=[]; } });
+  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(localCanvasJSON(fc)); appState.redoStack=[]; } });
 }
 
 function saveDrawingForPage(pageNum){
   const fc = appState.fabricCanvases[pageNum];
   if(!fc || !appState.aktifFasikul) return;
   const key = drawingKeyForPage(pageNum);
-  const json=JSON.stringify(fc);
+  const json=localCanvasJSON(fc);
   appState.drawings[key] = json;
   appState.drawingDims[key] = { w: fc.width, h: fc.height };
   persistDrawingCloud(key, json, fc.width, fc.height);
@@ -255,9 +267,9 @@ function initFabricOnCanvas(canvasEl, w, h){
   if(saved){
     try{
       fc._loadingDrawing = true;
-      fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); fc._loadingDrawing = false; fc.renderAll(); });
+      fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); fc._loadingDrawing = false; fc.renderAll(); window.refreshSharedBoard?.(); });
     }catch(e){ fc._loadingDrawing = false; }
-  }
+  } else { window.refreshSharedBoard?.(); }
 
   // Otomatik kayıt (800ms debounce)
   const localCanvasChanged = ()=>{
@@ -282,7 +294,7 @@ function initFabricOnCanvas(canvasEl, w, h){
   });
 
   // Undo stack
-  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(JSON.stringify(fc)); appState.redoStack=[]; } });
+  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(localCanvasJSON(fc)); appState.redoStack=[]; } });
   fc.on('mouse:down', rememberCanvasDrawTap);
 
   applyTool(appState.drawTool);
@@ -299,7 +311,7 @@ function saveDrawing(){
     // Tüm render edilmiş sayfaları kaydet
     Object.entries(appState.fabricCanvases).forEach(([pn, fc])=>{
       const key = drawingKeyForPage(pn);
-      const json=JSON.stringify(fc);
+      const json=localCanvasJSON(fc);
       appState.drawings[key] = json;
       appState.drawingDims[key] = { w: fc.width, h: fc.height };
       persistDrawingCloud(key, json, fc.width, fc.height);

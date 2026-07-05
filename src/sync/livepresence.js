@@ -52,6 +52,7 @@ export function startCanliPresence(){
     _roster = list;
     _renderRoster();
     if(_followUid) _applyFollow();
+    if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
   }, (err)=>console.warn('Canlı oturum dinleme hatası:',err));
   _heartbeatTimer = setInterval(_writePresence, HEARTBEAT_MS);
   _updateRosterButton();
@@ -60,8 +61,9 @@ export function startCanliPresence(){
 export function stopCanliPresence(silent){
   if(_rosterUnsub){ _rosterUnsub(); _rosterUnsub = null; }
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
-  clearTimeout(_pubTimer); clearTimeout(_drawPubTimer);
+  clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer);
   _followUid = null; _lastFollowSig = '';
+  if(appState.sharedBoard){ appState.sharedBoard = false; _clearOverlay(); }
   const me = _me();
   if(me && _presFasikulId && _ready() && window._fsDeleteDoc){
     window._fsDeleteDoc(_memberRef(_presFasikulId, me.uid)).catch(()=>{});
@@ -174,6 +176,90 @@ function _loadFollowJSON(fc, json, drawKey){
   }catch(e){ fc._applyingRemoteDrawing = false; console.warn('Takip çizimi yüklenemedi:',e); }
 }
 
+// ── ORTAK TAHTA — aynı sayfadaki herkesin kalemi overlay olarak birleşir ──
+// Herkes kendi kalemini presence'a yazar (publishCanliPresenceDraw). Ortak tahta
+// açıkken, aynı fasikül+sayfadaki DİĞER kişilerin çizimleri kendi canvas'ına
+// _owner etiketiyle (salt-görüntü) eklenir; kendi çizimin korunur ve kaydedilir.
+let _sbTimer = null;
+function _curFc(){ return appState.fabricCanvases?.[appState.currentPage] || appState.fabricCanvas || null; }
+
+export function toggleSharedBoard(){
+  const me = _me();
+  if(!me){ window.showToast?.('Ortak tahta için hesabınla giriş yapmalısın','info'); return; }
+  appState.sharedBoard = !appState.sharedBoard;
+  if(appState.sharedBoard){
+    window.showToast?.('🖊️ Ortak tahta açık — aynı sayfadakilerle birlikte yazın','success');
+    _syncSharedBoard();
+  } else {
+    _clearOverlay();
+    window.showToast?.('Ortak tahta kapalı','info');
+  }
+  _renderRoster();
+}
+
+// Debounced dış giriş (sayfa/zoom render sonrası ve gezinmede çağrılır)
+export function refreshSharedBoard(){
+  if(!appState.sharedBoard) { _clearOverlay(); return; }
+  clearTimeout(_sbTimer);
+  _sbTimer = setTimeout(_syncSharedBoard, 220);
+}
+
+function _clearOverlay(fc){
+  fc = fc || _curFc();
+  if(!fc) return;
+  const owned = fc.getObjects().filter(o=>o._owner);
+  if(!owned.length) return;
+  fc._applyingRemoteDrawing = true;
+  owned.forEach(o=>fc.remove(o));
+  fc._applyingRemoteDrawing = false;
+  fc.requestRenderAll();
+}
+
+function _syncSharedBoard(){
+  if(!appState.sharedBoard) return;
+  const fas = appState.aktifFasikul;
+  const fc = _curFc();
+  const F = window.fabric;
+  if(!fas || !fc || !F?.util?.enlivenObjects) return;
+  const me = _me();
+  const curKey = `drawing_${fas.id}_p${appState.currentPage}`;
+  const members = _roster.filter(m => m.uid !== me?.uid && m.drawKey === curKey && m.draw);
+  const token = Date.now() + Math.random();
+  fc._sbToken = token;                       // eşzamanlı/bayat sync'leri ayırt et
+  fc._applyingRemoteDrawing = true;
+  fc.getObjects().filter(o=>o._owner).forEach(o=>fc.remove(o));   // eski overlay'i temizle
+  const finish = ()=>{ if(fc._sbToken === token){ fc._applyingRemoteDrawing = false; fc.requestRenderAll(); } };
+  // Guard bayrağı hiçbir koşulda takılı kalmasın
+  setTimeout(()=>{ if(fc._sbToken === token) fc._applyingRemoteDrawing = false; }, 2500);
+  let pending = members.length;
+  if(!pending){ finish(); return; }
+  const localW = fc.width, localH = fc.height;
+  const done = ()=>{ if(--pending <= 0) finish(); };
+  members.forEach(m=>{
+    let objs;
+    try{ objs = (JSON.parse(m.draw)?.objects) || []; }catch(e){ objs = []; }
+    if(!objs.length){ done(); return; }
+    const rx = (m.dw && localW) ? localW / m.dw : 1;
+    const ry = (m.dh && localH) ? localH / m.dh : 1;
+    try{
+      F.util.enlivenObjects(objs, (arr)=>{
+        if(fc._sbToken !== token) return;    // daha yeni bir sync başladı → bayat sonucu at
+        arr.forEach(o=>{
+          o.set({
+            left:(o.left||0)*rx, top:(o.top||0)*ry,
+            scaleX:(o.scaleX||1)*rx, scaleY:(o.scaleY||1)*ry,
+            selectable:false, evented:false, hoverCursor:'default'
+          });
+          o._owner = m.uid;
+          o.setCoords?.();
+          fc.add(o);
+        });
+        done();
+      }, '');
+    }catch(e){ console.warn('Ortak tahta nesne hatası:',e); done(); }
+  });
+}
+
 // ── Roster UI ──────────────────────────────────────────
 function _ensurePanel(){
   let p = document.getElementById('canliRosterPanel');
@@ -194,6 +280,7 @@ function _renderRoster(){
                         .sort((a,b)=>(b.ts||0)-(a.ts||0));
   p.innerHTML = `
     <div class="crp-head"><b>Bu fasikülde canlı</b><span class="crp-n">${others.length}</span><button class="crp-x" onclick="toggleCanliRoster()" title="Kapat">✕</button></div>
+    <button class="crp-board ${appState.sharedBoard?'on':''}" onclick="toggleSharedBoard()" title="Aynı sayfadaki herkes birlikte çizsin, herkes birbirinin kalemini görsün">🖊️ Ortak Tahta <b>${appState.sharedBoard?'AÇIK':'Kapalı'}</b></button>
     ${others.length ? others.map(m=>{
       const following = m.uid === _followUid;
       return `<div class="crp-row ${following?'following':''}">
