@@ -229,12 +229,12 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'tyt-denemeleri-1',dersId:'tyt',json:'8-tyt-denemeleri-1-cards.json',pdf:'8-tyt-denemeleri-1-cards.pdf'},
   {id:'tyt-denemeleri-2',dersId:'tyt',json:'9-tyt-denemeleri-2-cards.json',pdf:'9-tyt-denemeleri-2-cards.pdf'},
   {id:'matematik-destek',dersId:'mat',json:'12-Matematik (Destek)-kart.json',pdf:'12-Matematik (Destek).pdf',type:'video'},
-  {id:'mof-10-matematik-5',dersId:'mat',json:'Möf-10.Sınıf-Matematik-5.Fasikül.json',pdf:'Möf-10.Sınıf-Matematik-5.Fasikül.pdf'},
   {id:'mof-9-matematik-1',dersId:'mat',json:'Möf-9.Sınıf-Matematik-1.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-1.Fasikül.pdf'},
   {id:'mof-9-matematik-2',dersId:'mat',json:'Möf-9.Sınıf-Matematik-2.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-2.Fasikül.pdf'},
   {id:'mof-9-matematik-3',dersId:'mat',json:'Möf-9.Sınıf-Matematik-3.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-3.Fasikül.pdf'},
   {id:'mof-9-matematik-4',dersId:'mat',json:'Möf-9.Sınıf-Matematik-4.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-4.Fasikül.pdf'},
-  {id:'yaricap-tyt-problemler',dersId:'mat',json:'Yarıçap-Tyt-Problemler-Fasikülü.json',pdf:'Tyt-Problemler Fasikülü-Yarıçap.pdf'}
+  {id:'yaricap-tyt-problemler',dersId:'mat',json:'Tyt-Problemler Fasikülü-Yarıçap.json',pdf:'Tyt-Problemler Fasikülü-Yarıçap.pdf'},
+  {id:'yaricap-10-matematik-1',dersId:'mat',json:'10.Sınıf-Matematik-Yarıçap-1.Fasikul.json',pdf:'10.Sınıf-Matematik-Yarıçap-1.Fasikul.pdf'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';
@@ -892,6 +892,61 @@ document.addEventListener('click', (e)=>{
 // ══════════════════════════════
 // READER
 // ══════════════════════════════
+function _escapeHtml(text){
+  return String(text ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
+
+function getLastWorkedTarget(){
+  let best = null;
+  let fallback = null;
+  MANIFEST.dersler.forEach(ders => {
+    const fasikuller = visibleFasikullerFor(ders);
+    fasikuller.forEach(fas => {
+      const hasWorkText = fas.sonCalisma && fas.sonCalisma !== '—' && fas.sonCalisma !== 'Yeni eklendi';
+      const score = Number(fas._lastWorkedAt || 0);
+      const target = { ders, fas, score };
+      if(score && (!best || score > best.score)) best = target;
+      if(hasWorkText && !fallback) fallback = target;
+    });
+  });
+  return best || fallback || null;
+}
+
+function updateLastOpenBanner(){
+  const target = getLastWorkedTarget();
+  const banner = document.getElementById('lastOpenBanner');
+  if(!banner) return;
+  const nameEl = document.getElementById('lastOpenName');
+  const metaEl = document.getElementById('lastOpenMeta');
+  const pctEl = document.getElementById('lastOpenPct');
+  const barEl = document.getElementById('lastOpenPbar');
+  const thumbEl = document.getElementById('lastOpenThumb');
+  if(!target){
+    window._lastWorkedTarget = null;
+    if(nameEl) nameEl.textContent = 'Henüz çalışma yok';
+    if(metaEl) metaEl.textContent = 'Bir fasikül açıp çalışmaya başlayın';
+    if(pctEl) pctEl.textContent = '%0';
+    if(barEl) barEl.style.width = '0%';
+    if(thumbEl) thumbEl.textContent = '📘';
+    return;
+  }
+  const { ders, fas } = target;
+  window._lastWorkedTarget = { dersId: ders.id, fasikulId: fas.id };
+  const pct = Math.max(0, Math.min(100, Number(fas.progPct || 0)));
+  const konu = fas._lastKonuAd || fas._lastAltKonuAd || fas.sonCalisma || 'Kaldığın yerden devam et';
+  if(nameEl) nameEl.textContent = fas.ad || 'Fasikül';
+  if(metaEl) metaEl.textContent = `${ders.ad} · ${fas.sinif || '?'}. Sınıf · ${konu}`;
+  if(pctEl) pctEl.textContent = `%${pct}`;
+  if(barEl) barEl.style.width = `${pct}%`;
+  if(thumbEl){
+    thumbEl.textContent = fas.thumb || ders.ikon || '📘';
+    if(fas.thumbBg) thumbEl.style.background = fas.thumbBg;
+  }
+  banner.title = `${_escapeHtml(fas.ad)} - devam et`;
+}
+
 function updateDashboard(){
   const stats=getDashboardStats();
   const total=stats.toplam||0;
@@ -930,6 +985,7 @@ function updateDashboard(){
   set('profileStreak', `${streak}🔥`);
   set('profileAccuracy', `%${accuracy}`);
   document.querySelectorAll('.streak-dot').forEach((d,i)=>d.classList.toggle('done', i<Math.min(streak,7)));
+  updateLastOpenBanner();
 
   if(window._chartWeekly){
     window._chartWeekly.data.datasets[0].data=weeklyData;

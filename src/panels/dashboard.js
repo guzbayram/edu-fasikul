@@ -121,9 +121,14 @@ document.addEventListener('click', (e)=>{
 });
 
 function openLastFasikul(){
-  const matDers = window.MANIFEST.dersler.find(d=>d.id==='mat');
-  const analitik = matDers?.fasikuller.find(f=>f.id==='analitik-duzlem');
-  if(analitik) openReader('mat','analitik-duzlem');
+  const target = window._lastWorkedTarget;
+  if(target?.dersId && target?.fasikulId){
+    openReader(target.dersId, target.fasikulId);
+    return;
+  }
+  const ders = window.MANIFEST?.dersler?.find(d=>window.visibleFasikullerFor?.(d)?.length);
+  const fas = ders && window.visibleFasikullerFor(ders)[0];
+  if(ders && fas) openReader(ders.id, fas.id);
 }
 
 // ══════════════════════════════
@@ -442,7 +447,6 @@ async function populateFasikulSourceSelect(editId=''){
     const cachedPdfFound = cachedKeys.has(`${source.dersId}_${source.id}`)
       || cachedPdfNames.has(normalizePdfFileName(source.pdf));
     const pdfFound = cachedPdfFound || folderPdfFound;
-    if(!pdfFound && source.id!==editId) continue;
     if(!pdfFound) noPdfCount++;
     const dersAd=window.MANIFEST.dersler.find(d=>d.id===source.dersId)?.ad || source.dersId;
     const option=document.createElement('option');

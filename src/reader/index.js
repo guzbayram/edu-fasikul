@@ -1,5 +1,27 @@
 import { appState } from '../state/appState.js';
 
+function markLastWorked(altKonu=null){
+  const fas = appState.aktifFasikul;
+  if(!fas) return;
+  const now = new Date();
+  const mins = now.getMinutes().toString().padStart(2,'0');
+  const parentKonu = altKonu ? getParentKonuForAlt(altKonu) : appState.aktifKonu;
+  fas._lastWorkedAt = Date.now();
+  fas._lastKonuAd = parentKonu?.ad || fas._lastKonuAd || '';
+  fas._lastAltKonuAd = altKonu?.ad || fas._lastAltKonuAd || '';
+  fas.sonCalisma = `Bugün ${now.getHours()}:${mins}`;
+  const dersId = appState.aktifDers?.id;
+  const fasRef = dersId
+    ? window.MANIFEST?.dersler.find(d=>d.id===dersId)?.fasikuller.find(f=>f.id===fas.id)
+    : null;
+  if(fasRef && fasRef !== fas){
+    fasRef._lastWorkedAt = fas._lastWorkedAt;
+    fasRef._lastKonuAd = fas._lastKonuAd;
+    fasRef._lastAltKonuAd = fas._lastAltKonuAd;
+    fasRef.sonCalisma = fas.sonCalisma;
+  }
+}
+
 async function openReader(dersId, fasikulId){
   closeDrawer();
   if(isGuestSession() && !window.GUEST_DEMO_FASIKUL_IDS?.has(fasikulId)){
@@ -17,13 +39,15 @@ async function openReader(dersId, fasikulId){
 
   // Kullanıcı fasikülü başka bir ders altına eklediyse metadata kalıcıdır,
   // fakat ağır konu/soru verisi her açılışta GitHub kataloğundan yeniden bağlanır.
-  if(fasikul.sourceType==='bundled'){
-    const source=window.BUNDLED_FASIKUL_SOURCES?.find(s=>s.id===fasikul.id || s.json===fasikul.jsonFile);
-    if(source){
-      const raw=await readBundledJson(source);
-      // GitHub kataloğundaki konu/soru hiyerarşisini fasiküle bağla.
-      if(raw) hydrateBundledFasikul(fasikul,raw,source);
-    }
+  const bundledSource = window.BUNDLED_FASIKUL_SOURCES?.find(s =>
+    s.id === fasikul.id ||
+    String(s.json || '').normalize('NFC') === String(fasikul.jsonFile || '').normalize('NFC')
+  );
+  if(bundledSource){
+    const raw=await readBundledJson(bundledSource);
+    // GitHub kataloğundaki konu/soru hiyerarşisini fasiküle bağla. Eski yerel
+    // kayıtta sourceType eksik olsa bile JSON adı/id eşleşiyorsa güncelle.
+    if(raw) hydrateBundledFasikul(fasikul,raw,bundledSource);
   }
 
   appState.aktifDers = ders;
@@ -109,6 +133,7 @@ async function openReader(dersId, fasikulId){
     if(itemEl) itemEl.classList.add('active');
   }
   if(startAlt && startAlt.sorular?.length > 0) selectAltKonu(startAlt, `altk-${startAlt.id}`);
+  else markLastWorked(null);
 
   // PDF'i önce profil sayfasında bir kez bağlanan klasörden otomatik aç.
   // Klasörde bulunamazsa eski kayıtlı PDF yedeğine bakılır; en son manuel yükleme alanı görünür.
@@ -213,17 +238,8 @@ function closeReader(){
   // sonCalisma güncelle (fasikül kapatılmadan önce)
   if(appState.aktifFasikul){
     const fas = appState.aktifFasikul;
-    const dersId = appState.aktifDers?.id;
-    const fasRef = dersId
-      ? window.MANIFEST?.dersler.find(d=>d.id===dersId)?.fasikuller.find(f=>f.id===fas.id)
-      : null;
-    const target = fasRef || fas;
     const hasActivity = Object.values(appState.sorularState||{}).some(s=>s&&s.fasikulId===fas.id&&s.answered);
-    if(hasActivity){
-      const now = new Date();
-      const mins = now.getMinutes().toString().padStart(2,'0');
-      target.sonCalisma = `Bugün ${now.getHours()}:${mins}`;
-    }
+    if(hasActivity) markLastWorked(appState.aktifAltKonu);
   }
   recalcFasikulProgress();
   updateDashboard();
@@ -550,6 +566,7 @@ function selectAltKonu(altKonu, itemId){
     appState.aktifFasikul._lastAltKonuId = altKonu.id;
     appState.aktifFasikul._lastKonuId = parentKonu?.id || null;
   }
+  markLastWorked(altKonu);
   appState.activeQuestionIdx = 0;
   document.querySelectorAll('.alt-konu-item').forEach(el=>el.classList.remove('active'));
   const el = document.getElementById(itemId || `altk-${altKonu.id}`);
