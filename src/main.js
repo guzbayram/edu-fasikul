@@ -27,6 +27,7 @@ import {
   addHataliCloud, removeHataliCloud, migrateHatalilarToSubcollection
 } from './firebase/firestore.js';
 import { startRealtimeSync, stopRealtimeSync, toggleLiveSession, publishCanli, watchStudentLive, stopWatchStudent } from './sync/realtime.js';
+import { startCanliPresence, stopCanliPresence, publishCanliPresence, publishCanliPresenceDraw, toggleCanliRoster, followCanliMember, unfollowCanliMember } from './sync/livepresence.js';
 
 // ─── Faz 3 Modülleri ────────────────────────────────────
 import './pdf/storage.js';
@@ -2072,6 +2073,13 @@ window.toggleLiveSession = toggleLiveSession;
 window.publishCanli = publishCanli;
 window.watchStudentLive = watchStudentLive;
 window.stopWatchStudent = stopWatchStudent;
+window.startCanliPresence = startCanliPresence;
+window.stopCanliPresence = stopCanliPresence;
+window.publishCanliPresence = publishCanliPresence;
+window.publishCanliPresenceDraw = publishCanliPresenceDraw;
+window.toggleCanliRoster = toggleCanliRoster;
+window.followCanliMember = followCanliMember;
+window.unfollowCanliMember = unfollowCanliMember;
 window.persistData = persistData;
 window.scheduleCloudPersist = scheduleCloudPersist;
 window.persistDrawingCloud = persistDrawingCloud;

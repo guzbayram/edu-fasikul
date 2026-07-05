@@ -122,6 +122,7 @@ async function openReader(dersId, fasikulId){
     }
   }catch(e){ /* yoksay */ }
   window.publishCanli?.();
+  window.startCanliPresence?.();   // aynı fasikülde canlı katılımcı listesi
 }
 
 function openKonuList(){
@@ -206,6 +207,7 @@ function toggleRpKonuSection(){
 }
 
 function closeReader(){
+  window.stopCanliPresence?.();   // canlı oturumdan çık (kendi presence dokümanını sil)
   saveDrawing();
   stopTimer();
   // sonCalisma güncelle (fasikül kapatılmadan önce)

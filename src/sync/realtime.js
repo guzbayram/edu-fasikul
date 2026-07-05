@@ -18,6 +18,7 @@ function _liveDeviceId(){
 }
 
 export function publishCanli(){
+  window.publishCanliPresence?.();   // aynı fasikül canlı oturum listesi (tüm roller)
   if(appState.watchMode) return;   // izleyen öğretmen kendi konumunu yayınlamaz
   // Yayın koşulu: elle açılan Canlı Ders VEYA öğrenci için otomatik yayın açık
   if((!appState.liveSession && !appState.autoPublishLive) || appState._liveSuppress) return;
@@ -289,5 +290,6 @@ export function stopRealtimeSync(){
   appState.liveSession = false;
   appState.autoPublishLive = false;
   stopWatchStudent(true);
+  window.stopCanliPresence?.();
   document.querySelectorAll('.live-session-btn').forEach(b=>b.classList.remove('active'));
 }
