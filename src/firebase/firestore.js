@@ -241,7 +241,7 @@ export function persistDrawingCloud(key,json,w,h){
   if(w) payload.w=w; if(h) payload.h=h;
   window._fsSetDoc(ref,payload,{merge:true})
     .catch(e=>console.warn('Çizim buluta kaydedilemedi:',e));
-  window.publishCanliPresenceDraw?.(key, json);   // canlı takipçilere yansı
+  window.publishCanliPresenceDraw?.(key, json, w, h);   // canlı takipçilere yansı
 }
 
 export function deleteDrawingCloud(key){

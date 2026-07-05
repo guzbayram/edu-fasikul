@@ -94,7 +94,7 @@ export function publishCanliPresence(){
 }
 
 // Çizim değişince: mevcut sayfanın çizimini kendi dokümanına koy → takipçiler görsün
-export function publishCanliPresenceDraw(key, json){
+export function publishCanliPresenceDraw(key, json, w, h){
   const me = _me();
   const fas = appState.aktifFasikul;
   if(!me || !fas || fas.id !== _presFasikulId || !_ready() || !key) return;
@@ -102,7 +102,8 @@ export function publishCanliPresenceDraw(key, json){
   if(key !== currentKey) return;
   clearTimeout(_drawPubTimer);
   _drawPubTimer = setTimeout(()=>{
-    window._fsSetDoc(_memberRef(fas.id, me.uid), { drawKey:key, draw:json||'', ts:Date.now() }, {merge:true})
+    window._fsSetDoc(_memberRef(fas.id, me.uid),
+      { drawKey:key, draw:json||'', dw:w||0, dh:h||0, ts:Date.now() }, {merge:true})
       .catch(()=>{});
   }, 250);
 }
@@ -142,14 +143,16 @@ function _applyFollow(){
   }catch(e){ console.warn('Takip uygula hatası:',e); }
   finally{ setTimeout(()=>{ appState._presSuppress = false; }, 400); }
   // Sayfa/canvas oturunca çizimi yansıt
-  setTimeout(()=>_renderFollowDraw(m.draw, m.drawKey), 320);
+  setTimeout(()=>_renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh), 320);
 }
 
-function _renderFollowDraw(json, drawKey){
+function _renderFollowDraw(json, drawKey, dw, dh){
   if(!json || !drawKey) return;
   const fas = appState.aktifFasikul;
   const currentKey = fas ? `drawing_${fas.id}_p${appState.currentPage}` : null;
   if(currentKey !== drawKey) return;             // takip edilen başka sayfada
+  // Takip edilenin canvas boyutunu kaydet ki applyDrawingScale doğru ölçeklesin
+  if(dw && dh) appState.drawingDims[drawKey] = { w:dw, h:dh };
   const fc = appState.fabricCanvases?.[appState.currentPage] || appState.fabricCanvas;
   if(!fc){
     setTimeout(()=>{
