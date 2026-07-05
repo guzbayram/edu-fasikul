@@ -356,7 +356,9 @@ function syncNavToPage(pageNum){
         const rpSay = document.getElementById('rpSoruSayisi');
         if(rpSay) rpSay.textContent = 'Konu';
         const list = document.getElementById('soruList');
-        if(list) list.innerHTML = `<div class="tek-soru-card" style="text-align:center;padding:32px 18px;color:var(--text-muted)"><div style="font-size:30px;margin-bottom:8px">📄</div><div style="font-size:13px;font-weight:600;color:var(--text)">${owner.ad}</div><div style="font-size:12px;margin-top:6px;opacity:.75">Konu anlatım sayfası — bu bölümde çözülecek soru yok.</div></div>`;
+        // Konu adı zaten updateRightPanelTitle() ile üstteki başlıkta gösteriliyor —
+        // burada tekrar basmıyoruz (mükerrer görünüp satır bölünmesine yol açıyordu).
+        if(list) list.innerHTML = `<div class="tek-soru-card" style="text-align:center;padding:32px 18px;color:var(--text-muted)"><div style="font-size:30px;margin-bottom:8px">📄</div><div style="font-size:12px;opacity:.75">Konu anlatım sayfası — bu bölümde çözülecek soru yok.</div></div>`;
       }
       return;
     }
@@ -383,9 +385,12 @@ function syncNavToPage(pageNum){
     const _isKartBazliNew = targetAlt.sorular?.length > 0 && !!targetAlt.sorular[0]?.sayfa;
     if(_isKartBazliNew){
       const sorular = targetAlt.sorular || [];
-      let startIdx = 0;
-      for(let i = 0; i < sorular.length; i++){
-        if((sorular[i].sayfa || 0) <= pageNum) startIdx = i;
+      const exactIdx = sorular.findIndex(s => s.sayfa === pageNum);
+      let startIdx = exactIdx >= 0 ? exactIdx : 0;
+      if(exactIdx < 0){
+        for(let i = 0; i < sorular.length; i++){
+          if((sorular[i].sayfa || 0) <= pageNum) startIdx = i;
+        }
       }
       appState.activeQuestionIdx = startIdx;
     }
@@ -405,11 +410,16 @@ function syncNavToPage(pageNum){
     // Kart bazlı tespit: sorularda sayfa alanı varsa
     const _isKartBazli = targetAlt.sorular?.length > 0 && !!targetAlt.sorular[0]?.sayfa;
     if(_isKartBazli){
-      // Kart bazlı: her sayfa = ayrı soru → hangi sorunun sayfasındayız?
+      // Aynı sayfada birden fazla soru olabilir. Sayfa değişince o sayfanın ilk
+      // sorusuna geç; kullanıcı aynı sayfadaki başka bir soruyu seçtiyse koru.
       const sorular = targetAlt.sorular || [];
-      let bestIdx = 0;
-      for(let i = 0; i < sorular.length; i++){
-        if((sorular[i].sayfa || 0) <= pageNum) bestIdx = i;
+      const activeIsOnPage = sorular[appState.activeQuestionIdx]?.sayfa === pageNum;
+      let bestIdx = activeIsOnPage ? appState.activeQuestionIdx : sorular.findIndex(s => s.sayfa === pageNum);
+      if(bestIdx < 0){
+        bestIdx = 0;
+        for(let i = 0; i < sorular.length; i++){
+          if((sorular[i].sayfa || 0) <= pageNum) bestIdx = i;
+        }
       }
       if(bestIdx !== appState.activeQuestionIdx){
         appState.activeQuestionIdx = bestIdx;

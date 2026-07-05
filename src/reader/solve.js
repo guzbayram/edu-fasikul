@@ -35,8 +35,13 @@ function fitCanvasToPalette(){
 }
 function reflowSolve(){
   fitCanvasToPalette();
-  // Padding değişti → PDF yeni alana sığacak şekilde yeniden render
-  try{ window.dispatchEvent(new Event('resize')); }catch(_e){}
+  // Padding değişti → PDF yeni alana sığacak şekilde yeniden render.
+  // scheduleReaderViewportReflow: gerçek cihazda Safari araç çubuğu animasyonu
+  // bitene kadar visualViewport'u izleyip #reader-overlay'i buna göre defalarca
+  // yeniden hizalar (bkz. viewportfix.js) — yalnız senkron 'resize' event'ine
+  // güvenmek gerçek cihazda son boyut geç yerleştiğinde eski/küçük render'da
+  // kalıp altında/sağında gri boşluk bırakıyordu.
+  window.scheduleReaderViewportReflow?.();
   setTimeout(()=>{ try{ window.renderPages?.(); }catch(_e){} }, 90);
 }
 function enterSolveMode(){

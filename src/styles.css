@@ -527,7 +527,7 @@ body.reader-locked .main-content{visibility:hidden!important}
     display:flex!important;flex-direction:column!important;
     position:static!important;order:-1!important;align-self:stretch!important;
     flex:0 0 auto!important;min-height:0!important;
-    width:clamp(132px,20vw,172px)!important;max-width:35vw!important;
+    width:clamp(145px,22vw,189px)!important;max-width:38vw!important;
     border-right:1.5px solid var(--border-strong)!important;
     background:var(--bg-1)!important;overflow:hidden!important;
   }
@@ -3963,4 +3963,29 @@ body.reader-locked .main-content{visibility:hidden!important}
   }
   #reader-overlay.solve-mode #solvePalette .sp-answers .sp-ans{width:29px!important;height:29px!important;font-size:12px!important}
   #reader-overlay.solve-mode #solvePalette .color-dot{width:19px!important;height:19px!important}
+
+  /* Soru no + A-E şıkları HER ZAMAN tek satırda (panel dar olsa da taşmasın diye
+     düğmeler flex:1 + aspect-ratio:1 ile mevcut genişliğe esnek uyum sağlar,
+     sabit px yerine — panel .solve-left-col genişliği clamp() ile değiştiğinde
+     de her zaman tek satıra sığar). */
+  #reader-overlay.solve-mode #solvePalette .sp-answers{
+    flex-wrap:nowrap!important;gap:3px!important;width:100%!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-answers .sp-no{
+    flex:0 0 auto!important;font-size:12px!important;padding:0 3px 0 0!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-answers .sp-ans{
+    flex:1 1 0!important;width:auto!important;height:auto!important;aspect-ratio:1!important;
+    min-width:0!important;max-width:32px!important;font-size:11px!important;
+  }
+
+  /* Alt yardımcı satır (canlı/kopyala/çözüm-kartı/sıfırla/çıkış): 5 ikon HER ZAMAN
+     tek satırda — aynı flex:1+aspect-ratio mantığı. */
+  #reader-overlay.solve-mode #solvePalette .sp-util-row{
+    flex-wrap:nowrap!important;gap:3px!important;width:100%!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-util-row .tool-btn{
+    flex:1 1 0!important;width:auto!important;height:auto!important;aspect-ratio:1!important;
+    min-width:0!important;max-width:30px!important;font-size:14px!important;border-radius:8px!important;
+  }
 }
