@@ -558,7 +558,7 @@ body.reader-locked{overflow:hidden!important}
 
 /* Gruplu satırlar. pan/kalem/silgi (üst) öncelikli/büyük. Gruplar arasında boş satır (gap). */
 #reader-overlay.solve-mode #solvePalette{justify-content:center!important;gap:14px!important}
-#reader-overlay.solve-mode #solvePalette .sp-tools-row{flex-wrap:nowrap!important;gap:8px!important}
+#reader-overlay.solve-mode #solvePalette .sp-tools-row{flex-wrap:wrap!important;gap:8px!important}
 #reader-overlay.solve-mode #solvePalette .sp-tools-row .tool-btn{width:46px!important;height:46px!important;font-size:23px!important;border-radius:13px!important}
 #reader-overlay.solve-mode #solvePalette .sp-actions-row{flex-wrap:nowrap!important}
 /* Telefon yatay (kısa): daha kompakt — gruplar arası boşluk az, butonlar küçük */
@@ -2148,8 +2148,9 @@ body.reader-locked{overflow:hidden!important}
   #reader-overlay {
     flex-direction: column !important;
     overflow: hidden;
-    height: 100vh !important;
-    height: 100dvh !important;
+    /* height:100dvh KALDIRILDI: iOS yatayda dvh kısa kalıp altta anasayfa şeridi
+       bırakıyordu. Base'teki inset:0 (top:0+bottom:0) viewport'u tam kaplar. */
+    top: 0 !important; bottom: 0 !important; height: auto !important;
   }
 
   .alt-konu-list {
