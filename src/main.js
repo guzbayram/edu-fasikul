@@ -26,7 +26,7 @@ import {
   _canonicalAnswerKey, _getUserKey,
   addHataliCloud, removeHataliCloud, migrateHatalilarToSubcollection
 } from './firebase/firestore.js';
-import { startRealtimeSync, stopRealtimeSync, toggleLiveSession, publishCanli } from './sync/realtime.js';
+import { startRealtimeSync, stopRealtimeSync, toggleLiveSession, publishCanli, watchStudentLive, stopWatchStudent } from './sync/realtime.js';
 
 // ─── Faz 3 Modülleri ────────────────────────────────────
 import './pdf/storage.js';
@@ -2070,6 +2070,8 @@ window.startRealtimeSync = startRealtimeSync;
 window.stopRealtimeSync = stopRealtimeSync;
 window.toggleLiveSession = toggleLiveSession;
 window.publishCanli = publishCanli;
+window.watchStudentLive = watchStudentLive;
+window.stopWatchStudent = stopWatchStudent;
 window.persistData = persistData;
 window.scheduleCloudPersist = scheduleCloudPersist;
 window.persistDrawingCloud = persistDrawingCloud;

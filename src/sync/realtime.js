@@ -18,7 +18,9 @@ function _liveDeviceId(){
 }
 
 export function publishCanli(){
-  if(!appState.liveSession || appState._liveSuppress) return;
+  if(appState.watchMode) return;   // izleyen öğretmen kendi konumunu yayınlamaz
+  // Yayın koşulu: elle açılan Canlı Ders VEYA öğrenci için otomatik yayın açık
+  if((!appState.liveSession && !appState.autoPublishLive) || appState._liveSuppress) return;
   const uid = _getUserKey();
   const fas = appState.aktifFasikul;
   if(!uid || !fas || !window._firestoreReady || !window._db) return;
@@ -65,7 +67,8 @@ export function subscribeCanli(uid){
     if(!d || d.by === _liveDeviceId()) return;             // kendi yazdığımız
     if(d.ts && d.ts <= (appState._lastCanliTs||0)) return; // zaten uygulandı
     appState._lastCanliTs = d.ts || Date.now();
-    if(appState.liveSession) _followCanli(d);
+    appState._watchGotData = true;   // izleme modu: en az bir veri geldi
+    if(appState.liveSession || appState.watchMode) _followCanli(d);
   }, (err)=>console.warn('Canlı dinleme hatası:',err));
 }
 export function unsubscribeCanli(){ if(_canliUnsub){ _canliUnsub(); _canliUnsub=null; } }
@@ -89,9 +92,66 @@ export function toggleLiveSession(){
   }
 }
 
+// ══════════════════════════════════════════════════════════
+// ÖĞRETMEN — bir öğrenciyi CANLI İZLE
+// Öğrenci konumunu otomatik yayınlar (autoPublishLive). Öğretmen o öğrencinin
+// kullanicilar/{uid}/canli ve .../cizimler yollarını dinleyip aynı sayfayı +
+// çizimleri kendi ekranında görür. İzleyen taraf hiçbir şey yayınlamaz.
+// ══════════════════════════════════════════════════════════
+function _escName(s){
+  return String(s||'').replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+}
+function _showWatchBanner(name){
+  let b = document.getElementById('watchLiveBanner');
+  if(!b){
+    b = document.createElement('div');
+    b.id = 'watchLiveBanner';
+    b.className = 'watch-live-banner';
+    document.body.appendChild(b);
+  }
+  b.innerHTML = `<span class="wlb-dot"></span>`
+    + `<span class="wlb-txt"><b>${_escName(name)||'Öğrenci'}</b> canlı izleniyor</span>`
+    + `<button class="wlb-stop" onclick="stopWatchStudent()">Durdur</button>`;
+  b.style.display = 'flex';
+}
+function _hideWatchBanner(){ const b=document.getElementById('watchLiveBanner'); if(b) b.style.display='none'; }
+
+export function watchStudentLive(studentUid, studentName){
+  if(!studentUid){ window.showToast?.('Öğrenci seçilemedi','error'); return; }
+  if(!window._firestoreReady || !window._db){ window.showToast?.('Bağlantı hazır değil, birazdan tekrar dene','info'); return; }
+  // Önceki izleme/canlı ders varsa temizle
+  if(appState.liveSession){ appState.liveSession=false; document.querySelectorAll('.live-session-btn').forEach(b=>b.classList.remove('active')); }
+  stopWatchStudent(true);
+  appState.watchMode = true;
+  appState._watchStudentUid = studentUid;
+  appState._watchGotData = false;
+  appState._lastCanliTs = 0;   // yeni öğrencinin ilk konumu uygulanabilsin
+  subscribeCanli(studentUid);
+  subscribeRealtimeDrawings(studentUid);
+  _showWatchBanner(studentName);
+  window.showToast?.(`🔴 ${studentName||'Öğrenci'} canlı izleniyor`,'success');
+  // Öğrenci çevrimdışıysa / hiç yayın yoksa bilgilendir
+  clearTimeout(appState._watchProbe);
+  appState._watchProbe = setTimeout(()=>{
+    if(appState.watchMode && !appState._watchGotData)
+      window.showToast?.('Öğrenci şu an çevrimdışı görünüyor · uygulamayı açıp sayfa gezdiğinde ekranına gelecek','info');
+  }, 5000);
+}
+
+export function stopWatchStudent(silent){
+  const wasWatching = appState.watchMode;
+  appState.watchMode = false;
+  appState._watchStudentUid = null;
+  clearTimeout(appState._watchProbe);
+  unsubscribeCanli();
+  unsubscribeRealtimeDrawings();
+  _hideWatchBanner();
+  if(wasWatching && !silent) window.showToast?.('Canlı izleme durduruldu','info');
+}
+
 function subscribeRealtimeDrawings(uid){
   unsubscribeRealtimeDrawings();
-  if(!appState.liveSession || !window._fsOnSnapshot || !window._db || !uid) return;
+  if((!appState.liveSession && !appState.watchMode) || !window._fsOnSnapshot || !window._db || !uid) return;
   const cizimlerRef = window._fsCollection(window._db,'kullanicilar',uid,'cizimler');
   window._realtimeUnsubCizimler = window._fsOnSnapshot(cizimlerRef, (snapshot)=>{
     snapshot.docChanges().forEach(change=>{
@@ -163,6 +223,11 @@ export function startRealtimeSync(uid){
   stopRealtimeSync();
   if(!window._fsOnSnapshot || !window._db) return;
 
+  // Öğrenci hesapları konumunu otomatik yayınlar → öğretmen elle bir şey
+  // yapmadan canlı izleyebilir. Öğretmen/yönetici/misafir yayın yapmaz.
+  appState.autoPublishLive = appState.user?.role === 'ogrenci'
+    && appState.user?.email !== 'misafir@demo.com';
+
   // ── Cevapları dinle ──
   const cozumlerRef = window._fsCollection(window._db,'kullanicilar',uid,'cozumler');
   window._realtimeUnsubCozumler = window._fsOnSnapshot(cozumlerRef, (snapshot)=>{
@@ -222,5 +287,7 @@ export function stopRealtimeSync(){
   if(window._realtimeUnsubHatalilar){ window._realtimeUnsubHatalilar(); window._realtimeUnsubHatalilar=null; }
   unsubscribeCanli();
   appState.liveSession = false;
+  appState.autoPublishLive = false;
+  stopWatchStudent(true);
   document.querySelectorAll('.live-session-btn').forEach(b=>b.classList.remove('active'));
 }

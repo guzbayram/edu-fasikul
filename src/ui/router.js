@@ -15,6 +15,7 @@ function showPanel(name, navEl){
   document.getElementById('topBarTitle').textContent = titles[name]||name;
   if(name==='stats' && !window._chartsInited){ initCharts(); window._chartsInited=true; }
   if(name==='dashboard' || name==='stats' || name==='profil') updateDashboard();
+  if(name==='profil') window.refreshProfileGithubJsonTools?.();
   if(name==='hatalilar') renderHatalilar();
   if(name==='admin') loadKullaniciList();
 }

@@ -26,6 +26,9 @@ export const appState = {
   sorularState: {},
   videoWatched: {},
   liveSession: false,
+  autoPublishLive: false,   // öğrenci: konumunu öğretmenin izlemesi için sürekli otomatik yayınlar
+  watchMode: false,         // öğretmen: bir öğrenciyi canlı izliyor (yalnız dinler, yayın yapmaz)
+  _watchStudentUid: null,
   activeQuestionIdx: 0,
   soruListMode: 'tek',
   readingMode: false,

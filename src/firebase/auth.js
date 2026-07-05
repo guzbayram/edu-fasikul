@@ -796,6 +796,7 @@ export async function selectManagedStudent(uid){
           <span><b>%${summary.accuracy}</b> doğru</span>
           <span><b>${summary.weekly}</b> bu hafta</span>
         </div>
+        <button class="watch-live-btn" onclick="watchStudentLive('${esc(uid)}','${esc(String(student.name||student.email||'')).replace(/'/g,"\\'")}')" title="Öğrencinin şu an açık olduğu sayfayı ve çizimlerini canlı gör">🔴 Canlı İzle</button>
       </div>
       ${loadWarnings.length ? `<div class="managed-warning">${loadWarnings.map(esc).join(' ')}</div>` : ''}
       <div class="managed-topic-list">

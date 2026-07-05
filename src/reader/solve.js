@@ -169,7 +169,7 @@ function toggleCardFill(){
     const factor = availW / r.width;
     if(Math.abs(factor - 1) > 0.02){
       appState._fillBaseZoom = appState.zoom;
-      appState.zoom = Math.max(40, Math.min(300, Math.round(appState.zoom * factor)));
+      appState.zoom = (window.clampZoom || (v=>Math.max(25,Math.min(400,v))))(Math.round(appState.zoom * factor));
     }
   } else {
     appState.zoom = appState._fillBaseZoom; appState._fillBaseZoom = null;

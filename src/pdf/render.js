@@ -672,8 +672,18 @@ function promptPageJump(){
 }
 
 // Tüm zoom etiketlerini (panel + solve modu çubuğu) tek noktadan güncelle
+// ── Zoom standartları: tek clamp + hassasiyet sabitleri (tüm giriş noktaları buna uyar)
+const ZOOM_MIN = 25;
+const ZOOM_MAX = 400;
+// Trackpad/tekerlek pinch hassasiyeti: çarpımsal zoom faktörü = exp(-deltaY * SENS).
+// deltaY büyüklüğüne duyarlı olduğu için yumuşak pinch küçük, hızlı pinch büyük adım verir.
+const ZOOM_WHEEL_SENS = 0.0022;
+function clampZoom(v){ return Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, v)); }
+window.clampZoom = clampZoom;
+
 function setZoomLabel(v){
-  document.querySelectorAll('.js-zoom-pct').forEach(el => el.textContent = `%${v}`);
+  const pct = Math.round(v);
+  document.querySelectorAll('.js-zoom-pct').forEach(el => el.textContent = `%${pct}`);
 }
 window.setZoomLabel = setZoomLabel;
 
@@ -684,7 +694,7 @@ function changeZoom(delta){
   const viewportY = (wrap?.clientHeight || 0) / 2;
   const contentX = (wrap?.scrollLeft || 0) + viewportX;
   const contentY = (wrap?.scrollTop || 0) + viewportY;
-  appState.zoom = Math.max(40,Math.min(300,appState.zoom+delta));
+  appState.zoom = clampZoom(appState.zoom+delta);
   setZoomLabel(appState.zoom);
   const ratio = appState.zoom / renderedZoom;
   // Anlık görsel ölçek: render beklemeden zoom hissi (merkez = viewport ortası)
@@ -755,17 +765,15 @@ function initCardZoomPan(){
       const relX = viewportX + beforeLeft;
       const relY = viewportY + beforeTop;
       const oldZoom = appState.zoom;
-      const delta = e.deltaY < 0 ? 5 : -5;
-      appState.zoom = Math.max(40, Math.min(300, appState.zoom + delta));
-      if(appState.zoom === oldZoom) return;
+      const rZoom = appState._renderedZoom || oldZoom;
+      // Çarpımsal + deltaY büyüklüğüne duyarlı zoom (standart trackpad pinch hissi).
+      appState.zoom = clampZoom(appState.zoom * Math.exp(-e.deltaY * ZOOM_WHEEL_SENS));
+      if(Math.abs(appState.zoom - oldZoom) < 0.05) return;
       setZoomLabel(appState.zoom);
-      scheduleCardZoomRender({
-        contentX: relX,
-        contentY: relY,
-        viewportX,
-        viewportY,
-        ratio: appState.zoom / (appState._renderedZoom || oldZoom)
-      });
+      const ratio = appState.zoom / rZoom;
+      // İmleç-odaklı anlık görsel geri bildirim (render gelene kadar akıcı kalsın).
+      applyStageScale(ratio, e.clientX, e.clientY);
+      scheduleCardZoomRender({ contentX: relX, contentY: relY, viewportX, viewportY, ratio });
     }
   }, {passive:false});
 
@@ -872,7 +880,7 @@ function initTouchGestures() {
     if (!g) return;
     if (e.touches.length >= 2) return; // hâlâ 2 parmak
 
-    const newZoom = Math.max(40, Math.min(300, Math.round(g.startZoom * g.scale)));
+    const newZoom = clampZoom(Math.round(g.startZoom * g.scale));
     const wrapRect = wrap.getBoundingClientRect();
     clearVisualScale();
 
