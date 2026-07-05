@@ -660,6 +660,10 @@
   </div>
 
   <!-- ═══ TELEFON: Tam ekran çözüm modu — yüzer/sürüklenebilir araç paleti ═══ -->
+  <!-- solve-left-col: telefon-yatay-kısa modda #solvePalette + #solveZoomBar'ı TEK
+       gerçek flex-çocuğu (position:static) yapan sarmalayıcı — diğer modlarda
+       display:contents ile "görünmez", içindekiler eski position:fixed davranışını korur. -->
+  <div class="solve-left-col" id="solveLeftCol">
   <!-- SABİT KENAR PANEL (yatay: sol · dikey: üst). UX sırası: araçlar(üst,büyük) →
        renkler → geri/ileri → şıklar → yardımcılar(alt). ◀▶ soru kaldırıldı. -->
   <div class="solve-palette solve-fixed-panel" id="solvePalette">
@@ -704,6 +708,7 @@
     <button class="page-nav-btn" onclick="changeZoom(10)" title="Yaklaştır">+</button>
     <button class="page-nav-btn rp-page-nav" onclick="changePage(1)" title="Sonraki sayfa">▶</button>
   </div>
+  </div><!-- /solve-left-col -->
 
   <!-- ═══ KONU SEÇİM MODAL (tüm ekran üstünde, toolbar altında) ═══ -->
   <div class="konu-modal-backdrop" id="konuModalBackdrop" onclick="closeKonuModal()" style="display:none"></div>

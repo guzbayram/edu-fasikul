@@ -8,12 +8,17 @@ import { appState } from '../state/appState.js';
 
 // Canvas alanını paletin boyutu kadar içeriden başlat → PDF palete kadar büyür,
 // altında gizlenmez/kesilmez (yatay: soldan, dikey: üstten).
+// Telefon yatay-kısa modda GEREKSİZ: #solvePalette artık .solve-left-col ile gerçek
+// flex çocuğu (position:static) — reader-canvas-wrap kalan genişliği CSS'ten otomatik
+// alır, JS ile ölçüp padding enjekte etmeye gerek yok (ve fixed-panel varsayımıyla
+// hesaplanan padding, artık flex'in verdiği gerçek alanla çakışıp gereksiz boşluk
+// bırakabilirdi — bu yüzden bu modda devre dışı).
 function fitCanvasToPalette(){
   const ov = document.getElementById('reader-overlay');
   const wrap = document.getElementById('readerCanvasWrap');
-  const panel = document.getElementById('solvePalette');  // sabit kenar panel
+  const panel = document.getElementById('solvePalette');  // sabit kenar panel (yalnız tablet/masaüstü/dikey'de fixed)
   if(!wrap) return;
-  if(!ov?.classList.contains('solve-mode')){
+  if(!ov?.classList.contains('solve-mode') || isPhoneLandscape()){
     ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k));
     return;
   }
