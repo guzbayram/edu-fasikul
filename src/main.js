@@ -300,6 +300,20 @@ function removeDeletedBundledId(id){
   const s=getDeletedBundledIds();
   if(s.delete(id)) localStorage.setItem(DELETED_BUNDLED_IDS_KEY, JSON.stringify([...s]));
 }
+window.removeDeletedBundledId = removeDeletedBundledId;
+// Bir fasikül BİR dersten çıkarıldığında: başka derste hâlâ varsa hiçbir şey yapma.
+// Hiçbir derste kalmadıysa (yetim) → custom kaynağı kaldır + sabit kaynaksa bastır,
+// ki loadBundledFasikuller onu varsayılan derse geri tohumlamasın.
+function suppressBundledIfOrphan(fasId, jsonFile){
+  const norm=v=>String(v||'').normalize('NFC');
+  const jn=norm(jsonFile);
+  const stillExists = MANIFEST.dersler.some(d=>(d.fasikuller||[]).some(f=>f.id===fasId || (jn && norm(f.jsonFile)===jn)));
+  if(stillExists) return false;
+  removeCustomGithubSource(fasId, jsonFile);
+  if(BUNDLED_FASIKUL_SOURCES.some(s=>!s.custom && (s.id===fasId || (jn && norm(s.json)===jn)))) addDeletedBundledId(fasId);
+  return true;
+}
+window.suppressBundledIfOrphan = suppressBundledIfOrphan;
 // Admin: fasikülü kütüphaneden sil (manifest + custom kaynak + gerekiyorsa bastır).
 function deleteFasikul(dersId, fasikulId){
   if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
@@ -309,9 +323,8 @@ function deleteFasikul(dersId, fasikulId){
   if(!confirm(`"${fas.ad}" fasikülü kütüphaneden silinecek. Emin misiniz?`)) return;
   const jsonFile=fas.jsonFile;
   ders.fasikuller = ders.fasikuller.filter(f=>f.id!==fasikulId);
-  removeCustomGithubSource(fasikulId, jsonFile);
-  // Kod içinde sabit tanımlı (custom olmayan) bir kaynaksa geri gelmesin diye bastır.
-  if(BUNDLED_FASIKUL_SOURCES.some(s=>!s.custom && s.id===fasikulId)) addDeletedBundledId(fasikulId);
+  // Yalnız hiçbir derste kalmadıysa bastır (başka derste duruyorsa dokunma).
+  suppressBundledIfOrphan(fasikulId, jsonFile);
   persistManifest();
   renderFasikulCards(visibleFasikullerFor(ders), ders);
   renderDerslerGrid();
@@ -1894,29 +1907,28 @@ async function loadBundledFasikuller(){
     if(deletedIds.has(source.id)) continue; // admin sildi → geri gelmesin
     const raw = await readBundledJson(source);
     if(!raw || !Array.isArray(raw.konular)) continue;
-    let ders = MANIFEST.dersler.find(d=>d.id===source.dersId);
-    if(!ders){
-      const cfg = BUNDLED_DERS_CONFIG[source.dersId] || BUNDLED_DERS_CONFIG.mat;
-      ders = {id:source.dersId,ad:cfg.ad,ikon:cfg.ikon,renk:cfg.renk,progPct:0,fasikuller:[]};
-      MANIFEST.dersler.push(ders);
-    }
-    // Aynı JSON'a sahip mevcut kaydı yeniden kullan (id farklı olsa bile) —
-    // aksi halde farklı id'li kalıcı kayıt + yeni canonical = çift kart olur.
-    let canonical = ders.fasikuller.find(f=>f.id===source.id || norm(f.jsonFile)===norm(source.json));
-    if(!canonical){
-      canonical = {id:source.id,progPct:0,sonCalisma:'Henüz çalışılmadı',temaRenk:null};
-      ders.fasikuller.push(canonical);
-    }
-
-    // Aynı GitHub fasikülü kullanıcının oluşturduğu başka bir ders
-    // altında da bulunabilir. Tüm kopyalara aynı konu/soru JSON'unu bağla.
+    // Bu kaynağın TÜM derslerdeki mevcut kopyaları (kullanıcının küratörlüğü).
     const copies=[];
     for(const manifestDers of MANIFEST.dersler){
       for(const fas of manifestDers.fasikuller||[]){
         if(fas.id===source.id || norm(fas.jsonFile)===norm(source.json)) copies.push(fas);
       }
     }
-    if(!copies.includes(canonical)) copies.push(canonical);
+    // Hiçbir derste yoksa YALNIZ ilk kurulumda varsayılan derse (source.dersId)
+    // tohumla. Kullanıcı başka derse taşıdıysa/çıkardıysa artık varsayılan derse
+    // GERİ EKLENMEZ — "aynı anda Matematik'e de ekleniyor / silince geri geliyor"
+    // sorununun kök nedeni bu koşulsuz tohumlamaydı.
+    if(copies.length===0){
+      let ders = MANIFEST.dersler.find(d=>d.id===source.dersId);
+      if(!ders){
+        const cfg = BUNDLED_DERS_CONFIG[source.dersId] || BUNDLED_DERS_CONFIG.mat;
+        ders = {id:source.dersId,ad:cfg.ad,ikon:cfg.ikon,renk:cfg.renk,progPct:0,fasikuller:[]};
+        MANIFEST.dersler.push(ders);
+      }
+      const canonical = {id:source.id,progPct:0,sonCalisma:'Henüz çalışılmadı',temaRenk:null};
+      ders.fasikuller.push(canonical);
+      copies.push(canonical);
+    }
     copies.forEach(fas=>hydrateBundledFasikul(fas,raw,source));
     loaded+=copies.length;
   }

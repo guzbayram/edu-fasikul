@@ -581,6 +581,8 @@ function silFasikul(){
   window.currentDrawerDers.fasikuller = window.currentDrawerDers.fasikuller.filter(f=>f.id!==editId);
   // Konuları da sil
   try{ localStorage.removeItem(`edu_konular_${window.currentDrawerDers.id}_${editId}`); }catch(e){}
+  // Başka derste kalmadıysa geri tohumlanmasın diye bastır.
+  window.suppressBundledIfOrphan?.(editId, fas.jsonFile);
   persistManifest();
   renderFasikulCards(window.currentDrawerDers.fasikuller, window.currentDrawerDers);
   renderDerslerGrid();
@@ -725,6 +727,7 @@ async function kutuphaneDersEkle(sourceId, dersId){
   let ders = window.MANIFEST.dersler.find(d=>d.id===dersId);
   if(!ders){ showToast('Ders bulunamadı','error'); return; }
   if(ders.fasikuller.some(f=>f.id===source.id)){ showToast('Zaten ekli','info'); return; }
+  window.removeDeletedBundledId?.(source.id);   // önceden bastırıldıysa geri getir
 
   const raw = await readBundledJson(source);
   const cfg = window.BUNDLED_DERS_CONFIG[dersId] || {};
@@ -761,6 +764,8 @@ function kutuphaneCikar(sourceId, dersId){
   if(!confirm(`"${fas.ad}" fasiküle "${ders.ad}" dersinden çıkarılsın mı?`)) return;
   ders.fasikuller = ders.fasikuller.filter(f=>f.id!==sourceId);
   try{ localStorage.removeItem(`edu_konular_${dersId}_${sourceId}`); }catch(e){}
+  // Başka derste kalmadıysa geri tohumlanmasın diye bastır.
+  window.suppressBundledIfOrphan?.(sourceId, fas.jsonFile);
   persistManifest();
   renderDerslerGrid();
   showToast(`Fasikül "${ders.ad}"dan çıkarıldı 🗑️`,'success');
