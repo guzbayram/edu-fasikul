@@ -3954,7 +3954,9 @@ body.reader-locked .main-content{visibility:hidden!important}
 @media (orientation:landscape) and (max-height:500px){
   #reader-overlay.solve-mode #solvePalette{
     justify-content:flex-start!important;
-    gap:5px!important;padding:5px 5px calc(5px + env(safe-area-inset-bottom))!important;
+    gap:5px!important;
+    padding-top:50px!important;padding-right:5px!important;padding-left:5px!important;
+    padding-bottom:calc(5px + env(safe-area-inset-bottom))!important;
   }
   #reader-overlay.solve-mode #solvePalette .sp-row{row-gap:5px!important;gap:5px!important}
   #reader-overlay.solve-mode #solvePalette .tool-btn,

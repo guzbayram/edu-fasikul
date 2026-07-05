@@ -19,8 +19,13 @@ function syncReaderViewport(){
   if(!vv || !ov || !ov.classList.contains('open')) return;
   ov.style.removeProperty('height');
   ov.style.removeProperty('width');
-  ov.style.top  = vv.offsetTop + 'px';
-  ov.style.left = vv.offsetLeft + 'px';
+  // iPhone Pro Max'te visualViewport.offsetTop NEGATİF olabiliyor (bilinen tuhaflık,
+  // bkz. yatay-cizim-kaymasi belleği). Negatif değeri OLDUĞU GİBİ top'a yazmak kutuyu
+  // yukarı/ekran DIŞINA kaydırıp panelin üst satırını (pan/kalem/marker) ve PDF'in üst
+  // satırını kırpıyordu. 0'ın altına asla inmeyiz — yalnızca GERÇEKTEN aşağı kaymış
+  // (offsetTop>0) durumları telafi ederiz.
+  ov.style.top  = Math.max(0, vv.offsetTop) + 'px';
+  ov.style.left = Math.max(0, vv.offsetLeft) + 'px';
 }
 function reflowReaderViewport(){
   syncReaderViewport();
