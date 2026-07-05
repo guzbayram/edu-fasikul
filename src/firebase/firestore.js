@@ -275,6 +275,7 @@ export function persistData(){
       preferences: appState.preferences,
       theme: appState.theme,
       manifest: window.buildManifestMeta?.() || [],
+      removedFromDers: (()=>{ try{ return JSON.parse(localStorage.getItem('edu_removed_from_ders')||'[]'); }catch(e){ return []; } })(),
       videoWatched: appState.videoWatched,
       istatistik: istatistik,
       fasikulIstatistik: fasikulIst,
@@ -325,10 +326,20 @@ export async function loadFromFirestore(){
         appState.theme=data.theme;
         localStorage.setItem('edu_theme',data.theme);
       }
+      // Per-ders silme tombstone'unu bulutla birleştir (manifest'i uygulamadan ÖNCE
+      // ki loadManifestMeta/loadBundledFasikuller içindeki filtre bunları görsün).
+      if(Array.isArray(data.removedFromDers)){
+        try{
+          const merged = new Set(JSON.parse(localStorage.getItem('edu_removed_from_ders')||'[]'));
+          data.removedFromDers.forEach(k=>merged.add(k));
+          localStorage.setItem('edu_removed_from_ders', JSON.stringify([...merged]));
+        }catch(e){}
+      }
       if(Array.isArray(data.manifest)){
         localStorage.setItem('edu_manifest_meta',JSON.stringify(data.manifest));
         window.loadManifestMeta?.();
         await window.loadBundledFasikuller?.();
+        window.applyDersRemovals?.();
         window.renderDerslerGrid?.();
       }
       if(data.sorularState) appState.sorularState = data.sorularState;

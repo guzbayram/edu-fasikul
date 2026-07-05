@@ -301,6 +301,47 @@ function removeDeletedBundledId(id){
   if(s.delete(id)) localStorage.setItem(DELETED_BUNDLED_IDS_KEY, JSON.stringify([...s]));
 }
 window.removeDeletedBundledId = removeDeletedBundledId;
+
+// ── Per-ders silme tombstone'u ──────────────────────────────────────────────
+// Bir fasikülü belirli bir DERSTEN silince, o (ders,fasikül) çifti burada
+// "kalıcı silinmiş" işaretlenir. loadManifestMeta / loadBundledFasikuller ve
+// bulut manifest'i geri yüklendikten sonra bu liste FİLTRE olarak uygulanır.
+// Böylece eski (bayat) yerel/bulut meta'sı fasikülü o derse geri EKLESE bile
+// anında düşürülür — "matematikten siliyorum, redeploy'da geri geliyor" kökü.
+const DERS_REMOVED_KEY = 'edu_removed_from_ders';
+const _normNFC = v => String(v||'').normalize('NFC');
+function getDersRemovals(){
+  try{ return new Set(JSON.parse(localStorage.getItem(DERS_REMOVED_KEY)||'[]')); }catch(e){ return new Set(); }
+}
+function recordDersRemoval(dersId, fasId, jsonFile){
+  if(!dersId || !fasId) return;
+  const s = getDersRemovals();
+  s.add(dersId+' '+fasId);
+  if(jsonFile) s.add(dersId+' j:'+_normNFC(jsonFile));
+  try{ localStorage.setItem(DERS_REMOVED_KEY, JSON.stringify([...s])); }catch(e){}
+}
+function clearDersRemoval(dersId, fasId, jsonFile){
+  if(!dersId || !fasId) return;
+  const s = getDersRemovals();
+  let changed = s.delete(dersId+' '+fasId);
+  if(jsonFile) changed = s.delete(dersId+' j:'+_normNFC(jsonFile)) || changed;
+  if(changed){ try{ localStorage.setItem(DERS_REMOVED_KEY, JSON.stringify([...s])); }catch(e){} }
+}
+function applyDersRemovals(){
+  const rem = getDersRemovals();
+  if(!rem.size) return;
+  for(const d of MANIFEST.dersler){
+    d.fasikuller = (d.fasikuller||[]).filter(f=>{
+      if(rem.has(d.id+' '+f.id)) return false;
+      if(f.jsonFile && rem.has(d.id+' j:'+_normNFC(f.jsonFile))) return false;
+      return true;
+    });
+  }
+}
+window.recordDersRemoval = recordDersRemoval;
+window.clearDersRemoval = clearDersRemoval;
+window.applyDersRemovals = applyDersRemovals;
+
 // Bir fasikül BİR dersten çıkarıldığında: başka derste hâlâ varsa hiçbir şey yapma.
 // Hiçbir derste kalmadıysa (yetim) → custom kaynağı kaldır + sabit kaynaksa bastır,
 // ki loadBundledFasikuller onu varsayılan derse geri tohumlamasın.
@@ -323,6 +364,7 @@ function deleteFasikul(dersId, fasikulId){
   if(!confirm(`"${fas.ad}" fasikülü kütüphaneden silinecek. Emin misiniz?`)) return;
   const jsonFile=fas.jsonFile;
   ders.fasikuller = ders.fasikuller.filter(f=>f.id!==fasikulId);
+  recordDersRemoval(dersId, fasikulId, jsonFile);   // bu dersten kalıcı sil
   // Yalnız hiçbir derste kalmadıysa bastır (başka derste duruyorsa dokunma).
   suppressBundledIfOrphan(fasikulId, jsonFile);
   persistManifest();
@@ -1932,6 +1974,7 @@ async function loadBundledFasikuller(){
     copies.forEach(fas=>hydrateBundledFasikul(fas,raw,source));
     loaded+=copies.length;
   }
+  applyDersRemovals();   // bu dersten kalıcı silinenler tohumlama sonrası da düşsün
   window.bundledLibraryReady = true;
   return loaded;
 }
@@ -2011,6 +2054,7 @@ function loadManifestMeta(){
       }
     });
     MANIFEST.dersler = MANIFEST.dersler.filter(d=>!deleted.includes(d.id) && !LEGACY_DEMO_DERS_IDS.has(d.id));
+    applyDersRemovals();
   }catch(e){}
 }
 

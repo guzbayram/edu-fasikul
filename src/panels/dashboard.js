@@ -563,6 +563,7 @@ function saveFasikul(){
       ...(detectedTip?{fasikulTip:detectedTip}:{})
     });
     if(source) persistKonular(ders.id,newId,konular).catch(()=>{});
+    window.clearDersRemoval?.(ders.id, newId, source?.json);   // bu derse eklendi → tombstone kalksın
     showToast(`${ad} eklendi ✓`,'success');
   }
   // Önce modalı kapat: persist/render bir hata verse bile modal takılı kalmasın.
@@ -581,6 +582,7 @@ function silFasikul(){
   window.currentDrawerDers.fasikuller = window.currentDrawerDers.fasikuller.filter(f=>f.id!==editId);
   // Konuları da sil
   try{ localStorage.removeItem(`edu_konular_${window.currentDrawerDers.id}_${editId}`); }catch(e){}
+  window.recordDersRemoval?.(window.currentDrawerDers.id, editId, fas.jsonFile);   // bu dersten kalıcı sil
   // Başka derste kalmadıysa geri tohumlanmasın diye bastır.
   window.suppressBundledIfOrphan?.(editId, fas.jsonFile);
   persistManifest();
@@ -728,6 +730,7 @@ async function kutuphaneDersEkle(sourceId, dersId){
   if(!ders){ showToast('Ders bulunamadı','error'); return; }
   if(ders.fasikuller.some(f=>f.id===source.id)){ showToast('Zaten ekli','info'); return; }
   window.removeDeletedBundledId?.(source.id);   // önceden bastırıldıysa geri getir
+  window.clearDersRemoval?.(dersId, source.id, source.json);   // bu derse tekrar eklendi → tombstone kalksın
 
   const raw = await readBundledJson(source);
   const cfg = window.BUNDLED_DERS_CONFIG[dersId] || {};
@@ -764,6 +767,7 @@ function kutuphaneCikar(sourceId, dersId){
   if(!confirm(`"${fas.ad}" fasiküle "${ders.ad}" dersinden çıkarılsın mı?`)) return;
   ders.fasikuller = ders.fasikuller.filter(f=>f.id!==sourceId);
   try{ localStorage.removeItem(`edu_konular_${dersId}_${sourceId}`); }catch(e){}
+  window.recordDersRemoval?.(dersId, sourceId, fas.jsonFile);   // bu dersten kalıcı sil
   // Başka derste kalmadıysa geri tohumlanmasın diye bastır.
   window.suppressBundledIfOrphan?.(sourceId, fas.jsonFile);
   persistManifest();

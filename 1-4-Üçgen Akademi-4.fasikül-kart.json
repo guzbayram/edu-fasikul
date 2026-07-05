@@ -150,7 +150,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 7,
               "kartDosya": "4-Test-1-1.png",
@@ -170,7 +170,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 8,
               "kartDosya": "4-Test-1-2.png",
@@ -190,7 +190,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 9,
               "kartDosya": "4-Test-1-3.png",
@@ -210,7 +210,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 4",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 10,
               "kartDosya": "4-Test-1-5.png",
@@ -230,7 +230,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 11,
               "kartDosya": "4-Test-1-6.png",
@@ -250,7 +250,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 12,
               "kartDosya": "4-Test-1-7.png",
@@ -270,7 +270,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 13,
               "kartDosya": "4-Test-1-8.png",
@@ -290,7 +290,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 14,
               "kartDosya": "4-Test-1-9.png",
@@ -310,7 +310,7 @@
             {
               "no": 9,
               "onizleme": "Oran - Orantı - Kazanım Testi 1 Soru 9",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 15,
               "kartDosya": "4-Test-1-10.png",
@@ -342,7 +342,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 16,
               "kartDosya": "4-Test-2-1.png",
@@ -362,7 +362,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 17,
               "kartDosya": "4-Test-2-2.png",
@@ -382,7 +382,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 18,
               "kartDosya": "4-Test-2-3.png",
@@ -402,7 +402,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 19,
               "kartDosya": "4-Test-2-4.png",
@@ -422,7 +422,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 20,
               "kartDosya": "4-Test-2-5.png",
@@ -442,7 +442,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 21,
               "kartDosya": "4-Test-2-6.png",
@@ -462,7 +462,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 22,
               "kartDosya": "4-Test-2-7.png",
@@ -482,7 +482,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 2 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 23,
               "kartDosya": "4-Test-2-8.png",
@@ -514,7 +514,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 24,
               "kartDosya": "4-Test-3-1.png",
@@ -534,7 +534,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 25,
               "kartDosya": "4-Test-3-2.png",
@@ -554,7 +554,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 26,
               "kartDosya": "4-Test-3-3.png",
@@ -574,7 +574,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 27,
               "kartDosya": "4-Test-3-5.png",
@@ -594,7 +594,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 28,
               "kartDosya": "4-Test-3-6.png",
@@ -614,7 +614,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 29,
               "kartDosya": "4-Test-3-7.png",
@@ -634,7 +634,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 30,
               "kartDosya": "4-Test-3-8.png",
@@ -654,7 +654,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 3 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 31,
               "kartDosya": "4-Test-3-9.png",
@@ -686,7 +686,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 1",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 32,
               "kartDosya": "4-Test-4-1.png",
@@ -706,7 +706,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 33,
               "kartDosya": "4-Test-4-2.png",
@@ -726,7 +726,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 34,
               "kartDosya": "4-Test-4-3.png",
@@ -746,7 +746,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 35,
               "kartDosya": "4-Test-4-5.png",
@@ -766,7 +766,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 36,
               "kartDosya": "4-Test-4-6.png",
@@ -786,7 +786,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 37,
               "kartDosya": "4-Test-4-7.png",
@@ -806,7 +806,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 38,
               "kartDosya": "4-Test-4-8.png",
@@ -826,7 +826,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Tekrar Testi 1 Soru 8",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 39,
               "kartDosya": "4-Test-4-9.png",
@@ -858,7 +858,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 40,
               "kartDosya": "4-Test-5-1.png",
@@ -878,7 +878,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 41,
               "kartDosya": "4-Test-5-2.png",
@@ -898,7 +898,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 42,
               "kartDosya": "4-Test-5-3.png",
@@ -918,7 +918,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 43,
               "kartDosya": "4-Test-5-4.png",
@@ -938,7 +938,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 44,
               "kartDosya": "4-Test-5-5.png",
@@ -958,7 +958,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 45,
               "kartDosya": "4-Test-5-6.png",
@@ -978,7 +978,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 46,
               "kartDosya": "4-Test-5-7.png",
@@ -998,7 +998,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 4 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 47,
               "kartDosya": "4-Test-5-8.png",
@@ -1030,7 +1030,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 48,
               "kartDosya": "4-Test-6-1.png",
@@ -1050,7 +1050,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 2",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 49,
               "kartDosya": "4-Test-6-2.png",
@@ -1070,7 +1070,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 50,
               "kartDosya": "4-Test-6-3.png",
@@ -1090,7 +1090,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 51,
               "kartDosya": "4-Test-6-5.png",
@@ -1110,7 +1110,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 52,
               "kartDosya": "4-Test-6-6.png",
@@ -1130,7 +1130,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 53,
               "kartDosya": "4-Test-6-7.png",
@@ -1150,7 +1150,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 54,
               "kartDosya": "4-Test-6-8.png",
@@ -1170,7 +1170,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 55,
               "kartDosya": "4-Test-6-9.png",
@@ -1190,7 +1190,7 @@
             {
               "no": 9,
               "onizleme": "Oran - Orantı - Kazanım Testi 5 Soru 9",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 56,
               "kartDosya": "4-Test-6-10.png",
@@ -1222,7 +1222,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 57,
               "kartDosya": "4-Test-7-1.png",
@@ -1242,7 +1242,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 58,
               "kartDosya": "4-Test-7-2.png",
@@ -1262,7 +1262,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 59,
               "kartDosya": "4-Test-7-3.png",
@@ -1282,7 +1282,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 4",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 60,
               "kartDosya": "4-Test-7-4.png",
@@ -1302,7 +1302,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 61,
               "kartDosya": "4-Test-7-5.png",
@@ -1322,7 +1322,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 62,
               "kartDosya": "4-Test-7-6.png",
@@ -1342,7 +1342,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 63,
               "kartDosya": "4-Test-7-7.png",
@@ -1362,7 +1362,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 6 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 64,
               "kartDosya": "4-Test-7-8.png",
@@ -1394,7 +1394,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 65,
               "kartDosya": "4-Test-8-1.png",
@@ -1414,7 +1414,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 2",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 66,
               "kartDosya": "4-Test-8-2.png",
@@ -1434,7 +1434,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 67,
               "kartDosya": "4-Test-8-3.png",
@@ -1454,7 +1454,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 68,
               "kartDosya": "4-Test-8-5.png",
@@ -1474,7 +1474,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 69,
               "kartDosya": "4-Test-8-6.png",
@@ -1494,7 +1494,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 70,
               "kartDosya": "4-Test-8-7.png",
@@ -1514,7 +1514,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 7",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 71,
               "kartDosya": "4-Test-8-8.png",
@@ -1534,7 +1534,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 72,
               "kartDosya": "4-Test-8-9.png",
@@ -1554,7 +1554,7 @@
             {
               "no": 9,
               "onizleme": "Oran - Orantı - Kazanım Testi 7 Soru 9",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 73,
               "kartDosya": "4-Test-8-10.png",
@@ -1586,7 +1586,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 74,
               "kartDosya": "4-Test-9-1.png",
@@ -1606,7 +1606,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 75,
               "kartDosya": "4-Test-9-2.png",
@@ -1626,7 +1626,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 76,
               "kartDosya": "4-Test-9-3.png",
@@ -1646,7 +1646,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 77,
               "kartDosya": "4-Test-9-4.png",
@@ -1666,7 +1666,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 78,
               "kartDosya": "4-Test-9-5.png",
@@ -1686,7 +1686,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 79,
               "kartDosya": "4-Test-9-6.png",
@@ -1706,7 +1706,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 80,
               "kartDosya": "4-Test-9-7.png",
@@ -1726,7 +1726,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 81,
               "kartDosya": "4-Test-9-8.png",
@@ -1746,7 +1746,7 @@
             {
               "no": 9,
               "onizleme": "Oran - Orantı - Kazanım Testi 8 Soru 9",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 82,
               "kartDosya": "4-Test-9-9.png",
@@ -1778,7 +1778,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 83,
               "kartDosya": "4-Test-10-1.png",
@@ -1798,7 +1798,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 84,
               "kartDosya": "4-Test-10-2.png",
@@ -1818,7 +1818,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 85,
               "kartDosya": "4-Test-10-3.png",
@@ -1838,7 +1838,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 86,
               "kartDosya": "4-Test-10-4.png",
@@ -1858,7 +1858,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 87,
               "kartDosya": "4-Test-10-5.png",
@@ -1878,7 +1878,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 88,
               "kartDosya": "4-Test-10-6.png",
@@ -1898,7 +1898,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 89,
               "kartDosya": "4-Test-10-7.png",
@@ -1918,7 +1918,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 9 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 90,
               "kartDosya": "4-Test-10-8.png",
@@ -1950,7 +1950,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 91,
               "kartDosya": "4-Test-11-1.png",
@@ -1970,7 +1970,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 92,
               "kartDosya": "4-Test-11-2.png",
@@ -1990,7 +1990,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 93,
               "kartDosya": "4-Test-11-3.png",
@@ -2010,7 +2010,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 94,
               "kartDosya": "4-Test-11-4.png",
@@ -2030,7 +2030,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 95,
               "kartDosya": "4-Test-11-5.png",
@@ -2050,7 +2050,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 96,
               "kartDosya": "4-Test-11-6.png",
@@ -2070,7 +2070,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 97,
               "kartDosya": "4-Test-11-7.png",
@@ -2090,7 +2090,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 98,
               "kartDosya": "4-Test-11-8.png",
@@ -2110,7 +2110,7 @@
             {
               "no": 9,
               "onizleme": "Oran - Orantı - Kazanım Testi 10 Soru 9",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 99,
               "kartDosya": "4-Test-11-9.png",
@@ -2142,7 +2142,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 100,
               "kartDosya": "4-Test-12-1.png",
@@ -2162,7 +2162,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 101,
               "kartDosya": "4-Test-12-2.png",
@@ -2182,7 +2182,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 102,
               "kartDosya": "4-Test-12-3.png",
@@ -2202,7 +2202,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 103,
               "kartDosya": "4-Test-12-4.png",
@@ -2222,7 +2222,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 104,
               "kartDosya": "4-Test-12-5.png",
@@ -2242,7 +2242,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 105,
               "kartDosya": "4-Test-12-6.png",
@@ -2262,7 +2262,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 106,
               "kartDosya": "4-Test-12-7.png",
@@ -2282,7 +2282,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Uygulama Testi 1 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 107,
               "kartDosya": "4-Test-12-8.png",
@@ -2314,7 +2314,7 @@
             {
               "no": 1,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 108,
               "kartDosya": "4-Test-13-1.png",
@@ -2334,7 +2334,7 @@
             {
               "no": 2,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 109,
               "kartDosya": "4-Test-13-2.png",
@@ -2354,7 +2354,7 @@
             {
               "no": 3,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 110,
               "kartDosya": "4-Test-13-3.png",
@@ -2374,7 +2374,7 @@
             {
               "no": 4,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 111,
               "kartDosya": "4-Test-13-4.png",
@@ -2394,7 +2394,7 @@
             {
               "no": 5,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 112,
               "kartDosya": "4-Test-13-5.png",
@@ -2414,7 +2414,7 @@
             {
               "no": 6,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 113,
               "kartDosya": "4-Test-13-6.png",
@@ -2434,7 +2434,7 @@
             {
               "no": 7,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 114,
               "kartDosya": "4-Test-13-7.png",
@@ -2454,7 +2454,7 @@
             {
               "no": 8,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 115,
               "kartDosya": "4-Test-13-8.png",
@@ -2474,7 +2474,7 @@
             {
               "no": 9,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 9",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 116,
               "kartDosya": "4-Test-13-10.png",
@@ -2494,7 +2494,7 @@
             {
               "no": 10,
               "onizleme": "Oran - Orantı - Uygulama Testi 2 Soru 10",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 117,
               "kartDosya": "4-Test-13-11.png",
@@ -3070,7 +3070,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 147,
               "kartDosya": "4-Test-14-1.png",
@@ -3090,7 +3090,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 148,
               "kartDosya": "4-Test-14-2.png",
@@ -3110,7 +3110,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 149,
               "kartDosya": "4-Test-14-3.png",
@@ -3130,7 +3130,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 150,
               "kartDosya": "4-Test-14-4.png",
@@ -3150,7 +3150,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 151,
               "kartDosya": "4-Test-14-5.png",
@@ -3170,7 +3170,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 152,
               "kartDosya": "4-Test-14-6.png",
@@ -3190,7 +3190,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 153,
               "kartDosya": "4-Test-14-7.png",
@@ -3210,7 +3210,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 1 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 154,
               "kartDosya": "4-Test-14-8.png",
@@ -3242,7 +3242,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 155,
               "kartDosya": "4-Test-15-1.png",
@@ -3262,7 +3262,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 156,
               "kartDosya": "4-Test-15-2.png",
@@ -3282,7 +3282,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 157,
               "kartDosya": "4-Test-15-3.png",
@@ -3302,7 +3302,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 158,
               "kartDosya": "4-Test-15-4.png",
@@ -3322,7 +3322,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 159,
               "kartDosya": "4-Test-15-5.png",
@@ -3342,7 +3342,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 160,
               "kartDosya": "4-Test-15-6.png",
@@ -3362,7 +3362,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 161,
               "kartDosya": "4-Test-15-7.png",
@@ -3382,7 +3382,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 2 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 162,
               "kartDosya": "4-Test-15-8.png",
@@ -3414,7 +3414,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 163,
               "kartDosya": "4-Test-16-1.png",
@@ -3434,7 +3434,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 164,
               "kartDosya": "4-Test-16-2.png",
@@ -3454,7 +3454,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 165,
               "kartDosya": "4-Test-16-3.png",
@@ -3474,7 +3474,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 4",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 166,
               "kartDosya": "4-Test-16-4.png",
@@ -3494,7 +3494,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 167,
               "kartDosya": "4-Test-16-5.png",
@@ -3514,7 +3514,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 168,
               "kartDosya": "4-Test-16-6.png",
@@ -3534,7 +3534,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 169,
               "kartDosya": "4-Test-16-7.png",
@@ -3554,7 +3554,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 3 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 170,
               "kartDosya": "4-Test-16-8.png",
@@ -3586,7 +3586,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 171,
               "kartDosya": "4-Test-17-1.png",
@@ -3606,7 +3606,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 172,
               "kartDosya": "4-Test-17-2.png",
@@ -3626,7 +3626,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 173,
               "kartDosya": "4-Test-17-3.png",
@@ -3646,7 +3646,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 174,
               "kartDosya": "4-Test-17-8.png",
@@ -3666,7 +3666,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 5",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 175,
               "kartDosya": "4-Test-17-9.png",
@@ -3686,7 +3686,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 176,
               "kartDosya": "4-Test-17-10.png",
@@ -3706,7 +3706,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 177,
               "kartDosya": "4-Test-17-11.png",
@@ -3726,7 +3726,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Tekrar Testi 1 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 178,
               "kartDosya": "4-Test-17-12.png",
@@ -3758,7 +3758,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 179,
               "kartDosya": "4-Test-18-1.png",
@@ -3778,7 +3778,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 180,
               "kartDosya": "4-Test-18-2.png",
@@ -3798,7 +3798,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 181,
               "kartDosya": "4-Test-18-3.png",
@@ -3818,7 +3818,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 182,
               "kartDosya": "4-Test-18-4.png",
@@ -3838,7 +3838,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 5",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 183,
               "kartDosya": "4-Test-18-5.png",
@@ -3858,7 +3858,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 184,
               "kartDosya": "4-Test-18-6.png",
@@ -3878,7 +3878,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 7",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 185,
               "kartDosya": "4-Test-18-7.png",
@@ -3898,7 +3898,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 4 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 186,
               "kartDosya": "4-Test-18-8.png",
@@ -3930,7 +3930,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 187,
               "kartDosya": "4-Test-19-1.png",
@@ -3950,7 +3950,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 188,
               "kartDosya": "4-Test-19-2.png",
@@ -3970,7 +3970,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 189,
               "kartDosya": "4-Test-19-3.png",
@@ -3990,7 +3990,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 4",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 190,
               "kartDosya": "4-Test-19-4.png",
@@ -4010,7 +4010,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 191,
               "kartDosya": "4-Test-19-5.png",
@@ -4030,7 +4030,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 192,
               "kartDosya": "4-Test-19-6.png",
@@ -4050,7 +4050,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 193,
               "kartDosya": "4-Test-19-7.png",
@@ -4070,7 +4070,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 5 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 194,
               "kartDosya": "4-Test-19-8.png",
@@ -4102,7 +4102,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 1",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 195,
               "kartDosya": "4-Test-20-1.png",
@@ -4122,7 +4122,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 196,
               "kartDosya": "4-Test-20-2.png",
@@ -4142,7 +4142,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 197,
               "kartDosya": "4-Test-20-3.png",
@@ -4162,7 +4162,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 198,
               "kartDosya": "4-Test-20-4.png",
@@ -4182,7 +4182,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 199,
               "kartDosya": "4-Test-20-5.png",
@@ -4202,7 +4202,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 200,
               "kartDosya": "4-Test-20-6.png",
@@ -4222,7 +4222,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 7",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 201,
               "kartDosya": "4-Test-20-7.png",
@@ -4242,7 +4242,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Tekrar Testi 2 Soru 8",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 202,
               "kartDosya": "4-Test-20-8.png",
@@ -4274,7 +4274,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 203,
               "kartDosya": "4-Test-21-1.png",
@@ -4294,7 +4294,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 204,
               "kartDosya": "4-Test-21-2.png",
@@ -4314,7 +4314,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 205,
               "kartDosya": "4-Test-21-3.png",
@@ -4334,7 +4334,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 206,
               "kartDosya": "4-Test-21-4.png",
@@ -4354,7 +4354,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 5",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 207,
               "kartDosya": "4-Test-21-5.png",
@@ -4374,7 +4374,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 208,
               "kartDosya": "4-Test-21-6.png",
@@ -4394,7 +4394,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 209,
               "kartDosya": "4-Test-21-7.png",
@@ -4414,7 +4414,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Tekrar Testi 3 Soru 8",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 210,
               "kartDosya": "4-Test-21-8.png",
@@ -4446,7 +4446,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 4 Soru 1",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 211,
               "kartDosya": "4-Test-22-1.png",
@@ -4466,7 +4466,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 4 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 212,
               "kartDosya": "4-Test-22-2.png",
@@ -4486,7 +4486,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 4 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 213,
               "kartDosya": "4-Test-22-3.png",
@@ -4506,7 +4506,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 4 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 214,
               "kartDosya": "4-Test-22-4.png",
@@ -4526,7 +4526,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 4 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 215,
               "kartDosya": "4-Test-22-5.png",
@@ -4546,7 +4546,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 4 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 216,
               "kartDosya": "4-Test-22-7.png",
@@ -4578,7 +4578,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 217,
               "kartDosya": "4-Test-23-1.png",
@@ -4598,7 +4598,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 218,
               "kartDosya": "4-Test-23-2.png",
@@ -4618,7 +4618,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 219,
               "kartDosya": "4-Test-23-3.png",
@@ -4638,7 +4638,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 220,
               "kartDosya": "4-Test-23-4.png",
@@ -4658,7 +4658,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 221,
               "kartDosya": "4-Test-23-5.png",
@@ -4678,7 +4678,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 222,
               "kartDosya": "4-Test-23-6.png",
@@ -4698,7 +4698,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 7",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 223,
               "kartDosya": "4-Test-23-7.png",
@@ -4718,7 +4718,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 6 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 224,
               "kartDosya": "4-Test-23-8.png",
@@ -4750,7 +4750,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 225,
               "kartDosya": "4-Test-24-1.png",
@@ -4770,7 +4770,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 226,
               "kartDosya": "4-Test-24-2.png",
@@ -4790,7 +4790,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 227,
               "kartDosya": "4-Test-24-3.png",
@@ -4810,7 +4810,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 228,
               "kartDosya": "4-Test-24-4.png",
@@ -4830,7 +4830,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 229,
               "kartDosya": "4-Test-24-5.png",
@@ -4850,7 +4850,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 230,
               "kartDosya": "4-Test-24-6.png",
@@ -4870,7 +4870,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 231,
               "kartDosya": "4-Test-24-7.png",
@@ -4890,7 +4890,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 7 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 232,
               "kartDosya": "4-Test-24-8.png",
@@ -4922,7 +4922,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 8 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 233,
               "kartDosya": "4-Test-25-1.png",
@@ -4942,7 +4942,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 8 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 234,
               "kartDosya": "4-Test-25-2.png",
@@ -4962,7 +4962,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 8 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 235,
               "kartDosya": "4-Test-25-3.png",
@@ -4982,7 +4982,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 8 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 236,
               "kartDosya": "4-Test-25-4.png",
@@ -5002,7 +5002,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 8 Soru 5",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 237,
               "kartDosya": "4-Test-25-5.png",
@@ -5022,7 +5022,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 8 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 238,
               "kartDosya": "4-Test-25-6.png",
@@ -5054,7 +5054,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 239,
               "kartDosya": "4-Test-26-1.png",
@@ -5074,7 +5074,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 240,
               "kartDosya": "4-Test-26-2.png",
@@ -5094,7 +5094,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 241,
               "kartDosya": "4-Test-26-3.png",
@@ -5114,7 +5114,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 242,
               "kartDosya": "4-Test-26-4.png",
@@ -5134,7 +5134,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 243,
               "kartDosya": "4-Test-26-5.png",
@@ -5154,7 +5154,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 244,
               "kartDosya": "4-Test-26-6.png",
@@ -5174,7 +5174,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 245,
               "kartDosya": "4-Test-26-7.png",
@@ -5194,7 +5194,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Tekrar Testi 5 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 246,
               "kartDosya": "4-Test-26-8.png",
@@ -5226,7 +5226,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 1",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 247,
               "kartDosya": "4-Test-27-1.png",
@@ -5246,7 +5246,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 248,
               "kartDosya": "4-Test-27-2.png",
@@ -5266,7 +5266,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 249,
               "kartDosya": "4-Test-27-3.png",
@@ -5286,7 +5286,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 250,
               "kartDosya": "4-Test-27-4.png",
@@ -5306,7 +5306,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 251,
               "kartDosya": "4-Test-27-5.png",
@@ -5326,7 +5326,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 252,
               "kartDosya": "4-Test-27-6.png",
@@ -5346,7 +5346,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 253,
               "kartDosya": "4-Test-27-7.png",
@@ -5366,7 +5366,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 254,
               "kartDosya": "4-Test-27-8.png",
@@ -5386,7 +5386,7 @@
             {
               "no": 9,
               "onizleme": "Problemler - Kazanım Testi 9 Soru 9",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 255,
               "kartDosya": "4-Test-27-9.png",
@@ -5418,7 +5418,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 256,
               "kartDosya": "4-Test-28-1.png",
@@ -5438,7 +5438,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 257,
               "kartDosya": "4-Test-28-2.png",
@@ -5458,7 +5458,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 258,
               "kartDosya": "4-Test-28-3.png",
@@ -5478,7 +5478,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 259,
               "kartDosya": "4-Test-28-4.png",
@@ -5498,7 +5498,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 260,
               "kartDosya": "4-Test-28-5.png",
@@ -5518,7 +5518,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 261,
               "kartDosya": "4-Test-28-6.png",
@@ -5538,7 +5538,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 262,
               "kartDosya": "4-Test-28-7.png",
@@ -5558,7 +5558,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 10 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 263,
               "kartDosya": "4-Test-28-8.png",
@@ -5590,7 +5590,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 264,
               "kartDosya": "4-Test-29-1.png",
@@ -5610,7 +5610,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 265,
               "kartDosya": "4-Test-29-2.png",
@@ -5630,7 +5630,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 266,
               "kartDosya": "4-Test-29-3.png",
@@ -5650,7 +5650,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 267,
               "kartDosya": "4-Test-29-4.png",
@@ -5670,7 +5670,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 268,
               "kartDosya": "4-Test-29-5.png",
@@ -5690,7 +5690,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 269,
               "kartDosya": "4-Test-29-6.png",
@@ -5710,7 +5710,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 270,
               "kartDosya": "4-Test-29-7.png",
@@ -5730,7 +5730,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Tekrar Testi 6 Soru 8",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 271,
               "kartDosya": "4-Test-29-8.png",
@@ -5762,7 +5762,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 272,
               "kartDosya": "4-Test-30-1.png",
@@ -5782,7 +5782,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 273,
               "kartDosya": "4-Test-30-2.png",
@@ -5802,7 +5802,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 274,
               "kartDosya": "4-Test-30-3.png",
@@ -5822,7 +5822,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 275,
               "kartDosya": "4-Test-30-4.png",
@@ -5842,7 +5842,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 276,
               "kartDosya": "4-Test-30-5.png",
@@ -5862,7 +5862,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 277,
               "kartDosya": "4-Test-30-6.png",
@@ -5882,7 +5882,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 278,
               "kartDosya": "4-Test-30-7.png",
@@ -5902,7 +5902,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 11 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 279,
               "kartDosya": "4-Test-30-8.png",
@@ -5934,7 +5934,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 280,
               "kartDosya": "4-Test-31-1.png",
@@ -5954,7 +5954,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 281,
               "kartDosya": "4-Test-31-2.png",
@@ -5974,7 +5974,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 282,
               "kartDosya": "4-Test-31-3.png",
@@ -5994,7 +5994,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 283,
               "kartDosya": "4-Test-31-4.png",
@@ -6014,7 +6014,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 5",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 284,
               "kartDosya": "4-Test-31-5.png",
@@ -6034,7 +6034,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 285,
               "kartDosya": "4-Test-31-6.png",
@@ -6054,7 +6054,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 286,
               "kartDosya": "4-Test-31-7.png",
@@ -6074,7 +6074,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 287,
               "kartDosya": "4-Test-31-8.png",
@@ -6094,7 +6094,7 @@
             {
               "no": 9,
               "onizleme": "Problemler - Kazanım Testi 12 Soru 9",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 288,
               "kartDosya": "4-Test-31-9.png",
@@ -6126,7 +6126,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 289,
               "kartDosya": "4-Test-32-1.png",
@@ -6146,7 +6146,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 290,
               "kartDosya": "4-Test-32-2.png",
@@ -6166,7 +6166,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 291,
               "kartDosya": "4-Test-32-3.png",
@@ -6186,7 +6186,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 292,
               "kartDosya": "4-Test-32-4.png",
@@ -6206,7 +6206,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 293,
               "kartDosya": "4-Test-32-5.png",
@@ -6226,7 +6226,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 294,
               "kartDosya": "4-Test-32-6.png",
@@ -6246,7 +6246,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 295,
               "kartDosya": "4-Test-32-7.png",
@@ -6266,7 +6266,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 13 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 296,
               "kartDosya": "4-Test-32-8.png",
@@ -6298,7 +6298,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 297,
               "kartDosya": "4-Test-33-1.png",
@@ -6318,7 +6318,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 298,
               "kartDosya": "4-Test-33-2.png",
@@ -6338,7 +6338,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 299,
               "kartDosya": "4-Test-33-3.png",
@@ -6358,7 +6358,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 300,
               "kartDosya": "4-Test-33-4.png",
@@ -6378,7 +6378,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 301,
               "kartDosya": "4-Test-33-5.png",
@@ -6398,7 +6398,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 302,
               "kartDosya": "4-Test-33-6.png",
@@ -6418,7 +6418,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 303,
               "kartDosya": "4-Test-33-7.png",
@@ -6438,7 +6438,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 14 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 304,
               "kartDosya": "4-Test-33-8.png",
@@ -6470,7 +6470,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 305,
               "kartDosya": "4-Test-34-1.png",
@@ -6490,7 +6490,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 306,
               "kartDosya": "4-Test-34-2.png",
@@ -6510,7 +6510,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 307,
               "kartDosya": "4-Test-34-3.png",
@@ -6530,7 +6530,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 308,
               "kartDosya": "4-Test-34-4.png",
@@ -6550,7 +6550,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 309,
               "kartDosya": "4-Test-34-5.png",
@@ -6570,7 +6570,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 310,
               "kartDosya": "4-Test-34-6.png",
@@ -6590,7 +6590,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 311,
               "kartDosya": "4-Test-34-7.png",
@@ -6610,7 +6610,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 312,
               "kartDosya": "4-Test-34-8.png",
@@ -6630,7 +6630,7 @@
             {
               "no": 9,
               "onizleme": "Problemler - Tekrar Testi 7 Soru 9",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 313,
               "kartDosya": "4-Test-34-9.png",
@@ -6662,7 +6662,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 314,
               "kartDosya": "4-Test-35-1.png",
@@ -6682,7 +6682,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 315,
               "kartDosya": "4-Test-35-2.png",
@@ -6702,7 +6702,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 316,
               "kartDosya": "4-Test-35-3.png",
@@ -6722,7 +6722,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 317,
               "kartDosya": "4-Test-35-4.png",
@@ -6742,7 +6742,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 318,
               "kartDosya": "4-Test-35-5.png",
@@ -6762,7 +6762,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 319,
               "kartDosya": "4-Test-35-6.png",
@@ -6782,7 +6782,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 320,
               "kartDosya": "4-Test-35-7.png",
@@ -6802,7 +6802,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 15 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 321,
               "kartDosya": "4-Test-35-8.png",
@@ -6834,7 +6834,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 322,
               "kartDosya": "4-Test-36-1.png",
@@ -6854,7 +6854,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 2",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 323,
               "kartDosya": "4-Test-36-2.png",
@@ -6874,7 +6874,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 324,
               "kartDosya": "4-Test-36-3.png",
@@ -6894,7 +6894,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 325,
               "kartDosya": "4-Test-36-4.png",
@@ -6914,7 +6914,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 326,
               "kartDosya": "4-Test-36-5.png",
@@ -6934,7 +6934,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 327,
               "kartDosya": "4-Test-36-6.png",
@@ -6954,7 +6954,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 328,
               "kartDosya": "4-Test-36-7.png",
@@ -6974,7 +6974,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 16 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 329,
               "kartDosya": "4-Test-36-8.png",
@@ -7006,7 +7006,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 330,
               "kartDosya": "4-Test-37-1.png",
@@ -7026,7 +7026,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 2",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 331,
               "kartDosya": "4-Test-37-2.png",
@@ -7046,7 +7046,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 332,
               "kartDosya": "4-Test-37-3.png",
@@ -7066,7 +7066,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 4",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 333,
               "kartDosya": "4-Test-37-4.png",
@@ -7086,7 +7086,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 334,
               "kartDosya": "4-Test-37-5.png",
@@ -7106,7 +7106,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 335,
               "kartDosya": "4-Test-37-6.png",
@@ -7126,7 +7126,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 336,
               "kartDosya": "4-Test-37-7.png",
@@ -7146,7 +7146,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 17 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 337,
               "kartDosya": "4-Test-37-8.png",
@@ -7178,7 +7178,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 338,
               "kartDosya": "4-Test-38-1.png",
@@ -7198,7 +7198,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 339,
               "kartDosya": "4-Test-38-2.png",
@@ -7218,7 +7218,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 340,
               "kartDosya": "4-Test-38-3.png",
@@ -7238,7 +7238,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 4",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 341,
               "kartDosya": "4-Test-38-4.png",
@@ -7258,7 +7258,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 342,
               "kartDosya": "4-Test-38-5.png",
@@ -7278,7 +7278,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 343,
               "kartDosya": "4-Test-38-6.png",
@@ -7298,7 +7298,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 344,
               "kartDosya": "4-Test-38-7.png",
@@ -7318,7 +7318,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 18 Soru 8",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 345,
               "kartDosya": "4-Test-38-8.png",
@@ -7350,7 +7350,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 346,
               "kartDosya": "4-Test-39-1.png",
@@ -7370,7 +7370,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 347,
               "kartDosya": "4-Test-39-2.png",
@@ -7390,7 +7390,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 348,
               "kartDosya": "4-Test-39-3.png",
@@ -7410,7 +7410,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 349,
               "kartDosya": "4-Test-39-4.png",
@@ -7430,7 +7430,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 350,
               "kartDosya": "4-Test-39-5.png",
@@ -7450,7 +7450,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 351,
               "kartDosya": "4-Test-39-6.png",
@@ -7470,7 +7470,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 352,
               "kartDosya": "4-Test-39-7.png",
@@ -7490,7 +7490,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 19 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 353,
               "kartDosya": "4-Test-39-8.png",
@@ -7522,7 +7522,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 354,
               "kartDosya": "4-Test-40-1.png",
@@ -7542,7 +7542,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 355,
               "kartDosya": "4-Test-40-2.png",
@@ -7562,7 +7562,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 356,
               "kartDosya": "4-Test-40-3.png",
@@ -7582,7 +7582,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 357,
               "kartDosya": "4-Test-40-4.png",
@@ -7602,7 +7602,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 5",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 358,
               "kartDosya": "4-Test-40-5.png",
@@ -7622,7 +7622,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 359,
               "kartDosya": "4-Test-40-6.png",
@@ -7642,7 +7642,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 360,
               "kartDosya": "4-Test-40-7.png",
@@ -7662,7 +7662,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 20 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 361,
               "kartDosya": "4-Test-40-8.png",
@@ -7694,7 +7694,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 362,
               "kartDosya": "4-Test-41-1.png",
@@ -7714,7 +7714,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 363,
               "kartDosya": "4-Test-41-2.png",
@@ -7734,7 +7734,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 364,
               "kartDosya": "4-Test-41-3.png",
@@ -7754,7 +7754,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 4",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 365,
               "kartDosya": "4-Test-41-4.png",
@@ -7774,7 +7774,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 366,
               "kartDosya": "4-Test-41-5.png",
@@ -7794,7 +7794,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 367,
               "kartDosya": "4-Test-41-6.png",
@@ -7814,7 +7814,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 368,
               "kartDosya": "4-Test-41-7.png",
@@ -7834,7 +7834,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 21 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 369,
               "kartDosya": "4-Test-41-8.png",
@@ -7866,7 +7866,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 370,
               "kartDosya": "4-Test-42-1.png",
@@ -7886,7 +7886,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 371,
               "kartDosya": "4-Test-42-2.png",
@@ -7906,7 +7906,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 372,
               "kartDosya": "4-Test-42-3.png",
@@ -7926,7 +7926,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 373,
               "kartDosya": "4-Test-42-4.png",
@@ -7946,7 +7946,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 374,
               "kartDosya": "4-Test-42-5.png",
@@ -7966,7 +7966,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 375,
               "kartDosya": "4-Test-42-6.png",
@@ -7986,7 +7986,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 376,
               "kartDosya": "4-Test-42-7.png",
@@ -8006,7 +8006,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 22 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 377,
               "kartDosya": "4-Test-42-8.png",
@@ -8038,7 +8038,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 23 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 378,
               "kartDosya": "4-Test-43-1.png",
@@ -8058,7 +8058,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 23 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 379,
               "kartDosya": "4-Test-43-2.png",
@@ -8078,7 +8078,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 23 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 380,
               "kartDosya": "4-Test-43-3.png",
@@ -8098,7 +8098,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 23 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 381,
               "kartDosya": "4-Test-43-4.png",
@@ -8118,7 +8118,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 23 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 382,
               "kartDosya": "4-Test-43-5.png",
@@ -8138,7 +8138,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 23 Soru 6",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 383,
               "kartDosya": "4-Test-43-6.png",
@@ -8170,7 +8170,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 24 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 384,
               "kartDosya": "4-Test-44-1.png",
@@ -8190,7 +8190,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 24 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 385,
               "kartDosya": "4-Test-44-2.png",
@@ -8210,7 +8210,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 24 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 386,
               "kartDosya": "4-Test-44-3.png",
@@ -8230,7 +8230,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 24 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 387,
               "kartDosya": "4-Test-44-4.png",
@@ -8250,7 +8250,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 24 Soru 5",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 388,
               "kartDosya": "4-Test-44-5.png",
@@ -8270,7 +8270,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 24 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 389,
               "kartDosya": "4-Test-44-6.png",
@@ -8302,7 +8302,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 390,
               "kartDosya": "4-Test-45-1.png",
@@ -8322,7 +8322,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 391,
               "kartDosya": "4-Test-45-2.png",
@@ -8342,7 +8342,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 392,
               "kartDosya": "4-Test-45-3.png",
@@ -8362,7 +8362,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 393,
               "kartDosya": "4-Test-45-4.png",
@@ -8382,7 +8382,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 394,
               "kartDosya": "4-Test-45-5.png",
@@ -8402,7 +8402,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 395,
               "kartDosya": "4-Test-45-6.png",
@@ -8422,7 +8422,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 7",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 396,
               "kartDosya": "4-Test-45-7.png",
@@ -8442,7 +8442,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Kazanım Testi 25 Soru 8",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 397,
               "kartDosya": "4-Test-45-8.png",
@@ -8474,7 +8474,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 398,
               "kartDosya": "4-Test-46-1.png",
@@ -8494,7 +8494,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 399,
               "kartDosya": "4-Test-46-2.png",
@@ -8514,7 +8514,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 400,
               "kartDosya": "4-Test-46-3.png",
@@ -8534,7 +8534,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 401,
               "kartDosya": "4-Test-46-4.png",
@@ -8554,7 +8554,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 402,
               "kartDosya": "4-Test-46-5.png",
@@ -8574,7 +8574,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 403,
               "kartDosya": "4-Test-46-6.png",
@@ -8594,7 +8594,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 404,
               "kartDosya": "4-Test-46-7.png",
@@ -8614,7 +8614,7 @@
             {
               "no": 8,
               "onizleme": "Problemler - Tekrar Testi 8 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 405,
               "kartDosya": "4-Test-46-8.png",
@@ -8646,7 +8646,7 @@
             {
               "no": 1,
               "onizleme": "Problemler - Kazanım Testi 26 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 406,
               "kartDosya": "4-Test-47-1.png",
@@ -8666,7 +8666,7 @@
             {
               "no": 2,
               "onizleme": "Problemler - Kazanım Testi 26 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 407,
               "kartDosya": "4-Test-47-2.png",
@@ -8686,7 +8686,7 @@
             {
               "no": 3,
               "onizleme": "Problemler - Kazanım Testi 26 Soru 3",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 408,
               "kartDosya": "4-Test-47-3.png",
@@ -8706,7 +8706,7 @@
             {
               "no": 4,
               "onizleme": "Problemler - Kazanım Testi 26 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 409,
               "kartDosya": "4-Test-47-4.png",
@@ -8726,7 +8726,7 @@
             {
               "no": 5,
               "onizleme": "Problemler - Kazanım Testi 26 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 410,
               "kartDosya": "4-Test-47-5.png",
@@ -8746,7 +8746,7 @@
             {
               "no": 6,
               "onizleme": "Problemler - Kazanım Testi 26 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 411,
               "kartDosya": "4-Test-47-6.png",
@@ -8766,7 +8766,7 @@
             {
               "no": 7,
               "onizleme": "Problemler - Kazanım Testi 26 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 412,
               "kartDosya": "4-Test-47-7.png",
@@ -8808,7 +8808,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 1",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 413,
               "kartDosya": "4-Test-48-1.png",
@@ -8828,7 +8828,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 414,
               "kartDosya": "4-Test-48-2.png",
@@ -8848,7 +8848,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 415,
               "kartDosya": "4-Test-48-3.png",
@@ -8868,7 +8868,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 416,
               "kartDosya": "4-Test-48-4.png",
@@ -8888,7 +8888,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 417,
               "kartDosya": "4-Test-48-5.png",
@@ -8908,7 +8908,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 418,
               "kartDosya": "4-Test-48-6.png",
@@ -8928,7 +8928,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 419,
               "kartDosya": "4-Test-48-7.png",
@@ -8948,7 +8948,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 1 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 420,
               "kartDosya": "4-Test-48-8.png",
@@ -8980,7 +8980,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 421,
               "kartDosya": "4-Test-49-1.png",
@@ -9000,7 +9000,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 2",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 422,
               "kartDosya": "4-Test-49-2.png",
@@ -9020,7 +9020,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 423,
               "kartDosya": "4-Test-49-3.png",
@@ -9040,7 +9040,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 4",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 424,
               "kartDosya": "4-Test-49-4.png",
@@ -9060,7 +9060,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 425,
               "kartDosya": "4-Test-49-5.png",
@@ -9080,7 +9080,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 6",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 426,
               "kartDosya": "4-Test-49-6.png",
@@ -9100,7 +9100,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 427,
               "kartDosya": "4-Test-49-7.png",
@@ -9120,7 +9120,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 2 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 428,
               "kartDosya": "4-Test-49-8.png",
@@ -9152,7 +9152,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 429,
               "kartDosya": "4-Test-50-1.png",
@@ -9172,7 +9172,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 2",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 430,
               "kartDosya": "4-Test-50-2.png",
@@ -9192,7 +9192,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 431,
               "kartDosya": "4-Test-50-3.png",
@@ -9212,7 +9212,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 432,
               "kartDosya": "4-Test-50-4.png",
@@ -9232,7 +9232,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 433,
               "kartDosya": "4-Test-50-5.png",
@@ -9252,7 +9252,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 434,
               "kartDosya": "4-Test-50-6.png",
@@ -9272,7 +9272,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 7",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 435,
               "kartDosya": "4-Test-50-7.png",
@@ -9292,7 +9292,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 3 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 436,
               "kartDosya": "4-Test-50-8.png",
@@ -9324,7 +9324,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 437,
               "kartDosya": "4-Test-51-1.png",
@@ -9344,7 +9344,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 438,
               "kartDosya": "4-Test-51-2.png",
@@ -9364,7 +9364,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 439,
               "kartDosya": "4-Test-51-3.png",
@@ -9384,7 +9384,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 440,
               "kartDosya": "4-Test-51-4.png",
@@ -9404,7 +9404,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 441,
               "kartDosya": "4-Test-51-5.png",
@@ -9424,7 +9424,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 442,
               "kartDosya": "4-Test-51-6.png",
@@ -9444,7 +9444,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 443,
               "kartDosya": "4-Test-51-7.png",
@@ -9464,7 +9464,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 4 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 444,
               "kartDosya": "4-Test-51-8.png",
@@ -9496,7 +9496,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 1",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 445,
               "kartDosya": "4-Test-52-1.png",
@@ -9516,7 +9516,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 446,
               "kartDosya": "4-Test-52-2.png",
@@ -9536,7 +9536,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 447,
               "kartDosya": "4-Test-52-3.png",
@@ -9556,7 +9556,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 448,
               "kartDosya": "4-Test-52-4.png",
@@ -9576,7 +9576,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 449,
               "kartDosya": "4-Test-52-5.png",
@@ -9596,7 +9596,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 450,
               "kartDosya": "4-Test-52-6.png",
@@ -9616,7 +9616,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 7",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 451,
               "kartDosya": "4-Test-52-7.png",
@@ -9636,7 +9636,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 452,
               "kartDosya": "4-Test-52-8.png",
@@ -9656,7 +9656,7 @@
             {
               "no": 9,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 5 Soru 9",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 453,
               "kartDosya": "4-Test-52-9.png",
@@ -9688,7 +9688,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 1",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 454,
               "kartDosya": "4-Test-53-1.png",
@@ -9708,7 +9708,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 2",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 455,
               "kartDosya": "4-Test-53-2.png",
@@ -9728,7 +9728,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 3",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 456,
               "kartDosya": "4-Test-53-3.png",
@@ -9748,7 +9748,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 457,
               "kartDosya": "4-Test-53-4.png",
@@ -9768,7 +9768,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 5",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 458,
               "kartDosya": "4-Test-53-5.png",
@@ -9788,7 +9788,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 459,
               "kartDosya": "4-Test-53-6.png",
@@ -9808,7 +9808,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 7",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 460,
               "kartDosya": "4-Test-53-7.png",
@@ -9828,7 +9828,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 8",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 461,
               "kartDosya": "4-Test-53-8.png",
@@ -9848,7 +9848,7 @@
             {
               "no": 9,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 6 Soru 9",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 462,
               "kartDosya": "4-Test-53-9.png",
@@ -9880,7 +9880,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 1",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 463,
               "kartDosya": "4-Test-54-1.png",
@@ -9900,7 +9900,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 2",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 464,
               "kartDosya": "4-Test-54-2.png",
@@ -9920,7 +9920,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 3",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 465,
               "kartDosya": "4-Test-54-3.png",
@@ -9940,7 +9940,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 4",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 466,
               "kartDosya": "4-Test-54-4.png",
@@ -9960,7 +9960,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 5",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 467,
               "kartDosya": "4-Test-54-5.png",
@@ -9980,7 +9980,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 6",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 468,
               "kartDosya": "4-Test-54-6.png",
@@ -10000,7 +10000,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 7",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 469,
               "kartDosya": "4-Test-54-7.png",
@@ -10020,7 +10020,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 8",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 470,
               "kartDosya": "4-Test-54-8.png",
@@ -10040,7 +10040,7 @@
             {
               "no": 9,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 7 Soru 9",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 471,
               "kartDosya": "4-Test-54-9.png",
@@ -10072,7 +10072,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 1",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 472,
               "kartDosya": "4-Test-55-1.png",
@@ -10092,7 +10092,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 2",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 473,
               "kartDosya": "4-Test-55-2.png",
@@ -10112,7 +10112,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 3",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 474,
               "kartDosya": "4-Test-55-3.png",
@@ -10132,7 +10132,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 4",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 475,
               "kartDosya": "4-Test-55-4.png",
@@ -10152,7 +10152,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 5",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 476,
               "kartDosya": "4-Test-55-5.png",
@@ -10172,7 +10172,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 6",
-              "cevap": null,
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 477,
               "kartDosya": "4-Test-55-6.png",
@@ -10192,7 +10192,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 7",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 478,
               "kartDosya": "4-Test-55-7.png",
@@ -10212,7 +10212,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 8 Soru 8",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 479,
               "kartDosya": "4-Test-55-8.png",
@@ -10244,7 +10244,7 @@
             {
               "no": 1,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 1",
-              "cevap": null,
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 480,
               "kartDosya": "4-Test-56-1.png",
@@ -10264,7 +10264,7 @@
             {
               "no": 2,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 2",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 481,
               "kartDosya": "4-Test-56-2.png",
@@ -10284,7 +10284,7 @@
             {
               "no": 3,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 3",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 482,
               "kartDosya": "4-Test-56-3.png",
@@ -10304,7 +10304,7 @@
             {
               "no": 4,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 4",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 483,
               "kartDosya": "4-Test-56-4.png",
@@ -10324,7 +10324,7 @@
             {
               "no": 5,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 5",
-              "cevap": null,
+              "cevap": "E",
               "zorluk": "orta",
               "sayfa": 484,
               "kartDosya": "4-Test-56-5.png",
@@ -10344,7 +10344,7 @@
             {
               "no": 6,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 6",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 485,
               "kartDosya": "4-Test-56-6.png",
@@ -10364,7 +10364,7 @@
             {
               "no": 7,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 7",
-              "cevap": null,
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 486,
               "kartDosya": "4-Test-56-7.png",
@@ -10384,7 +10384,7 @@
             {
               "no": 8,
               "onizleme": "Oran-Orantı ve Problemler - Kazanım Testi 9 Soru 8",
-              "cevap": null,
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 487,
               "kartDosya": "4-Test-56-8.png",
