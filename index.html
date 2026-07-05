@@ -620,6 +620,9 @@
       <div class="rp-tools-bar" id="rpToolsBar">
         <button class="tool-btn" data-tool="select" onclick="setTool(this,'select')" title="Gez / Kaydır (pan · soru geçişi)">✋</button>
         <button class="tool-btn active" data-tool="pen" onclick="setTool(this,'pen')" title="Kalem">✏️</button>
+        <button class="tool-btn" data-tool="tukenmez" onclick="setTool(this,'tukenmez')" title="Tükenmez">🖊️</button>
+        <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
+        <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
         <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
         <span class="eraser-size-group" style="display:none;gap:4px;align-items:center">
           <button class="tool-btn eraser-size-btn" data-esize="8" onclick="setEraserSize(this,8)" title="Küçük silgi"><span style="font-size:9px;line-height:1">⬤</span></button>
@@ -631,6 +634,9 @@
         <div class="color-dot" style="background:#2563eb" data-color="#2563eb" onclick="setColor(this)" title="Mavi"></div>
         <div class="color-dot" style="background:#dc2626" data-color="#dc2626" onclick="setColor(this)" title="Kırmızı"></div>
         <div class="color-dot" style="background:#16a34a" data-color="#16a34a" onclick="setColor(this)" title="Yeşil"></div>
+        <div class="color-dot" style="background:#d97706" data-color="#d97706" onclick="setColor(this)" title="Turuncu"></div>
+        <div class="color-dot" style="background:#7c3aed" data-color="#7c3aed" onclick="setColor(this)" title="Mor"></div>
+        <div class="color-dot" style="background:#db2777" data-color="#db2777" onclick="setColor(this)" title="Pembe"></div>
         <span class="rp-tools-sep"></span>
         <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
         <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>

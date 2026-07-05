@@ -450,6 +450,9 @@ a{color:inherit;text-decoration:none}
    ve dvh'yi bozup paneli/overlay'i kısaltıyordu (Pro'da ~%60). Çizim koordinatı zaten
    getPointer ile viewport-bağımsız, lock'a gerek yok. */
 body.reader-locked{overflow:hidden!important}
+/* Reader açıkken anasayfa (dashboard) GİZLİ. Overlay z-index/yükseklik ne olursa
+   olsun arkada anasayfa şeridi sızmaz (özellikle iOS yatay). Overlay kapanınca geri gelir. */
+body.reader-locked .main-content{visibility:hidden!important}
 /* Reader uygulama UI'si: metin seçilmesin, uzun-basış callout'u olmasın */
 #reader-overlay,#reader-overlay *{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 /* Panel/palet butonlarında çift-dokun-zoom'u kapat (çift dokununca ekran yakınlaşmasın) */
@@ -3595,6 +3598,16 @@ body.reader-locked{overflow:hidden!important}
     border-radius:0!important;width:100vw!important;
   }
   #reader-overlay.konu-modal-open .konu-modal-backdrop{top:0!important}
+}
+
+/* TABLET DİKEY: panelde çizim araç satırı (kalem/tükenmez/fosforlu/metin/silgi)
+   kırpılmadan görünsün. Telefon dikeyden (max-width:768) daha çok dikey alan var:
+   paneli biraz uzat ve araç satırını panelin ALTINA sabitle (soru kartı kayar). */
+@media (min-width:769px) and (orientation:portrait){
+  #reader-overlay{ --rp-ph: min(48vh, calc(var(--rp-row) * 9.2 + 5px)) !important; }
+  .rp-soru-section{overflow:hidden!important}
+  .rp-soru-section .soru-list{flex:1 1 auto!important;overflow-y:auto!important;min-height:0!important}
+  .rp-tools-bar{flex-shrink:0!important;flex-wrap:wrap!important;height:auto!important;min-height:var(--rp-row)!important;overflow:visible!important}
 }
 
 /* Final override: iPad yatayda araçlar telefon yataydaki gibi sol panelde kalır. */
