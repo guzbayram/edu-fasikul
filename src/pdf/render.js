@@ -167,17 +167,26 @@ function updateCurrentPageFromScroll(){
 // Cevap anahtarı maskeleme: bu fasiküllerin PDF'lerinde testlerin son sayfasının
 // altında yatay bir cevap anahtarı şeridi var. Öğrenci görmesin diye o şeridi
 // turuncu opak kutuyla kaplıyoruz. (Sadece aşağıdaki fasikül id'leri için.)
-const CEVAP_MASK_FASIKULLER = new Set(['mof-9-matematik-1', 'mof-9-matematik-2', 'mof-9-matematik-3', 'mof-9-matematik-4']);
-// Oransal band (sayfa genişlik/yüksekliğine göre). Gerekirse ince ayar yapılabilir.
-const CEVAP_MASK_RECT = { x: 0.038, y: 0.902, w: 0.924, h: 0.044 };
 const CEVAP_MASK_RENK = '#f97316';
+// Fasikül id → { rect: oransal dikdörtgen, herSayfa: her sayfada mı yoksa yalnız
+// testin son sayfasında mı }. rect değerleri sayfa genişlik/yüksekliğine oranlı.
+const CEVAP_MASK_CONFIG = {
+  'mof-9-matematik-1': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  'mof-9-matematik-2': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  'mof-9-matematik-3': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  'mof-9-matematik-4': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  // Yarıçap TYT Problemler: cevap daireleri birçok sayfanın sağ-altında; her sayfada kapat.
+  'yaricap-tyt-problemler': { rect: { x: 0.25, y: 0.918, w: 0.73, h: 0.068 }, herSayfa: true },
+};
 
-// pageNum bir testin son (sayfaBitis) sayfasıysa cevap anahtarı maskesini döndür.
+// pageNum için cevap anahtarı maskesi gerekiyorsa dikdörtgeni döndür.
 function getCevapMaskRects(pageNum){
   const fas = appState.aktifFasikul;
-  if(!fas || !CEVAP_MASK_FASIKULLER.has(fas.id) || !Array.isArray(fas.konular)) return [];
+  const cfg = fas && CEVAP_MASK_CONFIG[fas.id];
+  if(!cfg || !Array.isArray(fas.konular)) return [];
+  if(cfg.herSayfa) return [cfg.rect];
   const testBiter = fas.konular.some(k => k.tur === 'test' && (k.sayfaBitis || k.sayfa) === pageNum);
-  return testBiter ? [CEVAP_MASK_RECT] : [];
+  return testBiter ? [cfg.rect] : [];
 }
 
 async function renderSinglePDFPage(pageNum, pageWrap){
