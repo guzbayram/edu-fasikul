@@ -288,18 +288,23 @@ function syncNavToPage(pageNum){
     const _ilkAk = konu.altKonular?.[0];
     const _konuKartBazli = _ilkAk && _ilkAk.sorular?.length > 0 && !!_ilkAk.sorular[0]?.sayfa;
     if(_konuKartBazli){
-      // Her altKonu içinde hangi soruda bu sayfa var diye ara
+      // 1) ÖNCE bu sayfada TAM kartı olan altKonu (kesin sahip). Kartlar süreksiz
+      //    sayfalarda olabildiği için (ör. Konu Kartları: 1,2,11,21) gevşek
+      //    "ilk..son" aralığı yanlış altKonuyu seçtiriyordu (sayfa 3 → Konu
+      //    Kartları sanılıyordu; oysa Kazanım Testi 1 tam sayfa 3'te).
       for(const ak of konu.altKonular || []){
-        const hasSoru = (ak.sorular||[]).some(s => s.sayfa === pageNum);
-        const inRange = konu.sayfaBasl && konu.sayfaBitis &&
-                        pageNum >= konu.sayfaBasl && pageNum <= konu.sayfaBitis &&
-                        (ak.sorular?.[0]?.sayfa || 0) <= pageNum &&
-                        (ak.sorular?.[ak.sorular.length-1]?.sayfa || 0) >= pageNum;
-        if(hasSoru || inRange){
-          targetKonu = konu;
-          targetAlt = ak;
-          break;
+        if((ak.sorular||[]).some(s => s.sayfa === pageNum)){ targetKonu = konu; targetAlt = ak; break; }
+      }
+      // 2) Tam eşleşme yoksa: sayfası <= pageNum olan EN SON kartın altKonusu (en yakın)
+      if(!targetAlt){
+        let bestAk = null, bestPage = -1;
+        for(const ak of konu.altKonular || []){
+          for(const s of ak.sorular || []){
+            const sp = s.sayfa || 0;
+            if(sp <= pageNum && sp > bestPage){ bestPage = sp; bestAk = ak; }
+          }
         }
+        if(bestAk){ targetKonu = konu; targetAlt = bestAk; }
       }
       if(targetAlt) break;
       continue;
