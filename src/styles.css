@@ -3890,3 +3890,72 @@ body.reader-locked .main-content{visibility:hidden!important}
   }
   #reader-overlay.konu-modal-open .konu-modal-backdrop{top:0!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DİKEY (telefon + tablet) SORU PANELİ — sadeleştirme (dosya sonu = en yüksek öncelik)
+   • S.N · A–E · Sayfa  TEK SATIR; kopyala butonu YOK (araç çubuğunda zaten var)
+   • Satır yüksekliği diğer satırlarla aynı (kompakt)
+   • Çizim araç çubuğu WRAP → scroll YOK, tüm araçlar aynı anda görünür,
+     panelin altına sabit; gerekirse yalnız soru kartı kendi içinde kayar
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (orientation:portrait){
+  /* Panel biraz daha uzun ki tüm satırlar (araçlar dahil) scroll'suz sığsın */
+  #reader-overlay{ --rp-ph: min(48vh, calc(var(--rp-row) * 8.6 + 5px)) !important; }
+
+  /* ── Soru kartı: TEK YATAY SATIR (S.N · A–E · Sayfa) ── */
+  .rp-soru-section .tek-soru-card{
+    display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+    align-items:center!important;gap:8px!important;
+    padding:5px 10px!important;min-height:0!important;
+    border:1px solid var(--border)!important;border-radius:10px!important;background:var(--bg-2)!important;
+  }
+  .rp-soru-section .tek-soru-card .tsk-header,
+  .rp-soru-section .tek-soru-card .tsk-body{display:contents!important}
+  .rp-soru-section .tek-soru-card .tsk-header-left{order:1!important;flex:0 0 auto!important}
+  .rp-soru-section .tek-soru-card .tsk-no{font-size:15px!important;font-weight:800!important;white-space:nowrap!important}
+  .rp-soru-section .tek-soru-card .tsk-cevap-row{
+    order:2!important;flex:1 1 auto!important;display:flex!important;flex-wrap:nowrap!important;
+    gap:6px!important;margin:0!important;width:auto!important;grid-template-columns:none!important;
+  }
+  .rp-soru-section .tek-soru-card .tsk-cevap-btn{
+    flex:1 1 0!important;min-width:0!important;width:auto!important;
+    height:36px!important;min-height:36px!important;font-size:14px!important;border-radius:9px!important;
+  }
+  .rp-soru-section .tek-soru-card .tsk-header-center{order:3!important;flex:0 0 auto!important}
+  .rp-soru-section .tek-soru-card .tsk-page{font-size:10px!important;padding:2px 7px!important}
+  /* Kopyala + gereksiz öğeler gizli (tek satır, sade) */
+  .rp-soru-section .tek-soru-card .tsk-header-right,
+  .rp-soru-section .tek-soru-card .tsk-copy,
+  .rp-soru-section .tek-soru-card .tsk-nav-dots,
+  .rp-soru-section .tek-soru-card .tsk-actions,
+  .rp-soru-section .tek-soru-card .tsk-feedback,
+  .rp-soru-section .tek-soru-card .tsk-badge,
+  .rp-soru-section .tek-soru-card .tsk-star{display:none!important}
+
+  /* ── Araç çubuğu: WRAP (scroll YOK), panelin altında sabit ── */
+  .rp-tools-bar{
+    flex-wrap:wrap!important;overflow:visible!important;
+    height:auto!important;min-height:var(--rp-row)!important;flex-shrink:0!important;
+    row-gap:6px!important;
+  }
+  /* Araçlar hep görünsün diye SADECE soru kartı kayabilir */
+  .rp-soru-section{overflow:hidden!important}
+  .rp-soru-section .soru-list{flex:1 1 auto!important;overflow-y:auto!important;min-height:0!important}
+}
+
+/* ═══ TELEFON YATAY (solve): sol araç paneli İÇ-SCROLL'SUZ ═══
+   İç scroll iOS'ta dokunma hedefini üst satıra kaydırıyordu ("başka araç seçiliyor").
+   Butonlar küçültülüp hepsi sığar; scroll kaldırılınca hit-offset de biter. */
+@media (orientation:landscape) and (max-height:500px){
+  #reader-overlay.solve-mode #solvePalette{
+    overflow:visible!important;justify-content:center!important;
+    gap:5px!important;padding:5px 5px calc(5px + env(safe-area-inset-bottom))!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-row{row-gap:5px!important;gap:5px!important}
+  #reader-overlay.solve-mode #solvePalette .tool-btn,
+  #reader-overlay.solve-mode #solvePalette .sp-tools-row .tool-btn{
+    width:33px!important;height:33px!important;font-size:16px!important;border-radius:9px!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-answers .sp-ans{width:29px!important;height:29px!important;font-size:12px!important}
+  #reader-overlay.solve-mode #solvePalette .color-dot{width:19px!important;height:19px!important}
+}
