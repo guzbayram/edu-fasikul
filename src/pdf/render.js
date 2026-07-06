@@ -326,6 +326,15 @@ function isNarrowReader(){
   return window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
 }
 
+// Tablet mi telefon mu? Genişlik/yükseklik yön değiştiğinde yer değiştirdiğinden
+// (yatay/dikey) tek bir eksene bakmak yanıltır — KISA kenar telefon/tablet
+// arasında yönden bağımsız güvenilir bir ayraç: iPad'ler (mini dahil) yatay/
+// dikey fark etmeksizin kısa kenarda ~744px+, telefonlar (Pro Max dahil)
+// ~430px'i geçmez. Eşik 500px iki grup arasında güvenli bir orta nokta.
+function isTabletDevice(){
+  return Math.min(window.innerWidth, window.innerHeight) > 500;
+}
+
 function getReaderFitScale(page, wrap){
   const zoomScale = appState.zoom / 100;
   const container = wrap || document.getElementById('readerCanvasWrap');
@@ -1053,15 +1062,19 @@ function initLongPressDraw(){
   const FLICK_MIN = 70;       // flick için min mesafe
   let s = null; // gesture state
 
-  // SADECE ✋ Gez (select) modunda devralırız: PAN + flick (sayfa) + 1sn menü.
-  // Kalem/tükenmez/fosforlu/silgi/metin → Fabric'in KENDİ dokunma motoru çizer
-  // (doğru koordinat — manuel fırça sürme/koordinat hesabı tamamen kaldırıldı).
-  // 2 parmak → pinch zoom (initTouchGestures).
+  // TABLET: parmakla yazma yok (Apple Pencil/kalemle yazılıyor) → tek parmak
+  // HER ZAMAN pan+flick'tir, hangi çizim aracı seçili olursa olsun (Önizleme/
+  // GoodNotes'taki gibi). Kalem (stylus) her zaman çizer, aşağıdaki stylus
+  // kontrolüyle bu jest devralımından hariç tutulur.
+  // TELEFON: stylus nadir olduğundan mevcut davranış korunur — parmak yalnız
+  // 'select' (artık görünmeyen, ama üst toolbar'dan erişilebilen) modda pan
+  // yapar; diğer araçlarda Fabric'in KENDİ dokunma motoru çizer.
+  // 2 parmak → pinch zoom (initTouchGestures), her iki cihazda da geçerli.
   wrap.addEventListener('touchstart', e => {
     if(e.touches.length !== 1){ if(s){ clearTimeout(s.menuTimer); s = null; } return; }
-    if(appState.drawTool !== 'select') return;   // çizim araçları → Fabric native, devralma yok
     const t = e.touches[0];
-    if(t.touchType === 'stylus') return;
+    if(t.touchType === 'stylus') return;   // kalem → Fabric native çizim, her zaman
+    if(!isTabletDevice() && appState.drawTool !== 'select') return;   // telefon + çizim aracı → Fabric native
     e.preventDefault(); e.stopPropagation();
     appState._touchGestureActive = true;
     // Kart zoom'lanmış (kaydırılacak fazla içerik var) → bu jest SADECE pan'dir,
