@@ -236,7 +236,8 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'mof-9-matematik-4',dersId:'mat',json:'Möf-9.Sınıf-Matematik-4.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-4.Fasikül.pdf'},
   {id:'yaricap-tyt-problemler',dersId:'mat',json:'Tyt-Problemler Fasikülü-Yarıçap.json',pdf:'Tyt-Problemler Fasikülü-Yarıçap.pdf'},
   {id:'yaricap-10-matematik-1',dersId:'mat',json:'10.Sınıf-Matematik-Yarıçap-1.Fasikul.json',pdf:'10.Sınıf-Matematik-Yarıçap-1.Fasikul.pdf'},
-  {id:'yaricap-10-matematik-2',dersId:'mat',json:'10.Sınıf-Matematik-Yarıçap-2.Fasikul.json',pdf:'10.Sınıf-Matematik-Yarıçap-2.Fasikul.pdf'}
+  {id:'yaricap-10-matematik-2',dersId:'mat',json:'10.Sınıf-Matematik-Yarıçap-2.Fasikul.json',pdf:'10.Sınıf-Matematik-Yarıçap-2.Fasikul.pdf'},
+  {id:'aktif-matematik-acik-uclu',dersId:'mat',json:'2020 - 2021 - AKTIF - Matematik Açık Uçlu.json',pdf:'2020 - 2021 - AKTIF - Matematik Açık Uçlu.pdf'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';
