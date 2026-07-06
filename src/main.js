@@ -320,15 +320,15 @@ function getDersRemovals(){
 function recordDersRemoval(dersId, fasId, jsonFile){
   if(!dersId || !fasId) return;
   const s = getDersRemovals();
-  s.add(dersId+' '+fasId);
-  if(jsonFile) s.add(dersId+' j:'+_normNFC(jsonFile));
+  s.add(dersId+' '+fasId);
+  if(jsonFile) s.add(dersId+' j:'+_normNFC(jsonFile));
   try{ localStorage.setItem(DERS_REMOVED_KEY, JSON.stringify([...s])); }catch(e){}
 }
 function clearDersRemoval(dersId, fasId, jsonFile){
   if(!dersId || !fasId) return;
   const s = getDersRemovals();
-  let changed = s.delete(dersId+' '+fasId);
-  if(jsonFile) changed = s.delete(dersId+' j:'+_normNFC(jsonFile)) || changed;
+  let changed = s.delete(dersId+' '+fasId);
+  if(jsonFile) changed = s.delete(dersId+' j:'+_normNFC(jsonFile)) || changed;
   if(changed){ try{ localStorage.setItem(DERS_REMOVED_KEY, JSON.stringify([...s])); }catch(e){} }
 }
 function applyDersRemovals(){
@@ -336,8 +336,8 @@ function applyDersRemovals(){
   if(!rem.size) return;
   for(const d of MANIFEST.dersler){
     d.fasikuller = (d.fasikuller||[]).filter(f=>{
-      if(rem.has(d.id+' '+f.id)) return false;
-      if(f.jsonFile && rem.has(d.id+' j:'+_normNFC(f.jsonFile))) return false;
+      if(rem.has(d.id+' '+f.id)) return false;
+      if(f.jsonFile && rem.has(d.id+' j:'+_normNFC(f.jsonFile))) return false;
       return true;
     });
   }
@@ -1446,6 +1446,11 @@ async function hasLocalPdfFile(pdfName){
     return false;
   }
 }
+// dashboard.js (ayrı modül) populateFasikulSourceSelect içinde bare
+// "hasLocalPdfFile(...)" ile çağırıyor — window'a bağlanmazsa ReferenceError
+// fırlatıp (klasör bağlıyken) Promise.all'u tamamen reddedip "Fasikül
+// kaynağı seçin" listesini BOŞ bırakıyordu.
+window.hasLocalPdfFile = hasLocalPdfFile;
 
 async function getLocalPdfBlob(fasikul){
   if(!appState.eduDirHandle) return null;
@@ -1953,6 +1958,10 @@ async function persistKonular(dersId, fasikulId, konular){
     catch(storageError){ showToast('Konular cihazda saklanamadı','error'); }
   }
 }
+// dashboard.js (ayrı modül) saveFasikul/kutuphaneDersEkle içinde bare
+// "persistKonular(...)" ile çağırıyor — window'a bağlanmazsa ReferenceError
+// fırlatıp konu/soru verisi cihaza HİÇ kaydedilmiyordu.
+window.persistKonular = persistKonular;
 
 const bundledSourceCache = new Map();
 function sourceFileNameVariants(filename){
@@ -2010,6 +2019,11 @@ function bundledSinif(value){
   if(Number.isFinite(n)) return n;
   return String(value||'').toUpperCase().includes('LGS') ? 8 : 12;
 }
+// dashboard.js (ayrı modül) applyBundledSourceToForm/hydrateBundledFasikul
+// içinde bare "bundledSinif(...)" ile çağırıyor — window'a bağlanmazsa
+// ReferenceError fırlatıp fonksiyonun geri kalanını (sınıf/soru/thumb alan
+// doldurma) sessizce iptal ediyordu.
+window.bundledSinif = bundledSinif;
 function hydrateBundledFasikul(fas,raw,source){
   const konular=normalizeFasikulKonular(raw.konular||[]);
   fas.fasikulTip = 'tip1';
