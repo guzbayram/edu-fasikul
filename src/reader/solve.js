@@ -51,9 +51,8 @@ function enterSolveMode(){
   // Kart kalan alanı doldursun: zoom %100 → getReaderFitScale (solve) contain ile en büyük
   appState.zoom = 100; appState._fillBaseZoom = null; window.setZoomLabel?.(100);
   renderSolveAnswers();
-  // Tam ekrana girince varsayılan: ✋ Gez (pan/zoom/soru geçişi anında çalışsın)
-  const gez = document.querySelector('.solve-palette [data-tool="select"]');
-  if(gez && window.setTool) window.setTool(gez, 'select');
+  // Gez artık ayrı bir araç değil (2 parmakla her zaman pan/zoom çalışır) —
+  // tam ekrana girerken mevcut çizim aracı (varsayılan ✏️ Kalem) korunur.
   // Palet ölçülüp canvas ona göre konumlansın, sonra PDF yeniden render/sığsın
   setTimeout(reflowSolve, 60);
 }

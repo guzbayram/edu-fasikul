@@ -893,12 +893,17 @@ function initTouchGestures() {
     });
   }
 
+  const FLICK_MAX_MS = 500, FLICK_MIN = 70;
+
   wrap.addEventListener('touchstart', e => {
     if (e.touches.length >= 2) {
       e.preventDefault();
       e.stopPropagation();
       appState._touchGestureActive = true;
       const t0 = e.touches[0], t1 = e.touches[1];
+      // Kart zoom'lanmışsa (kaydıracak fazla içerik var) 2-parmak hareketi SADECE
+      // pan'dir, sayfa-geçişi flick'i sanmayalım (bkz. tek-parmak eşdeğeri).
+      const scrollable = (wrap.scrollWidth > wrap.clientWidth + 1) || (wrap.scrollHeight > wrap.clientHeight + 1);
       g = {
         startDist: dist(t0, t1),
         startZoom: appState.zoom,
@@ -906,6 +911,8 @@ function initTouchGestures() {
         lastMid: midpt(t0, t1),
         lastDist: dist(t0, t1),
         scale: 1,
+        startTime: Date.now(),
+        scrollable,
       };
     } else {
       g = null;
@@ -941,8 +948,9 @@ function initTouchGestures() {
     const newZoom = clampZoom(Math.round(g.startZoom * g.scale));
     const wrapRect = wrap.getBoundingClientRect();
     clearVisualScale();
+    const zoomChanged = Math.abs(newZoom - g.startZoom) >= 2;
 
-    if (Math.abs(newZoom - g.startZoom) >= 2) {
+    if (zoomChanged) {
       const contentX = g.startMid.x - wrapRect.left + wrap.scrollLeft;
       const contentY = g.startMid.y - wrapRect.top  + wrap.scrollTop;
       appState.zoom = newZoom;
@@ -954,6 +962,16 @@ function initTouchGestures() {
         viewportY: g.startMid.y - wrapRect.top,
         ratio: newZoom / (appState._renderedZoom || g.startZoom),
       });
+    } else if (!g.scrollable) {
+      // Pinch değil (zum ~sabit) ve zum'lanmamış → hızlı/uzun 2-parmak sürükleme
+      // = sayfa geçişi flick'i (eskiden yalnız ✋ Gez aracında vardı; Gez artık
+      // ayrı bir araç olmadığından bu jest 2 parmağa taşındı).
+      const dx = g.lastMid.x - g.startMid.x, dy = g.lastMid.y - g.startMid.y;
+      const dur = Date.now() - g.startTime;
+      if (dur < FLICK_MAX_MS && Math.max(Math.abs(dx), Math.abs(dy)) > FLICK_MIN) {
+        const dir = (Math.abs(dx) >= Math.abs(dy)) ? (dx < 0 ? 1 : -1) : (dy < 0 ? 1 : -1);
+        window.changePage?.(dir);
+      }
     }
     g = null;
     appState._touchGestureActive = false;
