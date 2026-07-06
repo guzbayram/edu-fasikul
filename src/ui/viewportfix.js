@@ -17,6 +17,7 @@ function syncReaderViewport(){
   const vv = window.visualViewport;
   const ov = document.getElementById('reader-overlay');
   if(!vv || !ov || !ov.classList.contains('open')) return;
+  if(isTypingInField()) return;
   ov.style.removeProperty('height');
   ov.style.removeProperty('width');
   // iPhone Pro Max'te visualViewport.offsetTop NEGATİF olabiliyor (bilinen tuhaflık,
@@ -27,7 +28,18 @@ function syncReaderViewport(){
   ov.style.top  = Math.max(0, vv.offsetTop) + 'px';
   ov.style.left = Math.max(0, vv.offsetLeft) + 'px';
 }
+// Açık uçlu cevap kutusuna (veya başka bir metin alanına) odaklanınca sistem
+// klavyesi açılır → bu da visualViewport'u küçültüp resize event'i tetikler.
+// O anda PDF'i yeniden konumlandırıp render etmek, kullanıcı tam yazarken
+// PDF alanının "zıplaması"na yol açıp dikkat dağıtıyordu. Yazarken hiçbir şey
+// kıpırdamasın diye, bir metin alanı odaktaysa TÜM yeniden hizalamayı atlarız
+// — klavye kapanıp odak kalkınca normal resize akışı zaten devreye girer.
+function isTypingInField(){
+  const el = document.activeElement;
+  return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+}
 function reflowReaderViewport(){
+  if(isTypingInField()) return;
   syncReaderViewport();
   try{ window.renderPages?.(); }catch(_e){}
 }
@@ -53,15 +65,24 @@ function watchReaderViewportSettle(maxMs = 3000){
     const h = Math.round(vv.height), w = Math.round(vv.width);
     if(h !== lastH || w !== lastW){
       lastH = h; lastW = w; stableCount = 0;
-      // Konum (top/left) HAFİF — her tespit edilen değişimde hemen düzeltilir.
-      syncReaderViewport();
-      // renderPages() PAHALI (PDF.js + Fabric yeniden çizer) — araç çubuğu
-      // animasyonu sürerken her 120ms'de bir tam render, telefonun CPU'sunu
-      // birkaç saniye tıkayıp dokunuşlara (ör. ◀/▶ sayfa butonları) yanıt
-      // vermeyi geciktiriyordu. Bu yüzden yalnızca boyut GERÇEKTEN durulduktan
-      // (son değişimden 220ms sonra) BİR KEZ render ediyoruz.
-      clearTimeout(_viewportRenderDebounce);
-      _viewportRenderDebounce = setTimeout(()=>{ try{ window.renderPages?.(); }catch(_e){} }, 220);
+      // Bir metin alanı (ör. açık uçlu cevap kutusu) odaktaysa hiç dokunma —
+      // klavye açılışının tetiklediği boyut değişimi PDF'i yazarken kaydırıp
+      // dikkat dağıtmasın (bkz. isTypingInField).
+      if(isTypingInField()) { stableCount++; }
+      else {
+        // Konum (top/left) HAFİF — her tespit edilen değişimde hemen düzeltilir.
+        syncReaderViewport();
+        // renderPages() PAHALI (PDF.js + Fabric yeniden çizer) — araç çubuğu
+        // animasyonu sürerken her 120ms'de bir tam render, telefonun CPU'sunu
+        // birkaç saniye tıkayıp dokunuşlara (ör. ◀/▶ sayfa butonları) yanıt
+        // vermeyi geciktiriyordu. Bu yüzden yalnızca boyut GERÇEKTEN durulduktan
+        // (son değişimden 220ms sonra) BİR KEZ render ediyoruz.
+        clearTimeout(_viewportRenderDebounce);
+        _viewportRenderDebounce = setTimeout(()=>{
+          if(isTypingInField()) return;
+          try{ window.renderPages?.(); }catch(_e){}
+        }, 220);
+      }
     } else {
       stableCount++;
     }
