@@ -176,43 +176,43 @@ function initSolvePaletteDrag(){
 
 // Görünüm Modu menüsü: telefonda 1sn sabit basışla açılır (initLongPressDraw içinde).
 // Burada yalnız masaüstü çift-tık desteklenir (yazarken kazara açılmasın diye dokunmada yok).
-// Karta çift dokun → kartı alana DOLDUR (cover); tekrar çift dokun → eski hâle
-function toggleCardFill(){
+// Karta çift tıkla/çift dokun → zum %100'e SIFIRLANIR (macOS Preview'daki "orijinal
+// boyuta dön"). Pan da otomatik sıfırlanır: renderPages() her render'da canvas
+// alanını (wrap.innerHTML) baştan kurduğundan scrollLeft/Top doğal olarak 0'a
+// döner — burada scheduleCardZoomRender'ın imleç-odaklı geri-kaydırma ("anchor")
+// yolunu KULLANMIYORUZ ki bu doğal sıfırlama korunsun.
+function resetZoomAndPan(){
   const wrap = document.getElementById('readerCanvasWrap');
   const pw = wrap?.querySelector('[id^="page-wrap-"]');
   if(!wrap || !pw) return;
-  const cs = getComputedStyle(wrap);
-  const availW = wrap.clientWidth  - parseFloat(cs.paddingLeft||0) - parseFloat(cs.paddingRight||0);
-  const availH = wrap.clientHeight - parseFloat(cs.paddingTop||0)  - parseFloat(cs.paddingBottom||0);
+  if(Math.round(appState.zoom) === 100) return; // zaten %100 — yapacak bir şey yok
+  const ratio = 100 / (appState._renderedZoom || appState.zoom);
+  // Anlık görsel ön-izleme (sert sıçrama değil, yumuşak geçiş hissi) — render
+  // bitene kadar kartın kendi merkezine göre ölçeklenir.
   const r = pw.getBoundingClientRect();
-  if(!appState._fillBaseZoom){
-    // Genişliğe sığdır: kartın sol/sağ kenarları alanın sol/sağ kenarıyla çakışsın
-    const factor = availW / r.width;
-    if(Math.abs(factor - 1) > 0.02){
-      appState._fillBaseZoom = appState.zoom;
-      appState.zoom = (window.clampZoom || (v=>Math.max(25,Math.min(400,v))))(Math.round(appState.zoom * factor));
-    }
-  } else {
-    appState.zoom = appState._fillBaseZoom; appState._fillBaseZoom = null;
-  }
-  window.setZoomLabel?.(appState.zoom);
-  window.renderPages?.();
+  window.applyStageScale?.(ratio, r.left + r.width / 2, r.top + r.height / 2);
+  appState.zoom = 100;
+  appState._fillBaseZoom = null;
+  window.setZoomLabel?.(100);
+  setTimeout(() => { window.renderPages?.(); }, 90);
 }
-window.toggleCardFill = toggleCardFill;
+window.toggleCardFill = resetZoomAndPan; // eski ad — geriye dönük uyumluluk
+window.resetZoomAndPan = resetZoomAndPan;
 
 function initSolveDoubleTap(){
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap || wrap.dataset.solveDtReady) return;
   wrap.dataset.solveDtReady = '1';
+  // Not: eskiden yalnız ✋ Gez aracında çalışıyordu (drawTool==='select'); Gez
+  // artık ayrı bir araç olmadığından bu şart kaldırıldı — hangi çizim aracı
+  // seçili olursa olsun çift tık/dokunuşla zum sıfırlanabilir.
   const shouldIgnoreFillTap = ()=>{
-    if(appState.drawTool !== 'select') return true;
-    if(Date.now() - (appState._lastCanvasDrawTapAt || 0) < 700) return true;
-    return false;
+    return Date.now() - (appState._lastCanvasDrawTapAt || 0) < 700;
   };
-  // Masaüstü çift tık + dokunmatik çift dokunma → kartı alana doldur
+  // Masaüstü çift tık + dokunmatik çift dokunma → zum sıfırla
   wrap.addEventListener('dblclick', ()=>{
     if(shouldIgnoreFillTap()) return;
-    toggleCardFill();
+    resetZoomAndPan();
   });
   let lastTap = 0, lx = 0, ly = 0;
   wrap.addEventListener('touchend', e=>{
@@ -220,7 +220,7 @@ function initSolveDoubleTap(){
     if(e.changedTouches.length !== 1) return;
     const t = e.changedTouches[0], now = Date.now();
     if(now - lastTap < 300 && Math.hypot(t.clientX - lx, t.clientY - ly) < 30){
-      lastTap = 0; toggleCardFill();
+      lastTap = 0; resetZoomAndPan();
     } else { lastTap = now; lx = t.clientX; ly = t.clientY; }
   }, { passive:true });
 }

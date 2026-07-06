@@ -876,16 +876,25 @@ function initTouchGestures() {
   wrap.dataset.touchGestureReady = '1';
 
   let g = null; // gesture state — null means inactive
+  let rafId = null;   // bekleyen tek requestAnimationFrame
+  let pending = null; // rAF'a kadar biriken EN SON dokunma verisi (ara kareler atlanır)
 
   function dist(a, b) { return Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY); }
   function midpt(a, b) { return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
 
-  // CSS scale on all rendered stages for instant visual feedback
+  // CSS scale on all rendered stages for instant visual feedback.
+  // rect0: jest BAŞINDA bir kez ölçülür; her karede getBoundingClientRect()
+  // ÇAĞRILMAZ — o an yazdığımız scrollLeft/Top farkından ANALİTİK hesaplanır.
+  // (touchmove içinde ölçüp-hemen-yazmak "layout thrashing" yaratıp pinch'i
+  // titrek/takılı hissettiriyordu — asıl sorun buydu.)
   function applyVisualScale(scale, cx, cy) {
-    wrap.querySelectorAll('.reader-page-stage').forEach(stage => {
-      const r = stage.getBoundingClientRect();
-      stage.style.transformOrigin = `${cx - r.left}px ${cy - r.top}px`;
-      stage.style.transform = `scale(${scale})`;
+    if (!g) return;
+    const dxScroll = wrap.scrollLeft - g.startScrollLeft;
+    const dyScroll = wrap.scrollTop - g.startScrollTop;
+    g.stages.forEach(({ el, rect0 }) => {
+      const left = rect0.left - dxScroll, top = rect0.top - dyScroll;
+      el.style.transformOrigin = `${cx - left}px ${cy - top}px`;
+      el.style.transform = `scale(${scale})`;
     });
   }
   function clearVisualScale() {
@@ -906,6 +915,7 @@ function initTouchGestures() {
       // Kart zoom'lanmışsa (kaydıracak fazla içerik var) 2-parmak hareketi SADECE
       // pan'dir, sayfa-geçişi flick'i sanmayalım (bkz. tek-parmak eşdeğeri).
       const scrollable = (wrap.scrollWidth > wrap.clientWidth + 1) || (wrap.scrollHeight > wrap.clientHeight + 1);
+      const stages = [...wrap.querySelectorAll('.reader-page-stage')].map(el => ({ el, rect0: el.getBoundingClientRect() }));
       g = {
         startDist: dist(t0, t1),
         startZoom: appState.zoom,
@@ -915,6 +925,9 @@ function initTouchGestures() {
         scale: 1,
         startTime: Date.now(),
         scrollable,
+        startScrollLeft: wrap.scrollLeft,
+        startScrollTop: wrap.scrollTop,
+        stages,
       };
     } else {
       g = null;
@@ -928,24 +941,31 @@ function initTouchGestures() {
     e.stopPropagation();
 
     const t0 = e.touches[0], t1 = e.touches[1];
-    const d = dist(t0, t1);
-    const m = midpt(t0, t1);
-
-    // İki parmak pan: parmak hareketini scroll'a dönüştür
-    wrap.scrollLeft -= (m.x - g.lastMid.x);
-    wrap.scrollTop  -= (m.y - g.lastMid.y);
-
-    // Pinch scale (başlangıç mesafesine göre)
-    g.scale = d / g.startDist;
-    applyVisualScale(g.scale, g.startMid.x, g.startMid.y);
-
-    g.lastMid = m;
-    g.lastDist = d;
+    // Ham veriyi hemen KAYDET, DOM'a hemen YAZMA — ekranın çizim hızına
+    // (requestAnimationFrame) senkron, karede en fazla BİR kez uygula.
+    // Aradaki touchmove'lar (ekran hızından daha sık gelebiliyor) atlanır,
+    // her zaman EN SON konum kullanılır → titreme/takılma kalmaz.
+    pending = { d: dist(t0, t1), m: midpt(t0, t1) };
+    if (rafId == null) {
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        if (!g || !pending) return;
+        const { d, m } = pending;
+        wrap.scrollLeft -= (m.x - g.lastMid.x);
+        wrap.scrollTop  -= (m.y - g.lastMid.y);
+        g.scale = d / g.startDist;
+        applyVisualScale(g.scale, g.startMid.x, g.startMid.y);
+        g.lastMid = m;
+        g.lastDist = d;
+      });
+    }
   }, { passive: false, capture: true });
 
   const commitGesture = e => {
     if (!g) return;
     if (e.touches.length >= 2) return; // hâlâ 2 parmak
+    if (rafId != null) { cancelAnimationFrame(rafId); rafId = null; }
+    pending = null;
 
     const newZoom = clampZoom(Math.round(g.startZoom * g.scale));
     const wrapRect = wrap.getBoundingClientRect();
@@ -1162,5 +1182,6 @@ window.scrollToPage = scrollToPage;
 window.updatePageIndicator = updatePageIndicator;
 window.promptPageJump = promptPageJump;
 window.changeZoom = changeZoom;
+window.applyStageScale = applyStageScale;
 window.scheduleCardZoomRender = scheduleCardZoomRender;
 window.initCardZoomPan = initCardZoomPan;
