@@ -183,6 +183,23 @@ const CEVAP_MASK_CONFIG = {
     yalnizCevapSayfasi: true,
     cevapSayfalari: [45, 47],
   },
+  'yaricap-10-matematik-2': {
+    sayfaRectleri: {
+      16: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      18: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      20: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      22: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      30: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      32: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      45: [{ x: 0.045, y: 0.922, w: 0.43, h: 0.05 }],
+      49: [{ x: 0.045, y: 0.922, w: 0.43, h: 0.05 }],
+      60: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      64: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      74: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      76: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+      78: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+    },
+  },
 };
 
 // pageNum için cevap anahtarı maskesi gerekiyorsa dikdörtgeni döndür.
@@ -190,6 +207,7 @@ function getCevapMaskRects(pageNum){
   const fas = appState.aktifFasikul;
   const cfg = fas && CEVAP_MASK_CONFIG[fas.id];
   if(!cfg || !Array.isArray(fas.konular)) return [];
+  if(cfg.sayfaRectleri && Array.isArray(cfg.sayfaRectleri[pageNum])) return cfg.sayfaRectleri[pageNum];
   const rects = cfg.rects || (cfg.rect ? [cfg.rect] : []);
   if(cfg.herSayfa) return rects;
   if(Array.isArray(cfg.cevapSayfalari) && cfg.cevapSayfalari.includes(pageNum)) return rects;
@@ -807,6 +825,13 @@ function initCardZoomPan(){
   }, {passive:false});
 
   wrap.addEventListener('pointerdown', (e)=>{
+    // Tek-parmak DOKUNMA pan'i initLongPressDraw() içindeki touchstart/touchmove
+    // tarafından yönetiliyor (telefon, "Gez" aracı). PointerEvent'ler dokunmada
+    // DA tetiklenir (touch/mouse/pen birleşik API) — iki ayrı dinleyici aynı
+    // fiziksel sürüklemeye AYNI ANDA scrollLeft/scrollTop yazınca (biri diğerini
+    // ezip tekrar ezilerek) pan hissi yavaş/takılı geliyordu. Burada SADECE
+    // touch DIŞI (mouse sürükleme, kalem) pointer'ları devralırız.
+    if(e.pointerType === 'touch') return;
     if(e.button !== 0 || !isCardGestureTarget(e.target)) return;
     if(appState.drawTool !== 'select' && e.target.closest('canvas')) return;
     if(appState._touchGestureActive) return; // pinch/pan gesture devam ediyor

@@ -39,6 +39,7 @@ function reflowReaderViewport(){
 // daha uzun sürebiliyor, sabit son gecikmeden SONRA da boyut değişmeye devam edip
 // PDF eski/küçük boyutta kalıyor, dışında gri boşluk kalıyordu.)
 let _viewportWatchTimer = null;
+let _viewportRenderDebounce = null;
 function watchReaderViewportSettle(maxMs = 3000){
   if(_viewportWatchTimer) clearInterval(_viewportWatchTimer);
   let lastH = -1, lastW = -1, stableCount = 0;
@@ -52,7 +53,15 @@ function watchReaderViewportSettle(maxMs = 3000){
     const h = Math.round(vv.height), w = Math.round(vv.width);
     if(h !== lastH || w !== lastW){
       lastH = h; lastW = w; stableCount = 0;
-      reflowReaderViewport();
+      // Konum (top/left) HAFİF — her tespit edilen değişimde hemen düzeltilir.
+      syncReaderViewport();
+      // renderPages() PAHALI (PDF.js + Fabric yeniden çizer) — araç çubuğu
+      // animasyonu sürerken her 120ms'de bir tam render, telefonun CPU'sunu
+      // birkaç saniye tıkayıp dokunuşlara (ör. ◀/▶ sayfa butonları) yanıt
+      // vermeyi geciktiriyordu. Bu yüzden yalnızca boyut GERÇEKTEN durulduktan
+      // (son değişimden 220ms sonra) BİR KEZ render ediyoruz.
+      clearTimeout(_viewportRenderDebounce);
+      _viewportRenderDebounce = setTimeout(()=>{ try{ window.renderPages?.(); }catch(_e){} }, 220);
     } else {
       stableCount++;
     }
@@ -70,6 +79,7 @@ function clearReaderViewport(){
   const ov = document.getElementById('reader-overlay');
   if(ov){ ov.style.removeProperty('height'); ov.style.removeProperty('width'); ov.style.removeProperty('top'); ov.style.removeProperty('left'); }
   if(_viewportWatchTimer){ clearInterval(_viewportWatchTimer); _viewportWatchTimer = null; }
+  if(_viewportRenderDebounce){ clearTimeout(_viewportRenderDebounce); _viewportRenderDebounce = null; }
 }
 window.syncReaderViewport = syncReaderViewport;
 window.scheduleReaderViewportReflow = scheduleReaderViewportReflow;
