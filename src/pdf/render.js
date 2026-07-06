@@ -568,8 +568,10 @@ function openViewModeMenu(e){
     menu.style.display = 'none';
     return;
   }
-  // Butonu altta konumlandır
-  const btn = document.getElementById('viewModeBtn');
+  // Menüyü TIKLANAN butonun altında konumlandır (sabit #viewModeBtn'e güvenme —
+  // o yalnız masaüstü üst araç çubuğunda var ve tablet/telefon yatayda gizli;
+  // artık sol panelde de bu menüyü açan başka butonlar var).
+  const btn = e.currentTarget instanceof Element ? e.currentTarget : document.getElementById('viewModeBtn');
   if(btn){
     const rect = btn.getBoundingClientRect();
     showContextMenu(rect.left, rect.bottom + 4);
