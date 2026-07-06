@@ -171,6 +171,10 @@ const CEVAP_MASK_RENK = '#f97316';
 // Fasikül id → { rect: oransal dikdörtgen, herSayfa: her sayfada mı yoksa yalnız
 // testin son sayfasında mı }. rect değerleri sayfa genişlik/yüksekliğine oranlı.
 const CEVAP_MASK_CONFIG = {
+  'aktif-matematik-acik-uclu': {
+    rect: { x: 0.49, y: 0.895, w: 0.495, h: 0.09 },
+    herSayfa: true,
+  },
   'mof-9-matematik-1': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   'mof-9-matematik-2': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   'mof-9-matematik-3': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },

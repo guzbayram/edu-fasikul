@@ -102,6 +102,15 @@ function renderSolveAnswers(){
   const answered = !!state?.answered;
   // Şıkların başına soru no
   const noHtml = `<span class="sp-no">S.${s.no}</span>`;
+  if(s.cevapTipi === 'acik-uclu'){
+    const inputId = `sp-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+    wrap.innerHTML = `${noHtml}<input id="${inputId}" class="sp-open-input" inputmode="decimal"
+      placeholder="Cevap" value="${answered ? (state?.selected ?? '') : ''}"
+      onkeydown="if(event.key==='Enter')submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')"
+      ${answered?'disabled':''}><button class="sp-open-submit"
+      onclick="submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')" ${answered?'disabled':''}>✓</button>`;
+    return;
+  }
   wrap.innerHTML = noHtml + ['A','B','C','D','E'].map(opt=>{
     let cls = 'sp-ans';
     if(answered){

@@ -52,6 +52,24 @@ function escapeHtml(text){
   }[ch]));
 }
 
+function normalizeOpenAnswer(value){
+  return String(value ?? '')
+    .trim().toLocaleLowerCase('tr-TR')
+    .replace(/\s+/g, '')
+    .replace(',', '.')
+    .replace(/^\+/, '');
+}
+
+function submitOpenAnswer(soruNo, correct, idx, inputId){
+  const input = document.getElementById(inputId);
+  if(!input || appState.sorularState[soruNo]?.answered) return;
+  const typed = input.value.trim();
+  if(!typed){ input.focus(); return; }
+  const normalizedCorrect = normalizeOpenAnswer(correct);
+  const normalizedTyped = normalizeOpenAnswer(typed);
+  selectAnswer(soruNo, normalizedTyped, normalizedCorrect, idx);
+}
+
 function updateRightPanelTitle(titleOverride){
   const titleEl = document.getElementById('rpTitle');
   if(!titleEl) return;
@@ -99,6 +117,9 @@ function renderTekSoruKartEl(card, sorular, idx){
        </div>`
     : `<div class="tsk-feedback" id="tsk-feedback"></div>`;
 
+  const isOpenEnded = !isKonuKart && s.cevapTipi === 'acik-uclu';
+  const openInputId = `tsk-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+
   const btns = isKonuKart ? '' : ['A','B','C','D','E'].map(opt => {
     let cls = 'tsk-cevap-btn';
     if(answered){
@@ -109,6 +130,17 @@ function renderTekSoruKartEl(card, sorular, idx){
       onclick="selectAnswer('${s._uid||s.no}','${opt}','${s.cevap}',${idx})"
       ${answered?'disabled':''}>${opt}</button>`;
   }).join('');
+
+  const answerHtml = isOpenEnded
+    ? `<div class="tsk-open-answer">
+        <span class="tsk-open-no">S.${escapeHtml(s.no)}</span>
+        <input id="${openInputId}" class="tsk-open-input" inputmode="decimal"
+          placeholder="Cevabınızı yazın" value="${answered ? escapeHtml(state?.selected ?? '') : ''}"
+          onkeydown="if(event.key==='Enter')submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
+          ${answered?'disabled':''}>
+        <button class="tsk-open-submit" onclick="submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')" ${answered?'disabled':''}>Kontrol Et</button>
+      </div>`
+    : `<div class="tsk-cevap-row">${btns}</div>`;
 
   card.innerHTML = `
     <div class="tsk-header">
@@ -131,7 +163,7 @@ function renderTekSoruKartEl(card, sorular, idx){
         <button class="tsk-dot-next" onclick="goToSoru(${idx+1})" ${idx===sorular.length-1?'disabled':''}>▶</button>
       </div>
       ${feedbackHtml}
-      ${isKonuKart ? '' : `<div class="tsk-cevap-row">${btns}</div>`}
+      ${isKonuKart ? '' : answerHtml}
       <div class="tsk-actions" ${isKonuKart ? 'style="display:none"' : ''}>
         <button class="tsk-action-btn" onclick="skipQuestion('${s._uid||s.no}',${idx})">⏭️ Atla</button>
         <button class="tsk-action-btn cozum-btn" onclick="showCozum(${idx})">${window.getUiIcon?.('cozum')||'🎥'} Çözüm</button>
@@ -2192,6 +2224,7 @@ window.playKonuVideo = playKonuVideo;
 window.playVideoModal = playVideoModal;
 window.closeVideoModal = closeVideoModal;
 window.selectAnswer = selectAnswer;
+window.submitOpenAnswer = submitOpenAnswer;
 window.skipQuestion = skipQuestion;
 window.addToHatalilar = addToHatalilar;
 window.toggleStar = toggleStar;
