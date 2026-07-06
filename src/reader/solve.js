@@ -104,11 +104,14 @@ function renderSolveAnswers(){
   const noHtml = `<span class="sp-no">S.${s.no}</span>`;
   if(s.cevapTipi === 'acik-uclu'){
     const inputId = `sp-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
-    wrap.innerHTML = `${noHtml}<input id="${inputId}" class="sp-open-input" inputmode="decimal"
+    // "Kontrol Et" yok — yazmayı bırakınca (debounce) ya da Enter'a basınca
+    // otomatik gönderilir. Altında sistem klavyesi yerine dokunmatik tuş takımı.
+    wrap.innerHTML = `<div class="sp-open-row">${noHtml}<input id="${inputId}" class="sp-open-input" inputmode="decimal"
       placeholder="Cevap" value="${answered ? (state?.selected ?? '') : ''}"
+      oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')"
       onkeydown="if(event.key==='Enter')submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')"
-      ${answered?'disabled':''}><button class="sp-open-submit"
-      onclick="submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')" ${answered?'disabled':''}>✓</button>`;
+      ${answered?'disabled':''}></div>
+      ${answered ? '' : window.buildOpenAnswerKeypadHtml?.(inputId, s.cevap, idx, s._uid||s.no, 'sp-open-keypad') || ''}`;
     return;
   }
   wrap.innerHTML = noHtml + ['A','B','C','D','E'].map(opt=>{

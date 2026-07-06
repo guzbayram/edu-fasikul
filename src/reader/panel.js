@@ -63,11 +63,59 @@ function normalizeOpenAnswer(value){
 function submitOpenAnswer(soruNo, correct, idx, inputId){
   const input = document.getElementById(inputId);
   if(!input || appState.sorularState[soruNo]?.answered) return;
+  clearTimeout(_openAnswerAutoTimer);
   const typed = input.value.trim();
   if(!typed){ input.focus(); return; }
   const normalizedCorrect = normalizeOpenAnswer(correct);
   const normalizedTyped = normalizeOpenAnswer(typed);
   selectAnswer(soruNo, normalizedTyped, normalizedCorrect, idx);
+}
+
+// Açık uçlu soru: "Kontrol Et" butonuna basmaya gerek yok — kullanıcı yazmayı
+// bıraktıktan kısa bir süre sonra (debounce) cevap otomatik gönderilir. Enter'a
+// basmak da (mevcut davranış) her zaman ANINDA gönderir.
+let _openAnswerAutoTimer = null;
+function scheduleOpenAnswerAutoSubmit(soruNo, correct, idx, inputId){
+  clearTimeout(_openAnswerAutoTimer);
+  const input = document.getElementById(inputId);
+  if(!input || !input.value.trim()) return;
+  _openAnswerAutoTimer = setTimeout(()=>{
+    submitOpenAnswer(soruNo, correct, idx, inputId);
+  }, 900);
+}
+
+// Dokunmatik rakam/parantez tuş takımı: sistem klavyesini açmadan cevap girişi.
+// ch: basılan tuşun metni ('⌫' = sil, aksi halde imlecin bulunduğu yere eklenir).
+function pressOpenAnswerKey(inputId, ch, soruNo, correct, idx){
+  const input = document.getElementById(inputId);
+  if(!input || input.disabled) return;
+  input.focus();
+  const start = input.selectionStart ?? input.value.length;
+  const end = input.selectionEnd ?? input.value.length;
+  if(ch === '⌫'){
+    if(start === end){
+      if(start === 0) return;
+      input.value = input.value.slice(0, start-1) + input.value.slice(end);
+      const pos = start - 1;
+      input.setSelectionRange?.(pos, pos);
+    } else {
+      input.value = input.value.slice(0, start) + input.value.slice(end);
+      input.setSelectionRange?.(start, start);
+    }
+  } else {
+    input.value = input.value.slice(0, start) + ch + input.value.slice(end);
+    const pos = start + ch.length;
+    input.setSelectionRange?.(pos, pos);
+  }
+  scheduleOpenAnswerAutoSubmit(soruNo, correct, idx, inputId);
+}
+// Rakam/parantez tuş takımı HTML'i üretir (masaüstü ve telefon paletinde ortak).
+function buildOpenAnswerKeypadHtml(inputId, correctEsc, idx, soruNoAttr, cls){
+  const keys = ['7','8','9','4','5','6','1','2','3','(','0',')','−','.','⌫'];
+  return `<div class="${cls}">` + keys.map(k=>{
+    const keyCh = k === '−' ? '-' : k;
+    return `<button type="button" class="${cls}-key" onclick="pressOpenAnswerKey('${inputId}','${keyCh}','${soruNoAttr}','${correctEsc}',${idx})">${k}</button>`;
+  }).join('') + '</div>';
 }
 
 function updateRightPanelTitle(titleOverride){
@@ -136,10 +184,11 @@ function renderTekSoruKartEl(card, sorular, idx){
         <span class="tsk-open-no">S.${escapeHtml(s.no)}</span>
         <input id="${openInputId}" class="tsk-open-input" inputmode="decimal"
           placeholder="Cevabınızı yazın" value="${answered ? escapeHtml(state?.selected ?? '') : ''}"
+          oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
           onkeydown="if(event.key==='Enter')submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
           ${answered?'disabled':''}>
-        <button class="tsk-open-submit" onclick="submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')" ${answered?'disabled':''}>Kontrol Et</button>
-      </div>`
+      </div>
+      ${answered ? '' : buildOpenAnswerKeypadHtml(openInputId, escapeHtml(s.cevap), idx, s._uid||s.no, 'tsk-open-keypad')}`
     : `<div class="tsk-cevap-row">${btns}</div>`;
 
   card.innerHTML = `
@@ -2225,6 +2274,9 @@ window.playVideoModal = playVideoModal;
 window.closeVideoModal = closeVideoModal;
 window.selectAnswer = selectAnswer;
 window.submitOpenAnswer = submitOpenAnswer;
+window.scheduleOpenAnswerAutoSubmit = scheduleOpenAnswerAutoSubmit;
+window.pressOpenAnswerKey = pressOpenAnswerKey;
+window.buildOpenAnswerKeypadHtml = buildOpenAnswerKeypadHtml;
 window.skipQuestion = skipQuestion;
 window.addToHatalilar = addToHatalilar;
 window.toggleStar = toggleStar;

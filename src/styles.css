@@ -1882,15 +1882,34 @@ body.reader-locked .main-content{visibility:hidden!important}
 .tsk-cevap-btn.wrong-ans{ background:var(--red-dim); color:var(--red); border-color:var(--red); }
 .tsk-cevap-btn:disabled{ cursor:not-allowed; }
 
-.tsk-open-answer{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:10px}
+/* Açık uçlu cevap: "Kontrol Et" butonu yok — yazmayı bırakınca (debounce) veya
+   Enter'a basınca otomatik gönderilir. Girişin altında dokunmatik tuş takımı var. */
+.tsk-open-answer{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:center;margin-bottom:8px}
 .tsk-open-no{font-weight:800;color:var(--mat);white-space:nowrap}
 .tsk-open-input,.sp-open-input{min-width:0;border:1.5px solid var(--border-strong);background:var(--bg-3);color:var(--text-0);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;outline:none}
 .tsk-open-input:focus,.sp-open-input:focus{border-color:var(--mat);box-shadow:0 0 0 3px var(--mat-dim)}
-.tsk-open-submit,.sp-open-submit{border:0;border-radius:var(--radius-sm);background:var(--mat);color:white;font-weight:700;padding:10px 12px;cursor:pointer;white-space:nowrap}
-.tsk-open-submit:disabled,.sp-open-submit:disabled,.tsk-open-input:disabled,.sp-open-input:disabled{opacity:.65;cursor:not-allowed}
+.tsk-open-input:disabled,.sp-open-input:disabled{opacity:.65;cursor:not-allowed}
 .sp-open-input{flex:1;padding:7px 9px}
-.sp-open-submit{padding:7px 11px}
-@media(max-width:520px){.tsk-open-answer{grid-template-columns:auto minmax(0,1fr)}.tsk-open-submit{grid-column:1/-1;width:100%}}
+
+/* Masaüstü/tablet rakam-parantez tuş takımı (reader-right paneli) */
+.tsk-open-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;max-width:220px}
+.tsk-open-keypad-key{
+  border:1.5px solid var(--border-strong);background:var(--bg-3);color:var(--text-0);
+  border-radius:var(--radius-sm);padding:10px 0;font-size:16px;font-weight:700;cursor:pointer;
+}
+.tsk-open-keypad-key:hover{background:var(--mat-dim);border-color:var(--mat)}
+.tsk-open-keypad-key:active{background:var(--mat);color:#fff}
+
+/* Telefon tam-ekran çözüm paleti: dar alana göre kompakt tuş takımı */
+.sp-open-row{display:flex;align-items:center;gap:6px;width:100%}
+.sp-open-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:100%;margin-top:4px}
+.sp-open-keypad-key{
+  border:1px solid var(--border-strong);background:var(--bg-3);color:var(--text-0);
+  border-radius:8px;padding:6px 0;font-size:13px;font-weight:700;cursor:pointer;
+}
+.sp-open-keypad-key:active{background:var(--mat);color:#fff}
+
+@media(max-width:520px){.tsk-open-answer{grid-template-columns:auto minmax(0,1fr)}}
 
 .tsk-feedback{
   font-size:12px; padding:7px 10px; border-radius:var(--radius-sm);
