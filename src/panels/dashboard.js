@@ -492,6 +492,19 @@ async function applyBundledSourceToForm(sourceId,fillValues=true){
 function closeFasikulModal(){
   document.getElementById('fasikulModal').classList.remove('open');
 }
+function refreshCurrentDrawerAfterFasikulSave(ders){
+  if(!ders) return;
+  const canonical = window.MANIFEST?.dersler?.find(d=>d.id===ders.id) || ders;
+  window.currentDrawerDers = canonical;
+  const visible = visibleFasikullerFor(canonical);
+  try{ renderFasikulCards(visible, canonical); }catch(e){ console.error(e); }
+  if(document.getElementById('drawer') && document.getElementById('drawerOverlay')){
+    document.getElementById('drawerTitle').textContent = `${canonical.ikon} ${canonical.ad} Fasikülleri`;
+    document.getElementById('drawerSearch').value = '';
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.getElementById('drawer').classList.add('open');
+  }
+}
 function saveFasikul(){
   const editId = document.getElementById('fasikulEditId').value;
   const ad = document.getElementById('fasikulAdInput').value.trim();
@@ -553,7 +566,7 @@ function saveFasikul(){
       showToast(`${ad} zaten vardı, bilgiler yenilendi ✓`,'success');
       closeFasikulModal();
       try{ persistManifest(); renderDerslerGrid(); }catch(e){ console.error(e); }
-      openDrawer(null, ders.id, ders);
+      refreshCurrentDrawerAfterFasikulSave(ders);
       return;
     }
     const newId = source?.id || ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
@@ -573,8 +586,8 @@ function saveFasikul(){
   // Önce modalı kapat: persist/render bir hata verse bile modal takılı kalmasın.
   closeFasikulModal();
   try{ persistManifest(); renderDerslerGrid(); }catch(e){ console.error(e); }
-  // Dersin fasikül panelini aç, eklenen fasikül görünsün.
-  openDrawer(null, ders.id, ders);
+  // Dersin fasikül panelini anında yenile, eklenen fasikül kartı beklemeden görünsün.
+  refreshCurrentDrawerAfterFasikulSave(ders);
 }
 function silFasikul(){
   if(!window.currentDrawerDers) return;
