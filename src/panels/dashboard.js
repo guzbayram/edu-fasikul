@@ -109,6 +109,21 @@ function reorderFasikulByDrop(dersId,sourceId,targetId){
   persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
   showToast('Fasikül sırası kaydedildi','success');
 }
+function canDersAcceptItem(targetDers, item){
+  const targetItems = targetDers?.fasikuller || [];
+  const itemIsFolder = item?.type === 'folder';
+  const hasFolders = targetItems.some(f=>f.type === 'folder');
+  const hasFasikuller = targetItems.some(f=>f.type !== 'folder');
+  if(itemIsFolder && hasFasikuller){
+    showToast('Bu dizinde fasikül var; alt ders ile fasikül aynı dizinde olamaz.','info');
+    return false;
+  }
+  if(!itemIsFolder && hasFolders){
+    showToast('Bu dizinde alt dersler var; fasikülü alt dersin içine taşıyın.','info');
+    return false;
+  }
+  return true;
+}
 function moveFasikulToDers(sourceDersId, fasikulId, targetDersId){
   if(!sourceDersId || !fasikulId || !targetDersId || sourceDersId===targetDersId) return false;
   const sourceDers=window.MANIFEST.dersler.find(d=>d.id===sourceDersId);
@@ -120,6 +135,10 @@ function moveFasikulToDers(sourceDersId, fasikulId, targetDersId){
   if(item.type === 'folder' && item.childDersId === targetDersId){
     sourceDers.fasikuller.splice(from,0,item);
     showToast('Klasör kendi içine taşınamaz','error');
+    return false;
+  }
+  if(!canDersAcceptItem(targetDers, item)){
+    sourceDers.fasikuller.splice(from,0,item);
     return false;
   }
   if(targetDers.fasikuller.some(f=>f.id===item.id)){
@@ -392,6 +411,10 @@ function saveDers(){
   } else if(dersModalParentDersId){
     const parent = window.MANIFEST.dersler.find(d=>d.id===dersModalParentDersId);
     if(!parent){ showToast('Üst ders bulunamadı','error'); return; }
+    if((parent.fasikuller||[]).some(f=>f.type !== 'folder')){
+      showToast('Bu dizinde fasikül var; önce fasikülleri mevcut alt derslere taşıyın veya boş bir ders içinde alt ders oluşturun.','info');
+      return;
+    }
     const norm = v => String(v||'').trim().toLocaleLowerCase('tr-TR');
     let child = window.MANIFEST.dersler.find(d=>d.parentDersId===parent.id && norm(d.ad)===norm(ad));
     if(!child){

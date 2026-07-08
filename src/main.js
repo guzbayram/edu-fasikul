@@ -881,6 +881,7 @@ function renderFasikulCards(fasikuller, ders){
       card.draggable=sortable;
       card.style.setProperty('--fas-accent', renkCSS);
       card.innerHTML=`
+        <button class="ders-edit-btn folder-edit-btn" onclick="openDersModal('${childDers.id}',event)" title="Düzenle">✏️</button>
         <div class="fasikul-card-top">
           <div class="fasikul-drag-handle" title="Sürükleyerek sırala" aria-hidden="true">⣿</div>
           <div class="fasikul-thumb" style="background:color-mix(in srgb,${renkCSS} 16%,transparent)">${childDers.ikon || fas.thumb || '📁'}</div>
@@ -2234,18 +2235,18 @@ function loadManifestMeta(){
       const existing = MANIFEST.dersler.find(d=>d.id===sd.id);
       if(existing){
         existing.ad=sd.ad; existing.ikon=sd.ikon; existing.renk=sd.renk; existing.progPct=sd.progPct; existing.parentDersId=sd.parentDersId||null;
-        sd.fasikuller.forEach(sf=>{
-          const ef = existing.fasikuller.find(f=>f.id===sf.id);
-          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.type=sf.type||null; ef.childDersId=sf.childDersId||null; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; ef.jsonFile=sf.jsonFile||null; ef.pdfFile=sf.pdfFile||null; ef.sourceType=sf.sourceType||null; if(sf.fasikulTip) ef.fasikulTip=sf.fasikulTip; }
-          else { existing.fasikuller.push({...sf, konular:[]}); }
-        });
-        const savedOrder=sd.fasikuller.map(sf=>sf.id);
-        existing.fasikuller.sort((a,b)=>{
-          const ai=savedOrder.indexOf(a.id), bi=savedOrder.indexOf(b.id);
-          if(ai<0 && bi<0) return 0;
-          if(ai<0) return 1;
-          if(bi<0) return -1;
-          return ai-bi;
+        const currentById = new Map((existing.fasikuller||[]).map(f=>[f.id,f]));
+        existing.fasikuller = sd.fasikuller.map(sf=>{
+          const ef = currentById.get(sf.id);
+          const merged = ef ? {...ef, ...sf} : {...sf, konular:[]};
+          merged.type = sf.type || null;
+          merged.childDersId = sf.childDersId || null;
+          merged.temaRenk = sf.temaRenk || null;
+          merged.jsonFile = sf.jsonFile || null;
+          merged.pdfFile = sf.pdfFile || null;
+          merged.sourceType = sf.sourceType || null;
+          if(!sf.fasikulTip) delete merged.fasikulTip;
+          return merged;
         });
       } else {
         MANIFEST.dersler.push({...sd, fasikuller: sd.fasikuller.map(f=>({...f,konular:[]}))});

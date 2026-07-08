@@ -310,6 +310,7 @@ a{color:inherit;text-decoration:none}
   cursor:pointer;z-index:2;color:var(--text-1);opacity:.5;transition:opacity .2s,background .15s;
 }
 .ders-edit-btn:hover{background:var(--bg-5);opacity:1}
+.folder-edit-btn{right:64px}
 
 .progress-ring-wrap{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .progress-ring{flex-shrink:0}
