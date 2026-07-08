@@ -598,7 +598,7 @@ function refreshCurrentDrawerAfterFasikulSave(ders){
   const visible = visibleFasikullerFor(canonical);
   try{ renderFasikulCards(visible, canonical); }catch(e){ console.error(e); }
   if(document.getElementById('drawer') && document.getElementById('drawerOverlay')){
-    document.getElementById('drawerTitle').textContent = `${canonical.ikon} ${canonical.ad} Fasikülleri`;
+    document.getElementById('drawerTitle').textContent = `${canonical.ikon} ${canonical.ad}`;
     document.getElementById('drawerSearch').value = '';
     document.getElementById('drawerOverlay').classList.add('open');
     document.getElementById('drawer').classList.add('open');

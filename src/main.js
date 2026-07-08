@@ -801,7 +801,7 @@ function openDrawer(e, dersId, dersObj){
   const parent = ders.parentDersId ? MANIFEST.dersler.find(d=>d.id===ders.parentDersId) : null;
   document.getElementById('drawerTitle').textContent = parent
     ? `${parent.ikon || '📚'} ${parent.ad} / ${ders.ad}`
-    : `${ders.ikon} ${ders.ad} Fasikülleri`;
+    : `${ders.ikon} ${ders.ad}`;
   const backBtn = document.querySelector('.drawer-back');
   if(backBtn){
     backBtn.onclick = (ev)=>{
