@@ -366,6 +366,10 @@ function deleteFasikul(dersId, fasikulId){
   const fas=ders?.fasikuller.find(f=>f.id===fasikulId);
   if(!ders||!fas) return;
   if(!confirm(`"${fas.ad}" fasikülü kütüphaneden silinecek. Emin misiniz?`)) return;
+  if(fas.type === 'folder' && fas.childDersId){
+    const child = MANIFEST.dersler.find(d=>d.id===fas.childDersId);
+    if(child) delete child.parentDersId;
+  }
   const jsonFile=fas.jsonFile;
   ders.fasikuller = ders.fasikuller.filter(f=>f.id!==fasikulId);
   recordDersRemoval(dersId, fasikulId, jsonFile);   // bu dersten kalıcı sil
@@ -713,11 +717,29 @@ function perfSummary(bucket){
 function formatNet(value){
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
 }
+function isNestedDers(ders){
+  return !!ders?.parentDersId;
+}
+function getFolderChildDers(fas){
+  return fas?.type === 'folder' && fas.childDersId
+    ? MANIFEST.dersler.find(d=>d.id===fas.childDersId)
+    : null;
+}
+function getFasikulSoruSayisi(fas){
+  const child = getFolderChildDers(fas);
+  if(child) return visibleFasikullerFor(child).reduce((a,f)=>a+getFasikulSoruSayisi(f),0);
+  return Number(fas?.soruSayisi || 0);
+}
+function getFasikulKonuSayisi(fas){
+  const child = getFolderChildDers(fas);
+  if(child) return visibleFasikullerFor(child).reduce((a,f)=>a+getFasikulKonuSayisi(f),0);
+  return Number(fas?.konuSayisi || 0);
+}
 function renderDerslerGrid(){
   const grid = document.getElementById('derslerGrid');
   grid.innerHTML = '';
   const stats = getDashboardStats();
-  const visibleDersler=MANIFEST.dersler.filter(d=>visibleFasikullerFor(d).length>0 || !isGuestSession());
+  const visibleDersler=MANIFEST.dersler.filter(d=>!isNestedDers(d) && (visibleFasikullerFor(d).length>0 || !isGuestSession()));
   const sayac = document.getElementById('derslerSayac');
   if(sayac) sayac.textContent = `${visibleDersler.length} ders aktif`;
   visibleDersler.forEach(ders => {
@@ -727,10 +749,11 @@ function renderDerslerGrid(){
     const dersPerf = perfSummary(stats.dersler?.[ders.id]);
     const visibleFasikuller=visibleFasikullerFor(ders);
     const fasSayisi = visibleFasikuller.length;
-    const soruSayisi = visibleFasikuller.reduce((a,f)=>a+f.soruSayisi,0);
+    const soruSayisi = visibleFasikuller.reduce((a,f)=>a+getFasikulSoruSayisi(f),0);
     const r = 20; const circ = 2*Math.PI*r;
     const offset = circ * (1 - ders.progPct/100);
     const renkVar = ders.renk;
+    card.style.setProperty('--accent', renkVar);
     card.innerHTML = `
       <button class="ders-edit-btn" onclick="openDersModal('${ders.id}',event)" title="Düzenle">✏️</button>
       <div class="ders-card-top">
@@ -753,7 +776,7 @@ function renderDerslerGrid(){
       </div>
       <div class="ders-card-footer">
         <span>${dersPerf.total ? `${dersPerf.solved} çözüldü · %${dersPerf.accuracy} · Net ${formatNet(dersPerf.net)}` : (visibleFasikuller[0]?.sonCalisma||'—')}</span>
-        <button class="devam-btn" onclick="openDrawer(event,'${ders.id}')">Devam Et →</button>
+        <button class="devam-btn" style="background:color-mix(in srgb,${renkVar} 16%,transparent);color:${renkVar}" onclick="openDrawer(event,'${ders.id}')">Devam Et →</button>
       </div>`;
     grid.appendChild(card);
   });
@@ -775,7 +798,30 @@ function openDrawer(e, dersId, dersObj){
   const ders = dersObj || MANIFEST.dersler.find(d=>d.id===dersId);
   if(!ders) return;
   window.currentDrawerDers = ders;
-  document.getElementById('drawerTitle').textContent = `${ders.ikon} ${ders.ad} Fasikülleri`;
+  const parent = ders.parentDersId ? MANIFEST.dersler.find(d=>d.id===ders.parentDersId) : null;
+  document.getElementById('drawerTitle').textContent = parent
+    ? `${parent.ikon || '📚'} ${parent.ad} / ${ders.ad}`
+    : `${ders.ikon} ${ders.ad} Fasikülleri`;
+  const backBtn = document.querySelector('.drawer-back');
+  if(backBtn){
+    backBtn.onclick = (ev)=>{
+      ev?.stopPropagation?.();
+      parent ? openDrawer(ev, parent.id) : closeDrawer();
+    };
+    backBtn.classList.toggle('drawer-back-parent', !!parent);
+    backBtn.title = parent ? `${parent.ad} içine dön; kartı buraya bırakırsanız dışarı taşınır` : 'Kapat';
+    backBtn.ondragover = (ev)=>{
+      if(parent && draggedFasikulId){ ev.preventDefault(); backBtn.classList.add('drag-over'); }
+    };
+    backBtn.ondragleave = ()=>backBtn.classList.remove('drag-over');
+    backBtn.ondrop = (ev)=>{
+      if(!parent || !draggedFasikulId) return;
+      ev.preventDefault();
+      backBtn.classList.remove('drag-over');
+      window.moveFasikulToDers?.(ders.id, draggedFasikulId, parent.id);
+      openDrawer(ev, parent.id);
+    };
+  }
   document.getElementById('drawerSearch').value='';
   renderFasikulCards(visibleFasikullerFor(ders), ders);
   document.getElementById('drawerOverlay').classList.add('open');
@@ -784,6 +830,33 @@ function openDrawer(e, dersId, dersObj){
 function closeDrawer(){
   document.getElementById('drawerOverlay').classList.remove('open');
   document.getElementById('drawer').classList.remove('open');
+}
+function attachFasikulDragHandlers(card, ders, fas, sortable, moveTargetDersId=null){
+  if(!sortable) return;
+  card.addEventListener('dragstart', e=>{
+    draggedFasikulId=fas.id; fasikulWasDragged=true;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',fas.id);
+  });
+  card.addEventListener('dragend', ()=>{
+    card.classList.remove('dragging');
+    document.querySelectorAll('.fasikul-card.drag-over').forEach(c=>c.classList.remove('drag-over'));
+    draggedFasikulId=null;
+  });
+  card.addEventListener('dragover', e=>{
+    e.preventDefault();
+    if(draggedFasikulId && draggedFasikulId!==fas.id) card.classList.add('drag-over');
+  });
+  card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
+  card.addEventListener('drop', e=>{
+    e.preventDefault(); card.classList.remove('drag-over');
+    if(moveTargetDersId){
+      window.moveFasikulToDers?.(ders.id, draggedFasikulId, moveTargetDersId);
+    } else {
+      window.reorderFasikulByDrop?.(ders.id,draggedFasikulId,fas.id);
+    }
+  });
 }
 function renderFasikulCards(fasikuller, ders){
   const body = document.getElementById('drawerBody');
@@ -796,6 +869,52 @@ function renderFasikulCards(fasikuller, ders){
   }
   fasikuller.forEach(fas => {
    try{
+    const childDers = getFolderChildDers(fas);
+    if(childDers){
+      const childVisible = visibleFasikullerFor(childDers);
+      const soruSayisi = childVisible.reduce((a,f)=>a+getFasikulSoruSayisi(f),0);
+      const konuSayisi = childVisible.reduce((a,f)=>a+getFasikulKonuSayisi(f),0);
+      const renkCSS = childDers.renk || ders.renk;
+      const card = document.createElement('div');
+      card.className='fasikul-card fasikul-folder-card';
+      card.dataset.fasikulId=fas.id;
+      card.draggable=sortable;
+      card.style.setProperty('--fas-accent', renkCSS);
+      card.innerHTML=`
+        <div class="fasikul-card-top">
+          <div class="fasikul-drag-handle" title="Sürükleyerek sırala" aria-hidden="true">⣿</div>
+          <div class="fasikul-thumb" style="background:color-mix(in srgb,${renkCSS} 16%,transparent)">${childDers.ikon || fas.thumb || '📁'}</div>
+          <div class="fasikul-info">
+            <div class="fasikul-name">${childDers.ad}</div>
+            <div class="fasikul-meta">
+              <span class="fasikul-meta-chip">📁 Alt ders</span>
+              <span class="fasikul-meta-chip">📚 ${childVisible.length} fasikül</span>
+              <span class="fasikul-meta-chip">📝 ${soruSayisi} soru</span>
+            </div>
+          </div>
+          <button class="fasikul-card-menu-btn" type="button" aria-label="Klasör seçenekleri" title="Klasör seçenekleri" onclick="event.stopPropagation();toggleFasikulMenu(this)">⋮</button>
+          <div class="fasikul-card-menu">
+            ${appState.user?.role === 'admin' ? `<button onclick="event.stopPropagation();deleteFasikul('${ders.id}','${fas.id}')" style="color:var(--red);font-weight:800">❌ Klasörü kaldır</button>` : ''}
+          </div>
+        </div>
+        <div class="fasikul-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:${childDers.progPct || 0}%;background:${renkCSS}"></div></div>
+          <div class="prog-pct">${childDers.progPct || 0}%</div>
+        </div>
+        <div class="fasikul-card-footer">
+          <div class="fasikul-card-stats"><span>${konuSayisi} konu · ${soruSayisi} soru</span></div>
+          <button class="fasikul-open-btn" style="background:${renkCSS};color:#fff"
+            onclick="event.stopPropagation();openDrawer(event,'${childDers.id}')">Aç →</button>
+        </div>`;
+      card.addEventListener('click', (e)=>{
+        if(e.target.closest('.fasikul-card-menu')||e.target.closest('.fasikul-card-menu-btn')) return;
+        if(fasikulWasDragged){ fasikulWasDragged=false; return; }
+        openDrawer(e, childDers.id);
+      });
+      attachFasikulDragHandlers(card, ders, fas, sortable, childDers.id);
+      body.appendChild(card);
+      return;
+    }
     const card = document.createElement('div');
     card.className='fasikul-card';
     card.dataset.fasikulId=fas.id;
@@ -856,28 +975,7 @@ function renderFasikulCards(fasikuller, ders){
       if(fasikulWasDragged){ fasikulWasDragged=false; return; }
       openReader(ders.id, fas.id);
     });
-    if(sortable){
-      card.addEventListener('dragstart', e=>{
-        draggedFasikulId=fas.id; fasikulWasDragged=true;
-        card.classList.add('dragging');
-        e.dataTransfer.effectAllowed='move';
-        e.dataTransfer.setData('text/plain',fas.id);
-      });
-      card.addEventListener('dragend', ()=>{
-        card.classList.remove('dragging');
-        document.querySelectorAll('.fasikul-card.drag-over').forEach(c=>c.classList.remove('drag-over'));
-        draggedFasikulId=null;
-      });
-      card.addEventListener('dragover', e=>{
-        e.preventDefault();
-        if(draggedFasikulId && draggedFasikulId!==fas.id) card.classList.add('drag-over');
-      });
-      card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
-      card.addEventListener('drop', e=>{
-        e.preventDefault(); card.classList.remove('drag-over');
-        reorderFasikulByDrop(ders.id,draggedFasikulId,fas.id);
-      });
-    }
+    attachFasikulDragHandlers(card, ders, fas, sortable);
     body.appendChild(card);
    }catch(err){
     // Bir kartın render'ı patlarsa forEach durmasın — diğer fasiküller (ve yeni
@@ -2113,9 +2211,9 @@ function persistManifest(){
 }
 function buildManifestMeta(){
   return MANIFEST.dersler.map(d=>({
-    id:d.id, ad:d.ad, ikon:d.ikon, renk:d.renk, progPct:d.progPct,
+    id:d.id, ad:d.ad, ikon:d.ikon, renk:d.renk, progPct:d.progPct, parentDersId:d.parentDersId||null,
     fasikuller: d.fasikuller.map(f=>({
-      id:f.id, ad:f.ad, thumb:f.thumb, thumbBg:f.thumbBg,
+      id:f.id, ad:f.ad, thumb:f.thumb, thumbBg:f.thumbBg, type:f.type||null, childDersId:f.childDersId||null,
       sinif:f.sinif, konuSayisi:f.konuSayisi, soruSayisi:f.soruSayisi,
       progPct:f.progPct, sonCalisma:f.sonCalisma, temaRenk:f.temaRenk||null,
       jsonFile:f.jsonFile||null, pdfFile:f.pdfFile||null, sourceType:f.sourceType||null,
@@ -2135,10 +2233,10 @@ function loadManifestMeta(){
       sd.fasikuller=(sd.fasikuller||[]).filter(f=>!LEGACY_DEMO_FASIKUL_IDS.has(f.id));
       const existing = MANIFEST.dersler.find(d=>d.id===sd.id);
       if(existing){
-        existing.ad=sd.ad; existing.ikon=sd.ikon; existing.renk=sd.renk; existing.progPct=sd.progPct;
+        existing.ad=sd.ad; existing.ikon=sd.ikon; existing.renk=sd.renk; existing.progPct=sd.progPct; existing.parentDersId=sd.parentDersId||null;
         sd.fasikuller.forEach(sf=>{
           const ef = existing.fasikuller.find(f=>f.id===sf.id);
-          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; ef.jsonFile=sf.jsonFile||null; ef.pdfFile=sf.pdfFile||null; ef.sourceType=sf.sourceType||null; if(sf.fasikulTip) ef.fasikulTip=sf.fasikulTip; }
+          if(ef){ ef.ad=sf.ad; ef.thumb=sf.thumb; ef.thumbBg=sf.thumbBg; ef.type=sf.type||null; ef.childDersId=sf.childDersId||null; ef.sinif=sf.sinif; ef.konuSayisi=sf.konuSayisi; ef.soruSayisi=sf.soruSayisi; ef.progPct=sf.progPct; ef.sonCalisma=sf.sonCalisma; ef.temaRenk=sf.temaRenk||null; ef.jsonFile=sf.jsonFile||null; ef.pdfFile=sf.pdfFile||null; ef.sourceType=sf.sourceType||null; if(sf.fasikulTip) ef.fasikulTip=sf.fasikulTip; }
           else { existing.fasikuller.push({...sf, konular:[]}); }
         });
         const savedOrder=sd.fasikuller.map(sf=>sf.id);

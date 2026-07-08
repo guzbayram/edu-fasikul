@@ -443,7 +443,10 @@
   <div class="drawer-header">
     <button class="drawer-back" onclick="closeDrawer()">←</button>
     <h3 id="drawerTitle">Matematik Fasikülleri</h3>
-    <button class="devam-btn" id="addFasikulButton" style="margin-left:auto;background:var(--mat-dim);color:var(--mat);font-size:12px;padding:6px 13px;border-radius:99px;font-weight:600;white-space:nowrap" onclick="openFasikulModal()">+ Fasikül Ekle</button>
+    <div class="drawer-actions">
+      <button class="devam-btn drawer-action-btn" id="addFasikulButton" onclick="openFasikulModal()">+ Fasikül Ekle</button>
+      <button class="devam-btn drawer-action-btn drawer-action-btn-secondary" id="drawerAddDersButton" onclick="openAltDersModal(event)">+ Ders Ekle</button>
+    </div>
   </div>
   <div class="drawer-search">
     <input type="text" id="drawerSearch" placeholder="🔍 Fasikül ara…" oninput="filterFasikuller(this.value)">

@@ -234,6 +234,7 @@ function toggleRpKonuSection(){
 
 function closeReader(){
   window.stopCanliPresence?.();   // canlı oturumdan çık (kendi presence dokümanını sil)
+  const returnDersId = appState.aktifDers?.id || window.currentDrawerDers?.id || null;
   saveDrawing();
   stopTimer();
   // sonCalisma güncelle (fasikül kapatılmadan önce)
@@ -262,6 +263,9 @@ function closeReader(){
   appState.fabricCanvases = {};
   if(appState.fabricCanvas){ try{appState.fabricCanvas.dispose();}catch(e){} appState.fabricCanvas=null; }
   if(appState._pageObserver){ appState._pageObserver.disconnect(); appState._pageObserver=null; }
+  if(returnDersId){
+    setTimeout(()=>window.openDrawer?.(null, returnDersId), 0);
+  }
 }
 
 // ── Konu Nav

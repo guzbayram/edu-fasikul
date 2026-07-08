@@ -6,6 +6,7 @@ let allFasikulCards = [];
 const FASIKUL_THEME_COLORS = ['#7c73ff','#ec6471','#f59e0b','#22c55e','#14b8a6','#38bdf8','#d946ef'];
 let draggedFasikulId = null;
 let fasikulWasDragged = false;
+let dersModalParentDersId = null;
 
 function renderDate(){
   const d = new Date();
@@ -107,6 +108,31 @@ function reorderFasikulByDrop(dersId,sourceId,targetId){
   ders.fasikuller.splice(to,0,item);
   persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
   showToast('Fasikül sırası kaydedildi','success');
+}
+function moveFasikulToDers(sourceDersId, fasikulId, targetDersId){
+  if(!sourceDersId || !fasikulId || !targetDersId || sourceDersId===targetDersId) return false;
+  const sourceDers=window.MANIFEST.dersler.find(d=>d.id===sourceDersId);
+  const targetDers=window.MANIFEST.dersler.find(d=>d.id===targetDersId);
+  if(!sourceDers || !targetDers) return false;
+  const from=sourceDers.fasikuller.findIndex(f=>f.id===fasikulId);
+  if(from<0) return false;
+  const [item]=sourceDers.fasikuller.splice(from,1);
+  if(item.type === 'folder' && item.childDersId === targetDersId){
+    sourceDers.fasikuller.splice(from,0,item);
+    showToast('Klasör kendi içine taşınamaz','error');
+    return false;
+  }
+  if(targetDers.fasikuller.some(f=>f.id===item.id)){
+    sourceDers.fasikuller.splice(from,0,item);
+    showToast('Bu fasikül hedef dizinde zaten var','info');
+    return false;
+  }
+  targetDers.fasikuller.push(item);
+  persistManifest();
+  renderDerslerGrid();
+  renderFasikulCards(visibleFasikullerFor(sourceDers), sourceDers);
+  showToast(`${item.ad || 'Fasikül'} taşındı ✓`,'success');
+  return true;
 }
 function toggleFasikulMenu(btn){
   const menu = btn.nextElementSibling;
@@ -307,9 +333,10 @@ function toggleDemoData(btn){
   applyDemoMode(!isOff);
   showToast(isOff ? 'Demo verileri kapatıldı' : 'Demo verileri açıldı', 'success');
 }
-function openDersModal(dersId, e){
+function openDersModal(dersId, e, parentDersId=null){
   if(isGuestSession()){ showToast('Ders eklemek için yetkili hesabıyla giriş yapın','info'); return; }
   if(e) e.stopPropagation();
+  dersModalParentDersId = parentDersId || null;
   const modal = document.getElementById('dersModal');
   const silBtn = document.getElementById('dersSilBtn');
   document.getElementById('dersEditId').value = '';
@@ -319,8 +346,9 @@ function openDersModal(dersId, e){
   document.querySelectorAll('#dersRenkPicker .color-dot').forEach(d=>d.classList.remove('selected'));
   document.querySelector('#dersRenkPicker .color-dot')?.classList.add('selected');
   silBtn.style.display = 'none';
-  document.getElementById('dersModalTitle').textContent = '➕ Ders Ekle';
+  document.getElementById('dersModalTitle').textContent = dersModalParentDersId ? '📁 Alt Ders Ekle' : '➕ Ders Ekle';
   if(dersId){
+    dersModalParentDersId = null;
     const ders = window.MANIFEST.dersler.find(d=>d.id===dersId);
     if(ders){
       document.getElementById('dersEditId').value = dersId;
@@ -336,8 +364,15 @@ function openDersModal(dersId, e){
   }
   modal.classList.add('open');
 }
+function openAltDersModal(e){
+  if(isGuestSession()){ showToast('Ders eklemek için yetkili hesabıyla giriş yapın','info'); return; }
+  const parent = window.currentDrawerDers;
+  if(!parent){ showToast('Önce bir ders paneli açın','error'); return; }
+  openDersModal(null, e, parent.id);
+}
 function closeDersModal(){
   document.getElementById('dersModal').classList.remove('open');
+  dersModalParentDersId = null;
 }
 function selectDersRenk(el, renk){
   document.querySelectorAll('#dersRenkPicker .color-dot').forEach(d=>d.classList.remove('selected'));
@@ -354,6 +389,42 @@ function saveDers(){
     const ders = window.MANIFEST.dersler.find(d=>d.id===editId);
     if(ders){ ders.ad=ad; ders.ikon=ikon; ders.renk=renk; }
     showToast(`${ad} güncellendi ✓`,'success');
+  } else if(dersModalParentDersId){
+    const parent = window.MANIFEST.dersler.find(d=>d.id===dersModalParentDersId);
+    if(!parent){ showToast('Üst ders bulunamadı','error'); return; }
+    const norm = v => String(v||'').trim().toLocaleLowerCase('tr-TR');
+    let child = window.MANIFEST.dersler.find(d=>d.parentDersId===parent.id && norm(d.ad)===norm(ad));
+    if(!child){
+      child = window.MANIFEST.dersler.find(d=>!d.parentDersId && d.id!==parent.id && norm(d.ad)===norm(ad));
+      if(child) child.parentDersId = parent.id;
+    }
+    if(!child){
+      const newId = ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
+      child = { id:newId, ad, ikon, renk, progPct:0, fasikuller:[], parentDersId:parent.id };
+      window.MANIFEST.dersler.push(child);
+    } else {
+      child.ad = ad;
+      child.ikon = ikon;
+      child.renk = renk;
+      child.parentDersId = parent.id;
+      child.fasikuller = child.fasikuller || [];
+    }
+    const folderId = `folder-${child.id}`;
+    if(!parent.fasikuller.some(f=>f.id===folderId || f.childDersId===child.id)){
+      parent.fasikuller.push({
+        id:folderId,
+        type:'folder',
+        childDersId:child.id,
+        ad:child.ad,
+        thumb:child.ikon || '📁',
+        soruSayisi:0,
+        konuSayisi:0,
+        progPct:child.progPct || 0,
+        sonCalisma:'Alt ders'
+      });
+    }
+    window.currentDrawerDers = parent;
+    showToast(`${ad} ${parent.ad} içine eklendi ✓`,'success');
   } else {
     const newId = ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
     window.MANIFEST.dersler.push({ id:newId, ad, ikon, renk, progPct:0, fasikuller:[] });
@@ -361,6 +432,11 @@ function saveDers(){
   }
   persistManifest();
   renderDerslerGrid();
+  if(window.currentDrawerDers){
+    const current = window.MANIFEST.dersler.find(d=>d.id===window.currentDrawerDers.id) || window.currentDrawerDers;
+    window.currentDrawerDers = current;
+    renderFasikulCards(visibleFasikullerFor(current), current);
+  }
   closeDersModal();
 }
 function silDers(){
@@ -871,6 +947,7 @@ window.filterFasikuller = filterFasikuller;
 window.setFasikulTheme = setFasikulTheme;
 window.moveFasikul = moveFasikul;
 window.reorderFasikulByDrop = reorderFasikulByDrop;
+window.moveFasikulToDers = moveFasikulToDers;
 window.toggleFasikulMenu = toggleFasikulMenu;
 window.openLastFasikul = openLastFasikul;
 window.safeDateKey = safeDateKey;
@@ -881,6 +958,7 @@ window.applyDemoStats = applyDemoStats;
 window.applyDemoMode = applyDemoMode;
 window.toggleDemoData = toggleDemoData;
 window.openDersModal = openDersModal;
+window.openAltDersModal = openAltDersModal;
 window.closeDersModal = closeDersModal;
 window.selectDersRenk = selectDersRenk;
 window.saveDers = saveDers;
