@@ -519,7 +519,13 @@ async function openFasikulModal(fasikulId){
   }
   modal.classList.add('open');
 }
+let _fasikulSourceSelectGen = 0;
 async function populateFasikulSourceSelect(editId=''){
+  // Modal butonu üst üste (çift tıklama/dokunma) tetiklenirse önceki çağrının
+  // asenkron yüklemesi hâlâ sürerken yenisi başlar; ikisi de aynı <select>'e
+  // eklerse liste iki katına çıkar ("Fasikül kaynağı seçin" mükerrer satırlar).
+  // Nesil (generation) damgasıyla eski çağrı sonuçlarını render etmeden iptal ederiz.
+  const myGen = ++_fasikulSourceSelectGen;
   const select=document.getElementById('fasikulSourceSelect');
   const hint=document.getElementById('fasikulSourceHint');
   if(!select) return;
@@ -541,6 +547,7 @@ async function populateFasikulSourceSelect(editId=''){
     const folderPdfFound = hasFolder ? await hasLocalPdfFile(source.pdf).catch(()=>false) : false;
     return {source, raw, folderPdfFound};
   }));
+  if(myGen !== _fasikulSourceSelectGen) return; // daha yeni bir çağrı başladı, bu sonuçları çizme
   for(const {source, raw, folderPdfFound} of loaded){
     if(!raw && source.id!==editId) continue;
     const cachedPdfFound = cachedKeys.has(`${source.dersId}_${source.id}`)
