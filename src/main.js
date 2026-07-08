@@ -21,7 +21,7 @@ import {
 } from './firebase/auth.js';
 import {
   persistData, loadPersistedData, loadFromFirestore,
-  persistDrawingCloud, deleteDrawingCloud, scheduleCloudPersist,
+  persistDrawingCloud, deleteDrawingCloud, scheduleCloudPersist, flushCloudPersist,
   getDashboardStats, getAnsweredRecords, _hesaplaIstatistik,
   _canonicalAnswerKey, _getUserKey,
   addHataliCloud, removeHataliCloud, migrateHatalilarToSubcollection
@@ -2207,6 +2207,7 @@ function persistManifest(){
   try{
     const slim = buildManifestMeta();
     localStorage.setItem('edu_manifest_meta', JSON.stringify(slim));
+    localStorage.setItem('edu_manifest_meta_ts', String(Date.now()));
     scheduleCloudPersist();
   }catch(e){}
 }
@@ -2339,6 +2340,7 @@ window.toggleSharedBoard = toggleSharedBoard;
 window.refreshSharedBoard = refreshSharedBoard;
 window.persistData = persistData;
 window.scheduleCloudPersist = scheduleCloudPersist;
+window.flushCloudPersist = flushCloudPersist;
 window.persistDrawingCloud = persistDrawingCloud;
 window.deleteDrawingCloud = deleteDrawingCloud;
 window.getDashboardStats = getDashboardStats;

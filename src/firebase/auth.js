@@ -537,6 +537,12 @@ export function enterApp(name){
 export async function doLogout(){
   if(!confirm('Çıkış yapmak istediğinize emin misiniz?')) return;
   window.stopRealtimeSync?.();
+  // Bekleyen 900ms'lik bulut senk. zamanlayıcısı tamamlanmadan çıkılırsa,
+  // appState.user aşağıda null'lanınca zamanlayıcı sessizce hiçbir şey
+  // yapmadan çalışır — son eklenen ders/fasikül buluta hiç ulaşmaz.
+  if(appState.user && appState.user.email !== 'misafir@demo.com'){
+    await window.flushCloudPersist?.();
+  }
   if(window._authReady && appState.user && appState.user.email !== 'misafir@demo.com'){
     try{ await window._authSignOut(window._auth); }catch(e){}
   }

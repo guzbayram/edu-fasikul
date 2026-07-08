@@ -20,6 +20,18 @@ export function scheduleCloudPersist(){
   appState._cloudPersistTimer=setTimeout(()=>persistData(),900);
 }
 
+// Çıkışta (doLogout) 900ms'lik debounce'un tamamlanmasını beklemeden oturum
+// kapanırsa appState.user=null olur ve bekleyen zamanlayıcı persistData()'yı
+// sessizce hiçbir şey yapmadan çalıştırır — son değişiklik buluta hiç
+// ulaşmaz. Çıkıştan önce bunu senkron biçimde tetikleyip bitmesini bekleriz.
+export async function flushCloudPersist(){
+  if(appState._cloudPersistTimer){
+    clearTimeout(appState._cloudPersistTimer);
+    appState._cloudPersistTimer = null;
+  }
+  try{ await persistData(); }catch(e){}
+}
+
 export function _canonicalAnswerKey(key,s){
   const fid=String(s?.fasikulId||'');
   let base=String(key||'');
@@ -269,12 +281,13 @@ export function persistData(){
     };
     const fasikulIst = _hesaplaFasikulIstatistik();
     const docRef = _userDocRef(key);
-    window._fsSetDoc(docRef, {
+    const p = window._fsSetDoc(docRef, {
       email: appState.user.email,
       name: appState.user.name,
       preferences: appState.preferences,
       theme: appState.theme,
       manifest: window.buildManifestMeta?.() || [],
+      manifestTs: Number(localStorage.getItem('edu_manifest_meta_ts')||0),
       removedFromDers: (()=>{ try{ return JSON.parse(localStorage.getItem('edu_removed_from_ders')||'[]'); }catch(e){ return []; } })(),
       videoWatched: appState.videoWatched,
       istatistik: istatistik,
@@ -284,7 +297,9 @@ export function persistData(){
       if(!appState.cloudSolutionsLoaded) appState.cloudIstatistik=istatistik;
     }).catch(e=>console.warn('Firestore kayıt hatası:',e));
     _persistYeniCozumler(key);
+    return p;
   }
+  return Promise.resolve();
 }
 
 export function loadPersistedData(){
@@ -336,11 +351,22 @@ export async function loadFromFirestore(){
         }catch(e){}
       }
       if(Array.isArray(data.manifest)){
-        localStorage.setItem('edu_manifest_meta',JSON.stringify(data.manifest));
-        window.loadManifestMeta?.();
-        await window.loadBundledFasikuller?.();
-        window.applyDersRemovals?.();
-        window.renderDerslerGrid?.();
+        // Yerelde bulut'a HENÜZ ulaşmamış daha yeni bir değişiklik olabilir
+        // (ör. ders/alt ders/fasikül eklenip 900ms'lik senk. beklemeden çıkış
+        // yapılmışsa). Bu durumda bayat bulut kopyası yerelin üzerine
+        // yazılmasın — yereli koru ve buluta yeniden göndermeyi programla.
+        const localTs = Number(localStorage.getItem('edu_manifest_meta_ts')||0);
+        const cloudTs = Number(data.manifestTs||0);
+        if(localTs > cloudTs){
+          scheduleCloudPersist();
+        } else {
+          localStorage.setItem('edu_manifest_meta',JSON.stringify(data.manifest));
+          localStorage.setItem('edu_manifest_meta_ts', String(cloudTs||Date.now()));
+          window.loadManifestMeta?.();
+          await window.loadBundledFasikuller?.();
+          window.applyDersRemovals?.();
+          window.renderDerslerGrid?.();
+        }
       }
       if(data.sorularState) appState.sorularState = data.sorularState;
       if(data.videoWatched){
