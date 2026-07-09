@@ -51,9 +51,12 @@ import './panels/profil.js';
 import './panels/admin.js';
 
 // ─── PDF.js ──────────────────────────────────────────────
+// Worker CDN'den (cdnjs) değil, npm paketinden bundle'lanıp aynı origin'den
+// servis ediliyor — cdnjs erişilemez/engelliyse "Setting up fake worker
+// failed" hatasıyla PDF yüklemesi tamamen kırılmasın.
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+import pdfWorkerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.js?url';
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 window.pdfjsLib = pdfjsLib;
 
 // ─── Fabric.js ───────────────────────────────────────────
@@ -436,12 +439,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderDerslerGrid();
 
   // Onboarding turu kaldırıldı (otomatik tetik yok)
-
-  // PDF.js worker
-  if(typeof pdfjsLib !== 'undefined'){
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  }
 
   // Drag & drop PDF yükleme
   const uploadZone = document.getElementById('pdfUploadZone');
