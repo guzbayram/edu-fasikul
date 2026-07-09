@@ -126,7 +126,13 @@ async function openReader(dersId, fasikulId){
   let startKonu = (lastKonuId && konular.find(k => k.id === lastKonuId && hasSolvable(k)))
     || konular.find(hasSolvable) || konular[0];
   const visibleAlts = (startKonu?.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler');
-  let startAlt = (lastAltKonuId && visibleAlts.find(ak => ak.id === lastAltKonuId)) || visibleAlts[0] || null;
+  // "Konu Sayfaları" gibi sorusuz (saf anlatım) alt konular listede İLK sırada
+  // olabilir (ör. Aktif TYT Matematik fasikülleri) — varsayılan olarak seçilirse
+  // soru paneli boş açılır (cevap butonları/konu listesi gözükmez). Sorusu OLAN
+  // ilk alt konuyu tercih et, hiçbiri yoksa ilk alt konuya geri düş.
+  let startAlt = (lastAltKonuId && visibleAlts.find(ak => ak.id === lastAltKonuId))
+    || visibleAlts.find(ak => (ak.sorular||[]).length > 0)
+    || visibleAlts[0] || null;
   if(startKonu){
     // ana konu listesinde aktif işaretle
     document.querySelectorAll('.ana-konu-item').forEach(el => el.classList.remove('active'));
@@ -208,7 +214,7 @@ function selectAnaKonu(konu){
   const fas = appState.aktifFasikul;
   const lastAkId = fas?._lastAltKonuId;
   const lastAk = lastAkId && visibleAlts.find(ak => ak.id === lastAkId && konu.id === fas?._lastKonuId);
-  const targetAlt = lastAk || visibleAlts[0] || null;
+  const targetAlt = lastAk || visibleAlts.find(ak => (ak.sorular||[]).length > 0) || visibleAlts[0] || null;
   if(targetAlt){
     document.querySelectorAll('#altKonuList .alt-konu-item').forEach(el => el.classList.remove('active'));
     const el = document.getElementById(`altk-${targetAlt.id}`);
@@ -508,7 +514,7 @@ function onAnaKonuChange(){
   if(select) select.value = konu.id || konu.ad || '';
 
   const visibleAlts = (konu.altKonular || []).filter(ak=> ak.ad !== 'Çözümlü Sorular - Çözümler');
-  const firstAlt = visibleAlts[0] || null;
+  const firstAlt = visibleAlts.find(ak => (ak.sorular||[]).length > 0) || visibleAlts[0] || null;
 
   renderAltKonuList(konu);
   if(firstAlt){
