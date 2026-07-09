@@ -218,6 +218,13 @@ const CEVAP_MASK_CONFIG = {
     sayfaAraligi: [[5, 128]],
     haric: [52],
   },
+  // Aktif TYT Matematik 3: Fasikül 1/2 ile aynı yayıncı/şablon — her sayfanın
+  // altında kendi "Soru N/ X" şeridi var (yalnız 1. Ünite: Oran-Orantı,
+  // sayfa 5-30, işlendi; kitabın geri kalanı henüz eklenmedi).
+  'aktif-tyt-matematik-3': {
+    rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
+    sayfaAraligi: [[5, 30]],
+  },
   // Kuvvetlendiren Matematik TYT Soru Bankası 2025: MÖF-9 gibi, cevap anahtarı
   // yalnız testin SON sayfasında (sayfa altında sayfa no'nun yanında, dar bir
   // "1 2 3...N / B B C..." şeridi) — sayfa içindeki sorulara ait A-E şıkları
