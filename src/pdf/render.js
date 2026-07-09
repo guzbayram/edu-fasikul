@@ -219,12 +219,11 @@ const CEVAP_MASK_CONFIG = {
     haric: [52],
   },
   // Aktif TYT Matematik 3: Fasikül 1/2 ile aynı yayıncı/şablon — her sayfanın
-  // altında kendi "Soru N/ X" şeridi var (1-2. Ünite: Oran-Orantı s.5-30,
-  // Sayı-Kesir Problemleri s.31-78, işlendi; kitabın geri kalanı henüz
-  // eklenmedi).
+  // altında kendi "Soru N/ X" şeridi var. Kitabın tamamı (1-9. Ünite +
+  // ÖSYM Çıkmış Sorular, s.5-192) işlendi.
   'aktif-tyt-matematik-3': {
     rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
-    sayfaAraligi: [[5, 134]],
+    sayfaAraligi: [[5, 192]],
   },
   // Kuvvetlendiren Matematik TYT Soru Bankası 2025: MÖF-9 gibi, cevap anahtarı
   // yalnız testin SON sayfasında (sayfa altında sayfa no'nun yanında, dar bir
