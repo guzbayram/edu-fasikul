@@ -229,15 +229,18 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'tyt-kampi-tum-dersler',dersId:'tyt',json:'7-tyt-kampi-tum-dersler-kart.json',pdf:'7-tyt-kampi-tum-dersler-kart.pdf'},
   {id:'tyt-denemeleri-1',dersId:'tyt',json:'8-tyt-denemeleri-1-cards.json',pdf:'8-tyt-denemeleri-1-cards.pdf'},
   {id:'tyt-denemeleri-2',dersId:'tyt',json:'9-tyt-denemeleri-2-cards.json',pdf:'9-tyt-denemeleri-2-cards.pdf'},
-  {id:'matematik-destek',dersId:'mat',json:'12-Matematik (Destek)-kart.json',pdf:'12-Matematik (Destek).pdf',type:'video'},
+  {id:'matematik-destek',dersId:'mat',json:'12-Matematik (Destek).json',pdf:'12-Matematik (Destek).pdf',type:'video'},
   {id:'mof-9-matematik-1',dersId:'mat',json:'Möf-9.Sınıf-Matematik-1.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-1.Fasikül.pdf'},
   {id:'mof-9-matematik-2',dersId:'mat',json:'Möf-9.Sınıf-Matematik-2.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-2.Fasikül.pdf'},
-  {id:'mof-9-matematik-3',dersId:'mat',json:'Möf-9.Sınıf-Matematik-3.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-3.Fasikül.pdf'},
-  {id:'mof-9-matematik-4',dersId:'mat',json:'Möf-9.Sınıf-Matematik-4.Fasikül.json',pdf:'Möf-9.Sınıf-Matematik-4.Fasikül.pdf'},
-  {id:'yaricap-tyt-problemler',dersId:'mat',json:'Tyt-Problemler Fasikülü-Yarıçap.json',pdf:'Tyt-Problemler Fasikülü-Yarıçap.pdf'},
-  {id:'yaricap-10-matematik-1',dersId:'mat',json:'10.Sınıf-Matematik-Yarıçap-1.Fasikul.json',pdf:'10.Sınıf-Matematik-Yarıçap-1.Fasikul.pdf'},
-  {id:'yaricap-10-matematik-2',dersId:'mat',json:'10.Sınıf-Matematik-Yarıçap-2.Fasikul.json',pdf:'10.Sınıf-Matematik-Yarıçap-2.Fasikul.pdf'},
-  {id:'aktif-matematik-acik-uclu',dersId:'mat',json:'2020 - 2021 - AKTIF - Matematik Açık Uçlu.json',pdf:'2020 - 2021 - AKTIF - Matematik Açık Uçlu.pdf'}
+  {id:'mof-9-matematik-3',dersId:'mat',json:'15-Möf - 9.Sınıf-Matematik-3.Fasikül.json',pdf:'15-Möf - 9.Sınıf-Matematik-3.Fasikül.pdf'},
+  {id:'mof-9-matematik-4',dersId:'mat',json:'16-Möf - 9.Sınıf-Matematik-4.Fasikül.json',pdf:'16-Möf - 9.Sınıf-Matematik-4.Fasikül.pdf'},
+  {id:'yaricap-tyt-problemler',dersId:'mat',json:'26-Yarıçap - Tyt-Problemler Fasikülü.json',pdf:'26-Yarıçap - Tyt-Problemler Fasikülü.pdf'},
+  {id:'yaricap-10-matematik-1',dersId:'mat',json:'27-Yarıçap - 10.Sınıf-Matematik-1.Fasikul.json',pdf:'27-Yarıçap - 10.Sınıf-Matematik-1.Fasikul.pdf'},
+  {id:'yaricap-10-matematik-2',dersId:'mat',json:'28-Yarıçap - 10.Sınıf-Matematik-2.Fasikul.json',pdf:'28-Yarıçap - 10.Sınıf-Matematik-2.Fasikul.pdf'},
+  {id:'aktif-matematik-acik-uclu',dersId:'mat',json:'17-Aktif - Matematik Açık Uçlu.json',pdf:'17-Aktif - Matematik Açık Uçlu.pdf'},
+  {id:'aktif-tyt-matematik-1',dersId:'mat',json:'18-Aktif - Tyt Matematik Fasikül 1.json',pdf:'18-Aktif - Tyt Matematik Fasikül 1.pdf'},
+  {id:'aktif-tyt-matematik-2',dersId:'mat',json:'19-Aktif - Tyt Matematik Fasikül 2.json',pdf:'19-Aktif - Tyt Matematik Fasikül 2.pdf'},
+  {id:'kuvvetlendiren-tyt-soru-bankasi-2025',dersId:'mat',json:'23-Aktif - Tyt-Soru-Bankası-2025.json',pdf:'23-Aktif - Tyt-Soru-Bankası-2025.pdf'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';
