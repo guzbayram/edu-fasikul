@@ -204,6 +204,20 @@ const CEVAP_MASK_CONFIG = {
       78: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
     },
   },
+  // Aktif TYT Matematik 1/2: her soru sayfasının altında (sol/sağ sütun veya
+  // ikisi birden) "Soru N/ X" şeklinde ince bir cevap şeridi var — MÖF'ten
+  // farklı olarak yalnız test biten sayfada değil, sorusu olan HER sayfada.
+  // Sayfa aralığı JSON'daki sorular[].pdfSayfa'dan çıkarıldı (PDF ölçümüyle
+  // doğrulandı: y 0.936-0.997, x 0.024-0.975, sayfa boyutu 985.68x1316.16pt).
+  'aktif-tyt-matematik-1': {
+    rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
+    sayfaAraligi: [[5, 256]],
+  },
+  'aktif-tyt-matematik-2': {
+    rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
+    sayfaAraligi: [[5, 128]],
+    haric: [52],
+  },
 };
 
 // pageNum için cevap anahtarı maskesi gerekiyorsa dikdörtgeni döndür.
@@ -215,6 +229,10 @@ function getCevapMaskRects(pageNum){
   const rects = cfg.rects || (cfg.rect ? [cfg.rect] : []);
   if(cfg.herSayfa) return rects;
   if(Array.isArray(cfg.cevapSayfalari) && cfg.cevapSayfalari.includes(pageNum)) return rects;
+  if(Array.isArray(cfg.sayfaAraligi)){
+    const araliktaMi = cfg.sayfaAraligi.some(([min,max]) => pageNum>=min && pageNum<=max);
+    if(araliktaMi && !(cfg.haric||[]).includes(pageNum)) return rects;
+  }
   if(cfg.yalnizCevapSayfasi){
     const bolumCevabiVar = fas.konular.some(k => (k.altKonular || []).some(ak =>
       String(ak.id || '').startsWith('bp-page-') &&
@@ -441,6 +459,19 @@ async function renderSinglePageMode(pageNum){
       const ctx2d = pdfCanvas.getContext('2d');
       if(!ctx2d) throw new Error('Canvas 2D context alınamadı (bellek yetersiz olabilir)');
       await page.render({ canvasContext: ctx2d, viewport }).promise;
+
+      // Cevap anahtarını gizle (renderSinglePDFPage ile aynı maskeleme — bu fonksiyon
+      // 'single' görünüm modunda (appState.viewMode varsayılanı) ayrı bir render yolu
+      // olduğu için maskeleme burada da tekrarlanmalı, yoksa varsayılan modda hiç uygulanmaz).
+      const cevapMasks = getCevapMaskRects(pageNum);
+      if(cevapMasks.length){
+        ctx2d.save();
+        ctx2d.fillStyle = CEVAP_MASK_RENK;
+        for(const m of cevapMasks){
+          ctx2d.fillRect(m.x * pdfCanvas.width, m.y * pdfCanvas.height, m.w * pdfCanvas.width, m.h * pdfCanvas.height);
+        }
+        ctx2d.restore();
+      }
 
       const drawEl = document.createElement('canvas');
       drawEl.className = 'fabric-draw-canvas';

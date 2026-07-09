@@ -1917,6 +1917,11 @@ function normalizeFasikulKonular(konular){
     (k.altKonular || []).forEach((ak, altIdx) => {
       ak.id = ak.id || `${k.id}-alt-${altIdx + 1}-${slugifyId(ak.ad, 'alt')}`;
       const sorular = ak.sorular || [];
+      // Bazı formatlarda (ör. kart bazlı "Aktif" fasikülleri) gerçek PDF sayfası
+      // "pdfSayfa" alanında tutulur. Önce bunu "sayfa"ya taşı — aksi halde aşağıdaki
+      // ardışık sayaç (ak.sayfa+soruIdx) devreye girip yanlış sayfaya yönlendirir ve
+      // toplam sayfa sayısı (getManifestMaxPage) da hatalı hesaplanır.
+      sorular.forEach(s => { if(!s.sayfa && s.pdfSayfa) s.sayfa = s.pdfSayfa; });
       const firstPage = sorular.find(s=>s.sayfa)?.sayfa || ak.sayfa || k.sayfaBasl || 1;
       ak.sayfa = ak.sayfa || firstPage;
       sorular.forEach((s, soruIdx) => {
