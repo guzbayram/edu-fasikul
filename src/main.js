@@ -2221,12 +2221,18 @@ function persistManifest(){
   }catch(e){}
 }
 function buildManifestMeta(){
+  // Firestore setDoc() bir alan "undefined" ise TÜM yazmayı reddediyor (sessizce
+  // değil, hata fırlatıp bulut senk.'in tamamını düşürüyor). "Alt ders" klasör
+  // sözde-fasikülü (dashboard.js saveDers) gerçek bir fasikülün tüm alanlarına
+  // sahip değil (ör. thumbBg, sinif yok) — bu yüzden her alan burada açıkça
+  // ||null ile korunuyor, gelecekte eksik alanlı bir obje eklense bile senk.
+  // sessizce bozulmasın.
   return MANIFEST.dersler.map(d=>({
-    id:d.id, ad:d.ad, ikon:d.ikon, renk:d.renk, progPct:d.progPct, parentDersId:d.parentDersId||null,
+    id:d.id, ad:d.ad, ikon:d.ikon||null, renk:d.renk||null, progPct:d.progPct??0, parentDersId:d.parentDersId||null,
     fasikuller: d.fasikuller.map(f=>({
-      id:f.id, ad:f.ad, thumb:f.thumb, thumbBg:f.thumbBg, type:f.type||null, childDersId:f.childDersId||null,
-      sinif:f.sinif, konuSayisi:f.konuSayisi, soruSayisi:f.soruSayisi,
-      progPct:f.progPct, sonCalisma:f.sonCalisma, temaRenk:f.temaRenk||null,
+      id:f.id, ad:f.ad||null, thumb:f.thumb||null, thumbBg:f.thumbBg||null, type:f.type||null, childDersId:f.childDersId||null,
+      sinif:f.sinif||null, konuSayisi:f.konuSayisi??0, soruSayisi:f.soruSayisi??0,
+      progPct:f.progPct??0, sonCalisma:f.sonCalisma||null, temaRenk:f.temaRenk||null,
       jsonFile:f.jsonFile||null, pdfFile:f.pdfFile||null, sourceType:f.sourceType||null,
       fasikulTip:f.fasikulTip||null
     }))
