@@ -224,7 +224,7 @@ const CEVAP_MASK_CONFIG = {
   // eklenmedi).
   'aktif-tyt-matematik-3': {
     rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
-    sayfaAraligi: [[5, 78]],
+    sayfaAraligi: [[5, 134]],
   },
   // Kuvvetlendiren Matematik TYT Soru Bankası 2025: MÖF-9 gibi, cevap anahtarı
   // yalnız testin SON sayfasında (sayfa altında sayfa no'nun yanında, dar bir

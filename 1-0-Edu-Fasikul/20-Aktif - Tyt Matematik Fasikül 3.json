@@ -5,10 +5,10 @@
   "kaynakPdf": "20-Aktif - Tyt Matematik Fasikül 3.pdf",
   "pdf": "20-Aktif - Tyt Matematik Fasikül 3.pdf",
   "kartKlasoru": "20-Aktif-Tyt-Matematik-Fasikul-3-kart",
-  "soruSayisi": 254,
-  "toplamSoru": 254,
-  "konuSayisi": 2,
-  "testSayisi": 18,
+  "soruSayisi": 479,
+  "toplamSoru": 479,
+  "konuSayisi": 6,
+  "testSayisi": 34,
   "cevapMaskele": true,
   "konular": [
     {
@@ -2454,11 +2454,2192 @@
           ]
         }
       ]
+    },
+    {
+      "id": "yas-problemleri",
+      "ad": "Yaş Problemleri",
+      "anaKonu": "Yaş Problemleri",
+      "altKonular": [
+        {
+          "id": "uygulama-sorulari",
+          "ad": "Uygulama Soruları",
+          "tip": "test",
+          "soruSayisi": 15,
+          "sorular": [
+            {
+              "id": "3-Uygulama-1",
+              "baslik": "Uygulama Soruları - Soru 1",
+              "kartDosya": "3-Uygulama-1.png",
+              "pdfSayfa": 79,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "3-Uygulama-2",
+              "baslik": "Uygulama Soruları - Soru 2",
+              "kartDosya": "3-Uygulama-2.png",
+              "pdfSayfa": 79,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "3-Uygulama-3",
+              "baslik": "Uygulama Soruları - Soru 3",
+              "kartDosya": "3-Uygulama-3.png",
+              "pdfSayfa": 80,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "3-Uygulama-4",
+              "baslik": "Uygulama Soruları - Soru 4",
+              "kartDosya": "3-Uygulama-4.png",
+              "pdfSayfa": 80,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "3-Uygulama-5",
+              "baslik": "Uygulama Soruları - Soru 5",
+              "kartDosya": "3-Uygulama-5.png",
+              "pdfSayfa": 80,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "A"
+            },
+            {
+              "id": "3-Uygulama-6",
+              "baslik": "Uygulama Soruları - Soru 6",
+              "kartDosya": "3-Uygulama-6.png",
+              "pdfSayfa": 81,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "E"
+            },
+            {
+              "id": "3-Uygulama-7",
+              "baslik": "Uygulama Soruları - Soru 7",
+              "kartDosya": "3-Uygulama-7.png",
+              "pdfSayfa": 81,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "E"
+            },
+            {
+              "id": "3-Uygulama-8",
+              "baslik": "Uygulama Soruları - Soru 8",
+              "kartDosya": "3-Uygulama-8.png",
+              "pdfSayfa": 81,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "3-Uygulama-9",
+              "baslik": "Uygulama Soruları - Soru 9",
+              "kartDosya": "3-Uygulama-9.png",
+              "pdfSayfa": 82,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "B"
+            },
+            {
+              "id": "3-Uygulama-10",
+              "baslik": "Uygulama Soruları - Soru 10",
+              "kartDosya": "3-Uygulama-10.png",
+              "pdfSayfa": 82,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            },
+            {
+              "id": "3-Uygulama-11",
+              "baslik": "Uygulama Soruları - Soru 11",
+              "kartDosya": "3-Uygulama-11.png",
+              "pdfSayfa": 82,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "C"
+            },
+            {
+              "id": "3-Uygulama-12",
+              "baslik": "Uygulama Soruları - Soru 12",
+              "kartDosya": "3-Uygulama-12.png",
+              "pdfSayfa": 83,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "C"
+            },
+            {
+              "id": "3-Uygulama-13",
+              "baslik": "Uygulama Soruları - Soru 13",
+              "kartDosya": "3-Uygulama-13.png",
+              "pdfSayfa": 83,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "B"
+            },
+            {
+              "id": "3-Uygulama-14",
+              "baslik": "Uygulama Soruları - Soru 14",
+              "kartDosya": "3-Uygulama-14.png",
+              "pdfSayfa": 84,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "D"
+            },
+            {
+              "id": "3-Uygulama-15",
+              "baslik": "Uygulama Soruları - Soru 15",
+              "kartDosya": "3-Uygulama-15.png",
+              "pdfSayfa": 84,
+              "tip": "soru",
+              "soruNo": 15,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-1",
+          "ad": "Konu Testi 1",
+          "tip": "test",
+          "soruSayisi": 14,
+          "sorular": [
+            {
+              "id": "3-konu-testi-1-1",
+              "baslik": "Konu Testi 1 - Soru 1",
+              "kartDosya": "3-konu-testi-1-1.png",
+              "pdfSayfa": 85,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-1-2",
+              "baslik": "Konu Testi 1 - Soru 2",
+              "kartDosya": "3-konu-testi-1-2.png",
+              "pdfSayfa": 85,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "3-konu-testi-1-3",
+              "baslik": "Konu Testi 1 - Soru 3",
+              "kartDosya": "3-konu-testi-1-3.png",
+              "pdfSayfa": 85,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-1-4",
+              "baslik": "Konu Testi 1 - Soru 4",
+              "kartDosya": "3-konu-testi-1-4.png",
+              "pdfSayfa": 85,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-1-5",
+              "baslik": "Konu Testi 1 - Soru 5",
+              "kartDosya": "3-konu-testi-1-5.png",
+              "pdfSayfa": 85,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-1-6",
+              "baslik": "Konu Testi 1 - Soru 6",
+              "kartDosya": "3-konu-testi-1-6.png",
+              "pdfSayfa": 85,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-1-7",
+              "baslik": "Konu Testi 1 - Soru 7",
+              "kartDosya": "3-konu-testi-1-7.png",
+              "pdfSayfa": 85,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "3-konu-testi-1-8",
+              "baslik": "Konu Testi 1 - Soru 8",
+              "kartDosya": "3-konu-testi-1-8.png",
+              "pdfSayfa": 86,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-1-9",
+              "baslik": "Konu Testi 1 - Soru 9",
+              "kartDosya": "3-konu-testi-1-9.png",
+              "pdfSayfa": 86,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-1-10",
+              "baslik": "Konu Testi 1 - Soru 10",
+              "kartDosya": "3-konu-testi-1-10.png",
+              "pdfSayfa": 86,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-1-11",
+              "baslik": "Konu Testi 1 - Soru 11",
+              "kartDosya": "3-konu-testi-1-11.png",
+              "pdfSayfa": 86,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "A"
+            },
+            {
+              "id": "3-konu-testi-1-12",
+              "baslik": "Konu Testi 1 - Soru 12",
+              "kartDosya": "3-konu-testi-1-12.png",
+              "pdfSayfa": 86,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-1-13",
+              "baslik": "Konu Testi 1 - Soru 13",
+              "kartDosya": "3-konu-testi-1-13.png",
+              "pdfSayfa": 86,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-1-14",
+              "baslik": "Konu Testi 1 - Soru 14",
+              "kartDosya": "3-konu-testi-1-14.png",
+              "pdfSayfa": 86,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-2",
+          "ad": "Konu Testi 2",
+          "tip": "test",
+          "soruSayisi": 12,
+          "sorular": [
+            {
+              "id": "3-konu-testi-2-1",
+              "baslik": "Konu Testi 2 - Soru 1",
+              "kartDosya": "3-konu-testi-2-1.png",
+              "pdfSayfa": 87,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-2-2",
+              "baslik": "Konu Testi 2 - Soru 2",
+              "kartDosya": "3-konu-testi-2-2.png",
+              "pdfSayfa": 87,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "A"
+            },
+            {
+              "id": "3-konu-testi-2-3",
+              "baslik": "Konu Testi 2 - Soru 3",
+              "kartDosya": "3-konu-testi-2-3.png",
+              "pdfSayfa": 87,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-2-4",
+              "baslik": "Konu Testi 2 - Soru 4",
+              "kartDosya": "3-konu-testi-2-4.png",
+              "pdfSayfa": 87,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-2-5",
+              "baslik": "Konu Testi 2 - Soru 5",
+              "kartDosya": "3-konu-testi-2-5.png",
+              "pdfSayfa": 87,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-2-6",
+              "baslik": "Konu Testi 2 - Soru 6",
+              "kartDosya": "3-konu-testi-2-6.png",
+              "pdfSayfa": 87,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-2-7",
+              "baslik": "Konu Testi 2 - Soru 7",
+              "kartDosya": "3-konu-testi-2-7.png",
+              "pdfSayfa": 88,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-2-8",
+              "baslik": "Konu Testi 2 - Soru 8",
+              "kartDosya": "3-konu-testi-2-8.png",
+              "pdfSayfa": 88,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "C"
+            },
+            {
+              "id": "3-konu-testi-2-9",
+              "baslik": "Konu Testi 2 - Soru 9",
+              "kartDosya": "3-konu-testi-2-9.png",
+              "pdfSayfa": 88,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "C"
+            },
+            {
+              "id": "3-konu-testi-2-10",
+              "baslik": "Konu Testi 2 - Soru 10",
+              "kartDosya": "3-konu-testi-2-10.png",
+              "pdfSayfa": 88,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "A"
+            },
+            {
+              "id": "3-konu-testi-2-11",
+              "baslik": "Konu Testi 2 - Soru 11",
+              "kartDosya": "3-konu-testi-2-11.png",
+              "pdfSayfa": 88,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "C"
+            },
+            {
+              "id": "3-konu-testi-2-12",
+              "baslik": "Konu Testi 2 - Soru 12",
+              "kartDosya": "3-konu-testi-2-12.png",
+              "pdfSayfa": 88,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "A"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-3",
+          "ad": "Konu Testi 3",
+          "tip": "test",
+          "soruSayisi": 11,
+          "sorular": [
+            {
+              "id": "3-konu-testi-3-1",
+              "baslik": "Konu Testi 3 - Soru 1",
+              "kartDosya": "3-konu-testi-3-1.png",
+              "pdfSayfa": 89,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-3-2",
+              "baslik": "Konu Testi 3 - Soru 2",
+              "kartDosya": "3-konu-testi-3-2.png",
+              "pdfSayfa": 89,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-3-3",
+              "baslik": "Konu Testi 3 - Soru 3",
+              "kartDosya": "3-konu-testi-3-3.png",
+              "pdfSayfa": 89,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "C"
+            },
+            {
+              "id": "3-konu-testi-3-4",
+              "baslik": "Konu Testi 3 - Soru 4",
+              "kartDosya": "3-konu-testi-3-4.png",
+              "pdfSayfa": 89,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "3-konu-testi-3-5",
+              "baslik": "Konu Testi 3 - Soru 5",
+              "kartDosya": "3-konu-testi-3-5.png",
+              "pdfSayfa": 89,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-3-6",
+              "baslik": "Konu Testi 3 - Soru 6",
+              "kartDosya": "3-konu-testi-3-6.png",
+              "pdfSayfa": 90,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-3-7",
+              "baslik": "Konu Testi 3 - Soru 7",
+              "kartDosya": "3-konu-testi-3-7.png",
+              "pdfSayfa": 90,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-3-8",
+              "baslik": "Konu Testi 3 - Soru 8",
+              "kartDosya": "3-konu-testi-3-8.png",
+              "pdfSayfa": 90,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-3-9",
+              "baslik": "Konu Testi 3 - Soru 9",
+              "kartDosya": "3-konu-testi-3-9.png",
+              "pdfSayfa": 90,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-3-10",
+              "baslik": "Konu Testi 3 - Soru 10",
+              "kartDosya": "3-konu-testi-3-10.png",
+              "pdfSayfa": 90,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "B"
+            },
+            {
+              "id": "3-konu-testi-3-11",
+              "baslik": "Konu Testi 3 - Soru 11",
+              "kartDosya": "3-konu-testi-3-11.png",
+              "pdfSayfa": 90,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "D"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "isci-problemleri",
+      "ad": "İşçi Problemleri",
+      "anaKonu": "İşçi Problemleri",
+      "altKonular": [
+        {
+          "id": "uygulama-sorulari",
+          "ad": "Uygulama Soruları",
+          "tip": "test",
+          "soruSayisi": 14,
+          "sorular": [
+            {
+              "id": "4-Uygulama-2",
+              "baslik": "Uygulama Soruları - Soru 2",
+              "kartDosya": "4-Uygulama-2.png",
+              "pdfSayfa": 92,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "B"
+            },
+            {
+              "id": "4-Uygulama-3",
+              "baslik": "Uygulama Soruları - Soru 3",
+              "kartDosya": "4-Uygulama-3.png",
+              "pdfSayfa": 93,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "4-Uygulama-4",
+              "baslik": "Uygulama Soruları - Soru 4",
+              "kartDosya": "4-Uygulama-4.png",
+              "pdfSayfa": 93,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "4-Uygulama-5",
+              "baslik": "Uygulama Soruları - Soru 5",
+              "kartDosya": "4-Uygulama-5.png",
+              "pdfSayfa": 93,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "A"
+            },
+            {
+              "id": "4-Uygulama-6",
+              "baslik": "Uygulama Soruları - Soru 6",
+              "kartDosya": "4-Uygulama-6.png",
+              "pdfSayfa": 94,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "C"
+            },
+            {
+              "id": "4-Uygulama-7",
+              "baslik": "Uygulama Soruları - Soru 7",
+              "kartDosya": "4-Uygulama-7.png",
+              "pdfSayfa": 94,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "B"
+            },
+            {
+              "id": "4-Uygulama-8",
+              "baslik": "Uygulama Soruları - Soru 8",
+              "kartDosya": "4-Uygulama-8.png",
+              "pdfSayfa": 94,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "4-Uygulama-9",
+              "baslik": "Uygulama Soruları - Soru 9",
+              "kartDosya": "4-Uygulama-9.png",
+              "pdfSayfa": 95,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "E"
+            },
+            {
+              "id": "4-Uygulama-10",
+              "baslik": "Uygulama Soruları - Soru 10",
+              "kartDosya": "4-Uygulama-10.png",
+              "pdfSayfa": 95,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "E"
+            },
+            {
+              "id": "4-Uygulama-11",
+              "baslik": "Uygulama Soruları - Soru 11",
+              "kartDosya": "4-Uygulama-11.png",
+              "pdfSayfa": 95,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "B"
+            },
+            {
+              "id": "4-Uygulama-12",
+              "baslik": "Uygulama Soruları - Soru 12",
+              "kartDosya": "4-Uygulama-12.png",
+              "pdfSayfa": 96,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "D"
+            },
+            {
+              "id": "4-Uygulama-13",
+              "baslik": "Uygulama Soruları - Soru 13",
+              "kartDosya": "4-Uygulama-13.png",
+              "pdfSayfa": 96,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "B"
+            },
+            {
+              "id": "4-Uygulama-14",
+              "baslik": "Uygulama Soruları - Soru 14",
+              "kartDosya": "4-Uygulama-14.png",
+              "pdfSayfa": 97,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "D"
+            },
+            {
+              "id": "4-Uygulama-15",
+              "baslik": "Uygulama Soruları - Soru 15",
+              "kartDosya": "4-Uygulama-15.png",
+              "pdfSayfa": 97,
+              "tip": "soru",
+              "soruNo": 15,
+              "cevap": "D"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-1",
+          "ad": "Konu Testi 1",
+          "tip": "test",
+          "soruSayisi": 15,
+          "sorular": [
+            {
+              "id": "4-konu-testi-1-1",
+              "baslik": "Konu Testi 1 - Soru 1",
+              "kartDosya": "4-konu-testi-1-1.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "4-konu-testi-1-2",
+              "baslik": "Konu Testi 1 - Soru 2",
+              "kartDosya": "4-konu-testi-1-2.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "A"
+            },
+            {
+              "id": "4-konu-testi-1-3",
+              "baslik": "Konu Testi 1 - Soru 3",
+              "kartDosya": "4-konu-testi-1-3.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-1-4",
+              "baslik": "Konu Testi 1 - Soru 4",
+              "kartDosya": "4-konu-testi-1-4.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "B"
+            },
+            {
+              "id": "4-konu-testi-1-5",
+              "baslik": "Konu Testi 1 - Soru 5",
+              "kartDosya": "4-konu-testi-1-5.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "C"
+            },
+            {
+              "id": "4-konu-testi-1-6",
+              "baslik": "Konu Testi 1 - Soru 6",
+              "kartDosya": "4-konu-testi-1-6.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "4-konu-testi-1-7",
+              "baslik": "Konu Testi 1 - Soru 7",
+              "kartDosya": "4-konu-testi-1-7.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "A"
+            },
+            {
+              "id": "4-konu-testi-1-8",
+              "baslik": "Konu Testi 1 - Soru 8",
+              "kartDosya": "4-konu-testi-1-8.png",
+              "pdfSayfa": 98,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "4-konu-testi-1-9",
+              "baslik": "Konu Testi 1 - Soru 9",
+              "kartDosya": "4-konu-testi-1-9.png",
+              "pdfSayfa": 99,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "A"
+            },
+            {
+              "id": "4-konu-testi-1-10",
+              "baslik": "Konu Testi 1 - Soru 10",
+              "kartDosya": "4-konu-testi-1-10.png",
+              "pdfSayfa": 99,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            },
+            {
+              "id": "4-konu-testi-1-11",
+              "baslik": "Konu Testi 1 - Soru 11",
+              "kartDosya": "4-konu-testi-1-11.png",
+              "pdfSayfa": 99,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "C"
+            },
+            {
+              "id": "4-konu-testi-1-12",
+              "baslik": "Konu Testi 1 - Soru 12",
+              "kartDosya": "4-konu-testi-1-12.png",
+              "pdfSayfa": 99,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "B"
+            },
+            {
+              "id": "4-konu-testi-1-13",
+              "baslik": "Konu Testi 1 - Soru 13",
+              "kartDosya": "4-konu-testi-1-13.png",
+              "pdfSayfa": 99,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "B"
+            },
+            {
+              "id": "4-konu-testi-1-14",
+              "baslik": "Konu Testi 1 - Soru 14",
+              "kartDosya": "4-konu-testi-1-14.png",
+              "pdfSayfa": 99,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-1-15",
+              "baslik": "Konu Testi 1 - Soru 15",
+              "kartDosya": "4-konu-testi-1-15.png",
+              "pdfSayfa": 99,
+              "tip": "soru",
+              "soruNo": 15,
+              "cevap": "A"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-2",
+          "ad": "Konu Testi 2",
+          "tip": "test",
+          "soruSayisi": 17,
+          "sorular": [
+            {
+              "id": "4-konu-testi-2-1",
+              "baslik": "Konu Testi 2 - Soru 1",
+              "kartDosya": "4-konu-testi-2-1.png",
+              "pdfSayfa": 100,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-2-2",
+              "baslik": "Konu Testi 2 - Soru 2",
+              "kartDosya": "4-konu-testi-2-2.png",
+              "pdfSayfa": 100,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-2-3",
+              "baslik": "Konu Testi 2 - Soru 3",
+              "kartDosya": "4-konu-testi-2-3.png",
+              "pdfSayfa": 100,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "A"
+            },
+            {
+              "id": "4-konu-testi-2-4",
+              "baslik": "Konu Testi 2 - Soru 4",
+              "kartDosya": "4-konu-testi-2-4.png",
+              "pdfSayfa": 100,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "D"
+            },
+            {
+              "id": "4-konu-testi-2-5",
+              "baslik": "Konu Testi 2 - Soru 5",
+              "kartDosya": "4-konu-testi-2-5.png",
+              "pdfSayfa": 100,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "A"
+            },
+            {
+              "id": "4-konu-testi-2-6",
+              "baslik": "Konu Testi 2 - Soru 6",
+              "kartDosya": "4-konu-testi-2-6.png",
+              "pdfSayfa": 101,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "D"
+            },
+            {
+              "id": "4-konu-testi-2-7",
+              "baslik": "Konu Testi 2 - Soru 7",
+              "kartDosya": "4-konu-testi-2-7.png",
+              "pdfSayfa": 101,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "A"
+            },
+            {
+              "id": "4-konu-testi-2-8",
+              "baslik": "Konu Testi 2 - Soru 8",
+              "kartDosya": "4-konu-testi-2-8.png",
+              "pdfSayfa": 101,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "4-konu-testi-2-9",
+              "baslik": "Konu Testi 2 - Soru 9",
+              "kartDosya": "4-konu-testi-2-9.png",
+              "pdfSayfa": 101,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "B"
+            },
+            {
+              "id": "4-konu-testi-2-10",
+              "baslik": "Konu Testi 2 - Soru 10",
+              "kartDosya": "4-konu-testi-2-10.png",
+              "pdfSayfa": 101,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "B"
+            },
+            {
+              "id": "4-konu-testi-2-11",
+              "baslik": "Konu Testi 2 - Soru 11",
+              "kartDosya": "4-konu-testi-2-11.png",
+              "pdfSayfa": 101,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "C"
+            },
+            {
+              "id": "4-konu-testi-2-12",
+              "baslik": "Konu Testi 2 - Soru 12",
+              "kartDosya": "4-konu-testi-2-12.png",
+              "pdfSayfa": 102,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-2-13",
+              "baslik": "Konu Testi 2 - Soru 13",
+              "kartDosya": "4-konu-testi-2-13.png",
+              "pdfSayfa": 102,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "D"
+            },
+            {
+              "id": "4-konu-testi-2-14",
+              "baslik": "Konu Testi 2 - Soru 14",
+              "kartDosya": "4-konu-testi-2-14.png",
+              "pdfSayfa": 102,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-2-15",
+              "baslik": "Konu Testi 2 - Soru 15",
+              "kartDosya": "4-konu-testi-2-15.png",
+              "pdfSayfa": 102,
+              "tip": "soru",
+              "soruNo": 15,
+              "cevap": "C"
+            },
+            {
+              "id": "4-konu-testi-2-16",
+              "baslik": "Konu Testi 2 - Soru 16",
+              "kartDosya": "4-konu-testi-2-16.png",
+              "pdfSayfa": 102,
+              "tip": "soru",
+              "soruNo": 16,
+              "cevap": "D"
+            },
+            {
+              "id": "4-konu-testi-2-17",
+              "baslik": "Konu Testi 2 - Soru 17",
+              "kartDosya": "4-konu-testi-2-17.png",
+              "pdfSayfa": 102,
+              "tip": "soru",
+              "soruNo": 17,
+              "cevap": "A"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "yuzde-problemleri",
+      "ad": "Yüzde Problemleri",
+      "anaKonu": "Yüzde Problemleri",
+      "altKonular": [
+        {
+          "id": "uygulama-sorulari",
+          "ad": "Uygulama Soruları",
+          "tip": "test",
+          "soruSayisi": 25,
+          "sorular": [
+            {
+              "id": "5-Uygulama-2",
+              "baslik": "Uygulama Soruları - Soru 2",
+              "kartDosya": "5-Uygulama-2.png",
+              "pdfSayfa": 103,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "A"
+            },
+            {
+              "id": "5-Uygulama-3",
+              "baslik": "Uygulama Soruları - Soru 3",
+              "kartDosya": "5-Uygulama-3.png",
+              "pdfSayfa": 104,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "C"
+            },
+            {
+              "id": "5-Uygulama-4",
+              "baslik": "Uygulama Soruları - Soru 4",
+              "kartDosya": "5-Uygulama-4.png",
+              "pdfSayfa": 104,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "5-Uygulama-5",
+              "baslik": "Uygulama Soruları - Soru 5",
+              "kartDosya": "5-Uygulama-5.png",
+              "pdfSayfa": 104,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "A"
+            },
+            {
+              "id": "5-Uygulama-6",
+              "baslik": "Uygulama Soruları - Soru 6",
+              "kartDosya": "5-Uygulama-6.png",
+              "pdfSayfa": 105,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "E"
+            },
+            {
+              "id": "5-Uygulama-7",
+              "baslik": "Uygulama Soruları - Soru 7",
+              "kartDosya": "5-Uygulama-7.png",
+              "pdfSayfa": 105,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "E"
+            },
+            {
+              "id": "5-Uygulama-8",
+              "baslik": "Uygulama Soruları - Soru 8",
+              "kartDosya": "5-Uygulama-8.png",
+              "pdfSayfa": 106,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "5-Uygulama-9",
+              "baslik": "Uygulama Soruları - Soru 9",
+              "kartDosya": "5-Uygulama-9.png",
+              "pdfSayfa": 106,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "B"
+            },
+            {
+              "id": "5-Uygulama-10",
+              "baslik": "Uygulama Soruları - Soru 10",
+              "kartDosya": "5-Uygulama-10.png",
+              "pdfSayfa": 107,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            },
+            {
+              "id": "5-Uygulama-11",
+              "baslik": "Uygulama Soruları - Soru 11",
+              "kartDosya": "5-Uygulama-11.png",
+              "pdfSayfa": 107,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "B"
+            },
+            {
+              "id": "5-Uygulama-12",
+              "baslik": "Uygulama Soruları - Soru 12",
+              "kartDosya": "5-Uygulama-12.png",
+              "pdfSayfa": 107,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "C"
+            },
+            {
+              "id": "5-Uygulama-13",
+              "baslik": "Uygulama Soruları - Soru 13",
+              "kartDosya": "5-Uygulama-13.png",
+              "pdfSayfa": 108,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "B"
+            },
+            {
+              "id": "5-Uygulama-14",
+              "baslik": "Uygulama Soruları - Soru 14",
+              "kartDosya": "5-Uygulama-14.png",
+              "pdfSayfa": 108,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "A"
+            },
+            {
+              "id": "5-Uygulama-15",
+              "baslik": "Uygulama Soruları - Soru 15",
+              "kartDosya": "5-Uygulama-15.png",
+              "pdfSayfa": 109,
+              "tip": "soru",
+              "soruNo": 15,
+              "cevap": "D"
+            },
+            {
+              "id": "5-Uygulama-16",
+              "baslik": "Uygulama Soruları - Soru 16",
+              "kartDosya": "5-Uygulama-16.png",
+              "pdfSayfa": 109,
+              "tip": "soru",
+              "soruNo": 16,
+              "cevap": "A"
+            },
+            {
+              "id": "5-Uygulama-17",
+              "baslik": "Uygulama Soruları - Soru 17",
+              "kartDosya": "5-Uygulama-17.png",
+              "pdfSayfa": 110,
+              "tip": "soru",
+              "soruNo": 17,
+              "cevap": "E"
+            },
+            {
+              "id": "5-Uygulama-18",
+              "baslik": "Uygulama Soruları - Soru 18",
+              "kartDosya": "5-Uygulama-18.png",
+              "pdfSayfa": 110,
+              "tip": "soru",
+              "soruNo": 18,
+              "cevap": "C"
+            },
+            {
+              "id": "5-Uygulama-19",
+              "baslik": "Uygulama Soruları - Soru 19",
+              "kartDosya": "5-Uygulama-19.png",
+              "pdfSayfa": 111,
+              "tip": "soru",
+              "soruNo": 19,
+              "cevap": "D"
+            },
+            {
+              "id": "5-Uygulama-20",
+              "baslik": "Uygulama Soruları - Soru 20",
+              "kartDosya": "5-Uygulama-20.png",
+              "pdfSayfa": 111,
+              "tip": "soru",
+              "soruNo": 20,
+              "cevap": "E"
+            },
+            {
+              "id": "5-Uygulama-21",
+              "baslik": "Uygulama Soruları - Soru 21",
+              "kartDosya": "5-Uygulama-21.png",
+              "pdfSayfa": 112,
+              "tip": "soru",
+              "soruNo": 21,
+              "cevap": "C"
+            },
+            {
+              "id": "5-Uygulama-22",
+              "baslik": "Uygulama Soruları - Soru 22",
+              "kartDosya": "5-Uygulama-22.png",
+              "pdfSayfa": 112,
+              "tip": "soru",
+              "soruNo": 22,
+              "cevap": "C"
+            },
+            {
+              "id": "5-Uygulama-23",
+              "baslik": "Uygulama Soruları - Soru 23",
+              "kartDosya": "5-Uygulama-23.png",
+              "pdfSayfa": 113,
+              "tip": "soru",
+              "soruNo": 23,
+              "cevap": "A"
+            },
+            {
+              "id": "5-Uygulama-24",
+              "baslik": "Uygulama Soruları - Soru 24",
+              "kartDosya": "5-Uygulama-24.png",
+              "pdfSayfa": 113,
+              "tip": "soru",
+              "soruNo": 24,
+              "cevap": "B"
+            },
+            {
+              "id": "5-Uygulama-25",
+              "baslik": "Uygulama Soruları - Soru 25",
+              "kartDosya": "5-Uygulama-25.png",
+              "pdfSayfa": 114,
+              "tip": "soru",
+              "soruNo": 25,
+              "cevap": "E"
+            },
+            {
+              "id": "5-Uygulama-26",
+              "baslik": "Uygulama Soruları - Soru 26",
+              "kartDosya": "5-Uygulama-26.png",
+              "pdfSayfa": 114,
+              "tip": "soru",
+              "soruNo": 26,
+              "cevap": "D"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-1",
+          "ad": "Konu Testi 1",
+          "tip": "test",
+          "soruSayisi": 14,
+          "sorular": [
+            {
+              "id": "5-konu-testi-1-1",
+              "baslik": "Konu Testi 1 - Soru 1",
+              "kartDosya": "5-konu-testi-1-1.png",
+              "pdfSayfa": 115,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-1-2",
+              "baslik": "Konu Testi 1 - Soru 2",
+              "kartDosya": "5-konu-testi-1-2.png",
+              "pdfSayfa": 115,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-1-3",
+              "baslik": "Konu Testi 1 - Soru 3",
+              "kartDosya": "5-konu-testi-1-3.png",
+              "pdfSayfa": 115,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-1-4",
+              "baslik": "Konu Testi 1 - Soru 4",
+              "kartDosya": "5-konu-testi-1-4.png",
+              "pdfSayfa": 115,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-1-5",
+              "baslik": "Konu Testi 1 - Soru 5",
+              "kartDosya": "5-konu-testi-1-5.png",
+              "pdfSayfa": 115,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-1-6",
+              "baslik": "Konu Testi 1 - Soru 6",
+              "kartDosya": "5-konu-testi-1-6.png",
+              "pdfSayfa": 115,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-1-7",
+              "baslik": "Konu Testi 1 - Soru 7",
+              "kartDosya": "5-konu-testi-1-7.png",
+              "pdfSayfa": 115,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-1-8",
+              "baslik": "Konu Testi 1 - Soru 8",
+              "kartDosya": "5-konu-testi-1-8.png",
+              "pdfSayfa": 116,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "A"
+            },
+            {
+              "id": "5-konu-testi-1-9",
+              "baslik": "Konu Testi 1 - Soru 9",
+              "kartDosya": "5-konu-testi-1-9.png",
+              "pdfSayfa": 116,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "A"
+            },
+            {
+              "id": "5-konu-testi-1-10",
+              "baslik": "Konu Testi 1 - Soru 10",
+              "kartDosya": "5-konu-testi-1-10.png",
+              "pdfSayfa": 116,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-1-11",
+              "baslik": "Konu Testi 1 - Soru 11",
+              "kartDosya": "5-konu-testi-1-11.png",
+              "pdfSayfa": 116,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "A"
+            },
+            {
+              "id": "5-konu-testi-1-12",
+              "baslik": "Konu Testi 1 - Soru 12",
+              "kartDosya": "5-konu-testi-1-12.png",
+              "pdfSayfa": 116,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-1-13",
+              "baslik": "Konu Testi 1 - Soru 13",
+              "kartDosya": "5-konu-testi-1-13.png",
+              "pdfSayfa": 116,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "A"
+            },
+            {
+              "id": "5-konu-testi-1-14",
+              "baslik": "Konu Testi 1 - Soru 14",
+              "kartDosya": "5-konu-testi-1-14.png",
+              "pdfSayfa": 116,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "E"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-2",
+          "ad": "Konu Testi 2",
+          "tip": "test",
+          "soruSayisi": 13,
+          "sorular": [
+            {
+              "id": "5-konu-testi-2-1",
+              "baslik": "Konu Testi 2 - Soru 1",
+              "kartDosya": "5-konu-testi-2-1.png",
+              "pdfSayfa": 117,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-2-2",
+              "baslik": "Konu Testi 2 - Soru 2",
+              "kartDosya": "5-konu-testi-2-2.png",
+              "pdfSayfa": 117,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-2-3",
+              "baslik": "Konu Testi 2 - Soru 3",
+              "kartDosya": "5-konu-testi-2-3.png",
+              "pdfSayfa": 117,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-2-4",
+              "baslik": "Konu Testi 2 - Soru 4",
+              "kartDosya": "5-konu-testi-2-4.png",
+              "pdfSayfa": 117,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-2-5",
+              "baslik": "Konu Testi 2 - Soru 5",
+              "kartDosya": "5-konu-testi-2-5.png",
+              "pdfSayfa": 117,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-2-6",
+              "baslik": "Konu Testi 2 - Soru 6",
+              "kartDosya": "5-konu-testi-2-6.png",
+              "pdfSayfa": 117,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-2-7",
+              "baslik": "Konu Testi 2 - Soru 7",
+              "kartDosya": "5-konu-testi-2-7.png",
+              "pdfSayfa": 117,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-2-8",
+              "baslik": "Konu Testi 2 - Soru 8",
+              "kartDosya": "5-konu-testi-2-8.png",
+              "pdfSayfa": 118,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-2-9",
+              "baslik": "Konu Testi 2 - Soru 9",
+              "kartDosya": "5-konu-testi-2-9.png",
+              "pdfSayfa": 118,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-2-10",
+              "baslik": "Konu Testi 2 - Soru 10",
+              "kartDosya": "5-konu-testi-2-10.png",
+              "pdfSayfa": 118,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-2-11",
+              "baslik": "Konu Testi 2 - Soru 11",
+              "kartDosya": "5-konu-testi-2-11.png",
+              "pdfSayfa": 118,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "A"
+            },
+            {
+              "id": "5-konu-testi-2-12",
+              "baslik": "Konu Testi 2 - Soru 12",
+              "kartDosya": "5-konu-testi-2-12.png",
+              "pdfSayfa": 118,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-2-13",
+              "baslik": "Konu Testi 2 - Soru 13",
+              "kartDosya": "5-konu-testi-2-13.png",
+              "pdfSayfa": 118,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "B"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-3",
+          "ad": "Konu Testi 3",
+          "tip": "test",
+          "soruSayisi": 13,
+          "sorular": [
+            {
+              "id": "5-konu-testi-3-1",
+              "baslik": "Konu Testi 3 - Soru 1",
+              "kartDosya": "5-konu-testi-3-1.png",
+              "pdfSayfa": 119,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "A"
+            },
+            {
+              "id": "5-konu-testi-3-2",
+              "baslik": "Konu Testi 3 - Soru 2",
+              "kartDosya": "5-konu-testi-3-2.png",
+              "pdfSayfa": 119,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-3-3",
+              "baslik": "Konu Testi 3 - Soru 3",
+              "kartDosya": "5-konu-testi-3-3.png",
+              "pdfSayfa": 119,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-3-4",
+              "baslik": "Konu Testi 3 - Soru 4",
+              "kartDosya": "5-konu-testi-3-4.png",
+              "pdfSayfa": 119,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-3-5",
+              "baslik": "Konu Testi 3 - Soru 5",
+              "kartDosya": "5-konu-testi-3-5.png",
+              "pdfSayfa": 119,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-3-6",
+              "baslik": "Konu Testi 3 - Soru 6",
+              "kartDosya": "5-konu-testi-3-6.png",
+              "pdfSayfa": 119,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-3-7",
+              "baslik": "Konu Testi 3 - Soru 7",
+              "kartDosya": "5-konu-testi-3-7.png",
+              "pdfSayfa": 119,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-3-8",
+              "baslik": "Konu Testi 3 - Soru 8",
+              "kartDosya": "5-konu-testi-3-8.png",
+              "pdfSayfa": 120,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-3-9",
+              "baslik": "Konu Testi 3 - Soru 9",
+              "kartDosya": "5-konu-testi-3-9.png",
+              "pdfSayfa": 120,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "A"
+            },
+            {
+              "id": "5-konu-testi-3-10",
+              "baslik": "Konu Testi 3 - Soru 10",
+              "kartDosya": "5-konu-testi-3-10.png",
+              "pdfSayfa": 120,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-3-11",
+              "baslik": "Konu Testi 3 - Soru 11",
+              "kartDosya": "5-konu-testi-3-11.png",
+              "pdfSayfa": 120,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-3-12",
+              "baslik": "Konu Testi 3 - Soru 12",
+              "kartDosya": "5-konu-testi-3-12.png",
+              "pdfSayfa": 120,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-3-13",
+              "baslik": "Konu Testi 3 - Soru 13",
+              "kartDosya": "5-konu-testi-3-13.png",
+              "pdfSayfa": 120,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-4",
+          "ad": "Konu Testi 4",
+          "tip": "test",
+          "soruSayisi": 11,
+          "sorular": [
+            {
+              "id": "5-konu-testi-4-1",
+              "baslik": "Konu Testi 4 - Soru 1",
+              "kartDosya": "5-konu-testi-4-1.png",
+              "pdfSayfa": 121,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-4-2",
+              "baslik": "Konu Testi 4 - Soru 2",
+              "kartDosya": "5-konu-testi-4-2.png",
+              "pdfSayfa": 121,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-4-3",
+              "baslik": "Konu Testi 4 - Soru 3",
+              "kartDosya": "5-konu-testi-4-3.png",
+              "pdfSayfa": 121,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "C"
+            },
+            {
+              "id": "5-konu-testi-4-4",
+              "baslik": "Konu Testi 4 - Soru 4",
+              "kartDosya": "5-konu-testi-4-4.png",
+              "pdfSayfa": 121,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-4-5",
+              "baslik": "Konu Testi 4 - Soru 5",
+              "kartDosya": "5-konu-testi-4-5.png",
+              "pdfSayfa": 121,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-4-6",
+              "baslik": "Konu Testi 4 - Soru 6",
+              "kartDosya": "5-konu-testi-4-6.png",
+              "pdfSayfa": 121,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-4-7",
+              "baslik": "Konu Testi 4 - Soru 7",
+              "kartDosya": "5-konu-testi-4-7.png",
+              "pdfSayfa": 122,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "D"
+            },
+            {
+              "id": "5-konu-testi-4-8",
+              "baslik": "Konu Testi 4 - Soru 8",
+              "kartDosya": "5-konu-testi-4-8.png",
+              "pdfSayfa": 122,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-4-9",
+              "baslik": "Konu Testi 4 - Soru 9",
+              "kartDosya": "5-konu-testi-4-9.png",
+              "pdfSayfa": 122,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "E"
+            },
+            {
+              "id": "5-konu-testi-4-10",
+              "baslik": "Konu Testi 4 - Soru 10",
+              "kartDosya": "5-konu-testi-4-10.png",
+              "pdfSayfa": 122,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-4-11",
+              "baslik": "Konu Testi 4 - Soru 11",
+              "kartDosya": "5-konu-testi-4-11.png",
+              "pdfSayfa": 122,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "D"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "karisim-problemleri",
+      "ad": "Karışım Problemleri",
+      "anaKonu": "Karışım Problemleri",
+      "altKonular": [
+        {
+          "id": "uygulama-sorulari",
+          "ad": "Uygulama Soruları",
+          "tip": "test",
+          "soruSayisi": 14,
+          "sorular": [
+            {
+              "id": "6-Uygulama-1",
+              "baslik": "Uygulama Soruları - Soru 1",
+              "kartDosya": "6-Uygulama-1.png",
+              "pdfSayfa": 123,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "6-Uygulama-2",
+              "baslik": "Uygulama Soruları - Soru 2",
+              "kartDosya": "6-Uygulama-2.png",
+              "pdfSayfa": 123,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "6-Uygulama-3",
+              "baslik": "Uygulama Soruları - Soru 3",
+              "kartDosya": "6-Uygulama-3.png",
+              "pdfSayfa": 124,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "E"
+            },
+            {
+              "id": "6-Uygulama-4",
+              "baslik": "Uygulama Soruları - Soru 4",
+              "kartDosya": "6-Uygulama-4.png",
+              "pdfSayfa": 124,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "6-Uygulama-5",
+              "baslik": "Uygulama Soruları - Soru 5",
+              "kartDosya": "6-Uygulama-5.png",
+              "pdfSayfa": 124,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "6-Uygulama-6",
+              "baslik": "Uygulama Soruları - Soru 6",
+              "kartDosya": "6-Uygulama-6.png",
+              "pdfSayfa": 125,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "6-Uygulama-7",
+              "baslik": "Uygulama Soruları - Soru 7",
+              "kartDosya": "6-Uygulama-7.png",
+              "pdfSayfa": 125,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "D"
+            },
+            {
+              "id": "6-Uygulama-8",
+              "baslik": "Uygulama Soruları - Soru 8",
+              "kartDosya": "6-Uygulama-8.png",
+              "pdfSayfa": 125,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "C"
+            },
+            {
+              "id": "6-Uygulama-9",
+              "baslik": "Uygulama Soruları - Soru 9",
+              "kartDosya": "6-Uygulama-9.png",
+              "pdfSayfa": 126,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "D"
+            },
+            {
+              "id": "6-Uygulama-10",
+              "baslik": "Uygulama Soruları - Soru 10",
+              "kartDosya": "6-Uygulama-10.png",
+              "pdfSayfa": 126,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "E"
+            },
+            {
+              "id": "6-Uygulama-11",
+              "baslik": "Uygulama Soruları - Soru 11",
+              "kartDosya": "6-Uygulama-11.png",
+              "pdfSayfa": 127,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "E"
+            },
+            {
+              "id": "6-Uygulama-12",
+              "baslik": "Uygulama Soruları - Soru 12",
+              "kartDosya": "6-Uygulama-12.png",
+              "pdfSayfa": 127,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "D"
+            },
+            {
+              "id": "6-Uygulama-13",
+              "baslik": "Uygulama Soruları - Soru 13",
+              "kartDosya": "6-Uygulama-13.png",
+              "pdfSayfa": 128,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "A"
+            },
+            {
+              "id": "6-Uygulama-14",
+              "baslik": "Uygulama Soruları - Soru 14",
+              "kartDosya": "6-Uygulama-14.png",
+              "pdfSayfa": 128,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "B"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-1",
+          "ad": "Konu Testi 1",
+          "tip": "test",
+          "soruSayisi": 16,
+          "sorular": [
+            {
+              "id": "6-konu-testi-1-1",
+              "baslik": "Konu Testi 1 - Soru 1",
+              "kartDosya": "6-konu-testi-1-1.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-1-2",
+              "baslik": "Konu Testi 1 - Soru 2",
+              "kartDosya": "6-konu-testi-1-2.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-1-3",
+              "baslik": "Konu Testi 1 - Soru 3",
+              "kartDosya": "6-konu-testi-1-3.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "6-konu-testi-1-4",
+              "baslik": "Konu Testi 1 - Soru 4",
+              "kartDosya": "6-konu-testi-1-4.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-1-5",
+              "baslik": "Konu Testi 1 - Soru 5",
+              "kartDosya": "6-konu-testi-1-5.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            },
+            {
+              "id": "6-konu-testi-1-6",
+              "baslik": "Konu Testi 1 - Soru 6",
+              "kartDosya": "6-konu-testi-1-6.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "D"
+            },
+            {
+              "id": "6-konu-testi-1-7",
+              "baslik": "Konu Testi 1 - Soru 7",
+              "kartDosya": "6-konu-testi-1-7.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-1-8",
+              "baslik": "Konu Testi 1 - Soru 8",
+              "kartDosya": "6-konu-testi-1-8.png",
+              "pdfSayfa": 129,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "6-konu-testi-1-9",
+              "baslik": "Konu Testi 1 - Soru 9",
+              "kartDosya": "6-konu-testi-1-9.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-1-10",
+              "baslik": "Konu Testi 1 - Soru 10",
+              "kartDosya": "6-konu-testi-1-10.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "E"
+            },
+            {
+              "id": "6-konu-testi-1-11",
+              "baslik": "Konu Testi 1 - Soru 11",
+              "kartDosya": "6-konu-testi-1-11.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-1-12",
+              "baslik": "Konu Testi 1 - Soru 12",
+              "kartDosya": "6-konu-testi-1-12.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-1-13",
+              "baslik": "Konu Testi 1 - Soru 13",
+              "kartDosya": "6-konu-testi-1-13.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 13,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-1-14",
+              "baslik": "Konu Testi 1 - Soru 14",
+              "kartDosya": "6-konu-testi-1-14.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-1-15",
+              "baslik": "Konu Testi 1 - Soru 15",
+              "kartDosya": "6-konu-testi-1-15.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 15,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-1-16",
+              "baslik": "Konu Testi 1 - Soru 16",
+              "kartDosya": "6-konu-testi-1-16.png",
+              "pdfSayfa": 130,
+              "tip": "soru",
+              "soruNo": 16,
+              "cevap": "D"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-2",
+          "ad": "Konu Testi 2",
+          "tip": "test",
+          "soruSayisi": 9,
+          "sorular": [
+            {
+              "id": "6-konu-testi-2-1",
+              "baslik": "Konu Testi 2 - Soru 1",
+              "kartDosya": "6-konu-testi-2-1.png",
+              "pdfSayfa": 131,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "6-konu-testi-2-2",
+              "baslik": "Konu Testi 2 - Soru 2",
+              "kartDosya": "6-konu-testi-2-2.png",
+              "pdfSayfa": 131,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "D"
+            },
+            {
+              "id": "6-konu-testi-2-3",
+              "baslik": "Konu Testi 2 - Soru 3",
+              "kartDosya": "6-konu-testi-2-3.png",
+              "pdfSayfa": 131,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-2-4",
+              "baslik": "Konu Testi 2 - Soru 4",
+              "kartDosya": "6-konu-testi-2-4.png",
+              "pdfSayfa": 131,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-2-5",
+              "baslik": "Konu Testi 2 - Soru 5",
+              "kartDosya": "6-konu-testi-2-5.png",
+              "pdfSayfa": 131,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-2-6",
+              "baslik": "Konu Testi 2 - Soru 6",
+              "kartDosya": "6-konu-testi-2-6.png",
+              "pdfSayfa": 132,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-2-7",
+              "baslik": "Konu Testi 2 - Soru 7",
+              "kartDosya": "6-konu-testi-2-7.png",
+              "pdfSayfa": 132,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-2-8",
+              "baslik": "Konu Testi 2 - Soru 8",
+              "kartDosya": "6-konu-testi-2-8.png",
+              "pdfSayfa": 132,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "6-konu-testi-2-9",
+              "baslik": "Konu Testi 2 - Soru 9",
+              "kartDosya": "6-konu-testi-2-9.png",
+              "pdfSayfa": 132,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "A"
+            }
+          ]
+        },
+        {
+          "id": "konu-testi-3",
+          "ad": "Konu Testi 3",
+          "tip": "test",
+          "soruSayisi": 12,
+          "sorular": [
+            {
+              "id": "6-konu-testi-3-1",
+              "baslik": "Konu Testi 3 - Soru 1",
+              "kartDosya": "6-konu-testi-3-1.png",
+              "pdfSayfa": 133,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-3-2",
+              "baslik": "Konu Testi 3 - Soru 2",
+              "kartDosya": "6-konu-testi-3-2.png",
+              "pdfSayfa": 133,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-3-3",
+              "baslik": "Konu Testi 3 - Soru 3",
+              "kartDosya": "6-konu-testi-3-3.png",
+              "pdfSayfa": 133,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-3-4",
+              "baslik": "Konu Testi 3 - Soru 4",
+              "kartDosya": "6-konu-testi-3-4.png",
+              "pdfSayfa": 133,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-3-5",
+              "baslik": "Konu Testi 3 - Soru 5",
+              "kartDosya": "6-konu-testi-3-5.png",
+              "pdfSayfa": 133,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-3-6",
+              "baslik": "Konu Testi 3 - Soru 6",
+              "kartDosya": "6-konu-testi-3-6.png",
+              "pdfSayfa": 133,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-3-7",
+              "baslik": "Konu Testi 3 - Soru 7",
+              "kartDosya": "6-konu-testi-3-7.png",
+              "pdfSayfa": 134,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-3-8",
+              "baslik": "Konu Testi 3 - Soru 8",
+              "kartDosya": "6-konu-testi-3-8.png",
+              "pdfSayfa": 134,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-3-9",
+              "baslik": "Konu Testi 3 - Soru 9",
+              "kartDosya": "6-konu-testi-3-9.png",
+              "pdfSayfa": 134,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "C"
+            },
+            {
+              "id": "6-konu-testi-3-10",
+              "baslik": "Konu Testi 3 - Soru 10",
+              "kartDosya": "6-konu-testi-3-10.png",
+              "pdfSayfa": 134,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-3-11",
+              "baslik": "Konu Testi 3 - Soru 11",
+              "kartDosya": "6-konu-testi-3-11.png",
+              "pdfSayfa": 134,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "B"
+            },
+            {
+              "id": "6-konu-testi-3-12",
+              "baslik": "Konu Testi 3 - Soru 12",
+              "kartDosya": "6-konu-testi-3-12.png",
+              "pdfSayfa": 134,
+              "tip": "soru",
+              "soruNo": 12,
+              "cevap": "E"
+            }
+          ]
+        }
+      ]
     }
   ],
   "_uretimRaporu": {
-    "kapsam": "1-2. Ünite işlendi (Oran-Orantı s.5-30, Sayı-Kesir Problemleri s.31-78) — kitabın geri kalanı henüz eklenmedi.",
-    "kaynakSayfaSayisi": 78,
+    "kapsam": "1-6. Ünite işlendi (Oran-Orantı s.5-30, Sayı-Kesir Problemleri s.31-78, Yaş Problemleri s.79-90, İşçi Problemleri s.91-102, Yüzde Problemleri s.103-122, Karışım Problemleri s.123-134) — kitabın geri kalanı henüz eklenmedi.",
+    "kaynakSayfaSayisi": 134,
     "cevapKaynak": "Sayfa altı cevap satırları OCR ile okunup her biri görsel olarak elle doğrulandı.",
     "uyarilar": []
   }
