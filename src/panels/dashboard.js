@@ -611,7 +611,7 @@ function refreshCurrentDrawerAfterFasikulSave(ders){
     document.getElementById('drawer').classList.add('open');
   }
 }
-function saveFasikul(){
+async function saveFasikul(){
   const editId = document.getElementById('fasikulEditId').value;
   const ad = document.getElementById('fasikulAdInput').value.trim();
   const sinif = parseInt(document.getElementById('fasikulSinifInput').value)||10;
@@ -619,7 +619,14 @@ function saveFasikul(){
   const thumb = document.getElementById('fasikulThumbInput').value.trim() || '📄';
   const sourceId = document.getElementById('fasikulSourceSelect').value;
   const source = window.BUNDLED_FASIKUL_SOURCES.find(s=>s.id===sourceId);
-  const sourceRaw = source ? bundledSourceCache.get(source.json) : null;
+  // Modal açılışındaki toplu ön-yükleme (29 kaynak paralel) GitHub rate-limit'e
+  // takılıp bu kaynak için başarısız kalmış olabilir — cache boşsa burada bir
+  // kez daha (readBundledJson'un fetch+gzip fallback'iyle) dene, aksi halde
+  // fasikül "konu listesi boş" olarak kaydedilir (Aç → konu listesi gözükmez).
+  let sourceRaw = source ? bundledSourceCache.get(source.json) : null;
+  if(source && !sourceRaw){
+    try{ sourceRaw = await readBundledJson(source); }catch(e){}
+  }
   // Hedef dersi çöz: aktif drawer dersi yoksa seçilen kaynağın dersId'sinden
   // (drawer açılmadan "+ Fasikül Ekle" ile gelindiğinde de çalışsın), düzenlemede
   // ise fasikülü içeren dersten bul.
