@@ -218,6 +218,17 @@ const CEVAP_MASK_CONFIG = {
     sayfaAraligi: [[5, 128]],
     haric: [52],
   },
+  // Kuvvetlendiren Matematik TYT Soru Bankası 2025: MÖF-9 gibi, cevap anahtarı
+  // yalnız testin SON sayfasında (sayfa altında sayfa no'nun yanında, dar bir
+  // "1 2 3...N / B B C..." şeridi) — sayfa içindeki sorulara ait A-E şıkları
+  // yukarıda, bu şeride dokunmuyor. konu.tur==='test' + sayfaBitis fallback'i
+  // (aşağıdaki testBiter kontrolü) zaten bu yapıyı destekliyor, sadece rect
+  // eklemek yeterli. Sayfa 36 (Basamak Kavramı Test 1, 24 soru — en geniş
+  // durum) piksel ölçümüyle doğrulandı; daha az sorulu testlerde şerit daha
+  // dar ama aynı x'te başladığından bu dikdörtgen hepsini kapsar.
+  'kuvvetlendiren-tyt-soru-bankasi-2025': {
+    rect: { x: 0.31, y: 0.924, w: 0.46, h: 0.036 },
+  },
 };
 
 // pageNum için cevap anahtarı maskesi gerekiyorsa dikdörtgeni döndür.
