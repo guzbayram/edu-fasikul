@@ -244,7 +244,8 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'aktif-tyt-matematik-1',dersId:'mat',json:'18-Aktif - Tyt Matematik Fasikül 1.json',pdf:'18-Aktif - Tyt Matematik Fasikül 1.pdf'},
   {id:'aktif-tyt-matematik-2',dersId:'mat',json:'19-Aktif - Tyt Matematik Fasikül 2.json',pdf:'19-Aktif - Tyt Matematik Fasikül 2.pdf'},
   {id:'kuvvetlendiren-tyt-soru-bankasi-2025',dersId:'mat',json:'23-Aktif - Tyt-Soru-Bankası-2025.json',pdf:'23-Aktif - Tyt-Soru-Bankası-2025.pdf'},
-  {id:'aktif-tyt-matematik-3',dersId:'mat',json:'20-Aktif - Tyt Matematik Fasikül 3.json',pdf:'20-Aktif - Tyt Matematik Fasikül 3.pdf'}
+  {id:'aktif-tyt-matematik-3',dersId:'mat',json:'20-Aktif - Tyt Matematik Fasikül 3.json',pdf:'20-Aktif - Tyt Matematik Fasikül 3.pdf'},
+  {id:'aktif-tyt-matematik-5',dersId:'mat',json:'22-Aktif - Tyt Matematik Fasikül 5.json',pdf:'22-Aktif - Tyt Matematik Fasikül 5.pdf'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';

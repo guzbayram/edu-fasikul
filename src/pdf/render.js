@@ -225,6 +225,12 @@ const CEVAP_MASK_CONFIG = {
     rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
     sayfaAraligi: [[5, 192]],
   },
+  // Aktif TYT Matematik 5: aynı yayıncı/şablon (Fonksiyonlar, Polinomlar,
+  // ÖSYM Soruları — s.5-112). Rect, Fasikül 3'ten aynen doğrulanarak alındı.
+  'aktif-tyt-matematik-5': {
+    rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
+    sayfaAraligi: [[5, 112]],
+  },
   // Kuvvetlendiren Matematik TYT Soru Bankası 2025: MÖF-9 gibi, cevap anahtarı
   // yalnız testin SON sayfasında (sayfa altında sayfa no'nun yanında, dar bir
   // "1 2 3...N / B B C..." şeridi) — sayfa içindeki sorulara ait A-E şıkları
