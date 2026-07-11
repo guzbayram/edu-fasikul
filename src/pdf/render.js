@@ -236,6 +236,23 @@ const CEVAP_MASK_CONFIG = {
     rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
     sayfaAraligi: [[5, 112]],
   },
+  // Aktif TYT Geometri Konu Anlatımlı: aynı yayıncı/şablon (17 konu, s.7-384).
+  'aktif-tyt-geometri-konu-anlatimli': {
+    rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
+    sayfaAraligi: [[7, 384]],
+  },
+  // Aktif 10'lu Matematik Deneme: soru sayfalarında değil, her denemenin
+  // 16 sayfalık bloğunun 15. sayfasında ("... KONU/KAZANIM" tablosu, iki
+  // sütun x 20 satır mavi cevap hücresi) toplu cevap anahtarı var. Piksel
+  // ölçümüyle doğrulandı (2054x2742 render): sol sütun x 910-971, sağ sütun
+  // x 1851-1911, ikisi de y 460-2465.
+  'aktif-10lu-matematik-deneme': {
+    rects: [
+      { x: 0.4382, y: 0.1641, w: 0.0394, h: 0.7385 },
+      { x: 0.8964, y: 0.1641, w: 0.0390, h: 0.7385 },
+    ],
+    cevapSayfalari: [15, 31, 47, 63, 79, 95, 111, 127, 143, 159],
+  },
   // Kuvvetlendiren Matematik TYT Soru Bankası 2025: MÖF-9 gibi, cevap anahtarı
   // yalnız testin SON sayfasında (sayfa altında sayfa no'nun yanında, dar bir
   // "1 2 3...N / B B C..." şeridi) — sayfa içindeki sorulara ait A-E şıkları
