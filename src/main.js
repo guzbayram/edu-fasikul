@@ -245,6 +245,7 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'aktif-tyt-matematik-2',dersId:'mat',json:'19-Aktif - Tyt Matematik Fasikül 2.json',pdf:'19-Aktif - Tyt Matematik Fasikül 2.pdf'},
   {id:'kuvvetlendiren-tyt-soru-bankasi-2025',dersId:'mat',json:'23-Aktif - Tyt-Soru-Bankası-2025.json',pdf:'23-Aktif - Tyt-Soru-Bankası-2025.pdf'},
   {id:'aktif-tyt-matematik-3',dersId:'mat',json:'20-Aktif - Tyt Matematik Fasikül 3.json',pdf:'20-Aktif - Tyt Matematik Fasikül 3.pdf'},
+  {id:'aktif-tyt-matematik-4',dersId:'mat',json:'21-Aktif - Tyt Matematik Fasikül 4.json',pdf:'21-Aktif - Tyt Matematik Fasikül 4.pdf'},
   {id:'aktif-tyt-matematik-5',dersId:'mat',json:'22-Aktif - Tyt Matematik Fasikül 5.json',pdf:'22-Aktif - Tyt Matematik Fasikül 5.pdf'}
 ];
 
