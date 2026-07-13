@@ -179,6 +179,9 @@ const CEVAP_MASK_CONFIG = {
   'mof-9-matematik-2': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   'mof-9-matematik-3': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   'mof-9-matematik-4': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  // Möf 10.Sınıf Matematik: Möf-9 ile aynı yayıncı/şablon — testin son sayfasında
+  // tam genişlikte "1-C 2-B 3-A..." metin şeridi (daire yok, düz metin).
+  'mof-10-matematik-1': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   // Yarıçap TYT Problemler: cevap daireleri birçok sayfanın sağ-altında; her sayfada kapat.
   'yaricap-tyt-problemler': {
     rects: [
@@ -202,6 +205,28 @@ const CEVAP_MASK_CONFIG = {
       74: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
       76: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
       78: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+    },
+  },
+  // Yarıçap 10.Sınıf Matematik 1/3/4: 10-2'deki gibi cevap dairesi konumu test
+  // türüne göre değil, sayfa numarasının tek/çift olmasına göre değişiyor
+  // (tek sayfa → sol şerit, çift sayfa → sağ şerit) — her üç kitapta da örnek
+  // sayfalar (tek+çift) görsel olarak doğrulandı, rect'ler 10-2 ile aynı.
+  'yaricap-10-matematik-1': {
+    giftTekRect: {
+      tek: [{ x: 0.045, y: 0.922, w: 0.43, h: 0.05 }],
+      cift: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+    },
+  },
+  'yaricap-10-matematik-3': {
+    giftTekRect: {
+      tek: [{ x: 0.045, y: 0.922, w: 0.43, h: 0.05 }],
+      cift: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
+    },
+  },
+  'yaricap-10-matematik-4': {
+    giftTekRect: {
+      tek: [{ x: 0.045, y: 0.922, w: 0.43, h: 0.05 }],
+      cift: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
     },
   },
   // Aktif TYT Matematik 1/2: her soru sayfasının altında (sol/sağ sütun veya
@@ -290,7 +315,15 @@ function getCevapMaskRects(pageNum){
     return bolumCevabiVar || testBuSayfadaBiter ? rects : [];
   }
   const testBiter = fas.konular.some(k => k.tur === 'test' && (k.sayfaBitis || k.sayfa) === pageNum);
-  return testBiter ? rects : [];
+  if(!testBiter) return [];
+  // Yarıçap 10.Sınıf serisi: cevap dairelerinin sayfada sol mu sağ mı çıktığı
+  // test türüne göre değil, sayfa numarasının tek/çift olmasına göre değişiyor
+  // (tek sayfa → sol şerit, çift sayfa → sağ şerit) — 6+ sayfa görsel
+  // doğrulamayla teyit edildi (bkz ilgili proje notu).
+  if(cfg.giftTekRect){
+    return pageNum % 2 === 0 ? cfg.giftTekRect.cift : cfg.giftTekRect.tek;
+  }
+  return rects;
 }
 
 async function renderSinglePDFPage(pageNum, pageWrap){

@@ -548,7 +548,12 @@ async function populateFasikulSourceSelect(editId=''){
     return {source, raw, folderPdfFound};
   }));
   if(myGen !== _fasikulSourceSelectGen) return; // daha yeni bir çağrı başladı, bu sonuçları çizme
-  for(const {source, raw, folderPdfFound} of loaded){
+  // Kaynak dosya adındaki başlangıç sıra numarasına göre doğal (numerik) sırala,
+  // ki liste "1-0-Edu-Fasikul" klasöründeki dosya sırasıyla birebir eşleşsin.
+  const sorted = [...loaded].sort((a,b)=>
+    a.source.json.localeCompare(b.source.json, 'tr', {numeric:true, sensitivity:'base'})
+  );
+  for(const {source, raw, folderPdfFound} of sorted){
     if(!raw && source.id!==editId) continue;
     const cachedPdfFound = cachedKeys.has(`${source.dersId}_${source.id}`)
       || cachedPdfNames.has(normalizePdfFileName(source.pdf));
@@ -557,7 +562,9 @@ async function populateFasikulSourceSelect(editId=''){
     const dersAd=window.MANIFEST.dersler.find(d=>d.id===source.dersId)?.ad || source.dersId;
     const option=document.createElement('option');
     option.value=source.id;
-    option.textContent=`${raw?.ad || source.json.replace(/\.json$/,'')} · ${dersAd}${pdfFound?'':' · PDF yok'}`;
+    // İsim kasıtlı olarak JSON dosya adının kendisi (raw.ad DEĞİL) — kullanıcı
+    // dosya sıra numaralarıyla birebir eşleşen bir liste istedi.
+    option.textContent=`${source.json.replace(/\.json$/,'')} · ${dersAd}${pdfFound?'':' · PDF yok'}`;
     availableCount++;
     select.appendChild(option);
   }
