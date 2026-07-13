@@ -592,7 +592,9 @@ async function applyBundledSourceToForm(sourceId,fillValues=true){
   let raw=bundledSourceCache.get(source.json);
   if(!raw){ try{ raw=await readBundledJson(source); }catch(e){} }
   if(fillValues && raw){
-    document.getElementById('fasikulAdInput').value=raw.ad||source.json.replace(/\.json$/,'');
+    // Kasıtlı olarak JSON dosya adı (raw.ad DEĞİL) — dropdown'daki isimle
+    // birebir eşleşsin. Admin isterse Fasikül Düzenle'den değiştirebilir.
+    document.getElementById('fasikulAdInput').value=source.json.replace(/\.json$/,'');
     sinif.value=bundledSinif(raw.sinif);
     soru.value=raw.soruSayisi||raw.toplamSoru||0;
     document.getElementById('fasikulThumbInput').value=raw.thumb||'📄';
