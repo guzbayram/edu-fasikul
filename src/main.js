@@ -692,25 +692,11 @@ function exportData(){ const d={user:appState.user,hatalilar:appState.hatalilar,
 // ══════════════════════════════
 // SIDEBAR & PANELS
 // ══════════════════════════════
-function toggleSidebar(){
-  const s = document.getElementById('sidebar');
-  s.classList.toggle('collapsed');
-  const btn = s.querySelector('.collapse-btn');
-  btn.textContent = s.classList.contains('collapsed') ? '▶' : '◀';
-}
-function showPanel(name, navEl){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  if(navEl) navEl.classList.add('active');
-  const titles = {dashboard:'Anasayfa',stats:'İstatistikler',hatalilar:'Hatalılar Defteri',profil:'Profilim',admin:'Kullanıcı ve Program Yönetimi'};
-  document.getElementById('topBarTitle').textContent = titles[name]||name;
-  if(name==='stats' && !window._chartsInited){ initCharts(); window._chartsInited=true; }
-  if(name==='dashboard' || name==='stats' || name==='profil') updateDashboard();
-  if(name==='profil') refreshProfileGithubJsonTools();
-  if(name==='hatalilar') renderHatalilar();
-  if(name==='admin') loadKullaniciList();
-}
+// toggleSidebar/showPanel: bkz src/ui/router.js — window'a bağlanan (gerçekten
+// çalışan) tek kopya orada. Buradaki eski kopyalar hiçbir zaman window'a
+// bağlanmıyordu (ölü kod) ve kaldırıldı — bkz proje notu "main/router ikili
+// kopya" (showPanel'e eklenen bir düzeltmenin hiç etkisi olmaması sorunuyla
+// keşfedildi).
 
 // ══════════════════════════════
 // DERS GRID

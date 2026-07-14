@@ -15,7 +15,15 @@ function showPanel(name, navEl){
   document.getElementById('topBarTitle').textContent = titles[name]||name;
   if(name==='stats' && !window._chartsInited){ initCharts(); window._chartsInited=true; }
   if(name==='dashboard' || name==='stats' || name==='profil') updateDashboard();
-  if(name==='profil') window.refreshProfileGithubJsonTools?.();
+  if(name==='profil'){
+    window.refreshProfileGithubJsonTools?.();
+    // PDF Klasörü özeti (X/Y hazır + kullanılmayan fasikül temizleme kutusu)
+    // sadece belirli PDF aksiyonlarından sonra hesaplanıyordu — ders silme,
+    // sıfırlama gibi işlemlerden sonra Profil'e her girişte donmuş/eski sayı
+    // görünüyordu. Artık panel her açıldığında güncel duruma göre yeniden
+    // hesaplanır.
+    window.updateEduDirUI?.();
+  }
   if(name==='hatalilar') renderHatalilar();
   if(name==='admin') loadKullaniciList();
 }
