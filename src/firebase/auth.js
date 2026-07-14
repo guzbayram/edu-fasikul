@@ -163,6 +163,16 @@ function natFasikulCompare(a,b){
 // kullandığı için aynı alt derse ait fasiküller listede dağınık
 // görünüyordu — artık her alt ders kendi bloğunda, sayısal sırayla,
 // birbirinin ardında listeleniyor.
+// Bir fasikülün sıralama anahtarı: normal fasikülde kendi adı, klasör
+// (alt ders) işaretçisinde ise işaretçinin KENDİ (bayatlamış olabilen)
+// adı değil, işaret ettiği alt dersin GÜNCEL adı — bu, dersFullPathLabel
+// ile ekranda gösterilen adla her zaman birebir tutarlı olsun diye.
+function fasikulSortKey(fas, byId){
+  if(fas.type === 'folder' && fas.childDersId){
+    return byId.get(fas.childDersId)?.ad ?? fas.ad;
+  }
+  return fas.ad;
+}
 function manifestFasikulOptions(){
   const dersler = window.MANIFEST?.dersler || [];
   const byId = new Map(dersler.map(d=>[d.id, d]));
@@ -172,7 +182,7 @@ function manifestFasikulOptions(){
     if(!ders || visited.has(ders.id)) return;
     visited.add(ders.id);
     const path = dersFullPathLabel(ders, byId);
-    const items = [...(ders.fasikuller||[])].sort((a,b)=>natFasikulCompare(a.ad, b.ad));
+    const items = [...(ders.fasikuller||[])].sort((a,b)=>natFasikulCompare(fasikulSortKey(a,byId), fasikulSortKey(b,byId)));
     items.forEach(fas=>{
       if(fas.type === 'folder' && fas.childDersId){
         walk(byId.get(fas.childDersId));

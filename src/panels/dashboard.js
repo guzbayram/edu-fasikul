@@ -431,7 +431,20 @@ function saveDers(){
   if(!ad){ showToast('Ders adı gerekli','error'); return; }
   if(editId){
     const ders = window.MANIFEST.dersler.find(d=>d.id===editId);
-    if(ders){ ders.ad=ad; ders.ikon=ikon; ders.renk=renk; }
+    if(ders){
+      ders.ad=ad; ders.ikon=ikon; ders.renk=renk;
+      // Bu ders bir alt dersse, üst derste (hatta taşınmışsa eski dersler
+      // fasikuller dizisinde kalan kopyalarda) onu temsil eden klasör
+      // işaretçisinin adı/ikonu da güncellensin — yoksa işaretçi eski adda
+      // donup kalır (görünürde fark etmez, çünkü kart childDers.ad'ı
+      // gösterir, ama admin listelerindeki doğal sıralama bu eski adı
+      // kullanınca yanlış sıraya düşer).
+      window.MANIFEST.dersler.forEach(d=>{
+        (d.fasikuller||[]).forEach(f=>{
+          if(f.type==='folder' && f.childDersId===editId){ f.ad=ad; f.thumb=ikon; }
+        });
+      });
+    }
     showToast(`${ad} güncellendi ✓`,'success');
   } else if(dersModalParentDersId){
     const parent = window.MANIFEST.dersler.find(d=>d.id===dersModalParentDersId);
