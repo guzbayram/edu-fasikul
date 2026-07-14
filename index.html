@@ -336,22 +336,37 @@
               </div>
             </div>
             <div class="admin-github-json-grid">
-              <label>Ders
+              <label>
+                <span class="field-label-row">Ders
+                  <button type="button" class="field-info-btn" title="Fasikülün ekleneceği ders/kategori. Böyle bir ders henüz yoksa otomatik oluşturulur." onclick="showFieldHelp('ders')">ⓘ</button>
+                </span>
                 <select id="profileGithubJsonDers"></select>
               </label>
-              <label>Fasikül tipi
+              <label>
+                <span class="field-label-row">Fasikül tipi
+                  <button type="button" class="field-info-btn" title="'Otomatik algıla' JSON yapısına bakarak formatı belirler. Şu an tüm fasiküller kart-kart (Tip-1) formatında açılıyor — bu alanı genelde otomatik bırakabilirsiniz." onclick="showFieldHelp('tip')">ⓘ</button>
+                </span>
                 <select id="profileGithubJsonTip">
                   <option value="auto">Otomatik algıla</option>
                   <option value="tip1">Tip-1 (kart kart)</option>
                 </select>
               </label>
-              <label>JSON dosya adı
+              <label>
+                <span class="field-label-row">JSON dosya adı
+                  <button type="button" class="field-info-btn" title="JSON dosyasının GitHub reposunun KÖK dizinine (alt klasöre değil) yüklenmiş tam adı, .json uzantılı. Uygulama bu dosyayı raw.githubusercontent.com üzerinden otomatik çeker." onclick="showFieldHelp('jsonAd')">ⓘ</button>
+                </span>
                 <input id="profileGithubJsonFile" type="text" placeholder="ornek-fasikul-kart.json">
               </label>
-              <label>PDF dosya adı
+              <label>
+                <span class="field-label-row">PDF dosya adı
+                  <button type="button" class="field-info-btn" title="JSON ile aynı isimli PDF dosyasının adı, .pdf uzantılı. PDF GitHub'a değil, kullanıcının kendi cihazına (Profil > PDF Klasörü) yüklenir." onclick="showFieldHelp('pdfAd')">ⓘ</button>
+                </span>
                 <input id="profileGithubPdfFile" type="text" placeholder="ornek-fasikul-kart.pdf">
               </label>
-              <label>Fasikül ID
+              <label>
+                <span class="field-label-row">Fasikül ID
+                  <button type="button" class="field-info-btn" title="Fasikülün kalıcı benzersiz kimliği — ilerleme/çözüm kayıtları buna bağlanır. Boş bırakılırsa JSON dosya adından otomatik türetilir. Ekledikten sonra değiştirmeyin, yoksa geçmiş ilerleme kopar." onclick="showFieldHelp('id')">ⓘ</button>
+                </span>
                 <input id="profileGithubSourceId" type="text" placeholder="Boş bırakılırsa otomatik">
               </label>
             </div>

@@ -1962,6 +1962,21 @@ function isProfileGithubAdmin(){
   const roleText = document.getElementById('profileSub')?.textContent || '';
   return appState.user?.role === 'admin' || email === ADMIN_EMAIL || roleText.includes('Yönetici');
 }
+// Admin: GitHub JSON Fasikülü formundaki her alanın ⓘ ikonu için kısa açıklama.
+// title attribute'u masaüstünde hover ile de aynı metni gösterir; dokunmatik
+// (iPad) cihazlarda title tetiklenmediği için buton tıklamasında toast'la
+// gösteriyoruz — iki metin bilerek aynı tutulmalı (index.html'deki title'lar).
+const FIELD_HELP_TEXTS = {
+  ders: 'Fasikülün ekleneceği ders/kategori. Böyle bir ders henüz yoksa otomatik oluşturulur.',
+  tip: '\'Otomatik algıla\' JSON yapısına bakarak formatı belirler. Şu an tüm fasiküller kart-kart (Tip-1) formatında açılıyor — bu alanı genelde otomatik bırakabilirsiniz.',
+  jsonAd: 'JSON dosyasının GitHub reposunun KÖK dizinine (alt klasöre değil) yüklenmiş tam adı, .json uzantılı. Uygulama bu dosyayı raw.githubusercontent.com üzerinden otomatik çeker.',
+  pdfAd: 'JSON ile aynı isimli PDF dosyasının adı, .pdf uzantılı. PDF GitHub\'a değil, kullanıcının kendi cihazına (Profil > PDF Klasörü) yüklenir.',
+  id: 'Fasikülün kalıcı benzersiz kimliği — ilerleme/çözüm kayıtları buna bağlanır. Boş bırakılırsa JSON dosya adından otomatik türetilir. Ekledikten sonra değiştirmeyin, yoksa geçmiş ilerleme kopar.',
+};
+function showFieldHelp(key){
+  showToast(FIELD_HELP_TEXTS[key] || '', 'info');
+}
+window.showFieldHelp = showFieldHelp;
 function refreshProfileGithubJsonTools(){
   const box = document.getElementById('profileGithubJsonTools');
   if(!box) return;
