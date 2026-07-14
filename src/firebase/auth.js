@@ -134,11 +134,29 @@ function studyPlanSlotTimes(item){
   return {startAt:start.toISOString(), endAt:end.toISOString()};
 }
 
+// Bir dersin tam yolunu üretir: "Üst Ders / Alt Ders" (parentDersId zinciri
+// boyunca yukarı çıkar). Alt ders (nested, parentDersId'li) fasikülleri
+// önceden sadece kendi alt-ders adıyla listeleniyordu (ör. "2 - Möf-Sınıf-
+// Fasikülleri / ..."), üst dersin (ör. Matematik) adı hiyerarşiden
+// düşüyordu — anasayfadaki Ders/Alt ders/Fasikül görünümüyle tutarlı olsun
+// diye burada da tam yol kuruluyor.
+function dersFullPathLabel(ders, byId){
+  const parts = [];
+  const seen = new Set();
+  let current = ders;
+  while(current && !seen.has(current.id)){
+    seen.add(current.id);
+    parts.unshift(current.ad);
+    current = current.parentDersId ? byId.get(current.parentDersId) : null;
+  }
+  return parts.join(' / ');
+}
 function manifestFasikulOptions(){
   const dersler = window.MANIFEST?.dersler || [];
+  const byId = new Map(dersler.map(d=>[d.id, d]));
   return dersler.flatMap(ders => (ders.fasikuller||[]).map(fas => ({
     id: fas.id,
-    label: `${ders.ad} / ${fas.ad}`,
+    label: `${dersFullPathLabel(ders, byId)} / ${fas.ad}`,
     dersId: ders.id,
     dersAd: ders.ad,
     fasikulAd: fas.ad,
