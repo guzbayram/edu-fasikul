@@ -186,6 +186,8 @@ function renderFasikulVisibilityControls(user){
         }).join('')}
       </div>
       <div class="fasikul-access-actions">
+        <button class="fasikul-access-bulk" onclick="event.stopPropagation();bulkSetUserFasikulVisibility('${user.id}',true)">Hepsini Seç</button>
+        <button class="fasikul-access-bulk" onclick="event.stopPropagation();bulkSetUserFasikulVisibility('${user.id}',false)">Tüm Seçimleri Kaldır</button>
         <button onclick="event.stopPropagation();applyUserFasikulVisibility('${user.id}')">Değişiklikleri Onayla</button>
       </div>
     </details>`;
@@ -1335,6 +1337,27 @@ export async function toggleUserFasikulVisibility(uid, fasikulId, hide){
     console.warn('Fasikül görünürlüğü güncellenemedi:', e);
     window.showToast?.('Fasikül yetkisi güncellenemedi', 'error');
   }
+}
+
+// "Hepsini Seç" = tüm fasikülleri taslakta GİZLE (seçili = gizlenecek fasikül).
+// "Tüm Seçimleri Kaldır" = gizleme taslağını temizle, hepsi tekrar görünür olsun.
+// toggleUserFasikulVisibility() gibi tek tek Firestore'dan okuyup DOM'da tek
+// düğme güncellemek yerine, burada tüm düğmeleri tek seferde günceliyoruz.
+export function bulkSetUserFasikulVisibility(uid, hideAll){
+  if(!canManageUsers() || !uid) return;
+  const allIds = manifestFasikulOptions().map(f=>f.id);
+  window._pendingFasikulVisibility = {...(window._pendingFasikulVisibility || {}), [uid]: hideAll ? allIds : []};
+  document.querySelectorAll(`.fasikul-access-btn[data-user="${uid}"]`).forEach(btn=>{
+    const fasikulId = btn.dataset.fasikul;
+    btn.classList.toggle('hidden', hideAll);
+    const label = btn.querySelector('b');
+    if(label) label.textContent = hideAll ? 'Göster' : 'Gizle';
+    btn.setAttribute('onclick', `event.stopPropagation();toggleUserFasikulVisibility('${uid}','${fasikulId}',${!hideAll})`);
+  });
+  window.showToast?.(
+    hideAll ? 'Tüm fasiküller taslakta gizlendi. Kaydetmek için onaylayın.' : 'Tüm seçimler kaldırıldı, hepsi görünür. Kaydetmek için onaylayın.',
+    'success'
+  );
 }
 
 export async function applyUserFasikulVisibility(uid){

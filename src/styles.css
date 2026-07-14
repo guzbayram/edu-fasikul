@@ -1544,7 +1544,9 @@ body.reader-locked .main-content{visibility:hidden!important}
 .fasikul-access-btn.hidden b{color:var(--red)}
 .fasikul-access-actions{
   display:flex;
+  flex-wrap:wrap;
   justify-content:flex-end;
+  gap:8px;
   margin-top:9px;
 }
 .fasikul-access-actions button{
@@ -1557,6 +1559,12 @@ body.reader-locked .main-content{visibility:hidden!important}
   color:var(--green);
   font-weight:800;
   font-size:11px;
+}
+.fasikul-access-actions button.fasikul-access-bulk{
+  min-width:auto;
+  border-color:var(--border-strong);
+  background:var(--bg-3);
+  color:var(--text-muted);
 }
 
 @media (max-width:1020px){

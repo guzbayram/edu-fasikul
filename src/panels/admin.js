@@ -8,7 +8,7 @@ import {
   refreshEditAssignmentTopicOptions,
   refreshPlanFasikulOptions, refreshPlanTopicOptions, prefillStudyPlanSlot, openStudyPlanModal, closeStudyPlanModal, shiftStudyPlanWeek, changeStudyPlanWeek,
   createStudyPlanSlot, clearStudyPlanSlot, dragStudyPlanSlot, dropStudyPlanSlot, startResizeStudyPlanSlot, approveStudyPlanChanges, loadMyStudyPlan,
-  toggleTeacherAssignField, toggleUserFasikulVisibility, applyUserFasikulVisibility
+  toggleTeacherAssignField, toggleUserFasikulVisibility, applyUserFasikulVisibility, bulkSetUserFasikulVisibility
 } from '../firebase/auth.js';
 
 window.loadKullaniciList = loadKullaniciList;
@@ -40,3 +40,4 @@ window.loadMyStudyPlan = loadMyStudyPlan;
 window.toggleTeacherAssignField = toggleTeacherAssignField;
 window.toggleUserFasikulVisibility = toggleUserFasikulVisibility;
 window.applyUserFasikulVisibility = applyUserFasikulVisibility;
+window.bulkSetUserFasikulVisibility = bulkSetUserFasikulVisibility;
