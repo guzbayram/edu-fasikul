@@ -478,19 +478,44 @@ function saveDers(){
   }
   closeDersModal();
 }
+// Bir dersin klasör tipi (type:'folder') fasikülleri varsa, bunlar başka bir
+// MANIFEST.dersler girdisine (childDersId) işaret eder — "alt ders". Dersi
+// silerken bu alt dersleri de (ve onların içindeki alt dersleri de,
+// zincirleme) silmezsek, ana sayfada bir daha hiç görünmeyen (isNestedDers
+// olduğu için) ama fasikülleri/PDF sayacını hâlâ şişiren yetim kayıtlar kalır.
+function collectDersIdsToDelete(rootId, allDersler){
+  const ids = new Set([rootId]);
+  const queue = [rootId];
+  while(queue.length){
+    const id = queue.pop();
+    const ders = allDersler.find(d=>d.id===id);
+    (ders?.fasikuller||[]).forEach(f=>{
+      if(f.type==='folder' && f.childDersId && !ids.has(f.childDersId)){
+        ids.add(f.childDersId);
+        queue.push(f.childDersId);
+      }
+    });
+  }
+  return ids;
+}
 function silDers(){
   const editId = document.getElementById('dersEditId').value;
   if(!editId) return;
   const ders = window.MANIFEST.dersler.find(d=>d.id===editId);
   if(!ders) return;
-  if(!confirm(`"${ders.ad}" dersini ve tüm fasikülleri silmek istiyor musunuz?`)) return;
-  window.MANIFEST.dersler = window.MANIFEST.dersler.filter(d=>d.id!==editId);
+  const idsToDelete = collectDersIdsToDelete(editId, window.MANIFEST.dersler);
+  const extra = idsToDelete.size - 1;
+  const confirmMsg = extra>0
+    ? `"${ders.ad}" dersini, tüm fasiküllerini ve içindeki ${extra} alt dersi silmek istiyor musunuz?`
+    : `"${ders.ad}" dersini ve tüm fasikülleri silmek istiyor musunuz?`;
+  if(!confirm(confirmMsg)) return;
+  window.MANIFEST.dersler = window.MANIFEST.dersler.filter(d=>!idsToDelete.has(d.id));
   // Track deletion
-  try{ const del=JSON.parse(localStorage.getItem('edu_deleted_dersler')||'[]'); del.push(editId); localStorage.setItem('edu_deleted_dersler',JSON.stringify(del)); }catch(e){}
+  try{ const del=JSON.parse(localStorage.getItem('edu_deleted_dersler')||'[]'); idsToDelete.forEach(id=>del.push(id)); localStorage.setItem('edu_deleted_dersler',JSON.stringify(del)); }catch(e){}
   persistManifest();
   renderDerslerGrid();
   closeDersModal();
-  showToast('Ders silindi 🗑️','success');
+  showToast(extra>0 ? `Ders ve ${extra} alt ders silindi 🗑️` : 'Ders silindi 🗑️','success');
 }
 
 // ══════════════════════════════

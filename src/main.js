@@ -322,6 +322,15 @@ function removeDeletedBundledId(id){
   const s=getDeletedBundledIds();
   if(s.delete(id)) localStorage.setItem(DELETED_BUNDLED_IDS_KEY, JSON.stringify([...s]));
 }
+// silDers() bir dersi TAMAMEN silince buraya (edu_deleted_dersler) id'sini
+// yazar. loadBundledFasikuller() bunu kontrol ETMEZSE, silinen 'mat'/'geo'
+// gibi bir ders kabuğunu ve içindeki TÜM bundled fasikülleri (41 kaynağın
+// tamamını) her sayfa yüklemesinde sıfırdan yeniden yaratır — "dersi sildim
+// ama her yenilemede/deploy sonrasında geri geliyor" hatasının kök nedeni.
+function getDeletedDersIds(){
+  try{ return new Set(JSON.parse(localStorage.getItem('edu_deleted_dersler')||'[]')); }
+  catch(e){ return new Set(); }
+}
 window.removeDeletedBundledId = removeDeletedBundledId;
 
 // ── Per-ders silme tombstone'u ──────────────────────────────────────────────
@@ -1482,31 +1491,63 @@ function findOrphanBundledFasikuller(){
   });
   return orphans;
 }
-function buildOrphanCleanupHtml(orphans){
-  if(!orphans.length) return '';
+// Ebeveyni (parentDersId) artık MANIFEST.dersler'de olmayan alt dersler.
+// silDers() bir dersi silerken içindeki klasör-tipi fasiküllerin işaret
+// ettiği alt dersleri de silecek şekilde düzeltildi (bkz collectDersIdsToDelete,
+// dashboard.js) — ama bu düzeltmeden ÖNCE oluşmuş yetim kayıtlar hâlâ
+// duruyor olabilir: ana sayfada ASLA görünmezler (isNestedDers olduğu için
+// renderDerslerGrid onları filtreler) ama fasikülleri/PDF sayacını sonsuza
+// dek şişirmeye devam ederler.
+function findOrphanedNestedDersler(){
+  const ids = new Set(MANIFEST.dersler.map(d=>d.id));
+  return MANIFEST.dersler.filter(d=>d.parentDersId && !ids.has(d.parentDersId));
+}
+function buildOrphanCleanupHtml(orphanFasikuller, orphanDersler){
+  const total = orphanFasikuller.length + orphanDersler.length;
+  if(!total) return '';
+  const parts = [];
+  if(orphanFasikuller.length) parts.push(`${orphanFasikuller.length} kullanılmayan fasikül`);
+  if(orphanDersler.length) parts.push(`${orphanDersler.length} yetim alt ders`);
   return `<div class="edu-dir-orphan-notice" style="margin-top:10px;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);border-left:3px solid var(--red);font-size:12px;color:var(--text-muted)">
-    <b style="color:var(--text-0)">${orphans.length} kullanılmayan fasikül</b> kütüphanenizde duruyor (kataloğu artık mevcut olmayan eski kayıtlar) — eksik PDF sayısını da şişiriyorlar.
+    <b style="color:var(--text-0)">${parts.join(' + ')}</b> kütüphanenizde duruyor (kataloğu artık mevcut olmayan / ebeveyni silinmiş eski kayıtlar) — eksik PDF sayısını da şişiriyorlar.
     <div><button class="pref-action pref-chip" style="margin-top:6px" onclick="cleanupOrphanFasikuller()">🧹 Temizle</button></div>
   </div>`;
 }
 function cleanupOrphanFasikuller(){
   if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
-  const orphans = findOrphanBundledFasikuller();
-  if(!orphans.length){ showToast('Temizlenecek kullanılmayan fasikül yok','info'); return; }
-  const preview = orphans.slice(0,8).map(o=>`• ${o.fasAd} (${o.dersAd})`).join('\n');
-  const more = orphans.length>8 ? `\n… ve ${orphans.length-8} tane daha` : '';
-  if(!confirm(`${orphans.length} kullanılmayan fasikül kaldırılacak (kataloğu artık mevcut olmayan eski kayıtlar):\n\n${preview}${more}\n\nBu işlem geri alınamaz. Devam edilsin mi?`)) return;
-  orphans.forEach(o=>{
+  const orphanFasikuller = findOrphanBundledFasikuller();
+  // Zincirleme yetimleri (yetim bir alt dersin kendi alt dersi) yakalamak
+  // için birkaç tur dene — her turda bir öncekinin kaldırdığı ders yeni
+  // yetimler ortaya çıkarabilir.
+  const orphanDersIds = new Set();
+  for(let i=0;i<10;i++){
+    const found = findOrphanedNestedDersler().filter(d=>!orphanDersIds.has(d.id));
+    if(!found.length) break;
+    found.forEach(d=>orphanDersIds.add(d.id));
+  }
+  const orphanDersler = MANIFEST.dersler.filter(d=>orphanDersIds.has(d.id));
+  const total = orphanFasikuller.length + orphanDersler.length;
+  if(!total){ showToast('Temizlenecek kullanılmayan kayıt yok','info'); return; }
+  const preview = [
+    ...orphanFasikuller.slice(0,8).map(o=>`• ${o.fasAd} (${o.dersAd})`),
+    ...orphanDersler.slice(0,8).map(d=>`• [Alt ders] ${d.ad}`),
+  ].slice(0,8).join('\n');
+  const shown = Math.min(8,total);
+  const more = total>shown ? `\n… ve ${total-shown} tane daha` : '';
+  if(!confirm(`${total} kullanılmayan kayıt kaldırılacak (kataloğu artık mevcut olmayan / ebeveyni silinmiş eski kayıtlar):\n\n${preview}${more}\n\nBu işlem geri alınamaz. Devam edilsin mi?`)) return;
+  orphanFasikuller.forEach(o=>{
     const ders = MANIFEST.dersler.find(d=>d.id===o.dersId);
     if(ders) ders.fasikuller = ders.fasikuller.filter(f=>f.id!==o.fasId);
   });
+  if(orphanDersIds.size) MANIFEST.dersler = MANIFEST.dersler.filter(d=>!orphanDersIds.has(d.id));
   persistManifest();
   renderDerslerGrid();
   updateEduDirUI();
-  showToast(`✓ ${orphans.length} kullanılmayan fasikül temizlendi`,'success');
+  showToast(`✓ ${total} kullanılmayan kayıt temizlendi`,'success');
 }
 window.cleanupOrphanFasikuller = cleanupOrphanFasikuller;
 window.findOrphanBundledFasikuller = findOrphanBundledFasikuller;
+window.findOrphanedNestedDersler = findOrphanedNestedDersler;
 async function updateEduDirUI(){
   const statusEl = document.getElementById('eduDirStatus');
   const subStatusEl = document.getElementById('eduDirSubStatus');
@@ -1532,7 +1573,7 @@ async function updateEduDirUI(){
     if(subStatusEl) subStatusEl.textContent = foundCount ? 'Yeni dosyalar ekleyebilir veya mevcutları yenileyebilirsiniz' : 'Files uygulamasından PDF dosyalarınızı seçin';
     if(buttonEl) buttonEl.textContent = foundCount ? 'PDF’leri Güncelle' : 'PDF’leri Seç';
     listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${allFasikuller.length}</b> PDF hazır${foundCount===allFasikuller.length ? '<span>Tüm dosyalar hazır</span>' : `<span>${allFasikuller.length-foundCount} dosya eksik</span>`}</div>`
-      + buildOrphanCleanupHtml(findOrphanBundledFasikuller());
+      + buildOrphanCleanupHtml(findOrphanBundledFasikuller(), findOrphanedNestedDersler());
     listEl.style.display = 'block';
     return;
   }
@@ -1571,7 +1612,7 @@ async function updateEduDirUI(){
   }
   const total=allFasikuller.length;
   listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${total}</b> PDF bulundu${missing.length ? `<span>${missing.length} dosya eksik</span>` : '<span>Tüm dosyalar hazır</span>'}</div>`
-    + buildOrphanCleanupHtml(findOrphanBundledFasikuller());
+    + buildOrphanCleanupHtml(findOrphanBundledFasikuller(), findOrphanedNestedDersler());
   listEl.style.display = 'block';
 }
 
@@ -2252,9 +2293,14 @@ function hydrateBundledFasikul(fas,raw,source){
 async function loadBundledFasikuller(){
   let loaded = 0;
   const deletedIds = getDeletedBundledIds();
+  const deletedDersIds = getDeletedDersIds();
   const norm = v => String(v||'').normalize('NFC');
   for(const source of BUNDLED_FASIKUL_SOURCES){
     if(deletedIds.has(source.id)) continue; // admin sildi → geri gelmesin
+    // Kullanıcı source.dersId'nin ait olduğu dersi (ör. 'mat') TAMAMEN
+    // sildiyse, o dersi/kaynağı sessizce yeniden yaratma — kullanıcı sadece
+    // içindeki tek bir fasikülü değil, dersin kendisini istemiyor demektir.
+    if(deletedDersIds.has(source.dersId)) continue;
     const raw = await readBundledJson(source);
     if(!raw || !Array.isArray(raw.konular)) continue;
     // Bu kaynağın TÜM derslerdeki mevcut kopyaları (kullanıcının küratörlüğü).
