@@ -1409,6 +1409,14 @@ window.addEventListener('resize', ()=>{
 
 const FASIKUL_PDF_MAP = {};
 BUNDLED_FASIKUL_SOURCES.forEach(s=>{ FASIKUL_PDF_MAP[s.id]=s.pdf; });
+// Katalogdaki (BUNDLED_FASIKUL_SOURCES) güncel PDF adını, fasikül eklenirken
+// kaydedilmiş olan eski fas.pdfFile'dan ÖNCE dener. Bir kaynak dosyası
+// yeniden adlandırılınca (bkz proje geçmişi: "-kart" eki kaldırma vb.)
+// eskiden eklenmiş fasiküller hâlâ eski adı taşır — bu öncelik olmadan
+// PDF'ler cihazda gerçekte var olsa da "eksik" görünürdü.
+function resolvePdfName(fas){
+  return FASIKUL_PDF_MAP[fas.id] || fas.pdfFile || (fas.id + '.pdf');
+}
 
 function openHandleDB(){
   return new Promise((resolve,reject)=>{
@@ -1472,6 +1480,47 @@ async function selectEduDir(){
   }
 }
 
+// Katalogdan (BUNDLED_FASIKUL_SOURCES) tamamen kaldırılmış — yeniden
+// adlandırılmış değil, gerçekten silinmiş — eski bundled fasikül kayıtları.
+// Bunlar "PDF Klasörü" sayacını şişirir (hiçbir zaman eşleşmeyecek bir PDF
+// adı bekler) ve "Fasikül kaynağı seçin" listesindeki güncel sayıyla
+// kullanıcının kütüphanesindeki toplam arasında fark yaratır.
+function findOrphanBundledFasikuller(){
+  const orphans = [];
+  MANIFEST.dersler.forEach(ders=>{
+    (ders.fasikuller||[]).forEach(fas=>{
+      if(fas.sourceType==='bundled' && fas.type!=='folder' && !BUNDLED_FASIKUL_SOURCES.some(s=>s.id===fas.id)){
+        orphans.push({dersId:ders.id, dersAd:ders.ad, fasId:fas.id, fasAd:fas.ad});
+      }
+    });
+  });
+  return orphans;
+}
+function buildOrphanCleanupHtml(orphans){
+  if(!orphans.length) return '';
+  return `<div class="edu-dir-orphan-notice" style="margin-top:10px;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);border-left:3px solid var(--red);font-size:12px;color:var(--text-muted)">
+    <b style="color:var(--text-0)">${orphans.length} kullanılmayan fasikül</b> kütüphanenizde duruyor (kataloğu artık mevcut olmayan eski kayıtlar) — eksik PDF sayısını da şişiriyorlar.
+    <div><button class="pref-action pref-chip" style="margin-top:6px" onclick="cleanupOrphanFasikuller()">🧹 Temizle</button></div>
+  </div>`;
+}
+function cleanupOrphanFasikuller(){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
+  const orphans = findOrphanBundledFasikuller();
+  if(!orphans.length){ showToast('Temizlenecek kullanılmayan fasikül yok','info'); return; }
+  const preview = orphans.slice(0,8).map(o=>`• ${o.fasAd} (${o.dersAd})`).join('\n');
+  const more = orphans.length>8 ? `\n… ve ${orphans.length-8} tane daha` : '';
+  if(!confirm(`${orphans.length} kullanılmayan fasikül kaldırılacak (kataloğu artık mevcut olmayan eski kayıtlar):\n\n${preview}${more}\n\nBu işlem geri alınamaz. Devam edilsin mi?`)) return;
+  orphans.forEach(o=>{
+    const ders = MANIFEST.dersler.find(d=>d.id===o.dersId);
+    if(ders) ders.fasikuller = ders.fasikuller.filter(f=>f.id!==o.fasId);
+  });
+  persistManifest();
+  renderDerslerGrid();
+  updateEduDirUI();
+  showToast(`✓ ${orphans.length} kullanılmayan fasikül temizlendi`,'success');
+}
+window.cleanupOrphanFasikuller = cleanupOrphanFasikuller;
+window.findOrphanBundledFasikuller = findOrphanBundledFasikuller;
 async function updateEduDirUI(){
   const statusEl = document.getElementById('eduDirStatus');
   const subStatusEl = document.getElementById('eduDirSubStatus');
@@ -1496,7 +1545,8 @@ async function updateEduDirUI(){
       : 'PDF dosyaları seçilmedi';
     if(subStatusEl) subStatusEl.textContent = foundCount ? 'Yeni dosyalar ekleyebilir veya mevcutları yenileyebilirsiniz' : 'Files uygulamasından PDF dosyalarınızı seçin';
     if(buttonEl) buttonEl.textContent = foundCount ? 'PDF’leri Güncelle' : 'PDF’leri Seç';
-    listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${allFasikuller.length}</b> PDF hazır${foundCount===allFasikuller.length ? '<span>Tüm dosyalar hazır</span>' : `<span>${allFasikuller.length-foundCount} dosya eksik</span>`}</div>`;
+    listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${allFasikuller.length}</b> PDF hazır${foundCount===allFasikuller.length ? '<span>Tüm dosyalar hazır</span>' : `<span>${allFasikuller.length-foundCount} dosya eksik</span>`}</div>`
+      + buildOrphanCleanupHtml(findOrphanBundledFasikuller());
     listEl.style.display = 'block';
     return;
   }
@@ -1525,7 +1575,7 @@ async function updateEduDirUI(){
   let foundCount = 0;
   const missing = [];
   for(const fas of allFasikuller){
-    const pdfName = fas.pdfFile || FASIKUL_PDF_MAP[fas.id] || (fas.id + '.pdf');
+    const pdfName = resolvePdfName(fas);
     let found = false;
     try{
       await findPdfFileHandle(pdfName);
@@ -1534,7 +1584,8 @@ async function updateEduDirUI(){
     if(found) foundCount++; else missing.push(pdfName);
   }
   const total=allFasikuller.length;
-  listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${total}</b> PDF bulundu${missing.length ? `<span>${missing.length} dosya eksik</span>` : '<span>Tüm dosyalar hazır</span>'}</div>`;
+  listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${total}</b> PDF bulundu${missing.length ? `<span>${missing.length} dosya eksik</span>` : '<span>Tüm dosyalar hazır</span>'}</div>`
+    + buildOrphanCleanupHtml(findOrphanBundledFasikuller());
   listEl.style.display = 'block';
 }
 
@@ -1556,7 +1607,7 @@ async function handleBulkPdfImport(input){
   for(const file of files){
     const fileKey=normalizePdfFileName(file.name);
     const match=candidates.find(({fas})=>{
-      const expected=fas.pdfFile || FASIKUL_PDF_MAP[fas.id] || `${fas.id}.pdf`;
+      const expected=resolvePdfName(fas);
       return normalizePdfFileName(expected)===fileKey;
     });
     if(!match) continue;
@@ -1622,7 +1673,7 @@ async function getLocalPdfBlob(fasikul){
   if(!appState.eduDirHandle) return null;
   const permission=await appState.eduDirHandle.queryPermission({mode:'read'});
   if(permission!=='granted') return null;
-  const pdfName = fasikul.pdfFile || FASIKUL_PDF_MAP[fasikul.id] || (fasikul.id + '.pdf');
+  const pdfName = resolvePdfName(fasikul);
   try{
     const fileHandle = await findPdfFileHandle(pdfName);
     const file = await fileHandle.getFile();
