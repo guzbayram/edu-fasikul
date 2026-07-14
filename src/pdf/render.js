@@ -181,7 +181,12 @@ const CEVAP_MASK_CONFIG = {
   'mof-9-matematik-4': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   // Möf 10.Sınıf Matematik: Möf-9 ile aynı yayıncı/şablon — testin son sayfasında
   // tam genişlikte "1-C 2-B 3-A..." metin şeridi (daire yok, düz metin).
+  // 2-5. Fasiküllerde de aynı format örnek sayfa ile görsel doğrulandı.
   'mof-10-matematik-1': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  'mof-10-matematik-2': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  'mof-10-matematik-3': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  'mof-10-matematik-4': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
+  'mof-10-matematik-5': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   // Yarıçap TYT Problemler: cevap daireleri birçok sayfanın sağ-altında; her sayfada kapat.
   'yaricap-tyt-problemler': {
     rects: [

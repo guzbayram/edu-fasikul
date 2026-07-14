@@ -299,6 +299,9 @@ a{color:inherit;text-decoration:none}
   overflow:hidden;cursor:pointer;transition:all .25s;padding:16px;position:relative;
 }
 .ders-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
+.ders-card.dragging{opacity:.45;transform:scale(.98)}
+.ders-card.drag-over-before{box-shadow:inset 3px 0 0 0 var(--accent,var(--mat))}
+.ders-card.drag-over-after{box-shadow:inset -3px 0 0 0 var(--accent,var(--mat))}
 .ders-card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
 .ders-card-icon{font-size:28px;line-height:1;flex-shrink:0;width:36px;text-align:center}
 .ders-card-titles{flex:1;min-width:0}
@@ -2850,6 +2853,8 @@ body.reader-locked .main-content{visibility:hidden!important}
 .fasikul-card:active{cursor:grabbing}
 .fasikul-card.dragging{opacity:.45;transform:scale(.98)}
 .fasikul-card.drag-over{border-color:var(--fas-accent,var(--mat));box-shadow:0 0 0 3px color-mix(in srgb,var(--fas-accent,var(--mat)) 20%,transparent)}
+.fasikul-card.drag-over-top{box-shadow:inset 0 3px 0 0 var(--fas-accent,var(--mat))}
+.fasikul-card.drag-over-bottom{box-shadow:inset 0 -3px 0 0 var(--fas-accent,var(--mat))}
 .fasikul-card-top{gap:12px;align-items:flex-start}
 .fasikul-drag-handle{align-self:center;color:var(--text-muted);font-size:20px;line-height:1;cursor:grab;user-select:none}
 .fasikul-thumb{width:48px;height:48px;border-radius:14px}

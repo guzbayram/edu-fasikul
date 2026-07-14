@@ -238,6 +238,10 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'mof-9-matematik-3',dersId:'mat',json:'4-3-Möf - 9.Sınıf-Matematik-3.Fasikül.json',pdf:'4-3-Möf - 9.Sınıf-Matematik-3.Fasikül.pdf'},
   {id:'mof-9-matematik-4',dersId:'mat',json:'4-4-Möf - 9.Sınıf-Matematik-4.Fasikül.json',pdf:'4-4-Möf - 9.Sınıf-Matematik-4.Fasikül.pdf'},
   {id:'mof-10-matematik-1',dersId:'mat',json:'5-1-Möf - 10.Sınıf-Matematik-1.Fasikül.json',pdf:'5-1-Möf - 10.Sınıf-Matematik-1.Fasikül.pdf'},
+  {id:'mof-10-matematik-2',dersId:'mat',json:'5-2-Möf - 10.Sınıf-Matematik-2.Fasikül.json',pdf:'5-2-Möf - 10.Sınıf-Matematik-2.Fasikül.pdf'},
+  {id:'mof-10-matematik-3',dersId:'mat',json:'5-3-Möf - 10.Sınıf-Matematik-3.Fasikül.json',pdf:'5-3-Möf - 10.Sınıf-Matematik-3.Fasikül.pdf'},
+  {id:'mof-10-matematik-4',dersId:'mat',json:'5-4-Möf - 10.Sınıf-Matematik-4.Fasikül.json',pdf:'5-4-Möf - 10.Sınıf-Matematik-4.Fasikül.pdf'},
+  {id:'mof-10-matematik-5',dersId:'mat',json:'5-5-Möf - 10.Sınıf-Matematik-5.Fasikül.json',pdf:'5-5-Möf - 10.Sınıf-Matematik-5.Fasikül.pdf'},
   {id:'yaricap-10-matematik-1',dersId:'mat',json:'6-1-Yarıçap - 10.Sınıf-Matematik-1.Fasikul.json',pdf:'6-1-Yarıçap - 10.Sınıf-Matematik-1.Fasikul.pdf'},
   {id:'yaricap-10-matematik-2',dersId:'mat',json:'6-2-Yarıçap - 10.Sınıf-Matematik-2.Fasikul.json',pdf:'6-2-Yarıçap - 10.Sınıf-Matematik-2.Fasikul.pdf'},
   {id:'yaricap-10-matematik-3',dersId:'mat',json:'6-3-Yarıçap - 10.Sınıf-Matematik-3.Fasikul.json',pdf:'6-3-Yarıçap - 10.Sınıf-Matematik-3.Fasikul.pdf'},
@@ -743,6 +747,7 @@ function getFasikulKonuSayisi(fas){
   if(child) return visibleFasikullerFor(child).reduce((a,f)=>a+getFasikulKonuSayisi(f),0);
   return Number(fas?.konuSayisi || 0);
 }
+let draggedDersId = null;
 function renderDerslerGrid(){
   const grid = document.getElementById('derslerGrid');
   grid.innerHTML = '';
@@ -754,6 +759,7 @@ function renderDerslerGrid(){
     const card = document.createElement('div');
     card.className = 'ders-card';
     card.dataset.ders = ders.id;
+    card.draggable = true;
     const dersPerf = perfSummary(stats.dersler?.[ders.id]);
     const visibleFasikuller=visibleFasikullerFor(ders);
     const fasSayisi = visibleFasikuller.length;
@@ -786,6 +792,38 @@ function renderDerslerGrid(){
         <span>${dersPerf.total ? `${dersPerf.solved} çözüldü · %${dersPerf.accuracy} · Net ${formatNet(dersPerf.net)}` : (visibleFasikuller[0]?.sonCalisma||'—')}</span>
         <button class="devam-btn" style="background:color-mix(in srgb,${renkVar} 16%,transparent);color:${renkVar}" onclick="openDrawer(event,'${ders.id}')">Devam Et →</button>
       </div>`;
+    // Ders kartları arasında sırayı sürükleyerek değiştirme. Ders kartları
+    // birbirinin İÇİNE girmez (alt ders/nesting fasikül seviyesinde ayrı bir
+    // mekanizma) — burada sadece kardeş sırası değişir, bu yüzden tek bölge
+    // (kartın sol/sağ yarısı) yeterli, "içine taşı" belirsizliği yok.
+    card.addEventListener('dragstart', e=>{
+      draggedDersId = ders.id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', ders.id);
+    });
+    card.addEventListener('dragend', ()=>{
+      card.classList.remove('dragging');
+      document.querySelectorAll('.ders-card.drag-over-before,.ders-card.drag-over-after')
+        .forEach(c=>c.classList.remove('drag-over-before','drag-over-after'));
+      draggedDersId = null;
+    });
+    card.addEventListener('dragover', e=>{
+      if(!draggedDersId || draggedDersId===ders.id) return;
+      e.preventDefault();
+      const rect = card.getBoundingClientRect();
+      const insertAfter = (e.clientX - rect.left) > rect.width/2;
+      card.classList.toggle('drag-over-after', insertAfter);
+      card.classList.toggle('drag-over-before', !insertAfter);
+    });
+    card.addEventListener('dragleave', ()=>card.classList.remove('drag-over-before','drag-over-after'));
+    card.addEventListener('drop', e=>{
+      if(!draggedDersId || draggedDersId===ders.id) return;
+      e.preventDefault();
+      const insertAfter = card.classList.contains('drag-over-after');
+      card.classList.remove('drag-over-before','drag-over-after');
+      window.reorderDersByDrop?.(draggedDersId, ders.id, insertAfter);
+    });
     grid.appendChild(card);
   });
 }
@@ -839,6 +877,7 @@ function closeDrawer(){
   document.getElementById('drawerOverlay').classList.remove('open');
   document.getElementById('drawer').classList.remove('open');
 }
+const FASIKUL_DRAG_ZONE_CLASSES = ['drag-over','drag-over-top','drag-over-bottom'];
 function attachFasikulDragHandlers(card, ders, fas, sortable, moveTargetDersId=null){
   if(!sortable) return;
   card.addEventListener('dragstart', e=>{
@@ -849,20 +888,40 @@ function attachFasikulDragHandlers(card, ders, fas, sortable, moveTargetDersId=n
   });
   card.addEventListener('dragend', ()=>{
     card.classList.remove('dragging');
-    document.querySelectorAll('.fasikul-card.drag-over').forEach(c=>c.classList.remove('drag-over'));
+    document.querySelectorAll('.fasikul-card.drag-over,.fasikul-card.drag-over-top,.fasikul-card.drag-over-bottom')
+      .forEach(c=>c.classList.remove(...FASIKUL_DRAG_ZONE_CLASSES));
     draggedFasikulId=null;
   });
   card.addEventListener('dragover', e=>{
+    if(!draggedFasikulId || draggedFasikulId===fas.id) return;
     e.preventDefault();
-    if(draggedFasikulId && draggedFasikulId!==fas.id) card.classList.add('drag-over');
-  });
-  card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
-  card.addEventListener('drop', e=>{
-    e.preventDefault(); card.classList.remove('drag-over');
+    card.classList.remove(...FASIKUL_DRAG_ZONE_CLASSES);
+    const rect = card.getBoundingClientRect();
+    const ratio = (e.clientY - rect.top) / rect.height;
     if(moveTargetDersId){
+      // Klasör (alt ders) kartı: üst/alt %25 kenar = kardeş olarak sırala,
+      // ortadaki %50 = klasörün İÇİNE taşı. Önceden tüm kart tek bölgeydi ve
+      // her bırakma içine taşımaya yol açıyordu — artık kenar ile sıralama да
+      // mümkün.
+      if(ratio < 0.25) card.classList.add('drag-over-top');
+      else if(ratio > 0.75) card.classList.add('drag-over-bottom');
+      else card.classList.add('drag-over');
+    } else {
+      // Normal fasikül kartı: içine taşınacak bir yer yok, üst/alt yarı
+      // sadece ekleme noktasını (önce/sonra) belirler.
+      card.classList.add(ratio < 0.5 ? 'drag-over-top' : 'drag-over-bottom');
+    }
+  });
+  card.addEventListener('dragleave', ()=>card.classList.remove(...FASIKUL_DRAG_ZONE_CLASSES));
+  card.addEventListener('drop', e=>{
+    e.preventDefault();
+    const willNest = card.classList.contains('drag-over');
+    const insertAfter = card.classList.contains('drag-over-bottom');
+    card.classList.remove(...FASIKUL_DRAG_ZONE_CLASSES);
+    if(moveTargetDersId && willNest){
       window.moveFasikulToDers?.(ders.id, draggedFasikulId, moveTargetDersId);
     } else {
-      window.reorderFasikulByDrop?.(ders.id,draggedFasikulId,fas.id);
+      window.reorderFasikulByDrop?.(ders.id,draggedFasikulId,fas.id,insertAfter);
     }
   });
 }

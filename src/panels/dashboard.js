@@ -97,17 +97,33 @@ function moveFasikul(dersId,fasikulId,direction){
   ders.fasikuller.splice(to,0,item);
   persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
 }
-function reorderFasikulByDrop(dersId,sourceId,targetId){
+function reorderFasikulByDrop(dersId,sourceId,targetId,insertAfter=false){
   if(!sourceId || sourceId===targetId) return;
   const ders=window.MANIFEST.dersler.find(d=>d.id===dersId);
   if(!ders) return;
   const from=ders.fasikuller.findIndex(f=>f.id===sourceId);
-  const to=ders.fasikuller.findIndex(f=>f.id===targetId);
-  if(from<0 || to<0) return;
+  if(from<0) return;
   const [item]=ders.fasikuller.splice(from,1);
+  let to=ders.fasikuller.findIndex(f=>f.id===targetId);
+  if(to<0){ ders.fasikuller.splice(from,0,item); return; }
+  if(insertAfter) to++;
   ders.fasikuller.splice(to,0,item);
   persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
   showToast('Fasikül sırası kaydedildi','success');
+}
+function reorderDersByDrop(sourceDersId,targetDersId,insertAfter=false){
+  if(!sourceDersId || sourceDersId===targetDersId) return;
+  const list=window.MANIFEST.dersler;
+  const from=list.findIndex(d=>d.id===sourceDersId);
+  if(from<0) return;
+  const [item]=list.splice(from,1);
+  let to=list.findIndex(d=>d.id===targetDersId);
+  if(to<0){ list.splice(from,0,item); return; }
+  if(insertAfter) to++;
+  list.splice(to,0,item);
+  persistManifest();
+  renderDerslerGrid();
+  showToast('Ders sırası kaydedildi','success');
 }
 function canDersAcceptItem(targetDers, item){
   const targetItems = targetDers?.fasikuller || [];
@@ -993,6 +1009,7 @@ window.filterFasikuller = filterFasikuller;
 window.setFasikulTheme = setFasikulTheme;
 window.moveFasikul = moveFasikul;
 window.reorderFasikulByDrop = reorderFasikulByDrop;
+window.reorderDersByDrop = reorderDersByDrop;
 window.moveFasikulToDers = moveFasikulToDers;
 window.toggleFasikulMenu = toggleFasikulMenu;
 window.openLastFasikul = openLastFasikul;
