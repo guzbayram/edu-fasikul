@@ -1512,13 +1512,18 @@ function findOrphanedNestedDersler(){
 // hesaplanan etiket sayesinde) hâlâ bağlıymış gibi görünürler.
 function findDisconnectedNestedDersler(){
   const byId = new Map(MANIFEST.dersler.map(d=>[d.id,d]));
-  const linkedChildIds = new Set();
-  MANIFEST.dersler.forEach(d=>{
-    (d.fasikuller||[]).forEach(f=>{
-      if(f.type==='folder' && f.childDersId) linkedChildIds.add(f.childDersId);
-    });
+  return MANIFEST.dersler.filter(d=>{
+    if(!d.parentDersId || !byId.has(d.parentDersId)) return false;
+    // ÖNEMLİ: sadece "birisi bu alt derse işaret ediyor mu" değil, "İDDİA
+    // EDİLEN ÜST DERSİN KENDİSİ işaret ediyor mu" kontrol edilmeli. Eskiden
+    // (bkz proje notu) herhangi bir derste bu childDersId'ye işaret eden
+    // BAŞKA bir klasör kartı varsa "bağlı" sayılıyordu — bu, klasör kartı
+    // yanlış/bambaşka bir derste (ör. yanlışlıkla oluşmuş boş bir kopya
+    // derste) dursa bile "sorun yok" gösteriyordu; gerçek üst derste hâlâ
+    // hiç kart yoktu.
+    const claimedParent = byId.get(d.parentDersId);
+    return !(claimedParent.fasikuller||[]).some(f=>f.type==='folder' && f.childDersId===d.id);
   });
-  return MANIFEST.dersler.filter(d=>d.parentDersId && byId.has(d.parentDersId) && !linkedChildIds.has(d.id));
 }
 function repairDisconnectedNestedDersler(){
   if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
@@ -1526,7 +1531,7 @@ function repairDisconnectedNestedDersler(){
   if(!broken.length){ showToast('Onarılacak bağlantısı kopmuş alt ders yok','info'); return; }
   const previewR = broken.slice(0,8).map(d=>`• ${d.ad}`).join('\n');
   const moreR = broken.length>8 ? `\n… ve ${broken.length-8} tane daha` : '';
-  if(!confirm(`${broken.length} bağlantısı kopmuş alt ders, kayıtlı üst derse yeniden bağlanacak (bir klasör kartı eklenecek):\n\n${previewR}${moreR}\n\nDevam edilsin mi?`)) return;
+  if(!confirm(`${broken.length} bağlantısı kopmuş alt ders, kayıtlı üst derse yeniden bağlanacak (yanlış/başka bir derste kalmış eski klasör kartı varsa temizlenip doğru üst derse taşınacak):\n\n${previewR}${moreR}\n\nDevam edilsin mi?`)) return;
   let repaired = 0, skipped = 0;
   broken.forEach(child=>{
     const parent = MANIFEST.dersler.find(d=>d.id===child.parentDersId);
@@ -1534,6 +1539,14 @@ function repairDisconnectedNestedDersler(){
     // Aynı derste klasör ile düz fasikül karışamaz (bkz canDersAcceptItem,
     // dashboard.js) — üst derste zaten düz fasikül varsa zorla ekleme.
     if((parent.fasikuller||[]).some(f=>f.type!=='folder')){ skipped++; return; }
+    // Bu alt derse işaret eden, İDDİA EDİLEN üst ders DIŞINDAKİ (yanlış/
+    // bambaşka, muhtemelen kazayla oluşmuş) klasör kartlarını temizle —
+    // yoksa hem doğru hem yanlış yerde aynı alt dersi gösteren kopya
+    // kartlar birikir.
+    MANIFEST.dersler.forEach(d=>{
+      if(d.id===parent.id) return;
+      d.fasikuller = (d.fasikuller||[]).filter(f=>!(f.type==='folder' && f.childDersId===child.id));
+    });
     parent.fasikuller = parent.fasikuller || [];
     parent.fasikuller.push({
       id: `folder-${child.id}-${Date.now().toString(36)}`,
