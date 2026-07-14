@@ -163,6 +163,15 @@ function moveFasikulToDers(sourceDersId, fasikulId, targetDersId){
     return false;
   }
   targetDers.fasikuller.push(item);
+  // Taşınan bir klasör (alt ders) ise, işaret ettiği ders kaydının
+  // parentDersId'si de yeni hedefe güncellenmeli — yoksa parentDersId eski
+  // dersi göstermeye devam eder (klasör oradan fiilen kaldırılmış olsa
+  // bile), bu da o alt dersi anasayfada hiçbir yerde görünmez ama admin
+  // listelerinde hâlâ eski dersin altındaymış gibi gösterir hâle getirir.
+  if(item.type === 'folder' && item.childDersId){
+    const childDers = window.MANIFEST.dersler.find(d=>d.id===item.childDersId);
+    if(childDers) childDers.parentDersId = targetDersId;
+  }
   persistManifest();
   renderDerslerGrid();
   renderFasikulCards(visibleFasikullerFor(sourceDers), sourceDers);

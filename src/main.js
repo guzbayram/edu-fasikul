@@ -1502,6 +1502,64 @@ function findOrphanedNestedDersler(){
   const ids = new Set(MANIFEST.dersler.map(d=>d.id));
   return MANIFEST.dersler.filter(d=>d.parentDersId && !ids.has(d.parentDersId));
 }
+// parentDersId GEÇERLİ bir dersi gösteriyor ama o ders'in fasikuller
+// dizisinde bu alt derse işaret eden bir klasör (type:'folder',
+// childDersId) kartı YOK — "hayalet" alt ders. moveFasikulToDers() bir
+// klasörü başka bir derse taşırken parentDersId'yi güncellemediği için
+// oluşuyordu (artık düzeltildi, bkz dashboard.js) — bu, düzeltmeden ÖNCE
+// zaten oluşmuş kayıtları yakalar. Ana sayfada asla görünmezler (hiçbir
+// derste klasör kartı yok) ama admin listelerinde (parentDersId zincirinden
+// hesaplanan etiket sayesinde) hâlâ bağlıymış gibi görünürler.
+function findDisconnectedNestedDersler(){
+  const byId = new Map(MANIFEST.dersler.map(d=>[d.id,d]));
+  const linkedChildIds = new Set();
+  MANIFEST.dersler.forEach(d=>{
+    (d.fasikuller||[]).forEach(f=>{
+      if(f.type==='folder' && f.childDersId) linkedChildIds.add(f.childDersId);
+    });
+  });
+  return MANIFEST.dersler.filter(d=>d.parentDersId && byId.has(d.parentDersId) && !linkedChildIds.has(d.id));
+}
+function repairDisconnectedNestedDersler(){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
+  const broken = findDisconnectedNestedDersler();
+  if(!broken.length){ showToast('Onarılacak bağlantısı kopmuş alt ders yok','info'); return; }
+  const previewR = broken.slice(0,8).map(d=>`• ${d.ad}`).join('\n');
+  const moreR = broken.length>8 ? `\n… ve ${broken.length-8} tane daha` : '';
+  if(!confirm(`${broken.length} bağlantısı kopmuş alt ders, kayıtlı üst derse yeniden bağlanacak (bir klasör kartı eklenecek):\n\n${previewR}${moreR}\n\nDevam edilsin mi?`)) return;
+  let repaired = 0, skipped = 0;
+  broken.forEach(child=>{
+    const parent = MANIFEST.dersler.find(d=>d.id===child.parentDersId);
+    if(!parent){ skipped++; return; }
+    // Aynı derste klasör ile düz fasikül karışamaz (bkz canDersAcceptItem,
+    // dashboard.js) — üst derste zaten düz fasikül varsa zorla ekleme.
+    if((parent.fasikuller||[]).some(f=>f.type!=='folder')){ skipped++; return; }
+    parent.fasikuller = parent.fasikuller || [];
+    parent.fasikuller.push({
+      id: `folder-${child.id}-${Date.now().toString(36)}`,
+      ad: child.ad,
+      type: 'folder',
+      childDersId: child.id,
+      thumb: child.ikon || '📁',
+      konuSayisi: 0, soruSayisi: 0, progPct: 0
+    });
+    repaired++;
+  });
+  persistManifest();
+  renderDerslerGrid();
+  updateEduDirUI();
+  if(skipped) showToast(`✓ ${repaired} alt ders yeniden bağlandı, ${skipped} tanesi üst derste fasikül olduğu için atlandı`,'info');
+  else showToast(`✓ ${repaired} alt ders yeniden bağlandı`,'success');
+}
+window.findDisconnectedNestedDersler = findDisconnectedNestedDersler;
+window.repairDisconnectedNestedDersler = repairDisconnectedNestedDersler;
+function buildDisconnectedRepairHtml(broken){
+  if(!broken.length) return '';
+  return `<div class="edu-dir-orphan-notice" style="margin-top:10px;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);border-left:3px solid var(--yellow);font-size:12px;color:var(--text-muted)">
+    <b style="color:var(--text-0)">${broken.length} alt dersin bağlantısı kopmuş</b> — kayıtlı üst derse ait görünüyorlar ama ana sayfada hiçbir yerde klasör kartı olarak görünmüyorlar (muhtemelen bir taşıma sırasında bağlantı düşmüş).
+    <div><button class="pref-action pref-chip" style="margin-top:6px" onclick="repairDisconnectedNestedDersler()">🔗 Yeniden Bağla</button></div>
+  </div>`;
+}
 function buildOrphanCleanupHtml(orphanFasikuller, orphanDersler){
   const total = orphanFasikuller.length + orphanDersler.length;
   if(!total) return '';
@@ -1573,7 +1631,8 @@ async function updateEduDirUI(){
     if(subStatusEl) subStatusEl.textContent = foundCount ? 'Yeni dosyalar ekleyebilir veya mevcutları yenileyebilirsiniz' : 'Files uygulamasından PDF dosyalarınızı seçin';
     if(buttonEl) buttonEl.textContent = foundCount ? 'PDF’leri Güncelle' : 'PDF’leri Seç';
     listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${allFasikuller.length}</b> PDF hazır${foundCount===allFasikuller.length ? '<span>Tüm dosyalar hazır</span>' : `<span>${allFasikuller.length-foundCount} dosya eksik</span>`}</div>`
-      + buildOrphanCleanupHtml(findOrphanBundledFasikuller(), findOrphanedNestedDersler());
+      + buildOrphanCleanupHtml(findOrphanBundledFasikuller(), findOrphanedNestedDersler())
+      + buildDisconnectedRepairHtml(findDisconnectedNestedDersler());
     listEl.style.display = 'block';
     return;
   }
@@ -1612,7 +1671,8 @@ async function updateEduDirUI(){
   }
   const total=allFasikuller.length;
   listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${total}</b> PDF bulundu${missing.length ? `<span>${missing.length} dosya eksik</span>` : '<span>Tüm dosyalar hazır</span>'}</div>`
-    + buildOrphanCleanupHtml(findOrphanBundledFasikuller(), findOrphanedNestedDersler());
+    + buildOrphanCleanupHtml(findOrphanBundledFasikuller(), findOrphanedNestedDersler())
+      + buildDisconnectedRepairHtml(findDisconnectedNestedDersler());
   listEl.style.display = 'block';
 }
 
