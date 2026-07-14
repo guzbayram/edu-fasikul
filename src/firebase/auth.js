@@ -151,17 +151,45 @@ function dersFullPathLabel(ders, byId){
   }
   return parts.join(' / ');
 }
+// Fasikül adlarını (genelde "0-lgs...", "3-1-...", "3-2-..." gibi dosya
+// adı öneki taşır) sayısal olarak doğal sırayla karşılaştırır — dropdown'daki
+// (BUNDLED_FASIKUL_SOURCES) sıralamayla aynı kural (main.js).
+function natFasikulCompare(a,b){
+  return String(a||'').localeCompare(String(b||''), 'tr', {numeric:true, sensitivity:'base'});
+}
+// Ders ağacını üstten derine doğru (DFS) gezip her seviyede fasikülleri
+// (ve alt ders klasörlerini) adına göre doğal sırayla listeler. Önceki
+// düz flatMap, MANIFEST.dersler'in ham (tarihsel ekleme/sürükleme) sırasını
+// kullandığı için aynı alt derse ait fasiküller listede dağınık
+// görünüyordu — artık her alt ders kendi bloğunda, sayısal sırayla,
+// birbirinin ardında listeleniyor.
 function manifestFasikulOptions(){
   const dersler = window.MANIFEST?.dersler || [];
   const byId = new Map(dersler.map(d=>[d.id, d]));
-  return dersler.flatMap(ders => (ders.fasikuller||[]).map(fas => ({
-    id: fas.id,
-    label: `${dersFullPathLabel(ders, byId)} / ${fas.ad}`,
-    dersId: ders.id,
-    dersAd: ders.ad,
-    fasikulAd: fas.ad,
-    fas
-  })));
+  const rows = [];
+  const visited = new Set();
+  function walk(ders){
+    if(!ders || visited.has(ders.id)) return;
+    visited.add(ders.id);
+    const path = dersFullPathLabel(ders, byId);
+    const items = [...(ders.fasikuller||[])].sort((a,b)=>natFasikulCompare(a.ad, b.ad));
+    items.forEach(fas=>{
+      if(fas.type === 'folder' && fas.childDersId){
+        walk(byId.get(fas.childDersId));
+        return;
+      }
+      rows.push({
+        id: fas.id,
+        label: `${path} / ${fas.ad}`,
+        dersId: ders.id,
+        dersAd: ders.ad,
+        fasikulAd: fas.ad,
+        fas
+      });
+    });
+  }
+  dersler.filter(d=>!d.parentDersId).forEach(walk);
+  return rows;
 }
 
 function visibleFasikulOptionsForStudent(student){
