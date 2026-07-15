@@ -220,6 +220,7 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'matematik-atolyem-6',dersId:'mat',json:'0-2-Matematik atölyem-6.json',pdf:'0-2-Matematik atölyem-6.pdf'},
   {id:'matematik-atolyem-7',dersId:'mat',json:'0-3-Matematik atölyem-7.json',pdf:'0-3-Matematik atölyem-7.pdf'},
   {id:'matematik-atolyem-8',dersId:'mat',json:'0-4-Matematik-Atölyem-8.json',pdf:'0-4-Matematik-Atölyem-8.pdf'},
+  {id:'ari-soru-bankasi-mat-8',dersId:'mat',json:'0-5-Arı-Soru-Bankası-Mat-8.json',pdf:'0-5-Arı-Soru-Bankası-Mat-8.pdf'},
   {id:'ucgen-akademi-1',dersId:'mat',json:'1-1-Üçgen Akademi-1.fasikül.json',pdf:'1-1-Üçgen Akademi-1.fasikül.pdf'},
   {id:'ucgen-akademi-2',dersId:'mat',json:'1-2-Üçgen Akademi-2.fasikül.json',pdf:'1-2-Üçgen Akademi-2.fasikül.pdf'},
   {id:'ucgen-akademi-3',dersId:'mat',json:'1-3-Üçgen Akademi-3.fasikül.json',pdf:'1-3-Üçgen Akademi-3.fasikül.pdf'},

@@ -320,6 +320,15 @@ const CEVAP_MASK_CONFIG = {
     cevapSayfalari: [383, 384],
     sadeceCevapSayfalari: true,
   },
+  // Arı Soru Bankası Matematik 8: kitabın sonunda ("CEVAP ANAHTARI" başlıklı,
+  // TEST-N satırları x 1-16 sütunlu) 4 sayfalık tam-sayfa cevap tablosu var.
+  // Sayfa listesi JSON'daki cevapAnahtariSayfalari alanıyla aynı, piksel
+  // ölçümüyle doğrulandı (1240x1755 render, 4 sayfada da aynı şablon).
+  'ari-soru-bankasi-mat-8': {
+    rect: { x: 0.045, y: 0.07, w: 0.93, h: 0.87 },
+    cevapSayfalari: [253, 254, 255, 256],
+    sadeceCevapSayfalari: true,
+  },
 };
 
 // pageNum için cevap anahtarı maskesi gerekiyorsa dikdörtgeni döndür.
