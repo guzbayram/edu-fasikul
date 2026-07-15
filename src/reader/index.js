@@ -70,7 +70,16 @@ async function openReader(dersId, fasikulId){
   // Total pages from manifest
   const allPages = fasikul.konular.flatMap(k=>k.altKonular||[]).map(a=>a.sayfa||1);
   const maxPage = fasikul.konular.reduce((m,k)=>Math.max(m,k.sayfaBitis||1),1);
-  appState.totalPages = Math.max(maxPage, 20);
+  // Bazı kitaplarda (ör. Matematik Atölyem) cevap anahtarı kitabın en
+  // sonunda ayrı bir bölüm ve konu verisine hiç işlenmemiş sayfalar
+  // içerebiliyor — sadece konulardan hesaplanan maxPage bu durumda
+  // gerçek sayfa sayısının altında kalıp okuyucunun cevap sayfalarına
+  // hiç gidememesine yol açıyordu. cevapAnahtariSayfalari (varsa) da
+  // sayfa sayısı hesabına dahil edilir.
+  const maxCevapPage = Array.isArray(fasikul.cevapAnahtariSayfalari) && fasikul.cevapAnahtariSayfalari.length
+    ? Math.max(...fasikul.cevapAnahtariSayfalari)
+    : 0;
+  appState.totalPages = Math.max(maxPage, maxCevapPage, 20);
 
   // Header info
   document.getElementById('readerFasikulAd').textContent = fasikul.ad;

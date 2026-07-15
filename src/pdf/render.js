@@ -303,18 +303,22 @@ const CEVAP_MASK_CONFIG = {
   'matematik-atolyem-5': {
     rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
     cevapSayfalari: [302, 303, 304],
+    sadeceCevapSayfalari: true,
   },
   'matematik-atolyem-6': {
     rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
     cevapSayfalari: [303, 304],
+    sadeceCevapSayfalari: true,
   },
   'matematik-atolyem-7': {
     rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
     cevapSayfalari: [302, 303, 304],
+    sadeceCevapSayfalari: true,
   },
   'matematik-atolyem-8': {
     rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
     cevapSayfalari: [383, 384],
+    sadeceCevapSayfalari: true,
   },
 };
 
@@ -326,7 +330,17 @@ function getCevapMaskRects(pageNum){
   if(cfg.sayfaRectleri && Array.isArray(cfg.sayfaRectleri[pageNum])) return cfg.sayfaRectleri[pageNum];
   const rects = cfg.rects || (cfg.rect ? [cfg.rect] : []);
   if(cfg.herSayfa) return rects;
-  if(Array.isArray(cfg.cevapSayfalari) && cfg.cevapSayfalari.includes(pageNum)) return rects;
+  if(Array.isArray(cfg.cevapSayfalari)){
+    if(cfg.cevapSayfalari.includes(pageNum)) return rects;
+    // sadeceCevapSayfalari: cevapSayfalari KESİN/TAM listedir — eşleşmezse
+    // aşağıdaki genel "testBiter" varsayılanına asla düşülmez. Bu olmadan,
+    // kitabın konu verisinde cevapSayfalari'nde HİÇ adı geçmeyen bir sayfada
+    // biten başka bir test varsa (ör. Matematik Atölyem'de test-41 sayfa
+    // 374'te bitiyor) o sayfa da yanlışlıkla maskeleniyordu. Eski
+    // davranışa bağımlı kitaplar (ör. yaricap-tyt-problemler,
+    // yalnizCevapSayfasi ile) bu bayrağı KULLANMADIĞI için etkilenmez.
+    if(cfg.sadeceCevapSayfalari) return [];
+  }
   if(Array.isArray(cfg.sayfaAraligi)){
     const araliktaMi = cfg.sayfaAraligi.some(([min,max]) => pageNum>=min && pageNum<=max);
     if(araliktaMi && !(cfg.haric||[]).includes(pageNum)) return rects;

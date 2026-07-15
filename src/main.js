@@ -2380,6 +2380,10 @@ function hydrateBundledFasikul(fas,raw,source){
   fas.sourceType = 'bundled';
   if(raw.cozumVideoLinkleri) fas.cozumVideoLinkleri = raw.cozumVideoLinkleri;
   if(raw.tip) fas.tip = raw.tip;
+  // Cevap anahtarı ayrı bir bölümde olup konu verisine hiç işlenmemiş
+  // sayfalar içerebiliyor (bkz reader/index.js openReader) — okuyucu bu
+  // sayfalara gidebilsin diye sayfa sayısı hesabında kullanılıyor.
+  if(Array.isArray(raw.cevapAnahtariSayfalari)) fas.cevapAnahtariSayfalari = raw.cevapAnahtariSayfalari;
   return fas;
 }
 async function loadBundledFasikuller(){
