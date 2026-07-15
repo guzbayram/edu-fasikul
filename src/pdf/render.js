@@ -294,6 +294,28 @@ const CEVAP_MASK_CONFIG = {
   'kuvvetlendiren-tyt-soru-bankasi-2025': {
     rect: { x: 0.31, y: 0.924, w: 0.46, h: 0.036 },
   },
+  // Matematik Atölyem 5-8: her kitabın sonunda "KAZANIM TADINDA SORULAR
+  // CEVAP ANAHTARI" başlıklı, TEST-N satırları x 1-19 sütunlu, sayfanın
+  // neredeyse tamamını kaplayan tam-sayfa cevap tablosu var (başlık/alt
+  // bilgi şeridi hariç). Sayfa listesi kitabın kendi JSON'undaki
+  // cevapAnahtariSayfalari alanıyla birebir aynı, piksel ölçümüyle
+  // doğrulandı (4 kitapta da aynı şablon).
+  'matematik-atolyem-5': {
+    rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
+    cevapSayfalari: [302, 303, 304],
+  },
+  'matematik-atolyem-6': {
+    rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
+    cevapSayfalari: [303, 304],
+  },
+  'matematik-atolyem-7': {
+    rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
+    cevapSayfalari: [302, 303, 304],
+  },
+  'matematik-atolyem-8': {
+    rect: { x: 0.045, y: 0.055, w: 0.93, h: 0.90 },
+    cevapSayfalari: [383, 384],
+  },
 };
 
 // pageNum için cevap anahtarı maskesi gerekiyorsa dikdörtgeni döndür.
