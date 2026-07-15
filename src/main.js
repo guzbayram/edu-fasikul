@@ -1365,8 +1365,9 @@ document.addEventListener('keydown', e=>{
       }
       return;
     }
-    // A-E answer
-    if(['A','B','C','D','E'].includes(e.key.toUpperCase()) && !e.ctrlKey && !e.altKey){
+    // A-E answer (A-D için 4 şıklı fasiküllerde)
+    const gecerliSecenekler = appState.aktifFasikul?.secenekSayisi === 4 ? ['A','B','C','D'] : ['A','B','C','D','E'];
+    if(gecerliSecenekler.includes(e.key.toUpperCase()) && !e.ctrlKey && !e.altKey){
       if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return;
       const sorular=appState.aktifAltKonu?.sorular||[];
       const s=sorular[appState.activeQuestionIdx];
@@ -2385,6 +2386,9 @@ function hydrateBundledFasikul(fas,raw,source){
   // sayfalar içerebiliyor (bkz reader/index.js openReader) — okuyucu bu
   // sayfalara gidebilsin diye sayfa sayısı hesabında kullanılıyor.
   if(Array.isArray(raw.cevapAnahtariSayfalari)) fas.cevapAnahtariSayfalari = raw.cevapAnahtariSayfalari;
+  // Bazı kaynaklarda (LGS Matematik, Matematik Atölyem, Arı Soru Bankası) sorular
+  // 5 değil 4 şıklı (A-D) — okuyucu cevap butonlarını buna göre çiziyor.
+  if(raw.secenekSayisi) fas.secenekSayisi = raw.secenekSayisi;
   return fas;
 }
 async function loadBundledFasikuller(){

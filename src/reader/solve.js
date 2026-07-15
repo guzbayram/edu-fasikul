@@ -113,7 +113,8 @@ function renderSolveAnswers(){
       ${answered ? '' : window.buildOpenAnswerKeypadHtml?.(inputId, s.cevap, idx, s._uid||s.no, 'sp-open-keypad') || ''}`;
     return;
   }
-  wrap.innerHTML = noHtml + ['A','B','C','D','E'].map(opt=>{
+  const secenekler = appState.aktifFasikul?.secenekSayisi === 4 ? ['A','B','C','D'] : ['A','B','C','D','E'];
+  wrap.innerHTML = noHtml + secenekler.map(opt=>{
     let cls = 'sp-ans';
     if(answered){
       if(opt === s.cevap) cls += ' correct-ans';

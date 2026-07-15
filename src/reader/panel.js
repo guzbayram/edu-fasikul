@@ -168,7 +168,8 @@ function renderTekSoruKartEl(card, sorular, idx){
   const isOpenEnded = !isKonuKart && s.cevapTipi === 'acik-uclu';
   const openInputId = `tsk-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
 
-  const btns = isKonuKart ? '' : ['A','B','C','D','E'].map(opt => {
+  const secenekler = appState.aktifFasikul?.secenekSayisi === 4 ? ['A','B','C','D'] : ['A','B','C','D','E'];
+  const btns = isKonuKart ? '' : secenekler.map(opt => {
     let cls = 'tsk-cevap-btn';
     if(answered){
       if(opt === s.cevap) cls += ' correct-ans';
