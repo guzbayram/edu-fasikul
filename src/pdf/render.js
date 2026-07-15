@@ -536,7 +536,18 @@ function renderPages(){
 
 // ── Tek sayfa modu
 
+// Sayfa render'ı async (pdfDoc.getPage + page.render awaitli) — hızlı ardışık
+// goToPage çağrılarında (ör. Konu Listesi'nden yeni bir teste tıklamak) daha
+// ESKİ bir çağrı, daha YENİ bir çağrıdan SONRA bitebiliyor (ör. eski sayfa
+// zaten önbellekte değilken yeni sayfa daha hızlı çözülüyorsa). Bu durumda
+// eski render kendi <div id="page-wrap-N"> öğesini wrap'e ekleyip yeni
+// render'ın üzerine yazıyor, kullanıcı seçtiği testten FARKLI bir sayfa
+// görüyordu. Her çağrı kendi "nesil" numarasını taşır; süresi dolmuş
+// (supersede edilmiş) bir çağrı DOM'a dokunmadan sessizce çıkar.
+let _pageRenderGen = 0;
+
 async function renderSinglePageMode(pageNum){
+  const myGen = ++_pageRenderGen;
   window.flushActiveTextEditing?.();
   const wrap = document.getElementById('readerCanvasWrap');
   wrap.innerHTML = '';
@@ -562,6 +573,7 @@ async function renderSinglePageMode(pageNum){
   if(appState.pdfDoc){
     try{
       const page = await appState.pdfDoc.getPage(pageNum);
+      if(myGen !== _pageRenderGen) return; // daha yeni bir goToPage bu çağrıyı geçersiz kıldı
       // Force layout reflow before reading clientWidth (Safari timing fix)
       void wrap.getBoundingClientRect();
       const baseScale = getReaderFitScale(page, wrap);
@@ -588,6 +600,7 @@ async function renderSinglePageMode(pageNum){
       const ctx2d = pdfCanvas.getContext('2d');
       if(!ctx2d) throw new Error('Canvas 2D context alınamadı (bellek yetersiz olabilir)');
       await page.render({ canvasContext: ctx2d, viewport }).promise;
+      if(myGen !== _pageRenderGen) return; // süresi dolmuş — kalan adımlar (maske/çizim katmanı) atlanır
 
       // Cevap anahtarını gizle (renderSinglePDFPage ile aynı maskeleme — bu fonksiyon
       // 'single' görünüm modunda (appState.viewMode varsayılanı) ayrı bir render yolu
