@@ -314,51 +314,66 @@ function syncNavToPage(pageNum){
   const fas = appState.aktifFasikul;
   if(!fas || !fas.konular) return;
 
-  // Hangi ana konu bu sayfayı kapsar?
+  // Hangi ana konu bu sayfayı kapsar? TÜM kitap taranır — yalnızca dizideki
+  // ilk "kart bazlı" konuyla sınırlı kalınmaz. Her testin kendi üst konusu
+  // olduğu kitaplarda (ör. Arı Soru Bankası, Matematik Atölyem) eski kod
+  // döngüyü İLK testte (Test 1) "en yakın sayfa" bulur bulmaz kırıyordu; bu
+  // yüzden sayfa Test 1'i çoktan geçmiş olsa bile sol panel hep Test 1'in
+  // son sorusunda donup kalıyordu. Şimdi tam eşleşme bulunur bulunmaz kesin
+  // kazanır, yoksa TÜM konular/alt konular arasından pageNum'a en yakın
+  // (sayfası <= pageNum olan en büyük sayfa) aday seçilir.
   let targetKonu = null;
   let targetAlt = null;
+  let bestPage = -1;
 
+  outer:
   for(const konu of fas.konular){
     // Kart bazlı konu: her soru kendi sayfasında → sorular içinde sayfa ara
     // Kart bazlı tespit: altKonunun sorularında sayfa alanı varsa → her soru ayrı sayfada
     const _ilkAk = konu.altKonular?.[0];
     const _konuKartBazli = _ilkAk && _ilkAk.sorular?.length > 0 && !!_ilkAk.sorular[0]?.sayfa;
     if(_konuKartBazli){
-      // 1) ÖNCE bu sayfada TAM kartı olan altKonu (kesin sahip). Kartlar süreksiz
-      //    sayfalarda olabildiği için (ör. Konu Kartları: 1,2,11,21) gevşek
-      //    "ilk..son" aralığı yanlış altKonuyu seçtiriyordu (sayfa 3 → Konu
-      //    Kartları sanılıyordu; oysa Kazanım Testi 1 tam sayfa 3'te).
       for(const ak of konu.altKonular || []){
-        if((ak.sorular||[]).some(s => s.sayfa === pageNum)){ targetKonu = konu; targetAlt = ak; break; }
-      }
-      // 2) Tam eşleşme yoksa: sayfası <= pageNum olan EN SON kartın altKonusu (en yakın)
-      if(!targetAlt){
-        let bestAk = null, bestPage = -1;
-        for(const ak of konu.altKonular || []){
-          for(const s of ak.sorular || []){
-            const sp = s.sayfa || 0;
-            if(sp <= pageNum && sp > bestPage){ bestPage = sp; bestAk = ak; }
-          }
+        // Tam eşleşme (kesin sahip) → kesin kazanır. Kartlar süreksiz
+        // sayfalarda olabildiği için (ör. Konu Kartları: 1,2,11,21) gevşek
+        // "ilk..son" aralığı yanlış altKonuyu seçtiriyordu.
+        if((ak.sorular||[]).some(s => s.sayfa === pageNum)){
+          targetKonu = konu; targetAlt = ak;
+          break outer;
         }
-        if(bestAk){ targetKonu = konu; targetAlt = bestAk; }
+        // Tam eşleşme yoksa: sayfası <= pageNum olan en yakın kart (kitap geneli)
+        for(const s of ak.sorular || []){
+          const sp = s.sayfa || 0;
+          if(sp <= pageNum && sp > bestPage){ bestPage = sp; targetKonu = konu; targetAlt = ak; }
+        }
       }
-      if(targetAlt) break;
       continue;
     }
 
     // Normal konu: alt konular arasında tam sayfa eşleşmesi ara
+    let normalNearest = null;
     for(const ak of konu.altKonular || []){
       if(ak.sayfa === pageNum){
         targetKonu = konu;
         targetAlt = ak;
-        break;
+        break outer;
       }
+      if((ak.sayfa||0) <= pageNum) normalNearest = ak;
     }
-    if(targetAlt) break;
+    if(normalNearest && normalNearest.sayfa > bestPage){
+      bestPage = normalNearest.sayfa;
+      targetKonu = konu;
+      targetAlt = normalNearest;
+    }
 
-    // Alt konularda tam eşleşme yoksa sayfaBasl-sayfaBitis aralığına bak
-    if(!targetAlt && konu.sayfaBasl && konu.sayfaBitis &&
-       pageNum >= konu.sayfaBasl && pageNum <= konu.sayfaBitis){
+    // Alt konularda tam eşleşme yoksa sayfaBasl-sayfaBitis aralığına bak.
+    // Yalnızca kitap genelinde daha yakın bir gerçek soru adayı yoksa
+    // (ör. "Konu Tekrarı" gibi soru içermeyen geniş aralıklı yer tutucular
+    // gerçek testlerin önüne geçmesin).
+    if(konu.sayfaBasl && konu.sayfaBitis &&
+       pageNum >= konu.sayfaBasl && pageNum <= konu.sayfaBitis &&
+       konu.sayfaBasl > bestPage){
+      bestPage = konu.sayfaBasl;
       targetKonu = konu;
       // Aralık içinde en yakın alt konuyu bul (sayfası <= currentPage olan en son)
       let best = null;
