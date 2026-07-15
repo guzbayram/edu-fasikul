@@ -294,9 +294,17 @@ function updatePageCrumb(pageNum){
   const page = pageNum || appState.currentPage;
   if(!fas?.konular?.length || !page){ el.style.display='none'; return; }
   let owner = null;
-  // Önce sayfayı kapsayan test
+  // Sayfayı kapsayan en DAR (en spesifik) aralıklı konu — bazı kaynaklarda
+  // (ör. "Kazanım Tadında Sorular" gibi numarasız üst başlık) tüm bölümü
+  // kapsayan aşırı geniş bir sayfaBasl-sayfaBitis aralığı var; ilk eşleşmeyi
+  // almak bu geniş aralığın, içindeki asıl (dar aralıklı) testlerin önüne
+  // geçmesine yol açıyordu. En dar aralık kazanır.
+  let ownerWidth = Infinity;
   for(const k of fas.konular){
-    if(k.sayfaBasl && k.sayfaBitis && page>=k.sayfaBasl && page<=k.sayfaBitis){ owner=k; break; }
+    if(k.sayfaBasl && k.sayfaBitis && page>=k.sayfaBasl && page<=k.sayfaBitis){
+      const width = k.sayfaBitis - k.sayfaBasl;
+      if(width < ownerWidth){ owner = k; ownerWidth = width; }
+    }
   }
   // Yoksa sayfası <= mevcut sayfa olan en son başlık (o an bulunulan konu)
   if(!owner){
@@ -501,7 +509,17 @@ function buildKonuNav(fasikul){
     updateRightPanelTitle();
     return;
   }
-  konular.forEach(k=>{
+  // Konu Listesi, sağdaki PDF'teki gerçek sayfa sırasını yansıtsın diye
+  // gösterim sırasında sayfaya göre sıralanır — JSON'daki dizi sırası çoğu
+  // kaynakta "önce tüm Kazanım testleri, sonra tüm Alıştırma testleri..."
+  // şeklinde bölüm bölüm gruplanmış olabiliyor, oysa kitapta bu testler
+  // sayfa sayfa iç içe geçmiş durumda.
+  const konularSirali = [...konular].sort((a,b)=>{
+    const pa = a.sayfaBasl ?? a.sayfa ?? Infinity;
+    const pb = b.sayfaBasl ?? b.sayfa ?? Infinity;
+    return pa - pb;
+  });
+  konularSirali.forEach(k=>{
     // Hidden select option
     if(select){
       const opt = document.createElement('option');
@@ -520,7 +538,9 @@ function buildKonuNav(fasikul){
         item.onclick = () => { appState._suppressNavSync = false; if(k.sayfa) goToPage(k.sayfa); closeKonuModal(); };
       } else {
         item.className = 'ana-konu-item ana-konu-test';
-        item.innerHTML = `<span class="anak-name">📝 ${k.ad}</span><span class="anak-chip">${solvable.reduce((s,ak)=>s+(ak.sorular||[]).length,0)}</span>`;
+        const soruSayisi = solvable.reduce((s,ak)=>s+(ak.sorular||[]).length,0);
+        const sayfaChip = k.sayfa ? `<span class="anak-chip anak-chip-page">s.${k.sayfa}</span>` : '';
+        item.innerHTML = `<span class="anak-name">📝 ${k.ad}</span><span class="anak-chip">${soruSayisi}</span>${sayfaChip}`;
         item.onclick = () => selectAnaKonu(k);
       }
       list.appendChild(item);
