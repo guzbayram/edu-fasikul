@@ -191,6 +191,38 @@ function showKonuPanel(){
   if(title) title.textContent = appState.aktifFasikul?.ad || 'Konu Seç';
 }
 
+function openTopicPage(konu, closeModal=true){
+  if(!konu) return;
+  appState.aktifKonu = konu;
+  appState.aktifAltKonu = null;
+  appState.activeQuestionIdx = 0;
+  if(appState.aktifFasikul){
+    appState.aktifFasikul._lastKonuId = konu.id || null;
+    appState.aktifFasikul._lastAltKonuId = null;
+  }
+  const select = document.getElementById('anaKonuSelect');
+  if(select) select.value = konu.id || konu.ad || '';
+  document.querySelectorAll('.ana-konu-item').forEach(el => el.classList.remove('active'));
+  const itemEl = document.getElementById(`anak-${konu.id || konu.ad}`);
+  if(itemEl) itemEl.classList.add('active');
+  renderAltKonuList(konu);
+  updateRightPanelTitle(konu.ad);
+  const rpSay = document.getElementById('rpSoruSayisi');
+  if(rpSay) rpSay.textContent = 'Konu';
+  const list = document.getElementById('soruList');
+  if(list){
+    list.innerHTML = `<div class="tek-soru-card" id="tekSoruCard"><div style="text-align:center;padding:32px 18px;color:var(--text-muted)"><div style="font-size:30px;margin-bottom:8px">📄</div><div style="font-size:12px;opacity:.75">Konu anlatım sayfası — bu bölümde çözülecek soru yok.</div></div></div>`;
+  }
+  renderSoruStrip([]);
+  updateTestProgress();
+  // Konu anlatımında da sol paneldeki "Konu Listesi" başlığı/butonu görünür
+  // kalsın; sadece eski test/soru kartı temizlenir.
+  document.getElementById('readerRight')?.classList.add('soru-mode');
+  appState._suppressNavSync = false;
+  if(konu.sayfa) goToPage(konu.sayfa);
+  if(closeModal) closeKonuModal();
+}
+
 function selectAnaKonu(konu){
   if(!konu) return;
   appState.aktifKonu = konu;
@@ -202,6 +234,10 @@ function selectAnaKonu(konu){
   if(itemEl) itemEl.classList.add('active');
 
   const visibleAlts = (konu.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler');
+  if(!visibleAlts.length){
+    openTopicPage(konu, true);
+    return;
+  }
 
   // Tek alt konu varsa direkt seç, altPanel'i gösterme
   if(visibleAlts.length === 1){
@@ -581,16 +617,12 @@ function buildKonuNav(fasikul){
       item.id = `anak-${k.id || k.ad}`;
       const solvable = (k.altKonular||[]).filter(ak => ak.ad !== 'Çözümlü Sorular - Çözümler' && (ak.sorular||[]).length);
       if(!solvable.length){
-        // TOC başlığı (soru yok) → tıklayınca ilgili PDF sayfasına git, modalı kapat
+        // TOC başlığı (soru yok) → tıklayınca ilgili PDF sayfasına git; liste
+        // açık kalsın ki kullanıcı konu anlatım başlıkları arasında gezebilsin.
         item.className = 'ana-konu-item ana-konu-topic';
         item.innerHTML = `<span class="anak-name">📄 ${k.ad}</span>${k.sayfa ? `<span class="anak-chip">s.${k.sayfa}</span>` : ''}`;
         item.onclick = () => {
-          appState.aktifKonu = k;
-          appState.aktifAltKonu = null;
-          appState._suppressNavSync = false;
-          updateRightPanelTitle(k.ad);
-          if(k.sayfa) goToPage(k.sayfa);
-          closeKonuModal();
+          openTopicPage(k, false);
         };
       } else {
         item.className = 'ana-konu-item ana-konu-test';
@@ -619,6 +651,8 @@ function onAnaKonuChange(){
   renderAltKonuList(konu);
   if(firstAlt){
     selectAltKonu(firstAlt, `altk-${firstAlt.id}`);
+  } else {
+    openTopicPage(konu, true);
   }
 }
 
