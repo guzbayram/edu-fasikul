@@ -747,12 +747,21 @@ function getFasikulKonuSayisi(fas){
   if(child) return visibleFasikullerFor(child).reduce((a,f)=>a+getFasikulKonuSayisi(f),0);
   return Number(fas?.konuSayisi || 0);
 }
+function getVisibleLeafFasikulSayisi(fas){
+  const child = getFolderChildDers(fas);
+  if(child) return visibleFasikullerFor(child).reduce((a,f)=>a+getVisibleLeafFasikulSayisi(f),0);
+  return 1;
+}
+function dersHasVisibleFasikul(ders){
+  return visibleFasikullerFor(ders).some(f=>getVisibleLeafFasikulSayisi(f)>0);
+}
 let draggedDersId = null;
 function renderDerslerGrid(){
   const grid = document.getElementById('derslerGrid');
   grid.innerHTML = '';
   const stats = getDashboardStats();
-  const visibleDersler=MANIFEST.dersler.filter(d=>!isNestedDers(d) && (visibleFasikullerFor(d).length>0 || !isGuestSession()));
+  const canSeeEmptyDers = appState.user?.role === 'admin';
+  const visibleDersler=MANIFEST.dersler.filter(d=>!isNestedDers(d) && (dersHasVisibleFasikul(d) || canSeeEmptyDers));
   const sayac = document.getElementById('derslerSayac');
   if(sayac) sayac.textContent = `${visibleDersler.length} ders aktif`;
   visibleDersler.forEach(ders => {
@@ -762,7 +771,7 @@ function renderDerslerGrid(){
     card.draggable = true;
     const dersPerf = perfSummary(stats.dersler?.[ders.id]);
     const visibleFasikuller=visibleFasikullerFor(ders);
-    const fasSayisi = visibleFasikuller.length;
+    const fasSayisi = visibleFasikuller.reduce((a,f)=>a+getVisibleLeafFasikulSayisi(f),0);
     const soruSayisi = visibleFasikuller.reduce((a,f)=>a+getFasikulSoruSayisi(f),0);
     const r = 20; const circ = 2*Math.PI*r;
     const offset = circ * (1 - ders.progPct/100);

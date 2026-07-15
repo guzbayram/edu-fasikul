@@ -47,13 +47,27 @@ function toggleTheme(){
   scheduleCloudPersist();
 }
 // GUEST_DEMO_FASIKUL_IDS → window.GUEST_DEMO_FASIKUL_IDS (main.js'de tanımlı)
-function visibleFasikullerFor(ders){
+function visibleFasikullerFor(ders, seenDersIds=new Set()){
+  if(!ders || seenDersIds.has(ders.id)) return [];
+  seenDersIds.add(ders.id);
+  const allItems = ders?.fasikuller || [];
   const base = isGuestSession()
-    ? (ders.fasikuller||[]).filter(f=>window.GUEST_DEMO_FASIKUL_IDS.has(f.id))
-    : (ders.fasikuller||[]);
+    ? allItems.filter(f=>{
+      if(window.GUEST_DEMO_FASIKUL_IDS.has(f.id)) return true;
+      if(f.type !== 'folder' || !f.childDersId) return false;
+      const child = window.MANIFEST?.dersler?.find(d=>d.id===f.childDersId);
+      return visibleFasikullerFor(child, new Set(seenDersIds)).length > 0;
+    })
+    : allItems;
   if(appState.user?.role === 'admin') return base;
   const hidden = new Set(Array.isArray(appState.user?.hiddenFasikulIds) ? appState.user.hiddenFasikulIds : []);
-  return base.filter(f=>!hidden.has(f.id));
+  return base.filter(f=>{
+    if(f.type === 'folder' && f.childDersId){
+      const child = window.MANIFEST?.dersler?.find(d=>d.id===f.childDersId);
+      return visibleFasikullerFor(child, new Set(seenDersIds)).length > 0;
+    }
+    return !hidden.has(f.id);
+  });
 }
 
 function perfSummary(bucket){
