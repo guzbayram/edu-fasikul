@@ -321,23 +321,25 @@ function updatePageCrumb(pageNum){
   // 1) Sayfaya TAM oturan tek sayfalık konu (ör. bir konu anlatım başlığı
   //    tam bu sayfada başlıyorsa) — bu en spesifik eşleşme, her zaman kazanır.
   if(!owner) owner = fas.konular.find(k => k.sayfa === page && !(k.sayfaBasl && k.sayfaBitis && k.sayfaBitis > k.sayfaBasl));
-  // 2) Yoksa sayfayı kapsayan en DAR (en spesifik) aralıklı konu — bazı
-  //    kaynaklarda (ör. "Kazanım Tadında Sorular" gibi numarasız üst başlık)
-  //    tüm bölümü kapsayan aşırı geniş bir sayfaBasl-sayfaBitis aralığı var;
-  //    ilk eşleşmeyi almak bu geniş aralığın, içindeki asıl (dar aralıklı)
-  //    testlerin/konuların önüne geçmesine yol açıyordu. En dar aralık kazanır.
+  // 2) Yoksa: aralığı kapsayan VEYA tekil sayfası <= page olan konular arasında
+  //    en YÜKSEK başlangıç sayfası kazanır (eşitlikte en dar aralık). Böylece
+  //    hem "Kazanım Tadında Sorular" gibi kitabın tamamını kapsayan numarasız
+  //    üst başlıklar asıl testlerin/konuların önüne geçmiyor, hem de aralığı
+  //    olmayan tekil sayfa konu anlatım başlıkları (ör. "Doğal Sayılarla
+  //    Çarpma İşlemi") kendi sayfasından bir sonraki başlığa kadar geçerli
+  //    kalıyor — yalnızca EN SON eşleşen tam sayfaya sahip olduğu için değil.
   if(!owner){
-    let ownerWidth = Infinity;
+    let bestPage = -1;
+    let bestWidth = Infinity;
     for(const k of fas.konular){
-      if(k.sayfaBasl && k.sayfaBitis && page>=k.sayfaBasl && page<=k.sayfaBitis){
-        const width = k.sayfaBitis - k.sayfaBasl;
-        if(width < ownerWidth){ owner = k; ownerWidth = width; }
+      const inRange = k.sayfaBasl && k.sayfaBitis && page>=k.sayfaBasl && page<=k.sayfaBitis;
+      const candidatePage = inRange ? k.sayfaBasl : ((k.sayfa||0) <= page ? k.sayfa : null);
+      if(candidatePage == null) continue;
+      const width = inRange ? (k.sayfaBitis - k.sayfaBasl) : 0;
+      if(candidatePage > bestPage || (candidatePage === bestPage && width < bestWidth)){
+        bestPage = candidatePage; bestWidth = width; owner = k;
       }
     }
-  }
-  // 3) Yoksa sayfası <= mevcut sayfa olan en son başlık (o an bulunulan konu)
-  if(!owner){
-    for(const k of fas.konular){ if((k.sayfa||0)<=page && (!owner || (k.sayfa||0)>=(owner.sayfa||0))) owner=k; }
   }
   if(!owner){ el.style.display='none'; return; }
   const isTest = owner.tur==='test' || (owner.altKonular||[]).some(ak=>(ak.sorular||[]).length);
