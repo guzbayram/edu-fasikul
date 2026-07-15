@@ -286,6 +286,28 @@ function closeReader(){
 // ── Konu Nav
 // ── Sayfa numarasına göre sol paneli (ana konu + alt konu) senkronize et
 
+function altKonuHasExactPage(altKonu, pageNum){
+  if(!altKonu || !pageNum) return false;
+  const page = Number(pageNum);
+  if(Number(altKonu.sayfa) === page) return true;
+  return (altKonu.sorular || []).some(s => Number(s.sayfa || 0) === page);
+}
+
+function getActiveOwnerForExactPage(pageNum){
+  const activeAlt = appState.aktifAltKonu;
+  if(activeAlt && altKonuHasExactPage(activeAlt, pageNum)){
+    return {
+      konu: getParentKonuForAlt(activeAlt) || appState.aktifKonu,
+      alt: activeAlt
+    };
+  }
+  const activeKonu = appState.aktifKonu;
+  if(!activeAlt && activeKonu && Number(activeKonu.sayfa || 0) === Number(pageNum)){
+    return { konu: activeKonu, alt: null };
+  }
+  return { konu: null, alt: null };
+}
+
 // Sağdaki PDF'in bulunduğu konu/test başlığını "S.N / Sayfa" satırının üstünde göster.
 function updatePageCrumb(pageNum){
   const el = document.getElementById('pageCrumb');
@@ -294,19 +316,26 @@ function updatePageCrumb(pageNum){
   const page = pageNum || appState.currentPage;
   if(!fas?.konular?.length || !page){ el.style.display='none'; return; }
   let owner = null;
-  // Sayfayı kapsayan en DAR (en spesifik) aralıklı konu — bazı kaynaklarda
-  // (ör. "Kazanım Tadında Sorular" gibi numarasız üst başlık) tüm bölümü
-  // kapsayan aşırı geniş bir sayfaBasl-sayfaBitis aralığı var; ilk eşleşmeyi
-  // almak bu geniş aralığın, içindeki asıl (dar aralıklı) testlerin önüne
-  // geçmesine yol açıyordu. En dar aralık kazanır.
-  let ownerWidth = Infinity;
-  for(const k of fas.konular){
-    if(k.sayfaBasl && k.sayfaBitis && page>=k.sayfaBasl && page<=k.sayfaBitis){
-      const width = k.sayfaBitis - k.sayfaBasl;
-      if(width < ownerWidth){ owner = k; ownerWidth = width; }
+  const activeOwner = getActiveOwnerForExactPage(page);
+  if(activeOwner.konu) owner = activeOwner.konu;
+  // 1) Sayfaya TAM oturan tek sayfalık konu (ör. bir konu anlatım başlığı
+  //    tam bu sayfada başlıyorsa) — bu en spesifik eşleşme, her zaman kazanır.
+  if(!owner) owner = fas.konular.find(k => k.sayfa === page && !(k.sayfaBasl && k.sayfaBitis && k.sayfaBitis > k.sayfaBasl));
+  // 2) Yoksa sayfayı kapsayan en DAR (en spesifik) aralıklı konu — bazı
+  //    kaynaklarda (ör. "Kazanım Tadında Sorular" gibi numarasız üst başlık)
+  //    tüm bölümü kapsayan aşırı geniş bir sayfaBasl-sayfaBitis aralığı var;
+  //    ilk eşleşmeyi almak bu geniş aralığın, içindeki asıl (dar aralıklı)
+  //    testlerin/konuların önüne geçmesine yol açıyordu. En dar aralık kazanır.
+  if(!owner){
+    let ownerWidth = Infinity;
+    for(const k of fas.konular){
+      if(k.sayfaBasl && k.sayfaBitis && page>=k.sayfaBasl && page<=k.sayfaBitis){
+        const width = k.sayfaBitis - k.sayfaBasl;
+        if(width < ownerWidth){ owner = k; ownerWidth = width; }
+      }
     }
   }
-  // Yoksa sayfası <= mevcut sayfa olan en son başlık (o an bulunulan konu)
+  // 3) Yoksa sayfası <= mevcut sayfa olan en son başlık (o an bulunulan konu)
   if(!owner){
     for(const k of fas.konular){ if((k.sayfa||0)<=page && (!owner || (k.sayfa||0)>=(owner.sayfa||0))) owner=k; }
   }
@@ -333,9 +362,15 @@ function syncNavToPage(pageNum){
   let targetKonu = null;
   let targetAlt = null;
   let bestPage = -1;
+  const activeOwner = getActiveOwnerForExactPage(pageNum);
+  if(activeOwner.konu && activeOwner.alt){
+    targetKonu = activeOwner.konu;
+    targetAlt = activeOwner.alt;
+    bestPage = Number(pageNum);
+  }
 
   outer:
-  for(const konu of fas.konular){
+  for(const konu of (targetAlt ? [] : fas.konular)){
     // Kart bazlı konu: her soru kendi sayfasında → sorular içinde sayfa ara
     // Kart bazlı tespit: altKonunun sorularında sayfa alanı varsa → her soru ayrı sayfada
     const _ilkAk = konu.altKonular?.[0];
@@ -374,31 +409,43 @@ function syncNavToPage(pageNum){
       targetAlt = normalNearest;
     }
 
-    // Alt konularda tam eşleşme yoksa sayfaBasl-sayfaBitis aralığına bak.
-    // Yalnızca kitap genelinde daha yakın bir gerçek soru adayı yoksa
-    // (ör. "Konu Tekrarı" gibi soru içermeyen geniş aralıklı yer tutucular
-    // gerçek testlerin önüne geçmesin).
-    if(konu.sayfaBasl && konu.sayfaBitis &&
-       pageNum >= konu.sayfaBasl && pageNum <= konu.sayfaBitis &&
-       konu.sayfaBasl > bestPage){
-      bestPage = konu.sayfaBasl;
-      targetKonu = konu;
-      // Aralık içinde en yakın alt konuyu bul (sayfası <= currentPage olan en son)
-      let best = null;
-      for(const ak of konu.altKonular || []){
-        if((ak.sayfa || 0) <= pageNum) best = ak;
+    // Bu konunun gerçek sorusu yoksa (salt konu anlatım başlığı — ör. "Konu
+    // Tekrarı" gibi geniş aralıklı bir yer tutucu OLABİLİR ya da "Doğal
+    // Sayılarla Çarpma İşlemi" gibi TEK sayfaya sabit bir başlık) sayfaBasl-
+    // sayfaBitis aralığına ya da tekil sayfa numarasına bakılır. Bu adaylar
+    // gerçek testlerle AYNI bestPage yarışına girer — yalnızca kitap
+    // genelinde daha yakın bir gerçek soru adayı yoksa kazanır, aksi halde
+    // (ör. "Kazanım Tadında Sorular" gibi kitabın tamamını kapsayan
+    // numarasız üst başlıklar) gerçek testlerin önüne geçmez.
+    const konuHasRealAlt = (konu.altKonular||[]).some(ak=>(ak.sorular||[]).length);
+    if(!konuHasRealAlt){
+      const inRange = konu.sayfaBasl && konu.sayfaBitis && pageNum>=konu.sayfaBasl && pageNum<=konu.sayfaBitis;
+      const candidatePage = inRange ? konu.sayfaBasl : ((konu.sayfa||0) <= pageNum ? konu.sayfa : null);
+      if(candidatePage != null && candidatePage > bestPage){
+        bestPage = candidatePage;
+        targetKonu = konu;
+        if(inRange){
+          // Aralık içinde en yakın alt konuyu bul (sayfası <= currentPage olan en son)
+          let best = null;
+          for(const ak of konu.altKonular || []){
+            if((ak.sayfa || 0) <= pageNum) best = ak;
+          }
+          targetAlt = best || konu.altKonular?.[0] || null;
+        } else {
+          targetAlt = null;
+        }
       }
-      targetAlt = best || konu.altKonular?.[0] || null;
     }
   }
 
   // Test/alt konu bulunamadıysa → bu bir KONU (anlatım) sayfası olabilir.
   // Sol paneli o konuya çevir ki eski testin kartında takılı kalmasın.
   if(!targetAlt){
-    let owner = null;
-    for(const k of fas.konular){
-      if(k.sayfaBasl && k.sayfaBitis && pageNum>=k.sayfaBasl && pageNum<=k.sayfaBitis){ owner=k; break; }
-    }
+    // Yukarıdaki döngü zaten targetKonu'yu (konu anlatım başlığı kazandıysa)
+    // doğru şekilde belirlemiş olabilir — o zaman tekrar aramaya gerek yok.
+    // Yalnızca hiçbir aday bulunamadıysa (ör. kitabın en başı, içerik
+    // başlamadan önceki sayfalar) bağımsız bir son çare araması yapılır.
+    let owner = targetKonu;
     if(!owner){
       for(const k of fas.konular){ if((k.sayfa||0)<=pageNum && (!owner || (k.sayfa||0)>=(owner.sayfa||0))) owner=k; }
     }
@@ -535,7 +582,14 @@ function buildKonuNav(fasikul){
         // TOC başlığı (soru yok) → tıklayınca ilgili PDF sayfasına git, modalı kapat
         item.className = 'ana-konu-item ana-konu-topic';
         item.innerHTML = `<span class="anak-name">📄 ${k.ad}</span>${k.sayfa ? `<span class="anak-chip">s.${k.sayfa}</span>` : ''}`;
-        item.onclick = () => { appState._suppressNavSync = false; if(k.sayfa) goToPage(k.sayfa); closeKonuModal(); };
+        item.onclick = () => {
+          appState.aktifKonu = k;
+          appState.aktifAltKonu = null;
+          appState._suppressNavSync = false;
+          updateRightPanelTitle(k.ad);
+          if(k.sayfa) goToPage(k.sayfa);
+          closeKonuModal();
+        };
       } else {
         item.className = 'ana-konu-item ana-konu-test';
         const soruSayisi = solvable.reduce((s,ak)=>s+(ak.sorular||[]).length,0);
