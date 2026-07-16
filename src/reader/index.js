@@ -52,7 +52,11 @@ async function openReader(dersId, fasikulId){
 
   appState.aktifDers = ders;
   appState.aktifFasikul = fasikul;
-  normalizeFasikulKonular(fasikul.konular || []);
+  normalizeFasikulKonular(fasikul.konular || [], {
+    fasikulId: fasikul.id,
+    sourceId: bundledSource?.id,
+    json: fasikul.jsonFile || bundledSource?.json
+  });
   appState.currentPage = 1;
   appState.undoStack = [];
   appState.redoStack = [];

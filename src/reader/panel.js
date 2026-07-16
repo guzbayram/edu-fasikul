@@ -148,17 +148,29 @@ function renderSoruStrip(sorular){
   if(!strip) return;
   strip.innerHTML = '';
   sorular.forEach((s, idx) => {
+    const displayNo = getSoruDisplayNo(s);
     const state = appState.sorularState[s._uid||s.no];
     const dot = document.createElement('div');
     dot.className = 'strip-dot' +
       (idx === appState.activeQuestionIdx ? ' active' : '') +
       (state?.correct ? ' correct' : state?.answered && !state.correct ? ' wrong' : '') +
       (state?.skipped ? ' skipped' : '');
-    dot.textContent = s.no;
-    dot.title = `S.${s.no}`;
+    dot.textContent = displayNo;
+    dot.title = `S.${displayNo}`;
     dot.onclick = () => goToSoru(idx);
     strip.appendChild(dot);
   });
+}
+
+function getSoruDisplayNo(s){
+  return s?.displayNo ?? s?.pdfNo ?? s?.globalNo ?? s?.no ?? '';
+}
+
+function getSoruDisplayPage(s, idx){
+  const currentPage = Number(appState.currentPage || 0);
+  const soruPage = Number(s?.sayfa || 0);
+  if(idx === appState.activeQuestionIdx && currentPage) return currentPage;
+  return soruPage || currentPage || '';
 }
 
 function renderTekSoruKartEl(card, sorular, idx){
@@ -166,6 +178,8 @@ function renderTekSoruKartEl(card, sorular, idx){
   const s = sorular[idx];
   if(!s){ card.innerHTML=''; return; }
   const isKonuKart = isKonuKartSoru(s) || isKonuKartAltKonu(appState.aktifAltKonu);
+  const displayNo = getSoruDisplayNo(s);
+  const displayPage = getSoruDisplayPage(s, idx);
 
   const state = appState.sorularState[s._uid||s.no];
   const answered = !!state?.answered;
@@ -198,7 +212,7 @@ function renderTekSoruKartEl(card, sorular, idx){
 
   const answerHtml = isOpenEnded
     ? `<div class="tsk-open-answer">
-        <span class="tsk-open-no">S.${escapeHtml(s.no)}</span>
+        <span class="tsk-open-no">S.${escapeHtml(displayNo)}</span>
         <input id="${openInputId}" class="tsk-open-input" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"
           placeholder="Cevabınızı yazın" value="${answered ? escapeHtml(state?.selected ?? '') : ''}"
           oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
@@ -211,10 +225,10 @@ function renderTekSoruKartEl(card, sorular, idx){
   card.innerHTML = `
     <div class="tsk-header">
       <div class="tsk-header-left">
-        <span class="tsk-no">${isKonuKart ? `K.${s.no}` : `S.${s.no}`}</span>
+        <span class="tsk-no">${isKonuKart ? `K.${displayNo}` : `S.${displayNo}`}</span>
       </div>
       <div class="tsk-header-center">
-        ${isVideoFasikul() ? `<span class="tsk-page" style="cursor:default">${s.grup==='assessment'?'Değerlendirme':'Alıştırma'}</span>` : `<span class="tsk-page" onclick="goToPage(${s.sayfa||appState.currentPage})">Sayfa ${s.sayfa||'?'}</span>`}
+        ${isVideoFasikul() ? `<span class="tsk-page" style="cursor:default">${s.grup==='assessment'?'Değerlendirme':'Alıştırma'}</span>` : `<span class="tsk-page" onclick="goToPage(${displayPage || s.sayfa || appState.currentPage})">Sayfa ${displayPage || '?'}</span>`}
       </div>
       <div class="tsk-header-right">
         <span class="tsk-copy" onclick="copySoruKart()" title="Soruyu kopyala — Gemini/GPT/Claude'a yapıştırıp çözüm sor">📋</span>

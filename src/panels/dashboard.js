@@ -749,7 +749,7 @@ async function saveFasikul(){
   } else {
     const existing = source ? ders.fasikuller.find(f=>f.id===source.id) : null;
     if(existing){
-      const konular = sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular) : (existing.konular||[]);
+      const konular = sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular, { fasikulId: source.id, sourceId: source.id, json: source.json }) : (existing.konular||[]);
       existing.ad=ad;
       existing.thumb=thumb;
       existing.thumbBg=thumbBg;
@@ -769,7 +769,7 @@ async function saveFasikul(){
       return;
     }
     const newId = source?.id || ad.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '-' + Date.now();
-    const konular = sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular) : [];
+    const konular = sourceRaw?.konular ? normalizeFasikulKonular(sourceRaw.konular, { fasikulId: source?.id, sourceId: source?.id, json: source?.json }) : [];
     ders.fasikuller.push({
       id:newId,ad,thumb,thumbBg,sinif,
       konuSayisi:konular.length,
@@ -952,7 +952,7 @@ async function kutuphaneDersEkle(sourceId, dersId){
   const cfg = window.BUNDLED_DERS_CONFIG[dersId] || {};
   const thumbBgMap = {'var(--mat)':'linear-gradient(135deg,#312e81,#1e1b4b)','var(--fiz)':'linear-gradient(135deg,#164e63,#0c4a6e)','var(--kim)':'linear-gradient(135deg,#064e3b,#052e16)','var(--bio)':'linear-gradient(135deg,#431407,#450a0a)','var(--tar)':'linear-gradient(135deg,#500724,#2d1657)','var(--edb)':'linear-gradient(135deg,#2e1065,#1a0533)'};
   const thumbBg = thumbBgMap[ders.renk] || 'linear-gradient(135deg,#312e81,#1e1b4b)';
-  const konular = raw?.konular ? normalizeFasikulKonular([...raw.konular]) : [];
+  const konular = raw?.konular ? normalizeFasikulKonular([...raw.konular], { fasikulId: source.id, sourceId: source.id, json: source.json }) : [];
   ders.fasikuller.push({
     id: source.id,
     ad: raw?.ad || source.id,

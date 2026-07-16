@@ -2142,8 +2142,106 @@ async function addProfileGithubJsonFasikul(){
   }
 }
 
-function normalizeFasikulKonular(konular){
+const PAGE_START_NO_OVERRIDES = {
+  'aktif-2026-tyt-mat-mrf-prime-sb': {
+    __pages: {
+      6: 1, 7: 8, 8: 1, 9: 9, 10: 1, 11: 6, 12: 1, 13: 6, 14: 1, 15: 6, 16: 1, 17: 5,
+      18: 1, 19: 5, 20: 1, 21: 1, 22: 4, 23: 7, 24: 1, 25: 9, 26: 1, 27: 9, 28: 1, 29: 7,
+      30: 1, 31: 6, 33: 5, 34: 1, 35: 8, 36: 1, 37: 5, 38: 1, 39: 4, 40: 1, 41: 6, 42: 1,
+      43: 3, 44: 5, 45: 9, 46: 1, 47: 5, 48: 1, 49: 5, 50: 1, 51: 5, 52: 1, 54: 1, 55: 9,
+      56: 1, 57: 7, 58: 1, 59: 8, 60: 1, 61: 6, 62: 1, 63: 7, 64: 1, 65: 5, 66: 1, 67: 9,
+      68: 1, 69: 8, 70: 1, 71: 11, 72: 1, 73: 4, 74: 1, 75: 6, 76: 1, 77: 5, 78: 1, 79: 5,
+      80: 1, 81: 5, 82: 1, 83: 9, 84: 1, 85: 6, 86: 1, 87: 7, 88: 1, 89: 5, 90: 1, 91: 4,
+      92: 1, 93: 6, 94: 1, 95: 6, 96: 1, 98: 8, 100: 1, 101: 9, 102: 1, 103: 7, 104: 1, 105: 6,
+      106: 1, 107: 9, 108: 1, 109: 6, 110: 1, 111: 7, 112: 1, 113: 5, 114: 1, 115: 4, 116: 1, 117: 5,
+      118: 1, 119: 7, 120: 1, 121: 6, 122: 1, 123: 6, 124: 1, 125: 5, 126: 1, 127: 5, 128: 9, 130: 1,
+      131: 9, 132: 1, 133: 7, 134: 1, 135: 6, 136: 1, 137: 7, 138: 1, 139: 6, 140: 1, 141: 5, 142: 1,
+      143: 9, 144: 1, 146: 1, 147: 6, 148: 1, 149: 5, 150: 1, 151: 7, 152: 1, 153: 5, 154: 1, 155: 4,
+      156: 8, 158: 1, 159: 7, 160: 1, 161: 6, 162: 1, 163: 9, 164: 1, 165: 6, 166: 1, 167: 10, 168: 1,
+      169: 10, 170: 1, 171: 6, 172: 1, 173: 10, 174: 1, 175: 6, 176: 1, 177: 4, 178: 1, 179: 4, 180: 1,
+      181: 5, 182: 1, 183: 7, 184: 1, 185: 5, 186: 1, 187: 5, 188: 1, 189: 4, 190: 1, 191: 1, 193: 5,
+      194: 8, 196: 1, 197: 7, 198: 1, 199: 6, 200: 1, 201: 6, 202: 1, 203: 6, 204: 1, 205: 7, 206: 1,
+      207: 8, 208: 1, 209: 8, 210: 1, 211: 8, 212: 1, 213: 7, 214: 1, 215: 5, 216: 1, 217: 6, 218: 1,
+      219: 1, 220: 1, 221: 5, 222: 1, 223: 5, 224: 1, 225: 7, 226: 1, 227: 8, 228: 1, 229: 5, 230: 1,
+      231: 7, 232: 1, 233: 1, 234: 4, 235: 7, 236: 9, 238: 1, 239: 5, 240: 1, 241: 5, 242: 1, 243: 5,
+      244: 1, 245: 4, 246: 1, 247: 3, 248: 1, 249: 6, 250: 1, 251: 6, 252: 1, 253: 6, 254: 1, 255: 5,
+      256: 1, 257: 5, 258: 1, 259: 4, 260: 1, 261: 4, 262: 1, 263: 5, 264: 1, 265: 7, 266: 1, 267: 5,
+      268: 1, 269: 4, 270: 10, 272: 1, 273: 6, 274: 1, 275: 7, 276: 1, 277: 6, 278: 1, 280: 1, 281: 5,
+      282: 1, 283: 5, 284: 1, 285: 5, 286: 1, 287: 5, 288: 1, 289: 5, 290: 8, 292: 1, 293: 9, 294: 1,
+      295: 9, 296: 1, 297: 9, 298: 1, 299: 9, 300: 1, 301: 5, 302: 1, 303: 6, 304: 1, 305: 9, 306: 1,
+      307: 7, 309: 7, 310: 1, 311: 8, 312: 1, 313: 5, 314: 1, 315: 5, 316: 1, 317: 5, 318: 1, 319: 4,
+      320: 8
+    }
+  }
+};
+
+function getPageStartOverrides(context = {}){
+  const keys = [
+    context.fasikulId,
+    context.sourceId,
+    context.id
+  ].filter(Boolean);
+  for(const key of keys){
+    if(PAGE_START_NO_OVERRIDES[key]) return PAGE_START_NO_OVERRIDES[key];
+  }
+  const jsonName = String(context.json || context.jsonFile || '').normalize('NFC').toLowerCase();
+  if(jsonName.includes('8-6-aktif - 2026 - tyt - mat-mrf-prime sb.json')){
+    return PAGE_START_NO_OVERRIDES['aktif-2026-tyt-mat-mrf-prime-sb'];
+  }
+  return null;
+}
+
+function normalizeFasikulKonular(konular, context = {}){
   if(!Array.isArray(konular)) return [];
+  const pageStartOverrides = getPageStartOverrides(context);
+  function pageBasedGroupName(ak){
+    return String(ak?.ad || '').replace(/\s*-\s*Sayfa\s+\d+\s*$/i, '').trim();
+  }
+  function applyPageStartOverrides(k){
+    if(!pageStartOverrides) return;
+    const sourcePageOverrides = pageStartOverrides.__pages || {};
+    const topicOverrides = pageStartOverrides[k.ad] || {};
+    (k.altKonular || []).forEach(ak => {
+      const sorular = ak.sorular || [];
+      if(!sorular.length) return;
+      const page = Number(ak.sayfa || sorular.find(s => s.sayfa)?.sayfa || 0);
+      const startNo = Number(topicOverrides[page] || sourcePageOverrides[page] || 0);
+      if(!startNo) return;
+      let offset = 0;
+      sorular.forEach(s => {
+        if(s.tip === 'konu' || s.cevap == null) return;
+        s.displayNo = startNo + offset;
+        offset += 1;
+      });
+    });
+  }
+  function assignPageBasedDisplayNumbers(k){
+    const groups = new Map();
+    (k.altKonular || []).forEach((ak, altIdx) => {
+      const name = pageBasedGroupName(ak);
+      const hasPageSuffix = /\s*-\s*Sayfa\s+\d+\s*$/i.test(String(ak?.ad || ''));
+      const sorular = ak.sorular || [];
+      const page = Number(ak.sayfa || sorular.find(s => s.sayfa)?.sayfa || 0);
+      if(!hasPageSuffix || !name || !page || !sorular.length) return;
+      const realQuestions = sorular.filter(s => s.tip !== 'konu' && s.cevap != null);
+      if(!realQuestions.length) return;
+      if(!groups.has(name)) groups.set(name, []);
+      groups.get(name).push({ ak, altIdx, page });
+    });
+
+    groups.forEach(items => {
+      if(items.length < 2) return;
+      items.sort((a, b) => a.page - b.page || a.altIdx - b.altIdx);
+      let nextNo = 1;
+      items.forEach(({ ak }) => {
+        (ak.sorular || []).forEach(s => {
+          if(s.tip === 'konu' || s.cevap == null) return;
+          s.displayNo = nextNo++;
+        });
+      });
+    });
+  }
+
   konular.forEach((k, konuIdx) => {
     k.id = k.id || `konu-${konuIdx + 1}-${slugifyId(k.ad, 'konu')}`;
     if(!k.altKonular && k.sorular && k.sorular.length > 0) {
@@ -2178,6 +2276,8 @@ function normalizeFasikulKonular(konular){
         s.zorluk = s.zorluk || 'orta';
       });
     });
+    assignPageBasedDisplayNumbers(k);
+    applyPageStartOverrides(k);
     const pages = (k.altKonular || []).flatMap(ak => (ak.sorular || []).map(s=>s.sayfa).filter(Boolean));
     if(pages.length){
       k.sayfaBasl = k.sayfaBasl || Math.min(...pages);
@@ -2235,7 +2335,7 @@ function handleJSONUpload(input, dersId, fasikulId){
       // FORMAT A (Kart): konular[i].altKonular var, sorular[j].sayfa YOK → her altKonu = çoklu soru, aynı sayfada
       // FORMAT B (Tarama): konular[i].altKonular YOK, konular[i].sorular var, her soruda .sayfa → her soru kendi sayfasında
       // FORMAT B → normalize ederek FORMAT A'ya dönüştür: her konu = bir altKonu, her soru = kendi sayfası
-      konular = normalizeFasikulKonular(konular);
+      konular = normalizeFasikulKonular(konular, { fasikulId, json: file.name });
 
       // konuSayisi ve soruSayisi otomatik hesapla
       fas.konular = konular;
@@ -2378,7 +2478,7 @@ function bundledSinif(value){
 // doldurma) sessizce iptal ediyordu.
 window.bundledSinif = bundledSinif;
 function hydrateBundledFasikul(fas,raw,source){
-  const konular=normalizeFasikulKonular(raw.konular||[]);
+  const konular=normalizeFasikulKonular(raw.konular||[], { fasikulId: source.id, sourceId: source.id, json: source.json });
   fas.fasikulTip = 'tip1';
   fas.ad = fas.ad || raw.ad || source.id;
   fas.thumb = fas.thumb || raw.thumb || '📄';
@@ -2455,7 +2555,7 @@ async function loadAllKonular(){
         if(saved){
           const loadedKonular = JSON.parse(saved);
           // Normalize FORMAT B (kart bazlı: altKonular yok, sorularda sayfa var)
-          normalizeFasikulKonular(loadedKonular);
+          normalizeFasikulKonular(loadedKonular, { fasikulId: fas.id, json: fas.jsonFile });
           fas.konular = loadedKonular;
           fas.konuSayisi = fas.konular.length;
           fas.soruSayisi = fas.konular.reduce((sum,k)=>
