@@ -60,28 +60,44 @@ function normalizeOpenAnswer(value){
     .replace(/^\+/, '');
 }
 
+const OPEN_ANSWER_AUTO_SUBMIT_MS = 5000;
+
+function cleanOpenAnswerText(value){
+  return String(value ?? '').replace(/\u2212/g, '-').trim();
+}
+
+function isOpenAnswerIncomplete(value){
+  const text = cleanOpenAnswerText(value);
+  if(!text) return true;
+  if(/^[+-]$/.test(text)) return true;
+  if(/[.,/]$/.test(text)) return true;
+  return false;
+}
+
 function submitOpenAnswer(soruNo, correct, idx, inputId){
   const input = document.getElementById(inputId);
   if(!input || appState.sorularState[soruNo]?.answered) return;
   clearTimeout(_openAnswerAutoTimer);
-  const typed = input.value.trim();
-  if(!typed){ input.focus(); return; }
+  const typed = cleanOpenAnswerText(input.value);
+  if(isOpenAnswerIncomplete(typed)){ input.focus(); return; }
   const normalizedCorrect = normalizeOpenAnswer(correct);
   const normalizedTyped = normalizeOpenAnswer(typed);
   selectAnswer(soruNo, normalizedTyped, normalizedCorrect, idx);
 }
 
 // Açık uçlu soru: "Kontrol Et" butonuna basmaya gerek yok — kullanıcı yazmayı
-// bıraktıktan kısa bir süre sonra (debounce) cevap otomatik gönderilir. Enter'a
+// bıraktıktan 5 saniye sonra (debounce) cevap otomatik gönderilir. Enter'a
 // basmak da (mevcut davranış) her zaman ANINDA gönderir.
 let _openAnswerAutoTimer = null;
 function scheduleOpenAnswerAutoSubmit(soruNo, correct, idx, inputId){
   clearTimeout(_openAnswerAutoTimer);
   const input = document.getElementById(inputId);
-  if(!input || !input.value.trim()) return;
+  if(!input || isOpenAnswerIncomplete(input.value)) return;
   _openAnswerAutoTimer = setTimeout(()=>{
+    const currentInput = document.getElementById(inputId);
+    if(!currentInput || isOpenAnswerIncomplete(currentInput.value)) return;
     submitOpenAnswer(soruNo, correct, idx, inputId);
-  }, 900);
+  }, OPEN_ANSWER_AUTO_SUBMIT_MS);
 }
 
 // Dokunmatik rakam/parantez tuş takımı: sistem klavyesini açmadan cevap girişi.
@@ -183,7 +199,7 @@ function renderTekSoruKartEl(card, sorular, idx){
   const answerHtml = isOpenEnded
     ? `<div class="tsk-open-answer">
         <span class="tsk-open-no">S.${escapeHtml(s.no)}</span>
-        <input id="${openInputId}" class="tsk-open-input" inputmode="decimal"
+        <input id="${openInputId}" class="tsk-open-input" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"
           placeholder="Cevabınızı yazın" value="${answered ? escapeHtml(state?.selected ?? '') : ''}"
           oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
           onkeydown="if(event.key==='Enter')submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
@@ -2209,28 +2225,159 @@ window.toggleCozumKart = toggleCozumKart;
 window.findQuestionFlowIndexByPage = findQuestionFlowIndexByPage;
 window.goToFlowItem = goToFlowItem;
 window.changeQuestionPage = changeQuestionPage;
-// Soruyu kopyala: mevcut PDF sayfasını (notlarla birlikte) görsel olarak panoya koy.
-// Kullanıcı Gemini/GPT/Claude gibi LLM'lere yapıştırıp çözüm isteyebilir.
+function getCurrentPdfPageCanvas(pageWrap){
+  return pageWrap && [...pageWrap.querySelectorAll('canvas')].find(c=>
+    !c.classList.contains('lower-canvas') && !c.classList.contains('upper-canvas') && !c.classList.contains('fabric-draw-canvas'));
+}
+
+function removeSoruCopySelection(){
+  document.querySelectorAll('.soru-copy-overlay').forEach(el=>el.remove());
+  document.removeEventListener('keydown', handleSoruCopySelectionKeydown);
+}
+
+function handleSoruCopySelectionKeydown(e){
+  if(e.key === 'Escape'){
+    removeSoruCopySelection();
+    showToast('Soru seçimi iptal edildi','info');
+  }
+}
+
+function clampSelectionPoint(e, rect){
+  return {
+    x: Math.max(0, Math.min(rect.width, e.clientX - rect.left)),
+    y: Math.max(0, Math.min(rect.height, e.clientY - rect.top))
+  };
+}
+
+function buildSelectionRect(a, b){
+  const left = Math.min(a.x, b.x);
+  const top = Math.min(a.y, b.y);
+  return {
+    left,
+    top,
+    width: Math.abs(b.x - a.x),
+    height: Math.abs(b.y - a.y)
+  };
+}
+
+async function copySelectedPdfArea(pageWrap, pdfCanvas, selection){
+  const pageRect = pageWrap.getBoundingClientRect();
+  const scaleX = pdfCanvas.width / pageRect.width;
+  const scaleY = pdfCanvas.height / pageRect.height;
+  const sx = Math.round(selection.left * scaleX);
+  const sy = Math.round(selection.top * scaleY);
+  const sw = Math.max(1, Math.round(selection.width * scaleX));
+  const sh = Math.max(1, Math.round(selection.height * scaleY));
+
+  const off = document.createElement('canvas');
+  off.width = sw;
+  off.height = sh;
+  const ctx = off.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, off.width, off.height);
+  ctx.drawImage(pdfCanvas, sx, sy, sw, sh, 0, 0, off.width, off.height);
+
+  const drawCanvas = pageWrap.querySelector('canvas.lower-canvas') || pageWrap.querySelector('canvas.fabric-draw-canvas');
+  if(drawCanvas){
+    try{
+      const drawScaleX = drawCanvas.width / pageRect.width;
+      const drawScaleY = drawCanvas.height / pageRect.height;
+      ctx.drawImage(
+        drawCanvas,
+        selection.left * drawScaleX,
+        selection.top * drawScaleY,
+        Math.max(1, selection.width * drawScaleX),
+        Math.max(1, selection.height * drawScaleY),
+        0,
+        0,
+        off.width,
+        off.height
+      );
+    }catch(_e){}
+  }
+
+  const blobPromise = new Promise((resolve, reject)=>{
+    off.toBlob(b=> b ? resolve(b) : reject(new Error('no-blob')), 'image/png');
+  });
+  await navigator.clipboard.write([new window.ClipboardItem({'image/png': blobPromise})]);
+}
+
+function startSoruCopySelection(pageWrap, pdfCanvas){
+  removeSoruCopySelection();
+  const overlay = document.createElement('div');
+  overlay.className = 'soru-copy-overlay';
+  overlay.innerHTML = `
+    <div class="soru-copy-hint">Soruyu alan içine alıp bırakın · Esc iptal</div>
+    <div class="soru-copy-box"></div>
+  `;
+  pageWrap.appendChild(overlay);
+  document.addEventListener('keydown', handleSoruCopySelectionKeydown);
+
+  const box = overlay.querySelector('.soru-copy-box');
+  let start = null;
+  let activePointerId = null;
+
+  overlay.addEventListener('pointerdown', e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    activePointerId = e.pointerId;
+    overlay.setPointerCapture?.(e.pointerId);
+    start = clampSelectionPoint(e, pageWrap.getBoundingClientRect());
+    box.classList.add('active');
+    box.style.left = `${start.x}px`;
+    box.style.top = `${start.y}px`;
+    box.style.width = '0px';
+    box.style.height = '0px';
+  });
+
+  overlay.addEventListener('pointermove', e=>{
+    if(!start || e.pointerId !== activePointerId) return;
+    e.preventDefault();
+    const current = clampSelectionPoint(e, pageWrap.getBoundingClientRect());
+    const r = buildSelectionRect(start, current);
+    box.style.left = `${r.left}px`;
+    box.style.top = `${r.top}px`;
+    box.style.width = `${r.width}px`;
+    box.style.height = `${r.height}px`;
+  });
+
+  overlay.addEventListener('pointerup', async e=>{
+    if(!start || e.pointerId !== activePointerId) return;
+    e.preventDefault();
+    const current = clampSelectionPoint(e, pageWrap.getBoundingClientRect());
+    const r = buildSelectionRect(start, current);
+    start = null;
+    activePointerId = null;
+    if(r.width < 18 || r.height < 18){
+      showToast('Kopyalamak için daha büyük bir alan seçin','info');
+      return;
+    }
+    removeSoruCopySelection();
+    try{
+      await copySelectedPdfArea(pageWrap, pdfCanvas, r);
+      showToast("Seçilen soru görseli kopyalandı — Gemini/GPT/Claude'a yapıştırabilirsiniz",'success');
+    }catch(err){
+      console.warn('Seçilen soru görseli kopyalanamadı:', err);
+      copySoruKartText();
+    }
+  });
+
+  overlay.addEventListener('pointercancel', ()=>{
+    start = null;
+    activePointerId = null;
+  });
+
+  showToast('Sürükleyerek kopyalanacak soru alanını seçin','info');
+}
+
+// Soruyu kopyala: tek kart olmayan PDF sayfalarında kullanıcı alan seçip yalnız
+// istediği soruyu Gemini/GPT/Claude gibi araçlara görsel olarak yapıştırabilir.
 async function copySoruKart(){
   try{
     const pw = document.getElementById('page-wrap-' + appState.currentPage);
-    const pdfC = pw && [...pw.querySelectorAll('canvas')].find(c=>
-      !c.classList.contains('lower-canvas') && !c.classList.contains('upper-canvas') && !c.classList.contains('fabric-draw-canvas'));
+    const pdfC = getCurrentPdfPageCanvas(pw);
     if(pdfC && pdfC.width && navigator.clipboard && window.ClipboardItem){
-      // Safari/iPadOS: blob'u önce 'await' etmek kullanıcı-jesti iznini düşürür.
-      // Bu yüzden blob üreten Promise'i doğrudan ClipboardItem'a veriyoruz;
-      // tek await clipboard.write üzerinde kalsın → izin korunur.
-      const blobPromise = new Promise((resolve, reject)=>{
-        const off=document.createElement('canvas'); off.width=pdfC.width; off.height=pdfC.height;
-        const ctx=off.getContext('2d');
-        ctx.fillStyle='#fff'; ctx.fillRect(0,0,off.width,off.height);
-        ctx.drawImage(pdfC,0,0);
-        const lc = pw.querySelector('canvas.lower-canvas') || pw.querySelector('canvas.fabric-draw-canvas');
-        if(lc){ try{ ctx.drawImage(lc,0,0,off.width,off.height); }catch(_e){} }
-        off.toBlob(b=> b ? resolve(b) : reject(new Error('no-blob')), 'image/png');
-      });
-      await navigator.clipboard.write([new window.ClipboardItem({'image/png':blobPromise})]);
-      showToast("Soru görseli kopyalandı — Gemini/GPT/Claude'a yapıştırıp çözüm iste 🐾",'success');
+      startSoruCopySelection(pw, pdfC);
       return;
     }
     throw new Error('no-image');

@@ -819,6 +819,22 @@ body.reader-locked .main-content{visibility:hidden!important}
 .tsk-copy{cursor:pointer;font-size:15px;opacity:.65;transition:opacity .15s,transform .15s;margin-left:2px}
 .tsk-copy:hover{opacity:1;transform:scale(1.14)}
 .tsk-copy:active{transform:scale(.92)}
+.soru-copy-overlay{
+  position:absolute;inset:0;z-index:80;cursor:crosshair;touch-action:none;
+  background:rgba(15,23,42,.08);user-select:none;
+}
+.soru-copy-hint{
+  position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:2;
+  max-width:calc(100% - 24px);padding:7px 11px;border-radius:10px;
+  background:rgba(15,23,42,.86);color:#fff;font-size:12px;font-weight:700;
+  box-shadow:0 8px 24px rgba(15,23,42,.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.soru-copy-box{
+  position:absolute;display:none;border:2px solid #f59e0b;background:rgba(245,158,11,.14);
+  box-shadow:0 0 0 9999px rgba(15,23,42,.24),0 0 0 1px rgba(255,255,255,.85) inset;
+  border-radius:6px;pointer-events:none;
+}
+.soru-copy-box.active{display:block}
 
 /* Simge ayarları (profil) */
 .icon-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;flex-wrap:wrap}
