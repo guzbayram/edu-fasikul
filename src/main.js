@@ -260,7 +260,8 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'aktif-tyt-matematik-2',dersId:'mat',json:'8-2-Aktif - Tyt Matematik Fasikül 2.json',pdf:'8-2-Aktif - Tyt Matematik Fasikül 2.pdf'},
   {id:'aktif-tyt-matematik-3',dersId:'mat',json:'8-3-Aktif - Tyt Matematik Fasikül 3.json',pdf:'8-3-Aktif - Tyt Matematik Fasikül 3.pdf'},
   {id:'aktif-tyt-matematik-4',dersId:'mat',json:'8-4-Aktif - Tyt Matematik Fasikül 4.json',pdf:'8-4-Aktif - Tyt Matematik Fasikül 4.pdf'},
-  {id:'aktif-tyt-matematik-5',dersId:'mat',json:'8-5-Aktif - Tyt Matematik Fasikül 5.json',pdf:'8-5-Aktif - Tyt Matematik Fasikül 5.pdf'}
+  {id:'aktif-tyt-matematik-5',dersId:'mat',json:'8-5-Aktif - Tyt Matematik Fasikül 5.json',pdf:'8-5-Aktif - Tyt Matematik Fasikül 5.pdf'},
+  {id:'aktif-2026-tyt-mat-mrf-prime-sb',dersId:'mat',json:'8-6-Aktif - 2026 - Tyt - Mat-Mrf-Prime Sb.json',pdf:'8-6-Aktif - 2026 - Tyt - Mat-Mrf-Prime Sb.pdf'}
 ];
 
 const CUSTOM_GITHUB_FASIKUL_SOURCES_KEY = 'edu_custom_github_fasikul_sources';
