@@ -266,6 +266,13 @@ const CEVAP_MASK_CONFIG = {
     rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },
     sayfaAraligi: [[5, 112]],
   },
+  // Aktif 2026 TYT Matematik Maarif Prime Soru Bankası: her test bölümünün son
+  // sayfasında sağ-alt köşede gri kutulu toplu cevap anahtarı var. Sayfa numarası
+  // ortada kaldığı için maske yalnız sağ alt şeridi kapatır.
+  'aktif-2026-tyt-mat-mrf-prime-sb': {
+    rect: { x: 0.655, y: 0.922, w: 0.285, h: 0.055 },
+    sayfaAraligi: [[6, 320]],
+  },
   // Aktif TYT Geometri Konu Anlatımlı: aynı yayıncı/şablon (17 konu, s.7-384).
   'aktif-tyt-geometri-konu-anlatimli': {
     rect: { x: 0.024, y: 0.935, w: 0.955, h: 0.063 },

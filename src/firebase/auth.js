@@ -211,10 +211,35 @@ function manifestDersOptions(){
   return (window.MANIFEST?.dersler || []).map(ders=>({id: ders.id, ad: ders.ad}));
 }
 
+function sameFasikulSource(a, b){
+  if(!a || !b) return false;
+  const norm = v => String(v || '').normalize('NFC');
+  if(a.id && b.id && a.id === b.id) return true;
+  if(a.jsonFile && b.jsonFile && norm(a.jsonFile) === norm(b.jsonFile)) return true;
+  return false;
+}
+
+function resolveFasikulWithTopics(fasikulId){
+  const rows = manifestFasikulOptions();
+  const selected = rows.find(f=>f.id === fasikulId);
+  if(selected?.fas?.konular?.length) return selected.fas;
+  const source = selected?.fas;
+  const candidates = [];
+  for(const ders of window.MANIFEST?.dersler || []){
+    for(const fas of ders.fasikuller || []){
+      if(fas?.type === 'folder') continue;
+      if((fasikulId && fas.id === fasikulId) || sameFasikulSource(fas, source)){
+        candidates.push(fas);
+      }
+    }
+  }
+  return candidates.find(f=>Array.isArray(f.konular) && f.konular.length) || source || null;
+}
+
 function manifestTopicOptions(fasikulId){
-  const item = manifestFasikulOptions().find(f=>f.id === fasikulId);
-  if(!item?.fas?.konular?.length) return [];
-  return item.fas.konular.flatMap(konu => {
+  const fas = resolveFasikulWithTopics(fasikulId);
+  if(!fas?.konular?.length) return [];
+  return fas.konular.flatMap(konu => {
     const rows = [{id: konu.id || konu.ad, label: konu.ad, konuAd: konu.ad, altKonuAd: ''}];
     (konu.altKonular||[]).forEach(alt=>{
       rows.push({id: alt.id || alt.ad, label: `${konu.ad} / ${alt.ad}`, konuAd: konu.ad, altKonuAd: alt.ad});
