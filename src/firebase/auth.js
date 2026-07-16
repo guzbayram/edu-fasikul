@@ -219,6 +219,54 @@ function sameFasikulSource(a, b){
   return false;
 }
 
+function sourceForFasikul(fas){
+  if(!fas || !Array.isArray(window.BUNDLED_FASIKUL_SOURCES)) return null;
+  const norm = v => String(v || '').normalize('NFC');
+  return window.BUNDLED_FASIKUL_SOURCES.find(source =>
+    source.id === fas.id ||
+    (fas.jsonFile && norm(source.json) === norm(fas.jsonFile)) ||
+    (fas.pdfFile && norm(source.pdf) === norm(fas.pdfFile))
+  ) || null;
+}
+
+async function ensureFasikulTopicsLoaded(fasikulId){
+  const selected = manifestFasikulOptions().find(f=>f.id === fasikulId);
+  if(!selected?.fas) return null;
+  if(Array.isArray(selected.fas.konular) && selected.fas.konular.length) return selected.fas;
+
+  const sourceFas = selected.fas;
+  for(const ders of window.MANIFEST?.dersler || []){
+    for(const fas of ders.fasikuller || []){
+      if(fas?.type === 'folder') continue;
+      if(sameFasikulSource(fas, sourceFas) && Array.isArray(fas.konular) && fas.konular.length){
+        sourceFas.konular = fas.konular;
+        sourceFas.konuSayisi = fas.konuSayisi || fas.konular.length;
+        sourceFas.soruSayisi = fas.soruSayisi || fas.konular.reduce((sum,k)=>sum+(k.altKonular||[]).reduce((s,ak)=>s+(ak.sorular||[]).length,0),0);
+        return sourceFas;
+      }
+    }
+  }
+
+  const source = sourceForFasikul(sourceFas);
+  if(!source || typeof window.readBundledJson !== 'function') return sourceFas;
+  try{
+    const raw = await window.readBundledJson(source);
+    if(raw?.konular?.length){
+      if(typeof window.hydrateBundledFasikul === 'function'){
+        window.hydrateBundledFasikul(sourceFas, raw, source);
+      } else if(typeof window.normalizeFasikulKonular === 'function'){
+        sourceFas.konular = window.normalizeFasikulKonular(raw.konular, {fasikulId: source.id, sourceId: source.id, json: source.json});
+      } else {
+        sourceFas.konular = raw.konular;
+      }
+      return sourceFas;
+    }
+  }catch(e){
+    console.warn('Fasikül konu listesi yüklenemedi:', e);
+  }
+  return sourceFas;
+}
+
 function resolveFasikulWithTopics(fasikulId){
   const rows = manifestFasikulOptions();
   const selected = rows.find(f=>f.id === fasikulId);
@@ -234,6 +282,12 @@ function resolveFasikulWithTopics(fasikulId){
     }
   }
   return candidates.find(f=>Array.isArray(f.konular) && f.konular.length) || source || null;
+}
+
+function renderTopicOptions(topicSelect, topics, selectedId = ''){
+  topicSelect.innerHTML = '<option value="">Konu/Test seçilmedi</option>' + topics.map(t=>
+    `<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}" ${selectedId && selectedId===t.id?'selected':''}>${esc(t.label)}</option>`
+  ).join('');
 }
 
 function manifestTopicOptions(fasikulId){
@@ -920,14 +974,14 @@ export async function selectManagedStudent(uid){
   }
 }
 
-export function refreshAssignTopicOptions(){
+export async function refreshAssignTopicOptions(){
   const fasikulId = document.getElementById('assignFasikul')?.value || '';
   const topicSelect = document.getElementById('assignTopic');
   if(!topicSelect) return;
+  topicSelect.innerHTML = '<option value="">Konu/Test yükleniyor...</option>';
+  await ensureFasikulTopicsLoaded(fasikulId);
   const topics = manifestTopicOptions(fasikulId);
-  topicSelect.innerHTML = '<option value="">Konu/Test seçilmedi</option>' + topics.map(t=>
-    `<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}">${esc(t.label)}</option>`
-  ).join('');
+  renderTopicOptions(topicSelect, topics);
 }
 
 export function refreshPlanFasikulOptions(){
@@ -943,16 +997,16 @@ export function refreshPlanFasikulOptions(){
   refreshPlanTopicOptions();
 }
 
-export function refreshEditAssignmentTopicOptions(studentUid, taskId){
+export async function refreshEditAssignmentTopicOptions(studentUid, taskId){
   const fasikulId = document.getElementById(`editFasikul_${taskId}`)?.value || '';
   const topicSelect = document.getElementById(`editTopic_${taskId}`);
   if(!topicSelect) return;
   const student = (window._managedStudents || []).find(s=>s.id === studentUid);
   const allowed = visibleFasikulOptionsForStudent(student).some(f=>f.id === fasikulId);
+  topicSelect.innerHTML = '<option value="">Konu/Test yükleniyor...</option>';
+  if(allowed) await ensureFasikulTopicsLoaded(fasikulId);
   const topics = allowed ? manifestTopicOptions(fasikulId) : [];
-  topicSelect.innerHTML = '<option value="">Konu/Test seçilmedi</option>' + topics.map(t=>
-    `<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}">${esc(t.label)}</option>`
-  ).join('');
+  renderTopicOptions(topicSelect, topics);
 }
 
 export function toggleTeacherAssignField(){
@@ -1056,14 +1110,14 @@ export async function deleteAssignment(studentUid, taskId){
   }
 }
 
-export function refreshPlanTopicOptions(){
+export async function refreshPlanTopicOptions(){
   const fasikulId = document.getElementById('planFasikul')?.value || '';
   const topicSelect = document.getElementById('planTopic');
   if(!topicSelect) return;
+  topicSelect.innerHTML = '<option value="">Konu/Test yükleniyor...</option>';
+  await ensureFasikulTopicsLoaded(fasikulId);
   const topics = manifestTopicOptions(fasikulId);
-  topicSelect.innerHTML = '<option value="">Konu/Test seçilmedi</option>' + topics.map(t=>
-    `<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}">${esc(t.label)}</option>`
-  ).join('');
+  renderTopicOptions(topicSelect, topics);
 }
 
 export function prefillStudyPlanSlot(dayIndex, hour){
