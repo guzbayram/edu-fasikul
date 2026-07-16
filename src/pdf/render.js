@@ -880,6 +880,7 @@ function goToPage(n){
   updatePageIndicator();
   document.getElementById('prevPageBtn').disabled = appState.currentPage===1;
   document.getElementById('nextPageBtn').disabled = appState.currentPage===appState.totalPages;
+  window.syncNavToPage?.(appState.currentPage);
   window.publishCanli?.();
 }
 
@@ -887,6 +888,7 @@ function scrollToPage(pageNum, behavior){
   const el = document.getElementById('page-wrap-' + pageNum);
   if(el){
     appState._scrollingToPage = true;
+    window.syncNavToPage?.(pageNum);
     el.scrollIntoView({behavior: behavior || 'smooth', block: 'start'});
     setTimeout(()=>{ appState._scrollingToPage = false; }, 600);
   }
