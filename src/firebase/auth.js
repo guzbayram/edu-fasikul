@@ -346,7 +346,10 @@ function renderFasikulVisibilityControls(user){
 async function fetchAllUsers(){
   const snap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar'));
   const users = [];
-  snap.forEach(d=>users.push({id:d.id, uid:d.id, ...d.data()}));
+  snap.forEach(d=>{
+    if(String(d.id).startsWith('__')) return;
+    users.push({id:d.id, uid:d.id, ...d.data()});
+  });
   return users;
 }
 

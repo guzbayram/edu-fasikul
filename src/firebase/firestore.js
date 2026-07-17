@@ -14,6 +14,63 @@ export function _userDocRef(uid=_getUserKey()){
   return window._fsDoc(window._db,'kullanicilar',uid);
 }
 
+function _sharedManifestDocRef(){
+  if(!window._firestoreReady) return null;
+  return window._fsDoc(window._db,'kullanicilar','__app_manifest__');
+}
+
+function _getRemovedFromDers(){
+  try{ return JSON.parse(localStorage.getItem('edu_removed_from_ders')||'[]'); }
+  catch(e){ return []; }
+}
+
+async function _applySharedManifest(data){
+  if(!data || !Array.isArray(data.manifest)) return false;
+  try{
+    localStorage.setItem('edu_manifest_meta',JSON.stringify(data.manifest));
+    localStorage.setItem('edu_manifest_meta_ts', String(data.manifestTs||Date.now()));
+    localStorage.removeItem('edu_manifest_dirty');
+    if(Array.isArray(data.removedFromDers)){
+      localStorage.setItem('edu_removed_from_ders', JSON.stringify(data.removedFromDers));
+    }
+    window.loadManifestMeta?.();
+    await window.loadBundledFasikuller?.();
+    window.applyDersRemovals?.();
+    window.renderDerslerGrid?.();
+    return true;
+  }catch(e){
+    console.warn('Ortak manifest uygulanamadı:', e);
+    return false;
+  }
+}
+
+async function _loadSharedManifest(){
+  const ref = _sharedManifestDocRef();
+  if(!ref || !window._fsGetDoc) return null;
+  try{
+    const snap = await window._fsGetDoc(ref);
+    return snap.exists() ? snap.data() : null;
+  }catch(e){
+    console.warn('Ortak manifest okunamadı:', e);
+    return null;
+  }
+}
+
+async function _persistSharedManifestIfNeeded(){
+  if(appState.user?.role !== 'admin') return;
+  if(localStorage.getItem('edu_manifest_dirty') !== '1') return;
+  const ref = _sharedManifestDocRef();
+  if(!ref || !window._fsSetDoc) return;
+  const manifestTs = Number(localStorage.getItem('edu_manifest_meta_ts')||Date.now());
+  await window._fsSetDoc(ref, {
+    manifest: window.buildManifestMeta?.() || [],
+    manifestTs,
+    removedFromDers: _getRemovedFromDers(),
+    updatedBy: appState.user.email || appState.user.uid || '',
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
+}
+
 export function scheduleCloudPersist(){
   if(!appState.user || appState.user.email==='misafir@demo.com') return;
   if(appState._cloudPersistTimer) clearTimeout(appState._cloudPersistTimer);
@@ -281,19 +338,23 @@ export function persistData(){
     };
     const fasikulIst = _hesaplaFasikulIstatistik();
     const docRef = _userDocRef(key);
-    const p = window._fsSetDoc(docRef, {
+    const isAdmin = appState.user?.role === 'admin';
+    const manifestPayload = isAdmin ? {
+      manifest: window.buildManifestMeta?.() || [],
+      manifestTs: Number(localStorage.getItem('edu_manifest_meta_ts')||0),
+      removedFromDers: _getRemovedFromDers(),
+    } : {};
+    const p = _persistSharedManifestIfNeeded().then(()=>window._fsSetDoc(docRef, {
       email: appState.user.email,
       name: appState.user.name,
       preferences: appState.preferences,
       theme: appState.theme,
-      manifest: window.buildManifestMeta?.() || [],
-      manifestTs: Number(localStorage.getItem('edu_manifest_meta_ts')||0),
-      removedFromDers: (()=>{ try{ return JSON.parse(localStorage.getItem('edu_removed_from_ders')||'[]'); }catch(e){ return []; } })(),
+      ...manifestPayload,
       videoWatched: appState.videoWatched,
       istatistik: istatistik,
       fasikulIstatistik: fasikulIst,
       guncelleme: new Date().toISOString()
-    }, { merge: true }).then(()=>{
+    }, { merge: true })).then(()=>{
       try{ localStorage.removeItem('edu_manifest_dirty'); }catch(e){}
       if(!appState.cloudSolutionsLoaded) appState.cloudIstatistik=istatistik;
     }).catch(e=>console.warn('Firestore kayıt hatası:',e));
@@ -324,6 +385,20 @@ export async function loadFromFirestore(){
     const snap = await window._fsGetDoc(docRef);
     let data = null;
     let shouldPersistAfterLoad = false;
+    let sharedManifestApplied = false;
+    const sharedManifest = await _loadSharedManifest();
+    if(sharedManifest && Array.isArray(sharedManifest.manifest)){
+      const localTs = Number(localStorage.getItem('edu_manifest_meta_ts')||0);
+      const cloudTs = Number(sharedManifest.manifestTs||0);
+      const localManifestCanWin = appState.user?.role === 'admin'
+        && localStorage.getItem('edu_manifest_dirty') === '1';
+      if(localManifestCanWin && localTs > cloudTs){
+        await _persistSharedManifestIfNeeded();
+        scheduleCloudPersist();
+      } else {
+        sharedManifestApplied = await _applySharedManifest(sharedManifest);
+      }
+    }
     if(snap.exists()){
       data = snap.data();
       if(data.hatalilar)    appState.hatalilar    = data.hatalilar;
@@ -342,16 +417,19 @@ export async function loadFromFirestore(){
         appState.theme=data.theme;
         localStorage.setItem('edu_theme',data.theme);
       }
-      // Per-ders silme tombstone'unu bulutla birleştir (manifest'i uygulamadan ÖNCE
-      // ki loadManifestMeta/loadBundledFasikuller içindeki filtre bunları görsün).
-      if(Array.isArray(data.removedFromDers)){
-        try{
-          const merged = new Set(JSON.parse(localStorage.getItem('edu_removed_from_ders')||'[]'));
-          data.removedFromDers.forEach(k=>merged.add(k));
-          localStorage.setItem('edu_removed_from_ders', JSON.stringify([...merged]));
-        }catch(e){}
-      }
-      if(Array.isArray(data.manifest)){
+
+      if(!sharedManifestApplied && Array.isArray(data.manifest)){
+        if(appState.user?.role === 'admin'){
+          try{
+            await window._fsSetDoc(_sharedManifestDocRef(), {
+              manifest:data.manifest,
+              manifestTs:Number(data.manifestTs||Date.now()),
+              removedFromDers:Array.isArray(data.removedFromDers) ? data.removedFromDers : _getRemovedFromDers(),
+              updatedBy:appState.user.email || appState.user.uid || '',
+              updatedAt:new Date().toISOString()
+            }, {merge:true});
+          }catch(e){ console.warn('Ortak manifest ilk kopyası yazılamadı:', e); }
+        }
         // Yerelde bulut'a HENÜZ ulaşmamış daha yeni bir değişiklik olabilir
         // (ör. ders/alt ders/fasikül eklenip 900ms'lik senk. beklemeden çıkış
         // yapılmışsa). Bu durumda bayat bulut kopyası yerelin üzerine
