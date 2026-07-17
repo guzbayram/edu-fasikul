@@ -2591,6 +2591,7 @@ function persistManifest(){
     const slim = buildManifestMeta();
     localStorage.setItem('edu_manifest_meta', JSON.stringify(slim));
     localStorage.setItem('edu_manifest_meta_ts', String(Date.now()));
+    localStorage.setItem('edu_manifest_dirty', '1');
     scheduleCloudPersist();
   }catch(e){}
 }

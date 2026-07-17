@@ -294,6 +294,7 @@ export function persistData(){
       fasikulIstatistik: fasikulIst,
       guncelleme: new Date().toISOString()
     }, { merge: true }).then(()=>{
+      try{ localStorage.removeItem('edu_manifest_dirty'); }catch(e){}
       if(!appState.cloudSolutionsLoaded) appState.cloudIstatistik=istatistik;
     }).catch(e=>console.warn('Firestore kayıt hatası:',e));
     _persistYeniCozumler(key);
@@ -357,7 +358,8 @@ export async function loadFromFirestore(){
         // yazılmasın — yereli koru ve buluta yeniden göndermeyi programla.
         const localTs = Number(localStorage.getItem('edu_manifest_meta_ts')||0);
         const cloudTs = Number(data.manifestTs||0);
-        const localManifestCanWin = appState.user?.role === 'admin';
+        const localManifestCanWin = appState.user?.role === 'admin'
+          && localStorage.getItem('edu_manifest_dirty') === '1';
         if(localManifestCanWin && localTs > cloudTs){
           scheduleCloudPersist();
         } else {
