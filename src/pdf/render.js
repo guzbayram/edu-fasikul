@@ -1,11 +1,20 @@
 import { appState } from '../state/appState.js';
 
-async function loadPDFFile(file){
+async function loadPDFFile(file, targetPage=1){
   const arrayBuffer = await file.arrayBuffer();
-  return await loadPDFDocument({data: arrayBuffer}, 1);
+  return await loadPDFDocument({data: arrayBuffer}, targetPage);
 }
 
 async function loadPDFUrl(url, targetPage=1){
+  if(typeof url === 'string' && url.startsWith('blob:')){
+    try{
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return await loadPDFFile(blob, targetPage);
+    }catch(e){
+      console.warn('Blob PDF doğrudan okunamadı:', e);
+    }
+  }
   return await loadPDFDocument(url, targetPage);
 }
 

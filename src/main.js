@@ -1801,8 +1801,7 @@ async function getLocalPdfBlob(fasikul){
   const pdfName = resolvePdfName(fasikul);
   try{
     const fileHandle = await findPdfFileHandle(pdfName);
-    const file = await fileHandle.getFile();
-    return URL.createObjectURL(file);
+    return await fileHandle.getFile();
   } catch(e){ return null; }
 }
 
@@ -1821,13 +1820,16 @@ async function ensureReaderPdfLoaded(targetPage=1){
   }
 
   // 1. Önce kullanıcının bir kez bağladığı PDF klasörüne bak.
-  let url = null;
+  let pdfSource = null;
   if(appState.eduDirHandle){
-    url = await getLocalPdfBlob(fas);
-    if(url) showToast(`📁 PDF lokal klasörden açılıyor…`,'info');
+    const localFile = await getLocalPdfBlob(fas);
+    if(localFile){
+      pdfSource = { type:'file', file:localFile };
+      showToast(`📁 PDF lokal klasörden açılıyor…`,'info');
+    }
   }
   // 2. iPad/Safari'de profilden bir kez seçilip cihazda saklanan PDF'ye bak.
-  if(!url && appState.aktifDers){
+  if(!pdfSource && appState.aktifDers){
     let cached = await getPDFFromDB(appState.aktifDers.id,fas.id);
     // Fasikül sonradan başka bir ders kartına eklenmiş olsa bile PDF,
     // katalogdaki asıl kaynak anahtarıyla bulunabilsin.
@@ -1836,21 +1838,26 @@ async function ensureReaderPdfLoaded(targetPage=1){
       if(source) cached=await getPDFFromDB(source.dersId,fas.id);
     }
     if(cached?.blob){
-      url=URL.createObjectURL(cached.blob);
+      pdfSource = { type:'file', file:cached.blob };
       showToast(`📱 PDF bu cihazdan açılıyor…`,'info');
     }
   }
   // 3. Yalnızca özel olarak tanımlanmış bir uzak URL varsa onu kullan.
-  if(!url) url = getFasikulPdfUrl(fas);
+  if(!pdfSource){
+    const url = getFasikulPdfUrl(fas);
+    if(url) pdfSource = { type:'url', url };
+  }
 
-  if(!url){
+  if(!pdfSource){
     document.getElementById('pdfUploadZone').style.display = '';
     document.getElementById('readerCanvasWrap').style.display = 'none';
     showToast('PDF bulunamadı. Profil sayfasından PDF klasörünü veya dosyalarını seçin.','info');
     return false;
   }
   try{
-    return await loadPDFUrl(url, targetPage);
+    return pdfSource.type === 'file'
+      ? await loadPDFFile(pdfSource.file, targetPage)
+      : await loadPDFUrl(pdfSource.url, targetPage);
   }catch(e){
     showToast('PDF açılamadı. Dosyayı kontrol edin.','error');
     return false;
