@@ -357,7 +357,8 @@ export async function loadFromFirestore(){
         // yazılmasın — yereli koru ve buluta yeniden göndermeyi programla.
         const localTs = Number(localStorage.getItem('edu_manifest_meta_ts')||0);
         const cloudTs = Number(data.manifestTs||0);
-        if(localTs > cloudTs){
+        const localManifestCanWin = appState.user?.role === 'admin';
+        if(localManifestCanWin && localTs > cloudTs){
           scheduleCloudPersist();
         } else {
           localStorage.setItem('edu_manifest_meta',JSON.stringify(data.manifest));
