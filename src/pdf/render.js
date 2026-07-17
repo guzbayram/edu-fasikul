@@ -255,6 +255,18 @@ const CEVAP_MASK_CONFIG = {
       cift: [{ x: 0.515, y: 0.924, w: 0.43, h: 0.048 }],
     },
   },
+  // Yarıçap 10.Sınıf Matematik Soru Bankası: cevap anahtarı bazı bloklarda
+  // sayfanın sağ-altında gri kutu, bazı bloklarda ise tüm alt şeritte tek satır
+  // olarak çıkıyor. Sayfa listesi JSON'daki cevapAnahtariSayfalari alanından
+  // okunur; böylece JSON düzeltildikçe maske sayfaları da aynı kalır.
+  'yaricap-10-matematik-soru-bankasi': {
+    rects: [
+      { x: 0.045, y: 0.912, w: 0.91, h: 0.045 },
+      { x: 0.50, y: 0.815, w: 0.455, h: 0.10 },
+    ],
+    cevapSayfalariFromJson: true,
+    sadeceCevapSayfalari: true,
+  },
   // Aktif TYT Matematik 1/2: her soru sayfasının altında (sol/sağ sütun veya
   // ikisi birden) "Soru N/ X" şeklinde ince bir cevap şeridi var — MÖF'ten
   // farklı olarak yalnız test biten sayfada değil, sorusu olan HER sayfada.
@@ -367,8 +379,11 @@ function getCevapMaskRects(pageNum){
   if(cfg.sayfaRectleri && Array.isArray(cfg.sayfaRectleri[pageNum])) return cfg.sayfaRectleri[pageNum];
   const rects = cfg.rects || (cfg.rect ? [cfg.rect] : []);
   if(cfg.herSayfa) return rects;
-  if(Array.isArray(cfg.cevapSayfalari)){
-    if(cfg.cevapSayfalari.includes(pageNum)) return rects;
+  const cevapSayfalari = cfg.cevapSayfalariFromJson
+    ? (fas.cevapAnahtariSayfalari || [])
+    : cfg.cevapSayfalari;
+  if(Array.isArray(cevapSayfalari)){
+    if(cevapSayfalari.includes(pageNum)) return rects;
     // sadeceCevapSayfalari: cevapSayfalari KESİN/TAM listedir — eşleşmezse
     // aşağıdaki genel "testBiter" varsayılanına asla düşülmez. Bu olmadan,
     // kitabın konu verisinde cevapSayfalari'nde HİÇ adı geçmeyen bir sayfada

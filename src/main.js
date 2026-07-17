@@ -252,6 +252,7 @@ const BUNDLED_FASIKUL_SOURCES = [
   {id:'yaricap-10-matematik-3',dersId:'mat',json:'6-3-Yarıçap - 10.Sınıf-Matematik-3.Fasikul.json',pdf:'6-3-Yarıçap - 10.Sınıf-Matematik-3.Fasikul.pdf'},
   {id:'yaricap-10-matematik-4',dersId:'mat',json:'6-4-Yarıçap - 10.Sınıf-Matematik-4.Fasikul.json',pdf:'6-4-Yarıçap - 10.Sınıf-Matematik-4.Fasikul.pdf'},
   {id:'yaricap-tyt-problemler',dersId:'mat',json:'6-5-Yarıçap - Tyt-Problemler Fasikülü.json',pdf:'6-5-Yarıçap - Tyt-Problemler Fasikülü.pdf'},
+  {id:'yaricap-10-matematik-soru-bankasi',dersId:'mat',json:'6-6-Yarıçap-10. Sınıf Matematik Soru Bankası.json',pdf:'6-6-Yarıçap-10. Sınıf Matematik Soru Bankası.pdf'},
   {id:'aktif-matematik-acik-uclu',dersId:'mat',json:'7-1-Aktif - Matematik Açık Uçlu.json',pdf:'7-1-Aktif - Matematik Açık Uçlu.pdf'},
   {id:'kuvvetlendiren-tyt-soru-bankasi-2025',dersId:'mat',json:'7-2-Aktif - Tyt-Soru-Bankası-2025.json',pdf:'7-2-Aktif - Tyt-Soru-Bankası-2025.pdf'},
   {id:'aktif-tyt-geometri-konu-anlatimli',dersId:'geo',json:'7-3-Aktif - Tyt Geometri Konu Anlatımlı.json',pdf:'7-3-Aktif - Tyt Geometri Konu Anlatımlı.pdf'},
