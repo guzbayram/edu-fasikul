@@ -1659,7 +1659,10 @@ async function updateEduDirUI(){
       : 'PDF dosyaları seçilmedi';
     if(subStatusEl) subStatusEl.textContent = foundCount ? 'Yeni dosyalar ekleyebilir veya mevcutları yenileyebilirsiniz' : 'Files uygulamasından PDF dosyalarınızı seçin';
     if(buttonEl) buttonEl.textContent = foundCount ? 'PDF’leri Güncelle' : 'PDF’leri Seç';
+    const cachedRecords = foundCount ? await getCachedPDFRecords() : [];
+    const cachedMB = Math.round(cachedRecords.reduce((s,r)=>s+(r?.size||0),0) / (1024*1024));
     listEl.innerHTML = `<div class="edu-dir-summary"><b>${foundCount}/${allFasikuller.length}</b> PDF hazır${foundCount===allFasikuller.length ? '<span>Tüm dosyalar hazır</span>' : `<span>${allFasikuller.length-foundCount} dosya eksik</span>`}</div>`
+      + (foundCount ? `<div class="edu-dir-summary" style="margin-top:6px"><span>Önbellek: ~${cachedMB} MB</span><button class="modal-btn mb-secondary" style="padding:4px 10px;font-size:12px" onclick="confirmClearPdfCache()">🗑️ Önbelleği Temizle</button></div>` : '')
       + buildOrphanCleanupHtml(findOrphanBundledFasikuller(), findOrphanedNestedDersler())
       + buildDisconnectedRepairHtml(findDisconnectedNestedDersler());
     listEl.style.display = 'block';
@@ -1704,6 +1707,12 @@ async function updateEduDirUI(){
       + buildDisconnectedRepairHtml(findDisconnectedNestedDersler());
   listEl.style.display = 'block';
 }
+
+async function confirmClearPdfCache(){
+  if(!confirm('Bu cihazda önbelleğe alınmış tüm PDF dosyaları silinecek. Fasikülleri tekrar açtığınızda PDF\'leri yeniden seçmeniz gerekir. Devam edilsin mi?')) return;
+  await clearAllCachedPDFs();
+}
+window.confirmClearPdfCache = confirmClearPdfCache;
 
 function getPdfStorageKeyForFasikul(fasikul){
   const ders = MANIFEST.dersler.find(d=>(d.fasikuller||[]).some(f=>f.id===fasikul.id));

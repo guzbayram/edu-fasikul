@@ -284,9 +284,13 @@ function resolveFasikulWithTopics(fasikulId){
   return candidates.find(f=>Array.isArray(f.konular) && f.konular.length) || source || null;
 }
 
-function renderTopicOptions(topicSelect, topics, selectedId = ''){
-  topicSelect.innerHTML = '<option value="">Konu/Test seçilmedi</option>' + topics.map(t=>
-    `<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}" ${selectedId && selectedId===t.id?'selected':''}>${esc(t.label)}</option>`
+function renderTopicOptions(topicSelect, topics, selectedIds = []){
+  const selected = new Set(Array.isArray(selectedIds) ? selectedIds : [selectedIds].filter(Boolean));
+  const placeholder = topicSelect.multiple
+    ? '<option value="" disabled>Konu/Test seçilmedi</option>'
+    : '<option value="">Konu/Test seçilmedi</option>';
+  topicSelect.innerHTML = placeholder + topics.map(t=>
+    `<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}" ${selected.has(t.id)?'selected':''}>${esc(t.label)}</option>`
   ).join('');
 }
 
@@ -300,6 +304,17 @@ function manifestTopicOptions(fasikulId){
     });
     return rows;
   });
+}
+
+function selectedTopicPayloads(topicSelect){
+  return Array.from(topicSelect?.selectedOptions || [])
+    .filter(opt => opt.value)
+    .map(opt => ({
+      id: opt.value,
+      label: (opt.textContent || '').trim(),
+      konuAd: opt.dataset?.konu || '',
+      altKonuAd: opt.dataset?.alt || ''
+    }));
 }
 
 function renderFasikulVisibilityControls(user){
@@ -361,16 +376,24 @@ function computeRecordsSummary(records){
 function expectedQuestionCountForTask(task){
   const fas = manifestFasikulOptions().find(f=>f.id === task.fasikulId);
   if(!fas?.fas) return 0;
+  const taskTopics = Array.isArray(task.topics) ? task.topics.filter(t=>t?.id || t?.konuAd || t?.altKonuAd) : [];
+  if(taskTopics.length){
+    return taskTopics.reduce((sum, topic)=>sum + expectedQuestionCountForTopic(fas.fas, topic), 0);
+  }
   if(!task.konuId) return Number(fas.fas.soruSayisi || fas.fas.soru_sayisi || fas.fas.totalQuestions || 0);
-  const topics = fas.fas.konular || [];
+  return expectedQuestionCountForTopic(fas.fas, {id: task.konuId, konuAd: task.konuAd, altKonuAd: task.altKonuAd});
+}
+
+function expectedQuestionCountForTopic(fas, topic){
+  const topics = fas.konular || [];
   for(const konu of topics){
     const konuId = konu.id || konu.ad;
-    if(konuId === task.konuId || konu.ad === task.konuAd){
+    if(konuId === topic.id || konu.ad === topic.konuAd){
       return Number(konu.soruSayisi || konu.soru_sayisi || konu.toplamSoru || konu.soru || 0);
     }
     for(const alt of (konu.altKonular || [])){
       const altId = alt.id || alt.ad;
-      if(altId === task.konuId || alt.ad === task.altKonuAd){
+      if(altId === topic.id || alt.ad === topic.altKonuAd){
         return Number(alt.soruSayisi || alt.soru_sayisi || alt.toplamSoru || alt.soru || 0);
       }
     }
@@ -383,12 +406,15 @@ function normTaskText(text){
 }
 
 function assignmentProgress(task, records){
-  const taskTopic = normTaskText(task.altKonuAd || task.konuAd || '');
+  const taskTopics = Array.isArray(task.topics) && task.topics.length
+    ? task.topics.map(t=>normTaskText(t.altKonuAd || t.konuAd || t.label || '')).filter(Boolean)
+    : [normTaskText(task.altKonuAd || task.konuAd || '')].filter(Boolean);
   const relevant = records.filter(r=>{
     if(task.fasikulId && r.fasikulId !== task.fasikulId) return false;
-    if(taskTopic){
+    if(taskTopics.length){
       const recTopic = normTaskText([r.konu, r.altKonu].filter(Boolean).join(' '));
-      if(!recTopic.includes(taskTopic) && !taskTopic.includes(recTopic)) return false;
+      const matched = taskTopics.some(taskTopic => recTopic.includes(taskTopic) || taskTopic.includes(recTopic));
+      if(!matched) return false;
     }
     return !(r.atladi || r.skipped);
   });
@@ -842,8 +868,10 @@ function assignmentTimeSummary(g){
   return formatDate(g.dueDate);
 }
 
-function assignmentTitleFromSelection(fas, topicOpt){
-  const topicLabel = (topicOpt?.textContent || '').trim();
+function assignmentTitleFromSelection(fas, topicItems){
+  const selected = Array.isArray(topicItems) ? topicItems : [];
+  if(selected.length > 1) return `${selected[0].label} + ${selected.length - 1} konu`;
+  const topicLabel = selected[0]?.label || '';
   if(topicLabel && topicLabel !== 'Konu/Test seçilmedi') return topicLabel;
   return fas?.fasikulAd || 'Çalışma görevi';
 }
@@ -851,7 +879,7 @@ function assignmentTitleFromSelection(fas, topicOpt){
 function renderAssignmentManageCard(studentUid, g, fasOptions){
   const currentFasId = g.fasikulId || '';
   const topics = currentFasId ? manifestTopicOptions(currentFasId) : [];
-  const currentTopicId = g.konuId || '';
+  const currentTopicIds = Array.isArray(g.topics) && g.topics.length ? g.topics.map(t=>t.id).filter(Boolean) : [g.konuId || ''].filter(Boolean);
   return `
     <details class="assignment-card assignment-edit-card ${g.status==='done'?'done':''}">
       <summary>
@@ -863,9 +891,9 @@ function renderAssignmentManageCard(studentUid, g, fasOptions){
           <option value="">Fasikül seç</option>
           ${fasOptions.map(f=>`<option value="${esc(f.id)}" ${f.id===currentFasId?'selected':''}>${esc(f.label)}</option>`).join('')}
         </select>
-        <select id="editTopic_${esc(g.id)}">
+        <select id="editTopic_${esc(g.id)}" multiple size="6">
           <option value="">Konu/Test seçilmedi</option>
-          ${topics.map(t=>`<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}" ${t.id===currentTopicId?'selected':''}>${esc(t.label)}</option>`).join('')}
+          ${topics.map(t=>`<option value="${esc(t.id)}" data-konu="${esc(t.konuAd)}" data-alt="${esc(t.altKonuAd)}" ${currentTopicIds.includes(t.id)?'selected':''}>${esc(t.label)}</option>`).join('')}
         </select>
         <label class="assignment-time-field"><span>Başlangıç</span><input id="editStart_${esc(g.id)}" type="datetime-local" value="${esc(dateTimeInputValue(g.startAt))}"></label>
         <label class="assignment-time-field"><span>Bitiş</span><input id="editEnd_${esc(g.id)}" type="datetime-local" value="${esc(dateTimeInputValue(g.endAt))}"></label>
@@ -955,7 +983,7 @@ export async function selectManagedStudent(uid){
             <option value="">Fasikül seç</option>
             ${fasOptions.map(f=>`<option value="${esc(f.id)}">${esc(f.label)}</option>`).join('')}
           </select>
-          <select id="assignTopic"><option value="">Konu/Test seçilmedi</option></select>
+          <select id="assignTopic" multiple size="6"><option value="">Konu/Test seçilmedi</option></select>
           <label class="assignment-time-field"><span>Başlangıç</span><input id="assignStart" type="datetime-local"></label>
           <label class="assignment-time-field"><span>Bitiş</span><input id="assignEnd" type="datetime-local"></label>
           <button class="btn-login" onclick="createAssignment('${uid}')">Görev Ata</button>
@@ -1025,18 +1053,20 @@ export async function createAssignment(studentUid){
     return;
   }
   const topicSel = document.getElementById('assignTopic');
-  const topicOpt = topicSel?.selectedOptions?.[0];
+  const topicItems = selectedTopicPayloads(topicSel);
+  const topicOpt = topicItems[0] || null;
   const startAt = document.getElementById('assignStart')?.value ? new Date(document.getElementById('assignStart').value).toISOString() : '';
   const endAt = document.getElementById('assignEnd')?.value ? new Date(document.getElementById('assignEnd').value).toISOString() : '';
   const payload = {
-    title: assignmentTitleFromSelection(fas, topicOpt),
+    title: assignmentTitleFromSelection(fas, topicItems),
     fasikulId,
     fasikulAd: fas?.fasikulAd || '',
     dersId: fas?.dersId || '',
     dersAd: fas?.dersAd || '',
-    konuId: topicSel?.value || '',
-    konuAd: topicOpt?.dataset?.konu || '',
-    altKonuAd: topicOpt?.dataset?.alt || '',
+    konuId: topicOpt?.id || '',
+    konuAd: topicOpt?.konuAd || '',
+    altKonuAd: topicOpt?.altKonuAd || '',
+    topics: topicItems,
     period: 'tekil',
     startAt,
     endAt,
@@ -1064,20 +1094,22 @@ export async function updateAssignment(studentUid, taskId){
     return;
   }
   const topicSel = document.getElementById(`editTopic_${taskId}`);
-  const topicOpt = topicSel?.selectedOptions?.[0];
+  const topicItems = selectedTopicPayloads(topicSel);
+  const topicOpt = topicItems[0] || null;
   const startValue = document.getElementById(`editStart_${taskId}`)?.value || '';
   const endValue = document.getElementById(`editEnd_${taskId}`)?.value || '';
   const startAt = startValue ? new Date(startValue).toISOString() : '';
   const endAt = endValue ? new Date(endValue).toISOString() : '';
   const payload = {
-    title: assignmentTitleFromSelection(fas, topicOpt),
+    title: assignmentTitleFromSelection(fas, topicItems),
     fasikulId,
     fasikulAd: fas?.fasikulAd || '',
     dersId: fas?.dersId || '',
     dersAd: fas?.dersAd || '',
-    konuId: topicSel?.value || '',
-    konuAd: topicOpt?.dataset?.konu || '',
-    altKonuAd: topicOpt?.dataset?.alt || '',
+    konuId: topicOpt?.id || '',
+    konuAd: topicOpt?.konuAd || '',
+    altKonuAd: topicOpt?.altKonuAd || '',
+    topics: topicItems,
     startAt,
     endAt,
     dueDate: (endAt || startAt || '').slice(0,10),

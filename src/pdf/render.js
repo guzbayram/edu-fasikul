@@ -168,6 +168,18 @@ function updateCurrentPageFromScroll(){
 // altında yatay bir cevap anahtarı şeridi var. Öğrenci görmesin diye o şeridi
 // turuncu opak kutuyla kaplıyoruz. (Sadece aşağıdaki fasikül id'leri için.)
 const CEVAP_MASK_RENK = '#f97316';
+const BLUE_UNDERLINE_HIDE_CONFIG = {
+  'aktif-2026-tyt-mat-mrf-prime-sb': {
+    eslesenParcalar: [
+      'aktif-2026-tyt-mat-mrf-prime-sb',
+      '8-6-aktif-2026-tyt-mat-mrf-prime-sb',
+      '8-6 aktif 2026 tyt mat mrf prime sb',
+      'aktif 2026 tyt matematik maarif prime soru bankasi',
+      'aktif 2026 tyt matematik maarif prime soru bankası',
+    ],
+    sayfaAraligi: [[6, 320]],
+  },
+};
 // Fasikül id → { rect: oransal dikdörtgen, herSayfa: her sayfada mı yoksa yalnız
 // testin son sayfasında mı }. rect değerleri sayfa genişlik/yüksekliğine oranlı.
 const CEVAP_MASK_CONFIG = {
@@ -270,7 +282,7 @@ const CEVAP_MASK_CONFIG = {
   // sayfasında sağ-alt köşede gri kutulu toplu cevap anahtarı var. Sayfa numarası
   // ortada kaldığı için maske yalnız sağ alt şeridi kapatır.
   'aktif-2026-tyt-mat-mrf-prime-sb': {
-    rect: { x: 0.655, y: 0.922, w: 0.285, h: 0.055 },
+    rect: { x: 0.50, y: 0.922, w: 0.44, h: 0.055 },
     sayfaAraligi: [[6, 320]],
   },
   // Aktif TYT Geometri Konu Anlatımlı: aynı yayıncı/şablon (17 konu, s.7-384).
@@ -383,6 +395,116 @@ function getCevapMaskRects(pageNum){
   return rects;
 }
 
+function getBlueUnderlineHideConfig(pageNum){
+  const fas = appState.aktifFasikul;
+  if(!fas) return null;
+  const normalize = (value) => String(value || '')
+    .toLocaleLowerCase('tr-TR')
+    .replace(/ı/g, 'i')
+    .replace(/[^a-z0-9]+/g, '');
+  const fasAramaMetni = [
+    fas.id,
+    fas.ad,
+    fas.pdf,
+    fas.pdfDosya,
+    fas.pdfFile,
+    fas.json,
+    fas.jsonDosya,
+  ].filter(Boolean).join(' ').toLocaleLowerCase('tr-TR');
+  const fasAramaAnahtari = normalize(fasAramaMetni);
+  const cfg = Object.entries(BLUE_UNDERLINE_HIDE_CONFIG).find(([id, item]) => {
+    if(fas.id === id) return true;
+    return (item.eslesenParcalar || []).some(parca => {
+      const parcaMetni = String(parca).toLocaleLowerCase('tr-TR');
+      return fasAramaMetni.includes(parcaMetni) || fasAramaAnahtari.includes(normalize(parcaMetni));
+    });
+  })?.[1];
+  if(!cfg) return null;
+  if(Array.isArray(cfg.sayfaAraligi)){
+    const araliktaMi = cfg.sayfaAraligi.some(([min,max]) => pageNum>=min && pageNum<=max);
+    return araliktaMi ? cfg : null;
+  }
+  return cfg;
+}
+
+function hideBlueAnswerUnderlines(ctx, canvas, pageNum){
+  if(!getBlueUnderlineHideConfig(pageNum)) return;
+  const w = canvas.width;
+  const h = canvas.height;
+  if(!w || !h) return;
+  const yStart = Math.floor(h * 0.08);
+  const yEnd = Math.floor(h * 0.93);
+  const minRun = Math.max(10, Math.floor(w * 0.006));
+  const maxRun = Math.max(minRun + 1, Math.floor(w * 0.08));
+  const masks = [];
+  let data;
+  try{
+    data = ctx.getImageData(0, yStart, w, yEnd - yStart).data;
+  }catch(e){
+    return;
+  }
+
+  const isBlueLinePixel = (idx) => {
+    const r = data[idx];
+    const g = data[idx + 1];
+    const b = data[idx + 2];
+    return r < 150 && g > 110 && b > 120 && g > r + 35 && b > r + 35 && Math.abs(g - b) < 90;
+  };
+
+  ctx.save();
+  ctx.fillStyle = '#fff';
+  for(let localY = 0; localY < yEnd - yStart; localY++){
+    let runStart = -1;
+    let runLen = 0;
+    for(let x = 0; x <= w; x++){
+      const idx = (localY * w + x) * 4;
+      const hit = x < w && isBlueLinePixel(idx);
+      if(hit){
+        if(runStart < 0) runStart = x;
+        runLen += 1;
+        continue;
+      }
+      if(runStart >= 0){
+        if(runLen >= minRun && runLen <= maxRun){
+          const y = yStart + localY;
+          masks.push({
+            x: Math.max(0, runStart - 5),
+            y: Math.max(0, y - 5),
+            w: Math.min(w - runStart + 5, runLen + 10),
+            h: 13,
+          });
+        }
+        runStart = -1;
+        runLen = 0;
+      }
+    }
+  }
+  for(const m of mergeNearbyUnderlineMasks(masks)){
+    ctx.fillRect(m.x, m.y, m.w, m.h);
+  }
+  ctx.restore();
+}
+
+function mergeNearbyUnderlineMasks(masks){
+  const merged = [];
+  for(const m of masks.sort((a,b) => a.y - b.y || a.x - b.x)){
+    const prev = merged[merged.length - 1];
+    if(prev && Math.abs(prev.y - m.y) <= 8 && Math.abs(prev.x - m.x) <= 12){
+      const x1 = Math.min(prev.x, m.x);
+      const y1 = Math.min(prev.y, m.y);
+      const x2 = Math.max(prev.x + prev.w, m.x + m.w);
+      const y2 = Math.max(prev.y + prev.h, m.y + m.h);
+      prev.x = x1;
+      prev.y = y1;
+      prev.w = x2 - x1;
+      prev.h = y2 - y1;
+    } else {
+      merged.push({...m});
+    }
+  }
+  return merged;
+}
+
 async function renderSinglePDFPage(pageNum, pageWrap){
   if(!appState.pdfDoc) return;
   try{
@@ -409,6 +531,7 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     const ctx2d = pdfCanvas.getContext('2d');
     if(!ctx2d) throw new Error('Canvas 2D context alınamadı');
     await page.render({ canvasContext: ctx2d, viewport }).promise;
+    hideBlueAnswerUnderlines(ctx2d, pdfCanvas, pageNum);
 
     // Cevap anahtarını gizle: turuncu opak maske (PDF katmanının üstüne, çizim
     // katmanının altına bastığımız için öğrenci silemez/taşıyamaz).
@@ -608,6 +731,7 @@ async function renderSinglePageMode(pageNum){
       if(!ctx2d) throw new Error('Canvas 2D context alınamadı (bellek yetersiz olabilir)');
       await page.render({ canvasContext: ctx2d, viewport }).promise;
       if(myGen !== _pageRenderGen) return; // süresi dolmuş — kalan adımlar (maske/çizim katmanı) atlanır
+      hideBlueAnswerUnderlines(ctx2d, pdfCanvas, pageNum);
 
       // Cevap anahtarını gizle (renderSinglePDFPage ile aynı maskeleme — bu fonksiyon
       // 'single' görünüm modunda (appState.viewMode varsayılanı) ayrı bir render yolu

@@ -56,6 +56,10 @@ async function handlePDFUpload(input){
 // ══════════════════════════════
 const PDF_DB_NAME = 'edu_pdf_store';
 const PDF_DB_STORE = 'pdfs';
+// Safari/iPadOS'ta showDirectoryPicker olmadığı için PDF'ler kopyalanıp burada
+// saklanıyor — hiçbir eviction olmazsa süresiz birikip GB'larca yer kaplıyordu.
+// Bu cap aşılınca en eski kullanılan (LRU) kayıtlar otomatik silinir.
+const PDF_CACHE_MAX_BYTES = 1.5 * 1024 * 1024 * 1024; // 1.5 GB
 
 function openPdfDB(){
   return new Promise((resolve,reject)=>{
@@ -74,10 +78,17 @@ async function savePDFToDB(dersId, fasikulId, file){
     const key = `${dersId}_${fasikulId}`;
     await new Promise((resolve,reject)=>{
       const tx = db.transaction(PDF_DB_STORE,'readwrite');
-      tx.objectStore(PDF_DB_STORE).put({name:file.name, blob:file}, key);
+      tx.objectStore(PDF_DB_STORE).put({name:file.name, blob:file, size:file.size||0, lastAccessed:Date.now()}, key);
       tx.oncomplete = ()=>resolve();
       tx.onerror = ()=>reject(tx.error);
     });
+    // Yeni kayıt eklendi — cap aşıldıysa en eski kullanılanları temizle.
+    // Şu an okuyucuda açık olan fasikül varsa (kullanıcı o an görüntülüyor
+    // olabilir) her zaman korunur — yeni kaydedilenle aynı olmayabilir
+    // (ör. toplu PDF seçiminde arka planda başka bir fasikül açık olabilir).
+    const activeKey = appState.aktifDers?.id && appState.aktifFasikul?.id
+      ? `${appState.aktifDers.id}_${appState.aktifFasikul.id}` : key;
+    evictOldPDFsIfNeeded(activeKey).catch(()=>{});
   }catch(e){ /* sessizce yoksay */ }
 }
 
@@ -85,13 +96,89 @@ async function getPDFFromDB(dersId, fasikulId){
   try{
     const db = await openPdfDB();
     const key = `${dersId}_${fasikulId}`;
-    return await new Promise((resolve,reject)=>{
+    const record = await new Promise((resolve,reject)=>{
       const tx = db.transaction(PDF_DB_STORE,'readonly');
       const req = tx.objectStore(PDF_DB_STORE).get(key);
       req.onsuccess = ()=>resolve(req.result||null);
       req.onerror = ()=>reject(req.error);
     });
+    // Gerçekten görüntülendi — LRU sırası için erişim zamanını arka planda güncelle
+    // (okuma sonucunu bekletmeden, ayrı bir yazma transaction'ıyla).
+    if(record) touchPDFLastAccessed(db, key, record).catch(()=>{});
+    return record;
   }catch(e){ return null; }
+}
+
+function touchPDFLastAccessed(db, key, record){
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(PDF_DB_STORE,'readwrite');
+    tx.objectStore(PDF_DB_STORE).put({...record, lastAccessed:Date.now()}, key);
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+
+// Toplam boyut PDF_CACHE_MAX_BYTES'ı aşarsa en eski kullanılan (lastAccessed)
+// kayıtlardan başlayarak, cap'in altına inene kadar sırayla siler. Şu an açık
+// olan fasikülün kaydı (protectedKey) hiçbir zaman silinmez.
+async function evictOldPDFsIfNeeded(protectedKey){
+  try{
+    const db = await openPdfDB();
+    const entries = await new Promise((resolve,reject)=>{
+      const tx = db.transaction(PDF_DB_STORE,'readonly');
+      const store = tx.objectStore(PDF_DB_STORE);
+      const rows = [];
+      const req = store.openCursor();
+      req.onsuccess = ()=>{
+        const cursor = req.result;
+        if(cursor){
+          const v = cursor.value || {};
+          rows.push({key:cursor.key, size:v.size||0, lastAccessed:v.lastAccessed||0});
+          cursor.continue();
+        } else resolve(rows);
+      };
+      req.onerror = ()=>reject(req.error);
+    });
+
+    let total = entries.reduce((sum,e)=>sum+e.size,0);
+    if(total <= PDF_CACHE_MAX_BYTES) return;
+
+    const evictable = entries.filter(e=>e.key!==protectedKey).sort((a,b)=>a.lastAccessed-b.lastAccessed);
+    const toEvict = [];
+    for(const e of evictable){
+      if(total <= PDF_CACHE_MAX_BYTES) break;
+      toEvict.push(e.key);
+      total -= e.size;
+    }
+    if(!toEvict.length) return;
+
+    await new Promise((resolve,reject)=>{
+      const tx = db.transaction(PDF_DB_STORE,'readwrite');
+      const store = tx.objectStore(PDF_DB_STORE);
+      toEvict.forEach(k=>store.delete(k));
+      tx.oncomplete = ()=>resolve();
+      tx.onerror = ()=>reject(tx.error);
+    });
+
+    window.updateEduDirUI?.();
+    window.showToast?.(`Depolama alanı için ${toEvict.length} eski PDF önbellekten temizlendi`,'info');
+  }catch(e){ /* sessizce yoksay */ }
+}
+
+async function clearAllCachedPDFs(){
+  try{
+    const db = await openPdfDB();
+    await new Promise((resolve,reject)=>{
+      const tx = db.transaction(PDF_DB_STORE,'readwrite');
+      tx.objectStore(PDF_DB_STORE).clear();
+      tx.oncomplete = ()=>resolve();
+      tx.onerror = ()=>reject(tx.error);
+    });
+    await window.updateEduDirUI?.();
+    window.showToast?.('✓ PDF önbelleği temizlendi','success');
+  }catch(e){
+    window.showToast?.('Önbellek temizlenemedi','error');
+  }
 }
 
 async function getCachedPDFKeys(){
@@ -147,5 +234,6 @@ window.getPDFFromDB = getPDFFromDB;
 window.getCachedPDFKeys = getCachedPDFKeys;
 window.getCachedPDFRecords = getCachedPDFRecords;
 window.deletePDFFromDB = deletePDFFromDB;
+window.clearAllCachedPDFs = clearAllCachedPDFs;
 window.calcPDFHash = calcPDFHash;
 window.checkPDFHashMatch = checkPDFHashMatch;
