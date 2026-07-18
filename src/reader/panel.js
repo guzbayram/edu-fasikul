@@ -121,7 +121,10 @@ function focusNextOpenAnswerAfterSubmit(sorular, idx, inputId){
     focusOpenAnswerInput(nextInputId);
     return;
   }
-  goToSoru(nextIdx);
+  appState.activeQuestionIdx = nextIdx;
+  renderTekSoruKart(sorular, nextIdx);
+  renderSoruStrip(sorular);
+  updateTestProgress();
   focusOpenAnswerInput(nextInputId);
 }
 
