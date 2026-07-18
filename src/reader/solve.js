@@ -108,8 +108,8 @@ function renderSolveAnswers(){
     wrap.innerHTML = `<div class="sp-open-row">${noHtml}<input id="${inputId}" class="sp-open-input" inputmode="decimal"
       placeholder="Cevap" value="${answered ? (state?.selected ?? '') : ''}"
       oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')"
-      onkeydown="if(event.key==='Enter')submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')"
-      ${answered?'disabled':''}></div>
+      onkeydown="if(event.key==='Enter'){event.preventDefault();submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')}"
+      ${answered?'readonly':''}></div>
       ${answered ? '' : window.buildOpenAnswerKeypadHtml?.(inputId, s.cevap, idx, s._uid||s.no, 'sp-open-keypad') || ''}`;
     return;
   }

@@ -74,15 +74,25 @@ function isOpenAnswerIncomplete(value){
   return false;
 }
 
+function focusOpenAnswerInput(inputId){
+  requestAnimationFrame(()=>{
+    const input = document.getElementById(inputId);
+    if(!input) return;
+    input.focus();
+    const pos = input.value.length;
+    input.setSelectionRange?.(pos, pos);
+  });
+}
+
 function submitOpenAnswer(soruNo, correct, idx, inputId){
   const input = document.getElementById(inputId);
   if(!input || appState.sorularState[soruNo]?.answered) return;
   clearTimeout(_openAnswerAutoTimer);
   const typed = cleanOpenAnswerText(input.value);
-  if(isOpenAnswerIncomplete(typed)){ input.focus(); return; }
+  if(isOpenAnswerIncomplete(typed)){ focusOpenAnswerInput(inputId); return; }
   const normalizedCorrect = normalizeOpenAnswer(correct);
   const normalizedTyped = normalizeOpenAnswer(typed);
-  selectAnswer(soruNo, normalizedTyped, normalizedCorrect, idx);
+  selectAnswer(soruNo, normalizedTyped, normalizedCorrect, idx, { keepFocusInputId: inputId });
 }
 
 // Açık uçlu soru: "Kontrol Et" butonuna basmaya gerek yok — kullanıcı yazmayı
@@ -216,8 +226,8 @@ function renderTekSoruKartEl(card, sorular, idx){
         <input id="${openInputId}" class="tsk-open-input" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"
           placeholder="Cevabınızı yazın" value="${answered ? escapeHtml(state?.selected ?? '') : ''}"
           oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
-          onkeydown="if(event.key==='Enter')submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
-          ${answered?'disabled':''}>
+          onkeydown="if(event.key==='Enter'){event.preventDefault();submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')}"
+          ${answered?'readonly':''}>
       </div>
       ${answered ? '' : buildOpenAnswerKeypadHtml(openInputId, escapeHtml(s.cevap), idx, s._uid||s.no, 'tsk-open-keypad')}`
     : `<div class="tsk-cevap-row">${btns}</div>`;
@@ -776,7 +786,7 @@ function resetAltKonuStats(){
   persistData();
 }
 
-function selectAnswer(soruNo, selected, correct, idx){
+function selectAnswer(soruNo, selected, correct, idx, options = {}){
   if(appState.sorularState[soruNo]?.answered) return;
 
   const isCorrect = selected===correct;
@@ -822,6 +832,7 @@ function selectAnswer(soruNo, selected, correct, idx){
   } else {
     renderTekSoruKart(sorular, idx);
   }
+  if(options.keepFocusInputId) focusOpenAnswerInput(options.keepFocusInputId);
 
   // Update stats badge in alt konu list
   refreshAltKonuChip();
@@ -829,7 +840,7 @@ function selectAnswer(soruNo, selected, correct, idx){
   updateDashboard();
 
   // Auto-advance ONLY if correct answer
-  if(isCorrect){
+  if(isCorrect && !options.keepFocusInputId){
     setTimeout(()=>{
       const nextIdx = idx + 1;
       if(nextIdx < sorular.length) goToSoru(nextIdx);
