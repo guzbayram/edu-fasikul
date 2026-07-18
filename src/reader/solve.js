@@ -102,10 +102,10 @@ function renderSolveAnswers(){
   // Şıkların başına soru no
   const noHtml = `<span class="sp-no">S.${s.no}</span>`;
   if(s.cevapTipi === 'acik-uclu'){
-    const inputId = `sp-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+    const inputId = window.getOpenAnswerInputIdForQuestion?.(s, 'sp') || `sp-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
     // "Kontrol Et" yok — yazmayı bırakınca (debounce) ya da Enter'a basınca
     // otomatik gönderilir. Altında sistem klavyesi yerine dokunmatik tuş takımı.
-    wrap.innerHTML = `<div class="sp-open-row">${noHtml}<input id="${inputId}" class="sp-open-input" inputmode="decimal"
+    wrap.innerHTML = `<div class="sp-open-row">${noHtml}<input id="${inputId}" class="sp-open-input" inputmode="text" enterkeyhint="next"
       placeholder="Cevap" value="${answered ? (state?.selected ?? '') : ''}"
       oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')"
       onkeydown="if(event.key==='Enter'){event.preventDefault();submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')}"

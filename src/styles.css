@@ -1935,24 +1935,27 @@ body.reader-locked .main-content{visibility:hidden!important}
 .tsk-open-input,.sp-open-input{min-width:0;border:1.5px solid var(--border-strong);background:var(--bg-3);color:var(--text-0);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;outline:none}
 .tsk-open-input:focus,.sp-open-input:focus{border-color:var(--mat);box-shadow:0 0 0 3px var(--mat-dim)}
 .tsk-open-input:disabled,.sp-open-input:disabled{opacity:.65;cursor:not-allowed}
+.tsk-open-input[readonly],.sp-open-input[readonly]{opacity:.78;cursor:default}
 .sp-open-input{flex:1;padding:7px 9px}
 
 /* Masaüstü/tablet rakam-parantez tuş takımı (reader-right paneli) */
-.tsk-open-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;max-width:220px}
+.tsk-open-keypad{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px;max-width:280px}
 .tsk-open-keypad-key{
   border:1.5px solid var(--border-strong);background:var(--bg-3);color:var(--text-0);
-  border-radius:var(--radius-sm);padding:10px 0;font-size:16px;font-weight:700;cursor:pointer;
+  border-radius:var(--radius-sm);padding:9px 0;font-size:15px;font-weight:700;cursor:pointer;
 }
+.tsk-open-keypad-key-wide{grid-column:span 5}
 .tsk-open-keypad-key:hover{background:var(--mat-dim);border-color:var(--mat)}
 .tsk-open-keypad-key:active{background:var(--mat);color:#fff}
 
 /* Telefon tam-ekran çözüm paleti: dar alana göre kompakt tuş takımı */
 .sp-open-row{display:flex;align-items:center;gap:6px;width:100%}
-.sp-open-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:100%;margin-top:4px}
+.sp-open-keypad{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;width:100%;margin-top:4px}
 .sp-open-keypad-key{
   border:1px solid var(--border-strong);background:var(--bg-3);color:var(--text-0);
-  border-radius:8px;padding:6px 0;font-size:13px;font-weight:700;cursor:pointer;
+  border-radius:8px;padding:6px 0;font-size:12px;font-weight:700;cursor:pointer;
 }
+.sp-open-keypad-key-wide{grid-column:span 5}
 .sp-open-keypad-key:active{background:var(--mat);color:#fff}
 
 @media(max-width:520px){.tsk-open-answer{grid-template-columns:auto minmax(0,1fr)}}

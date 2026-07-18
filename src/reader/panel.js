@@ -78,10 +78,51 @@ function focusOpenAnswerInput(inputId){
   requestAnimationFrame(()=>{
     const input = document.getElementById(inputId);
     if(!input) return;
-    input.focus();
+    input.focus({ preventScroll: true });
     const pos = input.value.length;
     input.setSelectionRange?.(pos, pos);
   });
+}
+
+function getOpenAnswerInputIdForQuestion(soru, prefix){
+  return `${prefix}-open-${String(soru?._uid||soru?.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+}
+
+function getOpenAnswerInputPrefix(inputId){
+  return String(inputId || '').startsWith('sp-open-') ? 'sp' : 'tsk';
+}
+
+function findNextOpenAnswerIdx(sorular, idx){
+  for(let i = idx + 1; i < sorular.length; i++){
+    const soru = sorular[i];
+    if(soru?.cevapTipi !== 'acik-uclu') continue;
+    if(appState.sorularState[soru._uid||soru.no]?.answered) continue;
+    return i;
+  }
+  return -1;
+}
+
+function focusNextOpenAnswerAfterSubmit(sorular, idx, inputId){
+  const nextIdx = findNextOpenAnswerIdx(sorular, idx);
+  if(nextIdx < 0){
+    focusOpenAnswerInput(inputId);
+    return;
+  }
+  const prefix = getOpenAnswerInputPrefix(inputId);
+  const nextInputId = getOpenAnswerInputIdForQuestion(sorular[nextIdx], prefix);
+  if(appState.soruListMode === 'scroll'){
+    appState.activeQuestionIdx = nextIdx;
+    document.querySelectorAll('.surekli-card').forEach(el => el.classList.remove('surekli-active'));
+    const el = document.getElementById(`soruCard-${nextIdx}`);
+    el?.classList.add('surekli-active');
+    el?.scrollIntoView({behavior:'smooth', block:'nearest'});
+    renderSoruStrip(sorular);
+    updateTestProgress();
+    focusOpenAnswerInput(nextInputId);
+    return;
+  }
+  goToSoru(nextIdx);
+  focusOpenAnswerInput(nextInputId);
 }
 
 function submitOpenAnswer(soruNo, correct, idx, inputId){
@@ -92,7 +133,7 @@ function submitOpenAnswer(soruNo, correct, idx, inputId){
   if(isOpenAnswerIncomplete(typed)){ focusOpenAnswerInput(inputId); return; }
   const normalizedCorrect = normalizeOpenAnswer(correct);
   const normalizedTyped = normalizeOpenAnswer(typed);
-  selectAnswer(soruNo, normalizedTyped, normalizedCorrect, idx, { keepFocusInputId: inputId });
+  selectAnswer(soruNo, normalizedTyped, normalizedCorrect, idx, { focusNextOpenAnswerFromInputId: inputId });
 }
 
 // Açık uçlu soru: "Kontrol Et" butonuna basmaya gerek yok — kullanıcı yazmayı
@@ -114,8 +155,8 @@ function scheduleOpenAnswerAutoSubmit(soruNo, correct, idx, inputId){
 // ch: basılan tuşun metni ('⌫' = sil, aksi halde imlecin bulunduğu yere eklenir).
 function pressOpenAnswerKey(inputId, ch, soruNo, correct, idx){
   const input = document.getElementById(inputId);
-  if(!input || input.disabled) return;
-  input.focus();
+  if(!input || input.disabled || input.readOnly) return;
+  input.focus({ preventScroll: true });
   const start = input.selectionStart ?? input.value.length;
   const end = input.selectionEnd ?? input.value.length;
   if(ch === '⌫'){
@@ -137,10 +178,22 @@ function pressOpenAnswerKey(inputId, ch, soruNo, correct, idx){
 }
 // Rakam/parantez tuş takımı HTML'i üretir (masaüstü ve telefon paletinde ortak).
 function buildOpenAnswerKeypadHtml(inputId, correctEsc, idx, soruNoAttr, cls){
-  const keys = ['7','8','9','4','5','6','1','2','3','(','0',')','−','.','⌫'];
+  const keys = [
+    '7','8','9','+','-',
+    '4','5','6','*','/',
+    '1','2','3','^','=',
+    '0','.',',','(',')',
+    'a','b','c','d','e',
+    'f','g','h','i','j',
+    'k','m','n','o','p',
+    'r','s','t','u','v',
+    'w','x','y','z','ç',
+    'ü','ş',
+    '⌫'
+  ];
   return `<div class="${cls}">` + keys.map(k=>{
-    const keyCh = k === '−' ? '-' : k;
-    return `<button type="button" class="${cls}-key" onclick="pressOpenAnswerKey('${inputId}','${keyCh}','${soruNoAttr}','${correctEsc}',${idx})">${k}</button>`;
+    const buttonClass = `${cls}-key${k === '⌫' ? ` ${cls}-key-wide` : ''}`;
+    return `<button type="button" class="${buttonClass}" onclick="pressOpenAnswerKey('${inputId}','${k}','${soruNoAttr}','${correctEsc}',${idx})">${k}</button>`;
   }).join('') + '</div>';
 }
 
@@ -206,7 +259,7 @@ function renderTekSoruKartEl(card, sorular, idx){
     : `<div class="tsk-feedback" id="tsk-feedback"></div>`;
 
   const isOpenEnded = !isKonuKart && s.cevapTipi === 'acik-uclu';
-  const openInputId = `tsk-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+  const openInputId = getOpenAnswerInputIdForQuestion(s, 'tsk');
 
   const secenekler = appState.aktifFasikul?.secenekSayisi === 4 ? ['A','B','C','D'] : ['A','B','C','D','E'];
   const btns = isKonuKart ? '' : secenekler.map(opt => {
@@ -223,7 +276,7 @@ function renderTekSoruKartEl(card, sorular, idx){
   const answerHtml = isOpenEnded
     ? `<div class="tsk-open-answer">
         <span class="tsk-open-no">S.${escapeHtml(displayNo)}</span>
-        <input id="${openInputId}" class="tsk-open-input" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+        <input id="${openInputId}" class="tsk-open-input" inputmode="text" enterkeyhint="next" autocomplete="off" autocapitalize="off" spellcheck="false"
           placeholder="Cevabınızı yazın" value="${answered ? escapeHtml(state?.selected ?? '') : ''}"
           oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')"
           onkeydown="if(event.key==='Enter'){event.preventDefault();submitOpenAnswer('${s._uid||s.no}','${escapeHtml(s.cevap)}',${idx},'${openInputId}')}"
@@ -833,6 +886,7 @@ function selectAnswer(soruNo, selected, correct, idx, options = {}){
     renderTekSoruKart(sorular, idx);
   }
   if(options.keepFocusInputId) focusOpenAnswerInput(options.keepFocusInputId);
+  if(options.focusNextOpenAnswerFromInputId) focusNextOpenAnswerAfterSubmit(sorular, idx, options.focusNextOpenAnswerFromInputId);
 
   // Update stats badge in alt konu list
   refreshAltKonuChip();
@@ -840,7 +894,7 @@ function selectAnswer(soruNo, selected, correct, idx, options = {}){
   updateDashboard();
 
   // Auto-advance ONLY if correct answer
-  if(isCorrect && !options.keepFocusInputId){
+  if(isCorrect && !options.keepFocusInputId && !options.focusNextOpenAnswerFromInputId){
     setTimeout(()=>{
       const nextIdx = idx + 1;
       if(nextIdx < sorular.length) goToSoru(nextIdx);
@@ -2450,6 +2504,7 @@ window.submitOpenAnswer = submitOpenAnswer;
 window.scheduleOpenAnswerAutoSubmit = scheduleOpenAnswerAutoSubmit;
 window.pressOpenAnswerKey = pressOpenAnswerKey;
 window.buildOpenAnswerKeypadHtml = buildOpenAnswerKeypadHtml;
+window.getOpenAnswerInputIdForQuestion = getOpenAnswerInputIdForQuestion;
 window.skipQuestion = skipQuestion;
 window.addToHatalilar = addToHatalilar;
 window.toggleStar = toggleStar;
