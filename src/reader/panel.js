@@ -102,6 +102,20 @@ function findNextOpenAnswerIdx(sorular, idx){
   return -1;
 }
 
+function activateQuestionInPanelOnly(sorular, idx){
+  appState.activeQuestionIdx = idx;
+  if(appState.soruListMode === 'scroll'){
+    document.querySelectorAll('.surekli-card').forEach(el => el.classList.remove('surekli-active'));
+    const el = document.getElementById(`soruCard-${idx}`);
+    el?.classList.add('surekli-active');
+    el?.scrollIntoView({behavior:'smooth', block:'nearest'});
+  } else {
+    renderTekSoruKart(sorular, idx);
+  }
+  renderSoruStrip(sorular);
+  updateTestProgress();
+}
+
 function focusNextOpenAnswerAfterSubmit(sorular, idx, inputId){
   const nextIdx = findNextOpenAnswerIdx(sorular, idx);
   if(nextIdx < 0){
@@ -110,21 +124,7 @@ function focusNextOpenAnswerAfterSubmit(sorular, idx, inputId){
   }
   const prefix = getOpenAnswerInputPrefix(inputId);
   const nextInputId = getOpenAnswerInputIdForQuestion(sorular[nextIdx], prefix);
-  if(appState.soruListMode === 'scroll'){
-    appState.activeQuestionIdx = nextIdx;
-    document.querySelectorAll('.surekli-card').forEach(el => el.classList.remove('surekli-active'));
-    const el = document.getElementById(`soruCard-${nextIdx}`);
-    el?.classList.add('surekli-active');
-    el?.scrollIntoView({behavior:'smooth', block:'nearest'});
-    renderSoruStrip(sorular);
-    updateTestProgress();
-    focusOpenAnswerInput(nextInputId);
-    return;
-  }
-  appState.activeQuestionIdx = nextIdx;
-  renderTekSoruKart(sorular, nextIdx);
-  renderSoruStrip(sorular);
-  updateTestProgress();
+  activateQuestionInPanelOnly(sorular, nextIdx);
   focusOpenAnswerInput(nextInputId);
 }
 
@@ -919,7 +919,7 @@ function selectAnswer(soruNo, selected, correct, idx, options = {}){
   if(isCorrect && !options.keepFocusInputId && !options.focusNextOpenAnswerFromInputId){
     setTimeout(()=>{
       const nextIdx = idx + 1;
-      if(nextIdx < sorular.length) goToSoru(nextIdx);
+      if(nextIdx < sorular.length) activateQuestionInPanelOnly(sorular, nextIdx);
     }, 700);
   }
 
