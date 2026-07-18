@@ -162,6 +162,7 @@ function pressOpenAnswerKey(inputId, ch, soruNo, correct, idx){
   input.focus({ preventScroll: true });
   const start = input.selectionStart ?? input.value.length;
   const end = input.selectionEnd ?? input.value.length;
+  const value = ch === '__mixed_fraction__' ? ' /' : ch;
   if(ch === '⌫'){
     if(start === end){
       if(start === 0) return;
@@ -173,30 +174,48 @@ function pressOpenAnswerKey(inputId, ch, soruNo, correct, idx){
       input.setSelectionRange?.(start, start);
     }
   } else {
-    input.value = input.value.slice(0, start) + ch + input.value.slice(end);
-    const pos = start + ch.length;
+    input.value = input.value.slice(0, start) + value + input.value.slice(end);
+    const pos = start + value.length;
     input.setSelectionRange?.(pos, pos);
   }
   scheduleOpenAnswerAutoSubmit(soruNo, correct, idx, inputId);
 }
-// Rakam/parantez tuş takımı HTML'i üretir (masaüstü ve telefon paletinde ortak).
-function buildOpenAnswerKeypadHtml(inputId, correctEsc, idx, soruNoAttr, cls){
+
+function getOpenAnswerKeypadKeys(correct){
+  const sorular = appState.aktifAltKonu?.sorular || [];
+  const answers = sorular
+    .filter(s => s?.cevapTipi === 'acik-uclu')
+    .map(s => String(s.cevap ?? ''));
+  if(correct) answers.push(String(correct));
+
+  const letterOrder = 'abcçdefgğhıijklmnoöprsştuüvyz';
+  const letters = new Set();
+  answers.forEach(answer => {
+    for(const ch of answer.toLocaleLowerCase('tr-TR')){
+      if(letterOrder.includes(ch)) letters.add(ch);
+    }
+  });
+  const letterKeys = [...letters].sort((a,b)=>letterOrder.indexOf(a)-letterOrder.indexOf(b));
+  const hasFraction = answers.some(answer => /[\/⁄]/.test(answer));
+  const hasMixedFraction = answers.some(answer => /\d+\s+\d+\s*[\/⁄]\s*-?\d+/.test(answer));
   const keys = [
     '7','8','9','+','-',
     '4','5','6','*','/',
     '1','2','3','^','=',
-    '0','.',',','(',')',
-    'a','b','c','d','e',
-    'f','g','h','i','j',
-    'k','m','n','o','p',
-    'r','s','t','u','v',
-    'w','x','y','z','ç',
-    'ü','ş',
-    '⌫'
+    '0','.',',','(',')'
   ];
+  if(hasMixedFraction || hasFraction) keys.push({ label:'a b/c', value:'__mixed_fraction__', wide:true });
+  keys.push(...letterKeys, '⌫');
+  return keys;
+}
+
+// Rakam/parantez tuş takımı HTML'i üretir (masaüstü ve telefon paletinde ortak).
+function buildOpenAnswerKeypadHtml(inputId, correctEsc, idx, soruNoAttr, cls){
+  const keys = getOpenAnswerKeypadKeys(correctEsc);
   return `<div class="${cls}">` + keys.map(k=>{
-    const buttonClass = `${cls}-key${k === '⌫' ? ` ${cls}-key-wide` : ''}`;
-    return `<button type="button" class="${buttonClass}" onclick="pressOpenAnswerKey('${inputId}','${k}','${soruNoAttr}','${correctEsc}',${idx})">${k}</button>`;
+    const key = typeof k === 'string' ? { label:k, value:k, wide:k === '⌫' } : k;
+    const buttonClass = `${cls}-key${key.wide ? ` ${cls}-key-wide` : ''}`;
+    return `<button type="button" class="${buttonClass}" onclick="pressOpenAnswerKey('${inputId}','${key.value}','${soruNoAttr}','${correctEsc}',${idx})">${key.label}</button>`;
   }).join('') + '</div>';
 }
 
