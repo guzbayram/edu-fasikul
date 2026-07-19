@@ -2566,6 +2566,10 @@ async function loadAllKonular(){
   for(const ders of MANIFEST.dersler){
     for(const fas of ders.fasikuller){
       try{
+        // Yerleşik/GitHub kaynaklı fasiküller zaten loadBundledFasikuller içinde
+        // güncel JSON'dan hydrate ediliyor. Eski localStorage/IndexedDB kopyası
+        // tekrar yüklenirse sayfa-soru senkronu eski veriye dönebiliyor.
+        if(fas.sourceType === 'bundled' && fas.jsonFile && fas.konular?.length) continue;
         const key = `edu_konular_${ders.id}_${fas.id}`;
         let saved = localStorage.getItem(key);
         if(!saved) saved = await loadKonularFromDB(key);
