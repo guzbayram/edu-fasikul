@@ -2286,7 +2286,7 @@ function normalizeFasikulKonular(konular, context = {}){
       const firstPage = sorular.find(s=>s.sayfa)?.sayfa || ak.sayfa || k.sayfaBasl || 1;
       ak.sayfa = ak.sayfa || firstPage;
       sorular.forEach((s, soruIdx) => {
-        s.no = s.no ?? (soruIdx + 1);
+        s.no = s.no ?? s.soruNo ?? (soruIdx + 1);
         s.sayfa = s.sayfa || (ak.sayfa ? ak.sayfa + soruIdx : undefined);
         s._uid = s._uid || `${ak.id}_${s.no}`;
         s.onizleme = s.onizleme || `${k.ad} - ${ak.ad} Soru ${s.no}`;
