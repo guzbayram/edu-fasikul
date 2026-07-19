@@ -55,6 +55,9 @@ function escapeHtml(text){
 function normalizeOpenAnswer(value){
   return String(value ?? '')
     .trim().toLocaleLowerCase('tr-TR')
+    .replace(/sqrt/g, '√')
+    .replace(/kök/g, '√')
+    .replace(/\u221a/g, '√')
     .replace(/\s+/g, '')
     .replace(',', '.')
     .replace(/^\+/, '');
@@ -70,7 +73,7 @@ function isOpenAnswerIncomplete(value){
   const text = cleanOpenAnswerText(value);
   if(!text) return true;
   if(/^[+-]$/.test(text)) return true;
-  if(/[.,/]$/.test(text)) return true;
+  if(/[.,/√∛∜]$/.test(text)) return true;
   return false;
 }
 
@@ -198,12 +201,26 @@ function getOpenAnswerKeypadKeys(correct){
   const letterKeys = [...letters].sort((a,b)=>letterOrder.indexOf(a)-letterOrder.indexOf(b));
   const hasFraction = answers.some(answer => /[\/⁄]/.test(answer));
   const hasMixedFraction = answers.some(answer => /\d+\s+\d+\s*[\/⁄]\s*-?\d+/.test(answer));
+  const hasSquareRoot = answers.some(answer => /√|sqrt|kök/i.test(answer));
+  const rootKeys = [
+    ['∛', /∛/],
+    ['∜', /∜/],
+    ['⁵√', /⁵√/],
+    ['⁶√', /⁶√/],
+    ['⁷√', /⁷√/],
+    ['⁸√', /⁸√/],
+    ['⁹√', /⁹√/]
+  ];
   const keys = [
     '7','8','9','+','-',
     '4','5','6','*','/',
     '1','2','3','^','=',
     '0','.',',','(',')'
   ];
+  if(hasSquareRoot) keys.push('√');
+  for(const [label, pattern] of rootKeys){
+    if(answers.some(answer => pattern.test(answer))) keys.push({ label, value:label });
+  }
   if(hasMixedFraction || hasFraction) keys.push({ label:'a b/c', value:'__mixed_fraction__', wide:true });
   keys.push(...letterKeys, '⌫');
   return keys;
