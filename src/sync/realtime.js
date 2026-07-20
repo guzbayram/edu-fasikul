@@ -221,9 +221,44 @@ function unsubscribeRealtimeDrawings(){
   }
 }
 
+function arraysSameOrderless(a, b){
+  const aa = Array.isArray(a) ? [...a].sort() : [];
+  const bb = Array.isArray(b) ? [...b].sort() : [];
+  return aa.length === bb.length && aa.every((v, i) => v === bb[i]);
+}
+
+function refreshVisibleFasikulUi(){
+  window.recalcFasikulProgress?.();
+  window.renderDerslerGrid?.();
+  if(window.currentDrawerDers && window.visibleFasikullerFor && window.renderFasikulCards){
+    window.renderFasikulCards(window.visibleFasikullerFor(window.currentDrawerDers), window.currentDrawerDers);
+  }
+  window.loadMyAssignments?.();
+  window.loadMyStudyPlan?.();
+}
+
+function subscribeUserProfile(uid){
+  if(window._realtimeUnsubUserProfile){
+    window._realtimeUnsubUserProfile();
+    window._realtimeUnsubUserProfile = null;
+  }
+  if(!window._fsOnSnapshot || !window._db || !uid) return;
+  const ref = window._fsDoc(window._db,'kullanicilar',uid);
+  window._realtimeUnsubUserProfile = window._fsOnSnapshot(ref, (snap)=>{
+    if(!snap.exists() || snap.metadata.hasPendingWrites || !appState.user) return;
+    const data = snap.data() || {};
+    if(Array.isArray(data.hiddenFasikulIds) && !arraysSameOrderless(appState.user.hiddenFasikulIds, data.hiddenFasikulIds)){
+      appState.user.hiddenFasikulIds = data.hiddenFasikulIds;
+      refreshVisibleFasikulUi();
+      window.showToast?.('Fasikül yetkileri güncellendi', 'success');
+    }
+  }, (err)=>{ console.warn('Kullanıcı profili onSnapshot hatası:',err); });
+}
+
 export function startRealtimeSync(uid){
   stopRealtimeSync();
   if(!window._fsOnSnapshot || !window._db) return;
+  subscribeUserProfile(uid);
 
   // Öğrenci hesapları konumunu otomatik yayınlar → öğretmen elle bir şey
   // yapmadan canlı izleyebilir. Öğretmen/yönetici/misafir yayın yapmaz.
@@ -284,6 +319,7 @@ export function startRealtimeSync(uid){
 }
 
 export function stopRealtimeSync(){
+  if(window._realtimeUnsubUserProfile){ window._realtimeUnsubUserProfile(); window._realtimeUnsubUserProfile=null; }
   if(window._realtimeUnsubCozumler){ window._realtimeUnsubCozumler(); window._realtimeUnsubCozumler=null; }
   unsubscribeRealtimeDrawings();
   if(window._realtimeUnsubHatalilar){ window._realtimeUnsubHatalilar(); window._realtimeUnsubHatalilar=null; }
