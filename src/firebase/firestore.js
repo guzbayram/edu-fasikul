@@ -67,6 +67,7 @@ async function _persistSharedManifestIfNeeded(){
     updatedBy: appState.user.email || appState.user.uid || '',
     updatedAt: new Date().toISOString()
   }, { merge: true });
+  try{ localStorage.removeItem('edu_manifest_dirty'); }catch(e){}
 }
 
 export function scheduleCloudPersist(){
@@ -385,7 +386,27 @@ export async function loadFromFirestore(){
     let shouldPersistAfterLoad = false;
     let sharedManifestApplied = false;
     const sharedManifest = await _loadSharedManifest();
-    if(sharedManifest && Array.isArray(sharedManifest.manifest)){
+    // Bu cihazda daha önce yapılan admin ders/fasikül değişikliği henüz buluta
+    // ulaşmamış olabilir (ör. 900ms'lik debounce ya da bulut yazması bitmeden
+    // sekme kapandı). Bu durumda buluttaki eski kopya yereli ezmesin — önce
+    // bekleyen yerel değişikliği uygulayıp buluta göndeririz.
+    const localManifestDirty = appState.user?.role === 'admin' && localStorage.getItem('edu_manifest_dirty') === '1';
+    if(localManifestDirty){
+      const localTs = Number(localStorage.getItem('edu_manifest_meta_ts') || 0);
+      const cloudTs = Number(sharedManifest?.manifestTs || 0);
+      if(localTs > cloudTs){
+        try{
+          const localSlim = JSON.parse(localStorage.getItem('edu_manifest_meta') || 'null');
+          if(Array.isArray(localSlim) && window.applyManifestMeta?.(localSlim, {respectLocalDeletes:true, source:'local-pending'})){
+            appState.manifestDirty = true;
+            appState.manifestTs = localTs;
+            await _persistSharedManifestIfNeeded();
+            sharedManifestApplied = true;
+          }
+        }catch(e){ console.warn('Bekleyen yerel manifest uygulanamadı:', e); }
+      }
+    }
+    if(!sharedManifestApplied && sharedManifest && Array.isArray(sharedManifest.manifest)){
       sharedManifestApplied = await _applySharedManifest(sharedManifest);
     }
     if(snap.exists()){

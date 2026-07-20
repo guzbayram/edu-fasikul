@@ -1433,6 +1433,21 @@ window.addEventListener('resize', ()=>{
   if(readerResizeTimer) clearTimeout(readerResizeTimer);
   readerResizeTimer = setTimeout(()=>renderPages(), 180);
 });
+
+// Sekme kapatılırken/arka plana alınırken 900ms'lik bulut senk. debounce'u
+// henüz tamamlanmamış olabilir (özellikle admin bir ders/fasikül ekleyip
+// hemen uygulamayı kapattığında). iOS'ta 'pagehide' bazen hiç JS çalıştırma
+// fırsatı vermeden tetiklendiği için 'visibilitychange' (hidden) de eklendi —
+// o daha erken ve daha güvenilir ateşleniyor. persistManifest()'in
+// localStorage'a senkron yazdığı yerel yedek (edu_manifest_dirty) zaten asıl
+// güvenlik ağı; bu sadece bulut yazmasını mümkün olduğunca erkene çekiyor.
+function flushPendingCloudPersistBestEffort(){
+  if(appState._cloudPersistTimer){ window.flushCloudPersist?.(); }
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) flushPendingCloudPersistBestEffort();
+});
+window.addEventListener('pagehide', flushPendingCloudPersistBestEffort);
 // ══════════════════════════════
 // DATA RESET
 // ══════════════════════════════
@@ -2614,6 +2629,15 @@ function persistManifest(){
   try{
     appState.manifestDirty = true;
     appState.manifestTs = Date.now();
+    // 900ms'lik debounce tamamlanmadan (ör. sekme kapatılıp yeniden açılırsa)
+    // bulut senk.'i hiç gerçekleşmeyebilir. Admin değişikliği burada senkron
+    // olarak localStorage'a da yazılır ki bir sonraki açılışta loadFromFirestore
+    // eski bulut kopyasıyla üzerine yazmadan önce bu yereli fark edip koruyabilsin.
+    if(appState.user?.role === 'admin'){
+      localStorage.setItem('edu_manifest_meta', JSON.stringify(buildManifestMeta()));
+      localStorage.setItem('edu_manifest_meta_ts', String(appState.manifestTs));
+      localStorage.setItem('edu_manifest_dirty', '1');
+    }
     scheduleCloudPersist();
   }catch(e){}
 }
