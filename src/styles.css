@@ -469,7 +469,15 @@ body.reader-locked .main-content{visibility:hidden!important}
 #reader-overlay,#reader-overlay *{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 /* Panel/palet butonlarında çift-dokun-zoom'u kapat (çift dokununca ekran yakınlaşmasın) */
 .reader-right,.reader-right *,.solve-palette,.solve-palette *,.reader-toolbar,.reader-toolbar *,
-.reader-bottom-bar,.reader-bottom-bar *,.reader-canvas-wrap{ touch-action:manipulation; }
+.reader-bottom-bar,.reader-bottom-bar *{ touch-action:manipulation; }
+/* Kart alanı: 2 parmak pinch/pan tamamen initTouchGestures() (render.js) ile JS'te
+   yönetiliyor. "manipulation" tarayıcının KENDİ native pinch-zoom'unu da açık
+   bırakıyordu — bizim JS ile aynı anda devreye girip "senkronsuz/takılan" bir
+   harekete yol açıyordu. pinch-zoom'u burada kapatıp panı (pan-x pan-y) JS'e
+   bırakmadan önceki gibi native bırakıyoruz — tek parmak kaydırma (sürekli mod)
+   ve tek-parmak çizim etkilenmez, yalnız native pinch JS'in önüne geçmiyor.
+   Çift-dokun-zoom da pinch-zoom kapatılınca zaten kapanmış olur. */
+.reader-canvas-wrap{ touch-action:pan-x pan-y; }
 .reader-canvas-wrap .canvas-container,
 .reader-canvas-wrap .upper-canvas,
 .reader-canvas-wrap .lower-canvas{ touch-action:none!important; }
