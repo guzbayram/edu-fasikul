@@ -47,10 +47,39 @@ function toggleTheme(){
   scheduleCloudPersist();
 }
 // GUEST_DEMO_FASIKUL_IDS → window.GUEST_DEMO_FASIKUL_IDS (main.js'de tanımlı)
+function withDisconnectedChildFolders(ders, items, seenDersIds){
+  if(!ders || !window.MANIFEST?.dersler) return items || [];
+  const list = [...(items || [])];
+  const linkedChildIds = new Set(
+    list
+      .filter(f=>f?.type === 'folder' && f.childDersId)
+      .map(f=>f.childDersId)
+  );
+  const disconnectedChildren = window.MANIFEST.dersler.filter(child =>
+    child?.parentDersId === ders.id && !linkedChildIds.has(child.id)
+  );
+  disconnectedChildren.forEach(child=>{
+    const visibleLeafs = visibleFasikullerFor(child, new Set(seenDersIds));
+    if(!visibleLeafs.length) return;
+    list.push({
+      id: `folder-${child.id}`,
+      ad: child.ad,
+      type: 'folder',
+      childDersId: child.id,
+      thumb: child.ikon || '📁',
+      konuSayisi: 0,
+      soruSayisi: 0,
+      progPct: child.progPct || 0,
+      _syntheticFolder: true
+    });
+  });
+  return list;
+}
+
 function visibleFasikullerFor(ders, seenDersIds=new Set()){
   if(!ders || seenDersIds.has(ders.id)) return [];
   seenDersIds.add(ders.id);
-  const allItems = ders?.fasikuller || [];
+  const allItems = withDisconnectedChildFolders(ders, ders?.fasikuller || [], seenDersIds);
   const base = isGuestSession()
     ? allItems.filter(f=>{
       if(window.GUEST_DEMO_FASIKUL_IDS.has(f.id)) return true;
