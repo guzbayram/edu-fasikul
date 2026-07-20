@@ -89,6 +89,7 @@ async function renderAllPages(){
   // Her sayfa için önce placeholder oluştur (boyut sonra doldurulacak)
   for(let i = 1; i <= totalPages; i++){
     const pageWrap = document.createElement('div');
+    pageWrap.className = 'pdf-page-wrap';
     pageWrap.id = 'page-wrap-' + i;
     pageWrap.dataset.pageNum = i;
     pageWrap.style.cssText = 'position:relative;display:flex;align-items:center;justify-content:center;margin:12px auto;flex-shrink:0;';
@@ -722,6 +723,7 @@ async function renderSinglePageMode(pageNum){
   stage.className = 'reader-page-stage';
 
   const pageWrap = document.createElement('div');
+  pageWrap.className = 'pdf-page-wrap';
   pageWrap.id = 'page-wrap-' + pageNum;
   pageWrap.dataset.pageNum = pageNum;
   pageWrap.style.cssText = 'position:relative;margin:16px auto;flex-shrink:0;border-radius:4px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.4);';
@@ -1128,10 +1130,13 @@ function scheduleCardZoomRender(anchor, delay = 90){
 function applyStageScale(scale, cx, cy){
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap) return;
-  wrap.querySelectorAll('.reader-page-stage').forEach(stage=>{
+  const stageNodes = [...wrap.querySelectorAll('.reader-page-stage')];
+  const nodes = stageNodes.length ? stageNodes : [...wrap.querySelectorAll('[data-page-num]')];
+  nodes.forEach(stage=>{
     const r = stage.getBoundingClientRect();
     stage.style.transformOrigin = `${cx - r.left}px ${cy - r.top}px`;
     stage.style.transform = `scale(${scale})`;
+    stage.style.willChange = 'transform';
   });
 }
 
@@ -1226,34 +1231,97 @@ function initTouchGestures() {
   function dist(a, b) { return Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY); }
   function midpt(a, b) { return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
 
-  // CSS scale on all rendered stages for instant visual feedback.
+  // CSS scale on rendered page contents for instant visual feedback.
   // rect0: jest BAŞINDA bir kez ölçülür; her karede getBoundingClientRect()
   // ÇAĞRILMAZ — o an yazdığımız scrollLeft/Top farkından ANALİTİK hesaplanır.
   // (touchmove içinde ölçüp-hemen-yazmak "layout thrashing" yaratıp pinch'i
   // titrek/takılı hissettiriyordu — asıl sorun buydu.)
-  function applyVisualScale(scale, cx, cy) {
+  function getGestureTargets(wrapRect, visibleStageBuffer) {
+    const stageNodes = [...wrap.querySelectorAll('.reader-page-stage')];
+    const rawNodes = stageNodes.length ? stageNodes : [...wrap.querySelectorAll('[data-page-num]')];
+    if(!rawNodes.length && wrap.firstElementChild) rawNodes.push(wrap.firstElementChild);
+
+    return rawNodes
+      .map(stage => {
+        const directPage = stage.matches?.('[data-page-num],.pdf-page-wrap,.pdf-page-mock') ? stage : null;
+        const page = stage.querySelector?.('.pdf-page-wrap,.pdf-page-mock,[data-page-num]') || directPage || stage.firstElementChild || stage;
+        const rect0 = stage.getBoundingClientRect();
+        const pageRect = page?.getBoundingClientRect?.() || rect0;
+        stage.dataset.gestureW = stage.style.width || '';
+        stage.dataset.gestureH = stage.style.height || '';
+        stage.dataset.gestureJustify = stage.style.justifyContent || '';
+        stage.dataset.gestureAlign = stage.style.alignItems || '';
+        if(page){
+          page.dataset.gestureTransform = page.style.transform || '';
+          page.dataset.gestureTransformOrigin = page.style.transformOrigin || '';
+          page.dataset.gestureWillChange = page.style.willChange || '';
+        }
+        return {
+          stage,
+          page,
+          rect0,
+          baseStageW: stage.offsetWidth || rect0.width,
+          baseStageH: stage.offsetHeight || rect0.height,
+          basePageW: page?.offsetWidth || pageRect.width,
+          basePageH: page?.offsetHeight || pageRect.height
+        };
+      })
+      .filter(({ rect0 }) => rect0.bottom >= wrapRect.top - visibleStageBuffer && rect0.top <= wrapRect.bottom + visibleStageBuffer);
+  }
+  function restoreGestureNode(stage) {
+    if(!stage) return;
+    const page = stage.querySelector?.('.pdf-page-wrap,.pdf-page-mock,[data-page-num]') || (stage.matches?.('[data-page-num],.pdf-page-wrap,.pdf-page-mock') ? stage : null);
+    stage.style.justifyContent = stage.dataset.gestureJustify || '';
+    stage.style.alignItems = stage.dataset.gestureAlign || '';
+    if(Object.prototype.hasOwnProperty.call(stage.dataset, 'gestureW')) stage.style.width = stage.dataset.gestureW || '';
+    if(Object.prototype.hasOwnProperty.call(stage.dataset, 'gestureH')) stage.style.height = stage.dataset.gestureH || '';
+    delete stage.dataset.gestureW;
+    delete stage.dataset.gestureH;
+    delete stage.dataset.gestureJustify;
+    delete stage.dataset.gestureAlign;
+    [stage, page].filter(Boolean).forEach(el => {
+      if(!Object.prototype.hasOwnProperty.call(el.dataset, 'gestureTransform')) return;
+      el.style.transform = el.dataset.gestureTransform || '';
+      el.style.transformOrigin = el.dataset.gestureTransformOrigin || '';
+      el.style.willChange = el.dataset.gestureWillChange || '';
+      delete el.dataset.gestureTransform;
+      delete el.dataset.gestureTransformOrigin;
+      delete el.dataset.gestureWillChange;
+    });
+  }
+  function applyVisualScale(scale) {
     if (!g) return;
-    const dxScroll = wrap.scrollLeft - g.startScrollLeft;
-    const dyScroll = wrap.scrollTop - g.startScrollTop;
-    g.stages.forEach(({ el, rect0 }) => {
-      const left = rect0.left - dxScroll, top = rect0.top - dyScroll;
-      el.style.transformOrigin = `${cx - left}px ${cy - top}px`;
-      el.style.transform = `scale(${scale})`;
+    g.stages.forEach(({ stage, page, baseStageW, baseStageH, basePageW, basePageH }) => {
+      if(page){
+        page.style.transformOrigin = '0 0';
+        page.style.transform = `scale(${scale})`;
+        page.style.willChange = 'transform';
+      }
+      stage.style.justifyContent = 'flex-start';
+      stage.style.alignItems = 'flex-start';
+      stage.style.width = Math.ceil(Math.max(g.viewportW, basePageW * scale + 32, baseStageW)) + 'px';
+      stage.style.height = Math.ceil(Math.max(g.viewportH, basePageH * scale + 32, baseStageH)) + 'px';
     });
   }
   function clearVisualScale() {
-    wrap.querySelectorAll('.reader-page-stage').forEach(s => {
-      s.style.transform = '';
-      s.style.transformOrigin = '';
-    });
+    const nodes = new Set([
+      ...wrap.querySelectorAll('.reader-page-stage'),
+      ...wrap.querySelectorAll('[data-page-num]'),
+    ]);
+    nodes.forEach(restoreGestureNode);
   }
   function applyPendingGestureFrame() {
     if (!g || !pending) return;
     const { d, m } = pending;
-    wrap.scrollLeft -= (m.x - g.lastMid.x);
-    wrap.scrollTop  -= (m.y - g.lastMid.y);
     g.scale = d / g.startDist;
-    applyVisualScale(g.visualBaseScale * g.scale, m.x, m.y);
+    const visualScale = g.visualBaseScale * g.scale;
+    const rect = wrap.getBoundingClientRect();
+    const viewportX = m.x - rect.left;
+    const viewportY = m.y - rect.top;
+    const scaleRatio = visualScale / g.visualBaseScale;
+    wrap.scrollLeft = Math.max(0, g.anchorContentX * scaleRatio - viewportX);
+    wrap.scrollTop = Math.max(0, g.anchorContentY * scaleRatio - viewportY);
+    applyVisualScale(visualScale);
     g.lastMid = m;
     g.lastDist = d;
     pending = null;
@@ -1272,22 +1340,26 @@ function initTouchGestures() {
       const scrollable = (wrap.scrollWidth > wrap.clientWidth + 1) || (wrap.scrollHeight > wrap.clientHeight + 1);
       const wrapRect = wrap.getBoundingClientRect();
       const visibleStageBuffer = Math.max(320, wrapRect.height * 0.75);
-      const stages = [...wrap.querySelectorAll('.reader-page-stage')]
-        .map(el => ({ el, rect0: el.getBoundingClientRect() }))
-        .filter(({ rect0 }) => rect0.bottom >= wrapRect.top - visibleStageBuffer && rect0.top <= wrapRect.bottom + visibleStageBuffer);
+      const stages = getGestureTargets(wrapRect, visibleStageBuffer);
       const renderedZoom = appState._renderedZoom || appState.zoom || 100;
+      const startMid = midpt(t0, t1);
+      const startWrapRect = wrap.getBoundingClientRect();
       g = {
         startDist: dist(t0, t1),
         startZoom: appState.zoom,
         visualBaseScale: appState.zoom / renderedZoom,
-        startMid: midpt(t0, t1),
-        lastMid: midpt(t0, t1),
+        startMid,
+        lastMid: startMid,
+        anchorContentX: wrap.scrollLeft + (startMid.x - startWrapRect.left),
+        anchorContentY: wrap.scrollTop + (startMid.y - startWrapRect.top),
         lastDist: dist(t0, t1),
         scale: 1,
         startTime: Date.now(),
         scrollable,
         startScrollLeft: wrap.scrollLeft,
         startScrollTop: wrap.scrollTop,
+        viewportW: wrap.clientWidth,
+        viewportH: wrap.clientHeight,
         stages,
       };
     } else {
@@ -1331,8 +1403,8 @@ function initTouchGestures() {
       // sayfayı istediği yere getirebiliyor — g.startMid kullanmak, render
       // sonrası görünümü jestin BAŞLANGIÇ noktasına geri "fırlatıyor" ve
       // kullanıcının bırakırken bıraktığı konumu bozuyordu.
-      const contentX = g.lastMid.x - wrapRect.left + wrap.scrollLeft;
-      const contentY = g.lastMid.y - wrapRect.top  + wrap.scrollTop;
+      const contentX = g.anchorContentX;
+      const contentY = g.anchorContentY;
       appState.zoom = newZoom;
       setZoomLabel(newZoom);
       scheduleCardZoomRender({
