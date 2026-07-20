@@ -1312,15 +1312,20 @@ function initTouchGestures() {
     const zoomChanged = Math.abs(newZoom - g.startZoom) >= 2;
 
     if (zoomChanged) {
-      const contentX = g.startMid.x - wrapRect.left + wrap.scrollLeft;
-      const contentY = g.startMid.y - wrapRect.top  + wrap.scrollTop;
+      // ÖNEMLİ: jestin BAŞLADIĞI değil BIRAKILDIĞI (g.lastMid) parmak konumu
+      // esas alınır. Kullanıcı pinch sırasında aynı zamanda kaydırıp (pan)
+      // sayfayı istediği yere getirebiliyor — g.startMid kullanmak, render
+      // sonrası görünümü jestin BAŞLANGIÇ noktasına geri "fırlatıyor" ve
+      // kullanıcının bırakırken bıraktığı konumu bozuyordu.
+      const contentX = g.lastMid.x - wrapRect.left + wrap.scrollLeft;
+      const contentY = g.lastMid.y - wrapRect.top  + wrap.scrollTop;
       appState.zoom = newZoom;
       setZoomLabel(newZoom);
       scheduleCardZoomRender({
         contentX,
         contentY,
-        viewportX: g.startMid.x - wrapRect.left,
-        viewportY: g.startMid.y - wrapRect.top,
+        viewportX: g.lastMid.x - wrapRect.left,
+        viewportY: g.lastMid.y - wrapRect.top,
         ratio: newZoom / (appState._renderedZoom || g.startZoom),
       });
     } else if (!g.scrollable) {
