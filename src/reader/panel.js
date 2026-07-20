@@ -327,10 +327,12 @@ function renderTekSoruKartEl(card, sorular, idx){
   card.innerHTML = `
     <div class="tsk-header">
       <div class="tsk-header-left">
-        <span class="tsk-no">${isKonuKart ? `K.${displayNo}` : `S.${displayNo}`}</span>
+        ${isVideoFasikul() ? `<span class="tsk-page" style="cursor:default">${s.grup==='assessment'?'Değerlendirme':'Alıştırma'}</span>` : `<span class="tsk-page" onclick="goToPage(${displayPage || s.sayfa || appState.currentPage})">Sayfa ${displayPage || '?'}</span>`}
       </div>
       <div class="tsk-header-center">
-        ${isVideoFasikul() ? `<span class="tsk-page" style="cursor:default">${s.grup==='assessment'?'Değerlendirme':'Alıştırma'}</span>` : `<span class="tsk-page" onclick="goToPage(${displayPage || s.sayfa || appState.currentPage})">Sayfa ${displayPage || '?'}</span>`}
+        <button class="tsk-no-nav tsk-no-prev" onclick="goToSoru(${idx-1})" ${idx===0?'disabled':''} title="Önceki soru">◀</button>
+        <span class="tsk-no">${isKonuKart ? `K.${displayNo}` : `S.${displayNo}`}</span>
+        <button class="tsk-no-nav tsk-no-next" onclick="goToSoru(${idx+1})" ${idx===sorular.length-1?'disabled':''} title="Sonraki soru">▶</button>
       </div>
       <div class="tsk-header-right">
         <span class="tsk-copy" onclick="copySoruKart()" title="Soruyu kopyala — Gemini/GPT/Claude'a yapıştırıp çözüm sor">📋</span>

@@ -1903,11 +1903,18 @@ body.reader-locked .main-content{visibility:hidden!important}
   border-bottom:1px solid var(--border); background:var(--bg-3);
 }
 .tsk-header-left{display:flex;align-items:center;justify-content:flex-start;min-width:0}
-.tsk-header-center{display:flex;align-items:center;justify-content:center;min-width:0}
+.tsk-header-center{display:flex;align-items:center;justify-content:center;min-width:0;gap:6px}
 .tsk-header-right{display:flex;align-items:center;justify-content:flex-end;min-width:0}
 .tsk-no{
   font-family:var(--font-display); font-size:15px; font-weight:800; color:var(--mat);
 }
+.tsk-no-nav{
+  width:24px; height:24px; border:none; border-radius:var(--radius-sm); background:var(--bg-4);
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;
+  color:var(--text-0); cursor:pointer; transition:all .15s; flex-shrink:0; padding:0;
+}
+.tsk-no-nav:hover:not(:disabled){ background:var(--bg-5); }
+.tsk-no-nav:disabled{ opacity:.3; cursor:default; }
 .tsk-header > .tsk-badge,
 .tsk-header > .tsk-star{ display:none; }
 .tsk-badge{ font-size:10px; padding:2px 8px; border-radius:99px; font-weight:600; margin-left:auto; }
@@ -3374,6 +3381,7 @@ body.reader-locked .main-content{visibility:hidden!important}
   .tsk-header-right{justify-content:flex-end!important}
   .tsk-badge,.tsk-star{display:none!important}
   .tsk-page,.tsk-no,.tsk-copy{display:inline-flex!important}
+  .tsk-no-nav{display:flex!important}
   .tsk-nav-dots{display:none!important}
   .tsk-body{padding:10px!important}
   .tsk-cevap-row{gap:6px!important;margin:0!important;flex-wrap:wrap}
@@ -3610,7 +3618,7 @@ body.reader-locked .main-content{visibility:hidden!important}
     border-radius:0!important;display:flex!important;flex-direction:column!important;
     align-items:stretch!important;justify-content:center!important;gap:6px!important;
   }
-  /* Soru no solda, sayfa ortada, kopyala sağda */
+  /* Sayfa solda, soru no ortada (◀ ▶ ile), kopyala sağda */
   .tsk-header{display:grid!important;grid-template-columns:1fr auto 1fr!important;align-items:center!important;width:100%!important;padding:0!important;margin:0!important;min-height:0!important;border:none!important;background:none!important;flex-shrink:0!important}
   .tsk-header-left{justify-content:flex-start!important}
   .tsk-header-center{justify-content:center!important}
@@ -3618,6 +3626,7 @@ body.reader-locked .main-content{visibility:hidden!important}
   .tsk-no{display:inline-block!important;font-size:16px!important;font-weight:800!important;color:var(--text-0)!important;line-height:1!important;white-space:nowrap!important}
   .tsk-page{display:inline-flex!important;font-size:11px!important;line-height:1!important;white-space:nowrap!important}
   .tsk-copy{display:inline-flex!important;font-size:18px!important;line-height:1!important}
+  .tsk-no-nav{display:flex!important}
   .tsk-badge,.tsk-star{display:none!important}
   .tsk-body{padding:0!important;width:100%!important}
   .tsk-cevap-row{
@@ -3890,7 +3899,7 @@ body.reader-locked .main-content{visibility:hidden!important}
     border-radius:0!important;display:flex!important;flex-direction:column!important;
     align-items:stretch!important;justify-content:center!important;gap:4px!important;
   }
-  /* Soru no solda, sayfa ortada, kopyala sağda */
+  /* Sayfa solda, soru no ortada (◀ ▶ ile), kopyala sağda */
   .tsk-header{display:grid!important;grid-template-columns:1fr auto 1fr!important;align-items:center!important;width:100%!important;padding:0!important;margin:0!important;min-height:0!important;border:none!important;background:none!important;flex-shrink:0!important}
   .tsk-header-left{justify-content:flex-start!important}
   .tsk-header-center{justify-content:center!important}
@@ -3898,6 +3907,7 @@ body.reader-locked .main-content{visibility:hidden!important}
   .tsk-no{display:inline-block!important;font-size:15px!important;font-weight:800!important;color:var(--text-0)!important;line-height:1!important;white-space:nowrap!important}
   .tsk-page{display:inline-flex!important;font-size:10px!important;line-height:1!important;white-space:nowrap!important}
   .tsk-copy{display:inline-flex!important;font-size:16px!important;line-height:1!important}
+  .tsk-no-nav{display:flex!important}
   .tsk-body{padding:0!important;width:auto!important}
   .tsk-feedback{display:none!important}
   .tsk-actions{display:none!important}
@@ -4029,6 +4039,7 @@ body.reader-locked .main-content{visibility:hidden!important}
   /* Kopyala + gereksiz öğeler gizli (tek satır, sade) */
   .rp-soru-section .tek-soru-card .tsk-header-right,
   .rp-soru-section .tek-soru-card .tsk-copy,
+  .rp-soru-section .tek-soru-card .tsk-no-nav,
   .rp-soru-section .tek-soru-card .tsk-nav-dots,
   .rp-soru-section .tek-soru-card .tsk-actions,
   .rp-soru-section .tek-soru-card .tsk-feedback,
