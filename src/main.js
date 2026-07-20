@@ -939,7 +939,7 @@ function attachFasikulDragHandlers(card, ders, fas, sortable, moveTargetDersId=n
 function renderFasikulCards(fasikuller, ders){
   const body = document.getElementById('drawerBody');
   body.innerHTML = '';
-  const sortable = fasikuller.length === ders.fasikuller.length;
+  const sortable = appState.user?.role === 'admin' && fasikuller.length === ders.fasikuller.length;
   body.classList.toggle('is-filtered', !sortable);
   if(fasikuller.length===0){
     body.innerHTML='<div style="text-align:center;padding:32px;color:var(--text-muted)">Fasikül bulunamadı</div>';
@@ -2370,7 +2370,7 @@ function handleJSONUpload(input, dersId, fasikulId){
       persistKonular(dersId, fasikulId, konular);
       persistManifest();
       renderDerslerGrid();
-      renderFasikulCards(ders.fasikuller, ders);
+      renderFasikulCards(visibleFasikullerFor(ders), ders);
       showToast(`✓ ${fas.ad} — ${fas.konuSayisi} konu, ${fas.soruSayisi} soru yüklendi`, 'success');
     } catch(err){
       showToast('JSON ayrıştırma hatası: ' + err.message, 'error');

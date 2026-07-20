@@ -671,6 +671,7 @@ export async function doLogin(){
 export function doGuest(){
   appState.user={name:'Misafir',role:'ogrenci',email:'misafir@demo.com'};
   document.documentElement.classList.add('guest-mode');
+  document.documentElement.classList.add('restricted-mode');
   enterApp('Misafir');
 }
 
@@ -678,6 +679,8 @@ export function enterApp(name){
   if(String(appState.user?.email || '').toLowerCase() === ADMIN_EMAIL && appState.user.role !== 'admin'){
     appState.user.role = 'admin';
   }
+  document.documentElement.classList.toggle('guest-mode', appState.user?.email === 'misafir@demo.com');
+  document.documentElement.classList.toggle('restricted-mode', appState.user?.role !== 'admin');
   document.getElementById('welcomeName').textContent = name;
   document.getElementById('profileName').textContent = name;
   const roleLabel = {ogretmen:'Öğretmen',admin:'Yönetici'}[appState.user.role] || 'Öğrenci';
@@ -714,6 +717,7 @@ export async function doLogout(){
   }
   appState.user = null;
   document.documentElement.classList.remove('guest-mode');
+  document.documentElement.classList.remove('restricted-mode');
   document.documentElement.classList.remove('can-manage-users');
   document.documentElement.classList.remove('can-admin-json');
   document.getElementById('screen-app').classList.remove('active');

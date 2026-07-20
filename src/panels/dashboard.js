@@ -127,7 +127,7 @@ function setFasikulTheme(dersId,fasikulId,color){
   if(!fas || !FASIKUL_THEME_COLORS.includes(color)) return;
   fas.temaRenk=color;
   persistManifest();
-  renderFasikulCards(ders.fasikuller,ders);
+  renderFasikulCards(visibleFasikullerFor(ders),ders);
   showToast('Fasikül rengi güncellendi','success');
 }
 function moveFasikul(dersId,fasikulId,direction){
@@ -138,7 +138,7 @@ function moveFasikul(dersId,fasikulId,direction){
   if(from<0 || from===to) return;
   const [item]=ders.fasikuller.splice(from,1);
   ders.fasikuller.splice(to,0,item);
-  persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
+  persistManifest(); renderFasikulCards(visibleFasikullerFor(ders),ders); renderDerslerGrid();
 }
 function reorderFasikulByDrop(dersId,sourceId,targetId,insertAfter=false){
   if(!sourceId || sourceId===targetId) return;
@@ -151,7 +151,7 @@ function reorderFasikulByDrop(dersId,sourceId,targetId,insertAfter=false){
   if(to<0){ ders.fasikuller.splice(from,0,item); return; }
   if(insertAfter) to++;
   ders.fasikuller.splice(to,0,item);
-  persistManifest(); renderFasikulCards(ders.fasikuller,ders); renderDerslerGrid();
+  persistManifest(); renderFasikulCards(visibleFasikullerFor(ders),ders); renderDerslerGrid();
   showToast('Fasikül sırası kaydedildi','success');
 }
 function reorderDersByDrop(sourceDersId,targetDersId,insertAfter=false){
@@ -341,7 +341,7 @@ async function resetFasikulData(dersId, fasId){
   persistData();
   persistManifest();
   renderDerslerGrid();
-  if (window.currentDrawerDers) renderFasikulCards(window.currentDrawerDers.fasikuller, window.currentDrawerDers);
+  if (window.currentDrawerDers) renderFasikulCards(visibleFasikullerFor(window.currentDrawerDers), window.currentDrawerDers);
   showToast(`Fasikül sıfırlandı — ${removedCount} hatalı silindi 🗑️`, 'success');
 }
 
@@ -410,7 +410,7 @@ function applyDemoMode(on){
   renderDerslerGrid();
   // Açık olan fasikül çekmecesini de güncelle
   if(window.currentDrawerDers){
-    renderFasikulCards(window.currentDrawerDers.fasikuller, window.currentDrawerDers);
+    renderFasikulCards(visibleFasikullerFor(window.currentDrawerDers), window.currentDrawerDers);
   }
 }
 function toggleDemoData(btn){
@@ -831,7 +831,7 @@ function silFasikul(){
   // Başka derste kalmadıysa geri tohumlanmasın diye bastır.
   window.suppressBundledIfOrphan?.(editId, fas.jsonFile);
   persistManifest();
-  renderFasikulCards(window.currentDrawerDers.fasikuller, window.currentDrawerDers);
+  renderFasikulCards(visibleFasikullerFor(window.currentDrawerDers), window.currentDrawerDers);
   renderDerslerGrid();
   closeFasikulModal();
   showToast('Fasikül silindi 🗑️','success');
