@@ -1103,8 +1103,22 @@ async function runCardZoomSettle(wrap){
   await Promise.resolve(renderPages());
   await new Promise(resolve => requestAnimationFrame(()=>{
     if(savedAnchor){
-      wrap.scrollLeft = Math.max(0, savedAnchor.contentX * savedAnchor.ratio - savedAnchor.viewportX);
-      wrap.scrollTop = Math.max(0, savedAnchor.contentY * savedAnchor.ratio - savedAnchor.viewportY);
+      // Öncelik: sayfa+oran (gerçek render'ın GERÇEK boyutuyla ölçülür —
+      // eski/yeni boyut arasında varsayılan bir doğrusal ilişkiye güvenmez).
+      const pageEl = savedAnchor.pageNum != null
+        ? wrap.querySelector(`[data-page-num="${savedAnchor.pageNum}"]`)
+        : null;
+      if(pageEl && pageEl.offsetWidth && pageEl.offsetHeight){
+        const contentX = pageEl.offsetLeft + savedAnchor.fracX * pageEl.offsetWidth;
+        const contentY = pageEl.offsetTop + savedAnchor.fracY * pageEl.offsetHeight;
+        wrap.scrollLeft = Math.max(0, contentX - savedAnchor.viewportX);
+        wrap.scrollTop = Math.max(0, contentY - savedAnchor.viewportY);
+      } else {
+        // Geriye dönük güvenlik ağı: sayfa bulunamadıysa (mock/konu anlatım
+        // içeriği vb.) eski oran-tabanlı tahmine düş.
+        wrap.scrollLeft = Math.max(0, savedAnchor.contentX * savedAnchor.ratio - savedAnchor.viewportX);
+        wrap.scrollTop = Math.max(0, savedAnchor.contentY * savedAnchor.ratio - savedAnchor.viewportY);
+      }
     }
     wrap.style.scrollBehavior = oldScrollBehavior;
     wrap.classList.remove('zoom-settling');
@@ -1216,13 +1230,43 @@ function updateZoomGestureState(state, liveZoom, screenX, screenY){
 // renderPages() wrap'i sıfırdan kurup geçici sarmalayıcıyı da yok eder. Zum
 // neredeyse sabit kaldıysa (sade pan/flick): sarmalayıcı hemen açılır ve
 // hesaplanan gerçek scroll konumu uygulanır.
+// anchorContentX/Y'nin (inner sarmalayıcı içindeki, transform'suz konum)
+// HANGİ sayfaya denk geldiğini ve o sayfa İÇİNDEKİ ORANSAL (0..1) konumunu
+// bulur. Mutlak piksel yerine oran saklamak önemli: gerçek/kaliteli render
+// (getReaderFitScale, viewport genişliğine göre "sığdır" hesaplar) eski ve
+// yeni boyutlar arasında HER ZAMAN tam doğrusal bir ilişki garanti etmez —
+// render bitince sayfa GERÇEK boyutuyla yeniden ölçülüp anchor bu ORANA göre
+// yerleştirilirse, "tahmin edilen ölçek" yanlış çıksa bile nokta doğru yerde
+// kalır (bu, art arda birkaç uygulamada tekrarlayan "bırakınca zıplama"
+// şikayetinin kök nedeniydi).
+function locatePageFraction(inner, contentX, contentY){
+  const pages = inner.querySelectorAll('[data-page-num]');
+  for(const p of pages){
+    const left = p.offsetLeft, top = p.offsetTop;
+    const w = p.offsetWidth, h = p.offsetHeight;
+    if(!w || !h) continue;
+    if(contentX >= left - 4 && contentX <= left + w + 4 && contentY >= top - 4 && contentY <= top + h + 4){
+      return {
+        pageNum: p.dataset.pageNum,
+        fracX: Math.min(1, Math.max(0, (contentX - left) / w)),
+        fracY: Math.min(1, Math.max(0, (contentY - top) / h)),
+      };
+    }
+  }
+  return null;
+}
+
 function commitZoomGestureState(state){
   if(!state) return null;
   const { wrap, inner, wrapRect, liveZoom, renderedZoom, startZoom, anchorContentX, anchorContentY, lastScreenX, lastScreenY, startScreenX, startScreenY, startTime } = state;
   const s = liveZoom / renderedZoom;
   const zoomChanged = Math.abs(liveZoom - startZoom) >= 2;
   if(zoomChanged){
+    const loc = locatePageFraction(inner, anchorContentX, anchorContentY);
     scheduleCardZoomRender({
+      pageNum: loc?.pageNum ?? null, fracX: loc?.fracX ?? 0.5, fracY: loc?.fracY ?? 0.5,
+      // Sayfa bulunamazsa (ör. konu anlatım/mock içerik) eski oran-tabanlı
+      // yönteme düşülür — geriye dönük güvenlik ağı.
       contentX: anchorContentX, contentY: anchorContentY,
       viewportX: lastScreenX - wrapRect.left, viewportY: lastScreenY - wrapRect.top,
       ratio: s,
