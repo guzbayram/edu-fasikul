@@ -16,7 +16,14 @@ export function _userDocRef(uid=_getUserKey()){
 
 function _sharedManifestDocRef(){
   if(!window._firestoreReady) return null;
-  return window._fsDoc(window._db,'kullanicilar','__app_manifest__');
+  // DİKKAT: Firestore doküman ID'leri "__.*__" (çift alt çizgiyle başlayıp biten)
+  // deseniyle eşleşemez — bu Firestore'un ayırdığı/rezerve ettiği bir isim
+  // kalıbı. Önceki ID '__app_manifest__' TAM OLARAK bu kalıba uyuyordu, yani
+  // bu dokümana yapılan HER yazma (ve muhtemelen okuma) en başından beri
+  // "Resource id ... is invalid because it is reserved" hatasıyla sessizce
+  // başarısız oluyordu — paylaşılan manifest özelliği hiç çalışmamıştı. Bu ID
+  // hiçbir zaman başarıyla yazılamadığı için eski veriyle taşıma gerekmiyor.
+  return window._fsDoc(window._db,'kullanicilar','app_manifest_shared');
 }
 
 function _getRemovedFromDers(){
