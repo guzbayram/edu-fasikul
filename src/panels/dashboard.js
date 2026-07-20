@@ -521,6 +521,12 @@ function saveDers(){
       child.fasikuller = child.fasikuller || [];
     }
     const folderId = `folder-${child.id}`;
+    // Bu klasör-işaretçisi daha önce (aynı child.id ile) bu üst dersten silinmiş
+    // olabilir — deleteFasikul() (dersId,fasikulId) tombstone'u kaydediyor ve
+    // applyDersRemovals() her bulut manifesti uygulamasından sonra bunu otomatik
+    // uyguluyor. Burada temizlemezsek, "sil → aynı adla yeniden oluştur" alt ders
+    // her sayfa yenilemesinde sessizce tekrar kayboluyordu.
+    window.clearDersRemoval?.(parent.id, folderId, null);
     if(!parent.fasikuller.some(f=>f.id===folderId || f.childDersId===child.id)){
       parent.fasikuller.push({
         id:folderId,
