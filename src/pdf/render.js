@@ -1103,21 +1103,39 @@ async function runCardZoomSettle(wrap){
   await Promise.resolve(renderPages());
   await new Promise(resolve => requestAnimationFrame(()=>{
     if(savedAnchor){
+      // wrap'in ekrandaki konumu commit anından (jest bitişi) settle anına
+      // (650ms sonra) kadar hafifçe kayabilir (toolbar/scrollbar değişimi
+      // vb.) — TEK bir taze wrapRect ölçümü kullanılıp hem sayfa konumu hem
+      // "hedef ekran konumu" (viewportX/Y) BUNA göre hesaplanır; commit
+      // anında önceden hesaplanmış bir viewportX/Y ile karıştırmak sabit bir
+      // kaymaya yol açıyordu (gerçek PDF ile ölçülüp doğrulandı).
+      const wrapRectNow = wrap.getBoundingClientRect();
+      const viewportX = savedAnchor.screenX - wrapRectNow.left;
+      const viewportY = savedAnchor.screenY - wrapRectNow.top;
       // Öncelik: sayfa+oran (gerçek render'ın GERÇEK boyutuyla ölçülür —
       // eski/yeni boyut arasında varsayılan bir doğrusal ilişkiye güvenmez).
       const pageEl = savedAnchor.pageNum != null
         ? wrap.querySelector(`[data-page-num="${savedAnchor.pageNum}"]`)
         : null;
       if(pageEl && pageEl.offsetWidth && pageEl.offsetHeight){
-        const contentX = pageEl.offsetLeft + savedAnchor.fracX * pageEl.offsetWidth;
-        const contentY = pageEl.offsetTop + savedAnchor.fracY * pageEl.offsetHeight;
-        wrap.scrollLeft = Math.max(0, contentX - savedAnchor.viewportX);
-        wrap.scrollTop = Math.max(0, contentY - savedAnchor.viewportY);
+        // offsetLeft/offsetTop KULLANILMAZ: wrap (ve arada .reader-page-stage
+        // gibi sarmalayıcılar) position:static olduğundan offsetParent CSS'in
+        // bulduğu ilk KONUMLANMIŞ ataya (wrap'ten tamamen farklı bir öğeye)
+        // kayabiliyor — bu, gerçek PDF ile ölçülüp doğrulanan sabit bir kayma
+        // (ör. -278px) üretiyordu. getBoundingClientRect(), CSS konumlanma
+        // bağlamından bağımsız, her zaman doğru gerçek piksel konumu verir.
+        const pageRect = pageEl.getBoundingClientRect();
+        const pageLeftInWrap = wrap.scrollLeft + (pageRect.left - wrapRectNow.left);
+        const pageTopInWrap = wrap.scrollTop + (pageRect.top - wrapRectNow.top);
+        const contentX = pageLeftInWrap + savedAnchor.fracX * pageRect.width;
+        const contentY = pageTopInWrap + savedAnchor.fracY * pageRect.height;
+        wrap.scrollLeft = Math.max(0, contentX - viewportX);
+        wrap.scrollTop = Math.max(0, contentY - viewportY);
       } else {
         // Geriye dönük güvenlik ağı: sayfa bulunamadıysa (mock/konu anlatım
         // içeriği vb.) eski oran-tabanlı tahmine düş.
-        wrap.scrollLeft = Math.max(0, savedAnchor.contentX * savedAnchor.ratio - savedAnchor.viewportX);
-        wrap.scrollTop = Math.max(0, savedAnchor.contentY * savedAnchor.ratio - savedAnchor.viewportY);
+        wrap.scrollLeft = Math.max(0, savedAnchor.contentX * savedAnchor.ratio - viewportX);
+        wrap.scrollTop = Math.max(0, savedAnchor.contentY * savedAnchor.ratio - viewportY);
       }
     }
     wrap.style.scrollBehavior = oldScrollBehavior;
@@ -1240,20 +1258,34 @@ function updateZoomGestureState(state, liveZoom, screenX, screenY){
 // kalır (bu, art arda birkaç uygulamada tekrarlayan "bırakınca zıplama"
 // şikayetinin kök nedeniydi).
 function locatePageFraction(inner, contentX, contentY){
+  // offsetLeft/offsetTop KULLANILMAZ: inner (ve arada .reader-page-stage gibi
+  // sarmalayıcılar) position:static olduğundan CSS'in bulduğu offsetParent
+  // wrap'ten tamamen farklı bir konumlanmış atada olabilir — gerçek PDF ile
+  // ölçülüp doğrulanan sabit bir kaymaya yol açıyordu (bkz. runCardZoomSettle).
+  // getBoundingClientRect() konumlanma bağlamından bağımsız çalışır; inner'ın
+  // canlı transform'u geçici olarak kaldırılıp (senkron, boyama arası
+  // olmadığından görsel titreşim YOK) gerçek/transformsuz konum ölçülür.
+  const prevTransform = inner.style.transform;
+  inner.style.transform = 'none';
+  const innerRect = inner.getBoundingClientRect();
+  let result = null;
   const pages = inner.querySelectorAll('[data-page-num]');
   for(const p of pages){
-    const left = p.offsetLeft, top = p.offsetTop;
-    const w = p.offsetWidth, h = p.offsetHeight;
+    const r = p.getBoundingClientRect();
+    const left = r.left - innerRect.left, top = r.top - innerRect.top;
+    const w = r.width, h = r.height;
     if(!w || !h) continue;
     if(contentX >= left - 4 && contentX <= left + w + 4 && contentY >= top - 4 && contentY <= top + h + 4){
-      return {
+      result = {
         pageNum: p.dataset.pageNum,
         fracX: Math.min(1, Math.max(0, (contentX - left) / w)),
         fracY: Math.min(1, Math.max(0, (contentY - top) / h)),
       };
+      break;
     }
   }
-  return null;
+  inner.style.transform = prevTransform;
+  return result;
 }
 
 function commitZoomGestureState(state){
@@ -1268,7 +1300,14 @@ function commitZoomGestureState(state){
       // Sayfa bulunamazsa (ör. konu anlatım/mock içerik) eski oran-tabanlı
       // yönteme düşülür — geriye dönük güvenlik ağı.
       contentX: anchorContentX, contentY: anchorContentY,
-      viewportX: lastScreenX - wrapRect.left, viewportY: lastScreenY - wrapRect.top,
+      // HAM ekran konumu saklanır (viewportX/Y ÖNCEDEN hesaplanmaz): settle
+      // 650ms sonra çalıştığında wrap'in ekrandaki konumu (toolbar/scrollbar
+      // değişimiyle) hafifçe kaymış olabilir — commit anında SABİTLENMİŞ bir
+      // wrapRect ile settle anında TAZE ölçülen bir wrapRect'i karıştırmak
+      // sabit bir kaymaya yol açıyordu (gerçek PDF ile ölçülüp doğrulandı).
+      // Settle, hem sayfa konumunu hem viewport hedefini AYNI taze wrapRect'e
+      // göre hesaplayarak bu tutarsızlığı ortadan kaldırır.
+      screenX: lastScreenX, screenY: lastScreenY,
       ratio: s,
     }, 650);
   } else {
