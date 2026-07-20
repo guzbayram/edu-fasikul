@@ -393,7 +393,7 @@ function applyDemoStats(on){
   // Streak dots
   document.querySelectorAll('.streak-dot').forEach((d,i)=>{ d.classList.toggle('done', on && i<7); });
 }
-function applyDemoMode(on){
+function applyDemoMode(on, persist=true){
   window.DEMO_SNAPSHOT.forEach(sd=>{
     const ders = window.MANIFEST.dersler.find(d=>d.id===sd.id);
     if(!ders) return;
@@ -405,7 +405,7 @@ function applyDemoMode(on){
       fas.sonCalisma = on ? sf.sonCalisma : '—';
     });
   });
-  persistManifest();
+  if(persist) persistManifest();
   applyDemoStats(on);
   renderDerslerGrid();
   // Açık olan fasikül çekmecesini de güncelle

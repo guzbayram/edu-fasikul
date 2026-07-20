@@ -282,6 +282,26 @@ function mergeCustomGithubSources(){
     else BUNDLED_FASIKUL_SOURCES.push({...source, custom:true});
   });
 }
+function registerManifestGithubSources(){
+  const norm = v => String(v||'').normalize('NFC');
+  for(const ders of MANIFEST.dersler || []){
+    for(const fas of ders.fasikuller || []){
+      if(fas?.type === 'folder' || !fas?.id || !fas?.jsonFile || !fas?.pdfFile) continue;
+      const existingIndex = BUNDLED_FASIKUL_SOURCES.findIndex(s=>s.id===fas.id || norm(s.json)===norm(fas.jsonFile));
+      const source = {
+        id: fas.id,
+        dersId: ders.id,
+        json: fas.jsonFile,
+        pdf: fas.pdfFile,
+        type: fas.type || undefined,
+        fasikulTip: fas.fasikulTip || undefined,
+        custom: !BUNDLED_FASIKUL_SOURCES.some(s=>!s.custom && (s.id===fas.id || norm(s.json)===norm(fas.jsonFile)))
+      };
+      if(existingIndex >= 0) BUNDLED_FASIKUL_SOURCES[existingIndex] = {...BUNDLED_FASIKUL_SOURCES[existingIndex], ...source};
+      else BUNDLED_FASIKUL_SOURCES.push(source);
+    }
+  }
+}
 function saveCustomGithubSource(source){
   const sources = safeParseCustomGithubSources();
   const clean = {
@@ -439,14 +459,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   renderMathSymbols();
   renderStreakDots();
-  loadManifestMeta();
   await loadAllKonular();
   await loadBundledFasikuller();
   await restoreEduDirHandle();
   initGithubConfigUI();
   // Demo Verileri tercihini uygula
   const demoMode = localStorage.getItem('edu_demo_mode') === '1';
-  applyDemoMode(demoMode);
+  window.applyDemoMode?.(demoMode, false);
   const demoToggle = document.getElementById('demoDataToggle');
   if(demoToggle){ demoToggle.textContent=demoMode?'Açık':'Kapalı'; demoToggle.classList.toggle('off',!demoMode); }
   renderDerslerGrid();
@@ -2543,6 +2562,7 @@ async function loadBundledFasikuller(){
     // GERİ EKLENMEZ — "aynı anda Matematik'e de ekleniyor / silince geri geliyor"
     // sorununun kök nedeni bu koşulsuz tohumlamaydı.
     if(copies.length===0){
+      if(appState.manifestSource === 'cloud') continue;
       let ders = MANIFEST.dersler.find(d=>d.id===source.dersId);
       if(!ders){
         const cfg = BUNDLED_DERS_CONFIG[source.dersId] || BUNDLED_DERS_CONFIG.mat;
@@ -2592,10 +2612,8 @@ async function loadAllKonular(){
 // ══════════════════════════════
 function persistManifest(){
   try{
-    const slim = buildManifestMeta();
-    localStorage.setItem('edu_manifest_meta', JSON.stringify(slim));
-    localStorage.setItem('edu_manifest_meta_ts', String(Date.now()));
-    localStorage.setItem('edu_manifest_dirty', '1');
+    appState.manifestDirty = true;
+    appState.manifestTs = Date.now();
     scheduleCloudPersist();
   }catch(e){}
 }
@@ -2617,21 +2635,19 @@ function buildManifestMeta(){
     }))
   }));
 }
-function loadManifestMeta(){
+function applyManifestMeta(slim, {respectLocalDeletes=false, source='cloud'} = {}){
+  if(!Array.isArray(slim)) return false;
   try{
-    const saved = localStorage.getItem('edu_manifest_meta');
-    if(!saved) return;
-    const slim = JSON.parse(saved);
-    const deleted = JSON.parse(localStorage.getItem('edu_deleted_dersler')||'[]');
+    const deleted = respectLocalDeletes ? JSON.parse(localStorage.getItem('edu_deleted_dersler')||'[]') : [];
+    const nextDersler = [];
     slim.forEach(sd=>{
-      if(LEGACY_DEMO_DERS_IDS.has(sd.id)) return;
+      if(!sd || LEGACY_DEMO_DERS_IDS.has(sd.id)) return;
       if(deleted.includes(sd.id)) return;
-      sd.fasikuller=(sd.fasikuller||[]).filter(f=>!LEGACY_DEMO_FASIKUL_IDS.has(f.id));
-      const existing = MANIFEST.dersler.find(d=>d.id===sd.id);
-      if(existing){
-        existing.ad=sd.ad; existing.ikon=sd.ikon; existing.renk=sd.renk; existing.progPct=sd.progPct; existing.parentDersId=sd.parentDersId||null;
-        const currentById = new Map((existing.fasikuller||[]).map(f=>[f.id,f]));
-        existing.fasikuller = sd.fasikuller.map(sf=>{
+      const current = MANIFEST.dersler.find(d=>d.id===sd.id);
+      const currentById = new Map((current?.fasikuller||[]).map(f=>[f.id,f]));
+      const fasikuller = (sd.fasikuller||[])
+        .filter(f=>!LEGACY_DEMO_FASIKUL_IDS.has(f.id))
+        .map(sf=>{
           const ef = currentById.get(sf.id);
           const merged = ef ? {...ef, ...sf} : {...sf, konular:[]};
           merged.type = sf.type || null;
@@ -2643,12 +2659,30 @@ function loadManifestMeta(){
           if(!sf.fasikulTip) delete merged.fasikulTip;
           return merged;
         });
-      } else {
-        MANIFEST.dersler.push({...sd, fasikuller: sd.fasikuller.map(f=>({...f,konular:[]}))});
-      }
+      nextDersler.push({
+        ...(current || {}),
+        id:sd.id,
+        ad:sd.ad,
+        ikon:sd.ikon,
+        renk:sd.renk,
+        progPct:sd.progPct,
+        parentDersId:sd.parentDersId||null,
+        fasikuller
+      });
     });
-    MANIFEST.dersler = MANIFEST.dersler.filter(d=>!deleted.includes(d.id) && !LEGACY_DEMO_DERS_IDS.has(d.id));
-    applyDersRemovals();
+    MANIFEST.dersler = nextDersler.filter(d=>!deleted.includes(d.id) && !LEGACY_DEMO_DERS_IDS.has(d.id));
+    appState.manifestSource = source;
+    registerManifestGithubSources();
+    if(respectLocalDeletes) applyDersRemovals();
+    return true;
+  }catch(e){}
+  return false;
+}
+function loadManifestMeta(){
+  try{
+    const saved = localStorage.getItem('edu_manifest_meta');
+    if(!saved) return;
+    applyManifestMeta(JSON.parse(saved), {respectLocalDeletes:true, source:'local-fallback'});
   }catch(e){}
 }
 
@@ -2713,6 +2747,7 @@ window.recalcFasikulProgress = recalcFasikulProgress;
 window.updateDashboard = updateDashboard;
 window.renderDerslerGrid = renderDerslerGrid;
 window.loadManifestMeta = loadManifestMeta;
+window.applyManifestMeta = applyManifestMeta;
 window.loadBundledFasikuller = loadBundledFasikuller;
 window.buildManifestMeta = buildManifestMeta;
 window.loadPreferences = loadPreferences;

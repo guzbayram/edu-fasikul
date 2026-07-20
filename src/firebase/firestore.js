@@ -27,15 +27,13 @@ function _getRemovedFromDers(){
 async function _applySharedManifest(data){
   if(!data || !Array.isArray(data.manifest)) return false;
   try{
-    localStorage.setItem('edu_manifest_meta',JSON.stringify(data.manifest));
-    localStorage.setItem('edu_manifest_meta_ts', String(data.manifestTs||Date.now()));
-    localStorage.removeItem('edu_manifest_dirty');
-    if(Array.isArray(data.removedFromDers)){
-      localStorage.setItem('edu_removed_from_ders', JSON.stringify(data.removedFromDers));
-    }
-    window.loadManifestMeta?.();
+    localStorage.setItem('edu_removed_from_ders', JSON.stringify(Array.isArray(data.removedFromDers) ? data.removedFromDers : []));
+    window.applyManifestMeta?.(data.manifest, {respectLocalDeletes:false, source:'cloud'});
+    appState.manifestTs = Number(data.manifestTs || Date.now());
+    appState.manifestDirty = false;
     await window.loadBundledFasikuller?.();
     window.applyDersRemovals?.();
+    window.recalcFasikulProgress?.();
     window.renderDerslerGrid?.();
     return true;
   }catch(e){
@@ -58,10 +56,10 @@ async function _loadSharedManifest(){
 
 async function _persistSharedManifestIfNeeded(){
   if(appState.user?.role !== 'admin') return;
-  if(localStorage.getItem('edu_manifest_dirty') !== '1') return;
+  if(!appState.manifestDirty) return;
   const ref = _sharedManifestDocRef();
   if(!ref || !window._fsSetDoc) return;
-  const manifestTs = Number(localStorage.getItem('edu_manifest_meta_ts')||Date.now());
+  const manifestTs = Number(appState.manifestTs || Date.now());
   await window._fsSetDoc(ref, {
     manifest: window.buildManifestMeta?.() || [],
     manifestTs,
@@ -339,9 +337,9 @@ export function persistData(){
     const fasikulIst = _hesaplaFasikulIstatistik();
     const docRef = _userDocRef(key);
     const isAdmin = appState.user?.role === 'admin';
-    const manifestPayload = isAdmin ? {
+    const manifestPayload = isAdmin && appState.manifestDirty ? {
       manifest: window.buildManifestMeta?.() || [],
-      manifestTs: Number(localStorage.getItem('edu_manifest_meta_ts')||0),
+      manifestTs: Number(appState.manifestTs || Date.now()),
       removedFromDers: _getRemovedFromDers(),
     } : {};
     const p = _persistSharedManifestIfNeeded().then(()=>window._fsSetDoc(docRef, {
@@ -355,7 +353,7 @@ export function persistData(){
       fasikulIstatistik: fasikulIst,
       guncelleme: new Date().toISOString()
     }, { merge: true })).then(()=>{
-      try{ localStorage.removeItem('edu_manifest_dirty'); }catch(e){}
+      appState.manifestDirty = false;
       if(!appState.cloudSolutionsLoaded) appState.cloudIstatistik=istatistik;
     }).catch(e=>console.warn('Firestore kayıt hatası:',e));
     _persistYeniCozumler(key);
@@ -388,16 +386,7 @@ export async function loadFromFirestore(){
     let sharedManifestApplied = false;
     const sharedManifest = await _loadSharedManifest();
     if(sharedManifest && Array.isArray(sharedManifest.manifest)){
-      const localTs = Number(localStorage.getItem('edu_manifest_meta_ts')||0);
-      const cloudTs = Number(sharedManifest.manifestTs||0);
-      const localManifestCanWin = appState.user?.role === 'admin'
-        && localStorage.getItem('edu_manifest_dirty') === '1';
-      if(localManifestCanWin && localTs > cloudTs){
-        await _persistSharedManifestIfNeeded();
-        scheduleCloudPersist();
-      } else {
-        sharedManifestApplied = await _applySharedManifest(sharedManifest);
-      }
+      sharedManifestApplied = await _applySharedManifest(sharedManifest);
     }
     if(snap.exists()){
       data = snap.data();
@@ -430,24 +419,14 @@ export async function loadFromFirestore(){
             }, {merge:true});
           }catch(e){ console.warn('Ortak manifest ilk kopyası yazılamadı:', e); }
         }
-        // Yerelde bulut'a HENÜZ ulaşmamış daha yeni bir değişiklik olabilir
-        // (ör. ders/alt ders/fasikül eklenip 900ms'lik senk. beklemeden çıkış
-        // yapılmışsa). Bu durumda bayat bulut kopyası yerelin üzerine
-        // yazılmasın — yereli koru ve buluta yeniden göndermeyi programla.
-        const localTs = Number(localStorage.getItem('edu_manifest_meta_ts')||0);
-        const cloudTs = Number(data.manifestTs||0);
-        const localManifestCanWin = appState.user?.role === 'admin'
-          && localStorage.getItem('edu_manifest_dirty') === '1';
-        if(localManifestCanWin && localTs > cloudTs){
-          scheduleCloudPersist();
-        } else {
-          localStorage.setItem('edu_manifest_meta',JSON.stringify(data.manifest));
-          localStorage.setItem('edu_manifest_meta_ts', String(cloudTs||Date.now()));
-          window.loadManifestMeta?.();
-          await window.loadBundledFasikuller?.();
-          window.applyDersRemovals?.();
-          window.renderDerslerGrid?.();
-        }
+        localStorage.setItem('edu_removed_from_ders', JSON.stringify(Array.isArray(data.removedFromDers) ? data.removedFromDers : []));
+        window.applyManifestMeta?.(data.manifest, {respectLocalDeletes:false, source:'cloud'});
+        appState.manifestTs = Number(data.manifestTs || Date.now());
+        appState.manifestDirty = false;
+        await window.loadBundledFasikuller?.();
+        window.applyDersRemovals?.();
+        window.recalcFasikulProgress?.();
+        window.renderDerslerGrid?.();
       }
       if(data.sorularState) appState.sorularState = data.sorularState;
       if(data.videoWatched){

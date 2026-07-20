@@ -32,6 +32,13 @@ function syncManagementNav(){
   if(managementShortcut) managementShortcut.style.display = canOpenManagement ? '' : 'none';
 }
 
+async function waitForFirestoreReady(maxWaitMs=2500){
+  const started = Date.now();
+  while(!window._firestoreReady && Date.now() - started < maxWaitMs){
+    await new Promise(resolve=>setTimeout(resolve, 100));
+  }
+}
+
 function canViewStudent(user){
   if(appState.user?.role === 'admin') return true;
   if(appState.user?.role !== 'ogretmen') return false;
@@ -687,8 +694,6 @@ export function enterApp(name){
   document.getElementById('profileSub').textContent = `${roleLabel} · ${appState.user.email}`;
   document.getElementById('screen-login').classList.remove('active');
   document.getElementById('screen-app').classList.add('active');
-  window.recalcFasikulProgress?.();
-  window.renderDerslerGrid?.();
   window.showToast?.(`Hoş geldin, ${name}! 👋`, 'success');
 
   syncManagementNav();
@@ -696,8 +701,17 @@ export function enterApp(name){
   window.refreshProfileGithubJsonTools?.();
 
   if(appState.user && appState.user.email !== 'misafir@demo.com'){
-    setTimeout(()=>{ window.loadFromFirestore?.(); }, 500);
-    setTimeout(()=>{ loadMyAssignments(); loadMyStudyPlan(); }, 900);
+    setTimeout(async ()=>{
+      await waitForFirestoreReady();
+      await window.loadFromFirestore?.();
+      window.recalcFasikulProgress?.();
+      window.renderDerslerGrid?.();
+      loadMyAssignments();
+      loadMyStudyPlan();
+    }, 0);
+  } else {
+    window.recalcFasikulProgress?.();
+    window.renderDerslerGrid?.();
   }
 
   // Onboarding turu kaldırıldı — girişte tur tetiklenmez
