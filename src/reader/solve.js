@@ -184,17 +184,15 @@ function initSolvePaletteDrag(){
 // yolunu KULLANMIYORUZ ki bu doğal sıfırlama korunsun.
 function resetZoomAndPan(){
   const wrap = document.getElementById('readerCanvasWrap');
-  const pw = wrap?.querySelector('[id^="page-wrap-"]');
-  if(!wrap || !pw) return;
+  if(!wrap || !wrap.firstChild) return;
   if(Math.round(appState.zoom) === 100) return; // zaten %100 — yapacak bir şey yok
-  const ratio = 100 / (appState._renderedZoom || appState.zoom);
   // Anlık görsel ön-izleme (sert sıçrama değil, yumuşak geçiş hissi) — render
-  // bitene kadar kartın kendi merkezine göre ölçeklenir.
-  const r = pw.getBoundingClientRect();
-  window.applyStageScale?.(ratio, r.left + r.width / 2, r.top + r.height / 2);
-  appState.zoom = 100;
+  // bitene kadar kartın kendi merkezine göre ölçeklenir. Pan da otomatik
+  // sıfırlanır: renderPages() her render'da canvas alanını (wrap.innerHTML)
+  // baştan kurduğundan scrollLeft/Top doğal olarak 0'a döner.
+  const r = wrap.getBoundingClientRect();
+  window.previewZoomTo?.(100, r.left + wrap.clientWidth / 2, r.top + wrap.clientHeight / 2);
   appState._fillBaseZoom = null;
-  window.setZoomLabel?.(100);
   setTimeout(() => { window.renderPages?.(); }, 90);
 }
 window.toggleCardFill = resetZoomAndPan; // eski ad — geriye dönük uyumluluk
