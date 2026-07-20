@@ -31,6 +31,11 @@ async function _applySharedManifest(data){
     window.applyManifestMeta?.(data.manifest, {respectLocalDeletes:false, source:'cloud'});
     appState.manifestTs = Number(data.manifestTs || Date.now());
     appState.manifestDirty = false;
+    try{
+      localStorage.setItem('edu_manifest_meta', JSON.stringify(data.manifest));
+      localStorage.setItem('edu_manifest_meta_ts', String(appState.manifestTs));
+      localStorage.removeItem('edu_manifest_dirty');
+    }catch(_e){}
     await window.loadBundledFasikuller?.();
     window.applyDersRemovals?.();
     window.recalcFasikulProgress?.();
@@ -386,26 +391,10 @@ export async function loadFromFirestore(){
     let shouldPersistAfterLoad = false;
     let sharedManifestApplied = false;
     const sharedManifest = await _loadSharedManifest();
-    // Bu cihazda daha önce yapılan admin ders/fasikül değişikliği henüz buluta
-    // ulaşmamış olabilir (ör. 900ms'lik debounce ya da bulut yazması bitmeden
-    // sekme kapandı). Bu durumda buluttaki eski kopya yereli ezmesin — önce
-    // bekleyen yerel değişikliği uygulayıp buluta göndeririz.
-    const localManifestDirty = appState.user?.role === 'admin' && localStorage.getItem('edu_manifest_dirty') === '1';
-    if(localManifestDirty){
-      const localTs = Number(localStorage.getItem('edu_manifest_meta_ts') || 0);
-      const cloudTs = Number(sharedManifest?.manifestTs || 0);
-      if(localTs > cloudTs){
-        try{
-          const localSlim = JSON.parse(localStorage.getItem('edu_manifest_meta') || 'null');
-          if(Array.isArray(localSlim) && window.applyManifestMeta?.(localSlim, {respectLocalDeletes:true, source:'local-pending'})){
-            appState.manifestDirty = true;
-            appState.manifestTs = localTs;
-            await _persistSharedManifestIfNeeded();
-            sharedManifestApplied = true;
-          }
-        }catch(e){ console.warn('Bekleyen yerel manifest uygulanamadı:', e); }
-      }
-    }
+    // Ders/fasikül ağacı artık cihaz bazlı yerel taslaktan değil ortak
+    // Firestore manifestinden gelir. Eski local-pending manifesti burada
+    // kullanmak, aynı admin hesabında bile Chrome/Safari/iPad arasında
+    // 6 fasikül - 7 fasikül gibi farklı ana sayfalar üretiyordu.
     if(!sharedManifestApplied && sharedManifest && Array.isArray(sharedManifest.manifest)){
       sharedManifestApplied = await _applySharedManifest(sharedManifest);
     }

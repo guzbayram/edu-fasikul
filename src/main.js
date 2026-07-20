@@ -1434,15 +1434,17 @@ window.addEventListener('resize', ()=>{
   readerResizeTimer = setTimeout(()=>renderPages(), 180);
 });
 
-// Sekme kapatılırken/arka plana alınırken 900ms'lik bulut senk. debounce'u
-// henüz tamamlanmamış olabilir (özellikle admin bir ders/fasikül ekleyip
-// hemen uygulamayı kapattığında). iOS'ta 'pagehide' bazen hiç JS çalıştırma
+// Sekme kapatılırken/arka plana alınırken bekleyen bulut senk. debounce'u
+// (genel 900ms'lik ya da ders/fasikül manifesti için 150ms'lik) henüz
+// tamamlanmamış olabilir (özellikle admin bir ders/fasikül ekleyip hemen
+// uygulamayı kapattığında). iOS'ta 'pagehide' bazen hiç JS çalıştırma
 // fırsatı vermeden tetiklendiği için 'visibilitychange' (hidden) de eklendi —
-// o daha erken ve daha güvenilir ateşleniyor. persistManifest()'in
-// localStorage'a senkron yazdığı yerel yedek (edu_manifest_dirty) zaten asıl
-// güvenlik ağı; bu sadece bulut yazmasını mümkün olduğunca erkene çekiyor.
+// o daha erken ve daha güvenilir ateşleniyor.
 function flushPendingCloudPersistBestEffort(){
-  if(appState._cloudPersistTimer){ window.flushCloudPersist?.(); }
+  if(appState._cloudPersistTimer || _manifestFlushTimer){
+    if(_manifestFlushTimer){ clearTimeout(_manifestFlushTimer); _manifestFlushTimer = null; }
+    window.flushCloudPersist?.();
+  }
 }
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) flushPendingCloudPersistBestEffort();
@@ -2625,20 +2627,27 @@ async function loadAllKonular(){
 // ══════════════════════════════
 // MANIFEST PERSISTENCE
 // ══════════════════════════════
+let _manifestFlushTimer = null;
 function persistManifest(){
   try{
     appState.manifestDirty = true;
     appState.manifestTs = Date.now();
-    // 900ms'lik debounce tamamlanmadan (ör. sekme kapatılıp yeniden açılırsa)
-    // bulut senk.'i hiç gerçekleşmeyebilir. Admin değişikliği burada senkron
-    // olarak localStorage'a da yazılır ki bir sonraki açılışta loadFromFirestore
-    // eski bulut kopyasıyla üzerine yazmadan önce bu yereli fark edip koruyabilsin.
     if(appState.user?.role === 'admin'){
+      // Yerel yedek: loadFromFirestore artık her zaman buluta güveniyor (cihazlar
+      // arası "6 fasikül - 7 fasikül" tutarsızlığına yol açtığı için yereli geri
+      // uygulama kaldırıldı) — bu yüzden asıl korumamız buluta olabildiğince HIZLI
+      // yazmak. Ders/fasikül değişiklikleri seyrek/kasıtlı olduğundan diğer
+      // state'lerin paylaştığı 900ms'lik genel debounce yerine çok kısa (150ms)
+      // ayrı bir zamanlayıcı kullanılır — sekme kapanmadan önce buluta ulaşma
+      // ihtimali artar, yine de art arda birkaç hızlı düzenleme tek yazmaya toplanır.
       localStorage.setItem('edu_manifest_meta', JSON.stringify(buildManifestMeta()));
       localStorage.setItem('edu_manifest_meta_ts', String(appState.manifestTs));
       localStorage.setItem('edu_manifest_dirty', '1');
+      if(_manifestFlushTimer) clearTimeout(_manifestFlushTimer);
+      _manifestFlushTimer = setTimeout(()=>{ _manifestFlushTimer = null; flushCloudPersist(); }, 150);
+    } else {
+      scheduleCloudPersist();
     }
-    scheduleCloudPersist();
   }catch(e){}
 }
 function buildManifestMeta(){
