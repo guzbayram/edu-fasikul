@@ -676,10 +676,12 @@ function sizeReaderStage(stage, wrap, displayW, displayH){
 
 function renderPages(){
   window.flushActiveTextEditing?.();
+  const preserveScroll = !!appState._preserveScrollAfterRender;
+  appState._preserveScrollAfterRender = false;
   if(appState.viewMode === 'scroll'){
     return renderAllPages().then(()=>{
       appState._renderedZoom = appState.zoom;
-      setTimeout(()=>scrollToPage(appState.currentPage, 'auto'), 50);
+      if(!preserveScroll) setTimeout(()=>scrollToPage(appState.currentPage, 'auto'), 50);
     });
   } else {
     return renderSinglePageMode(appState.currentPage).then(()=>{
@@ -1105,6 +1107,7 @@ function scheduleCardZoomRender(anchor){
     appState._zoomAnchor = null;
     const oldScrollBehavior = wrap.style.scrollBehavior;
     wrap.style.scrollBehavior = 'auto';
+    appState._preserveScrollAfterRender = true;
     await Promise.resolve(renderPages());
     requestAnimationFrame(()=>{
       if(savedAnchor){
@@ -1242,6 +1245,17 @@ function initTouchGestures() {
       s.style.transformOrigin = '';
     });
   }
+  function applyPendingGestureFrame() {
+    if (!g || !pending) return;
+    const { d, m } = pending;
+    wrap.scrollLeft -= (m.x - g.lastMid.x);
+    wrap.scrollTop  -= (m.y - g.lastMid.y);
+    g.scale = d / g.startDist;
+    applyVisualScale(g.scale, g.startMid.x, g.startMid.y);
+    g.lastMid = m;
+    g.lastDist = d;
+    pending = null;
+  }
 
   const FLICK_MAX_MS = 500, FLICK_MIN = 70;
 
@@ -1288,14 +1302,7 @@ function initTouchGestures() {
     if (rafId == null) {
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        if (!g || !pending) return;
-        const { d, m } = pending;
-        wrap.scrollLeft -= (m.x - g.lastMid.x);
-        wrap.scrollTop  -= (m.y - g.lastMid.y);
-        g.scale = d / g.startDist;
-        applyVisualScale(g.scale, g.startMid.x, g.startMid.y);
-        g.lastMid = m;
-        g.lastDist = d;
+        applyPendingGestureFrame();
       });
     }
   }, { passive: false, capture: true });
@@ -1304,7 +1311,7 @@ function initTouchGestures() {
     if (!g) return;
     if (e.touches.length >= 2) return; // hâlâ 2 parmak
     if (rafId != null) { cancelAnimationFrame(rafId); rafId = null; }
-    pending = null;
+    applyPendingGestureFrame();
 
     const newZoom = clampZoom(Math.round(g.startZoom * g.scale));
     const wrapRect = wrap.getBoundingClientRect();
