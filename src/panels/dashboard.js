@@ -122,6 +122,7 @@ function filterFasikuller(q){
   renderFasikulCards(filtered, window.currentDrawerDers);
 }
 function setFasikulTheme(dersId,fasikulId,color){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const ders=window.MANIFEST.dersler.find(d=>d.id===dersId);
   const fas=ders?.fasikuller.find(f=>f.id===fasikulId);
   if(!fas || !FASIKUL_THEME_COLORS.includes(color)) return;
@@ -131,6 +132,7 @@ function setFasikulTheme(dersId,fasikulId,color){
   showToast('Fasikül rengi güncellendi','success');
 }
 function moveFasikul(dersId,fasikulId,direction){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const ders=window.MANIFEST.dersler.find(d=>d.id===dersId);
   if(!ders) return;
   const from=ders.fasikuller.findIndex(f=>f.id===fasikulId);
@@ -141,6 +143,7 @@ function moveFasikul(dersId,fasikulId,direction){
   persistManifest(); renderFasikulCards(visibleFasikullerFor(ders),ders); renderDerslerGrid();
 }
 function reorderFasikulByDrop(dersId,sourceId,targetId,insertAfter=false){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   if(!sourceId || sourceId===targetId) return;
   const ders=window.MANIFEST.dersler.find(d=>d.id===dersId);
   if(!ders) return;
@@ -155,6 +158,7 @@ function reorderFasikulByDrop(dersId,sourceId,targetId,insertAfter=false){
   showToast('Fasikül sırası kaydedildi','success');
 }
 function reorderDersByDrop(sourceDersId,targetDersId,insertAfter=false){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   if(!sourceDersId || sourceDersId===targetDersId) return;
   const list=window.MANIFEST.dersler;
   const from=list.findIndex(d=>d.id===sourceDersId);
@@ -184,6 +188,7 @@ function canDersAcceptItem(targetDers, item){
   return true;
 }
 function moveFasikulToDers(sourceDersId, fasikulId, targetDersId){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return false; }
   if(!sourceDersId || !fasikulId || !targetDersId || sourceDersId===targetDersId) return false;
   const sourceDers=window.MANIFEST.dersler.find(d=>d.id===sourceDersId);
   const targetDers=window.MANIFEST.dersler.find(d=>d.id===targetDersId);
@@ -422,6 +427,7 @@ function toggleDemoData(btn){
 }
 function openDersModal(dersId, e, parentDersId=null){
   if(isGuestSession()){ showToast('Ders eklemek için yetkili hesabıyla giriş yapın','info'); return; }
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   if(e) e.stopPropagation();
   dersModalParentDersId = parentDersId || null;
   const modal = document.getElementById('dersModal');
@@ -467,6 +473,7 @@ function selectDersRenk(el, renk){
   document.getElementById('dersRenkValue').value = renk;
 }
 function saveDers(){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const editId = document.getElementById('dersEditId').value;
   const ad = document.getElementById('dersAdInput').value.trim();
   const ikon = document.getElementById('dersIkonInput').value.trim() || '📚';
@@ -564,6 +571,7 @@ function collectDersIdsToDelete(rootId, allDersler){
   return ids;
 }
 function silDers(){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const editId = document.getElementById('dersEditId').value;
   if(!editId) return;
   const ders = window.MANIFEST.dersler.find(d=>d.id===editId);
@@ -588,6 +596,7 @@ function silDers(){
 // ══════════════════════════════
 async function openFasikulModal(fasikulId){
   if(isGuestSession()){ showToast('Fasikül eklemek için yetkili hesabıyla giriş yapın','info'); return; }
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const modal = document.getElementById('fasikulModal');
   const silBtn = document.getElementById('fasikulSilBtn');
   document.getElementById('fasikulEditId').value = '';
@@ -727,6 +736,7 @@ function refreshCurrentDrawerAfterFasikulSave(ders){
   }
 }
 async function saveFasikul(){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const editId = document.getElementById('fasikulEditId').value;
   const ad = document.getElementById('fasikulAdInput').value.trim();
   const sinif = parseInt(document.getElementById('fasikulSinifInput').value)||10;
@@ -969,6 +979,7 @@ function _buildKutuphaneBtns(source, existingDersIds){
 }
 
 async function kutuphaneDersEkle(sourceId, dersId){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const source = window.BUNDLED_FASIKUL_SOURCES.find(s=>s.id===sourceId);
   if(!source){ showToast('Kaynak bulunamadı','error'); return; }
   let ders = window.MANIFEST.dersler.find(d=>d.id===dersId);
@@ -1005,6 +1016,7 @@ async function kutuphaneDersEkle(sourceId, dersId){
 }
 
 function kutuphaneCikar(sourceId, dersId){
+  if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
   const ders = window.MANIFEST.dersler.find(d=>d.id===dersId);
   if(!ders) return;
   const fas = ders.fasikuller.find(f=>f.id===sourceId);

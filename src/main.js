@@ -789,7 +789,7 @@ function renderDerslerGrid(){
     const card = document.createElement('div');
     card.className = 'ders-card';
     card.dataset.ders = ders.id;
-    card.draggable = true;
+    card.draggable = canSeeEmptyDers; // sürükle-bırak sıralama admin'e özel (bkz. reorderDersByDrop)
     const dersPerf = perfSummary(stats.dersler?.[ders.id]);
     const visibleFasikuller=visibleFasikullerFor(ders);
     const fasSayisi = visibleFasikuller.reduce((a,f)=>a+getVisibleLeafFasikulSayisi(f),0);
