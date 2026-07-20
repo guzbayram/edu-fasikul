@@ -474,10 +474,9 @@ body.reader-locked .main-content{visibility:hidden!important}
    yönetiliyor. "manipulation" tarayıcının KENDİ native pinch-zoom'unu da açık
    bırakıyordu — bizim JS ile aynı anda devreye girip "senkronsuz/takılan" bir
    harekete yol açıyordu. pinch-zoom'u burada kapatıp panı (pan-x pan-y) JS'e
-   bırakmadan önceki gibi native bırakıyoruz — tek parmak kaydırma (sürekli mod)
-   ve tek-parmak çizim etkilenmez, yalnız native pinch JS'in önüne geçmiyor.
+   bırakmıyoruz; tek/çift parmak pan-zoom uygulama tarafından yönetiliyor.
    Çift-dokun-zoom da pinch-zoom kapatılınca zaten kapanmış olur. */
-.reader-canvas-wrap{ touch-action:pan-x pan-y; }
+.reader-canvas-wrap{ touch-action:none; }
 .reader-canvas-wrap .canvas-container,
 .reader-canvas-wrap .upper-canvas,
 .reader-canvas-wrap .lower-canvas{ touch-action:none!important; }

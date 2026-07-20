@@ -83,7 +83,7 @@ async function renderAllPages(){
   if(appState._pageObserver){ appState._pageObserver.disconnect(); appState._pageObserver = null; }
 
   const totalPages = appState.totalPages;
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const baseScale = appState.zoom / 100;
 
   // Her sayfa için önce placeholder oluştur (boyut sonra doldurulacak)
@@ -143,7 +143,7 @@ function throttleScrollHandler(){
   if(appState._scrollThrottle) return;
   appState._scrollThrottle = setTimeout(()=>{
     appState._scrollThrottle = null;
-    if(appState._scrollingToPage) return;
+    if(appState._scrollingToPage || appState._touchGestureActive || Date.now() < (appState._zoomSettlingUntil || 0)) return;
     updateCurrentPageFromScroll();
   }, 80);
 }
@@ -1096,12 +1096,13 @@ function changeZoom(delta){
   scheduleCardZoomRender({ contentX, contentY, viewportX, viewportY, ratio });
 }
 
-function scheduleCardZoomRender(anchor){
+function scheduleCardZoomRender(anchor, delay = 90){
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap) return;
   if(anchor) appState._zoomAnchor = anchor;
   clearTimeout(appState._zoomRenderTimer);
   wrap.classList.add('zoom-settling');
+  appState._zoomSettlingUntil = Date.now() + delay + 700;
   appState._zoomRenderTimer = setTimeout(async ()=>{
     const savedAnchor = appState._zoomAnchor;
     appState._zoomAnchor = null;
@@ -1117,8 +1118,9 @@ function scheduleCardZoomRender(anchor){
       }
       wrap.style.scrollBehavior = oldScrollBehavior;
       wrap.classList.remove('zoom-settling');
+      appState._zoomSettlingUntil = Date.now() + 250;
     });
-  }, 90);
+  }, delay);
 }
 
 // Anlık görsel ölçek (transform) — render gelene kadar akıcı geri bildirim.
@@ -1251,7 +1253,7 @@ function initTouchGestures() {
     wrap.scrollLeft -= (m.x - g.lastMid.x);
     wrap.scrollTop  -= (m.y - g.lastMid.y);
     g.scale = d / g.startDist;
-    applyVisualScale(g.scale, g.startMid.x, g.startMid.y);
+    applyVisualScale(g.visualBaseScale * g.scale, m.x, m.y);
     g.lastMid = m;
     g.lastDist = d;
     pending = null;
@@ -1268,10 +1270,16 @@ function initTouchGestures() {
       // Kart zoom'lanmışsa (kaydıracak fazla içerik var) 2-parmak hareketi SADECE
       // pan'dir, sayfa-geçişi flick'i sanmayalım (bkz. tek-parmak eşdeğeri).
       const scrollable = (wrap.scrollWidth > wrap.clientWidth + 1) || (wrap.scrollHeight > wrap.clientHeight + 1);
-      const stages = [...wrap.querySelectorAll('.reader-page-stage')].map(el => ({ el, rect0: el.getBoundingClientRect() }));
+      const wrapRect = wrap.getBoundingClientRect();
+      const visibleStageBuffer = Math.max(320, wrapRect.height * 0.75);
+      const stages = [...wrap.querySelectorAll('.reader-page-stage')]
+        .map(el => ({ el, rect0: el.getBoundingClientRect() }))
+        .filter(({ rect0 }) => rect0.bottom >= wrapRect.top - visibleStageBuffer && rect0.top <= wrapRect.bottom + visibleStageBuffer);
+      const renderedZoom = appState._renderedZoom || appState.zoom || 100;
       g = {
         startDist: dist(t0, t1),
         startZoom: appState.zoom,
+        visualBaseScale: appState.zoom / renderedZoom,
         startMid: midpt(t0, t1),
         lastMid: midpt(t0, t1),
         lastDist: dist(t0, t1),
@@ -1313,9 +1321,8 @@ function initTouchGestures() {
     if (rafId != null) { cancelAnimationFrame(rafId); rafId = null; }
     applyPendingGestureFrame();
 
-    const newZoom = clampZoom(Math.round(g.startZoom * g.scale));
+    const newZoom = clampZoom(g.startZoom * g.scale);
     const wrapRect = wrap.getBoundingClientRect();
-    clearVisualScale();
     const zoomChanged = Math.abs(newZoom - g.startZoom) >= 2;
 
     if (zoomChanged) {
@@ -1334,7 +1341,7 @@ function initTouchGestures() {
         viewportX: g.lastMid.x - wrapRect.left,
         viewportY: g.lastMid.y - wrapRect.top,
         ratio: newZoom / (appState._renderedZoom || g.startZoom),
-      });
+      }, 650);
     } else if (!g.scrollable) {
       // Pinch değil (zum ~sabit) ve zum'lanmamış → hızlı/uzun 2-parmak sürükleme
       // = sayfa geçişi flick'i (eskiden yalnız ✋ Gez aracında vardı; Gez artık
@@ -1346,8 +1353,9 @@ function initTouchGestures() {
         window.changePage?.(dir);
       }
     }
+    if(!zoomChanged) clearVisualScale();
     g = null;
-    appState._touchGestureActive = false;
+    setTimeout(()=>{ appState._touchGestureActive = false; }, zoomChanged ? 700 : 120);
   };
 
   wrap.addEventListener('touchend',    commitGesture, { passive: false, capture: true });
