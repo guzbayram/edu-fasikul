@@ -330,7 +330,37 @@ function altKonuHasExactPage(altKonu, pageNum){
   if(!altKonu || !pageNum) return false;
   const page = Number(pageNum);
   if(Number(altKonu.sayfa) === page) return true;
-  return (altKonu.sorular || []).some(s => Number(s.sayfa || 0) === page);
+  return (altKonu.sorular || []).some(s => questionCoversPage(s, page));
+}
+
+function questionCoversPage(soru, pageNum){
+  const page = Number(pageNum || 0);
+  const start = Number(soru?.sayfa || 0);
+  if(!page || !start) return false;
+  const end = Number(soru?.sayfaBitis || start);
+  return page >= start && page <= end;
+}
+
+function renderQuestionlessTopicPage(owner, pageNum, text){
+  if(!owner) return;
+  appState.aktifKonu = owner;
+  appState.aktifAltKonu = null;
+  appState.activeQuestionIdx = 0;
+
+  const select = document.getElementById('anaKonuSelect');
+  if(select) select.value = owner.id || owner.ad || '';
+  renderAltKonuList(owner);
+  updateRightPanelTitle(owner.ad);
+  window.updateKonuDropdownLabel?.();
+
+  const rpSay = document.getElementById('rpSoruSayisi');
+  if(rpSay) rpSay.textContent = 'Konu';
+  const list = document.getElementById('soruList');
+  if(list){
+    list.innerHTML = `<div class="tek-soru-card" style="text-align:center;padding:32px 18px;color:var(--text-muted)"><div style="font-size:30px;margin-bottom:8px">📄</div><div style="font-size:12px;opacity:.75">${text || 'Bu sayfada cevaplanacak seçenekli soru yok.'}</div></div>`;
+  }
+  window.renderSoruStrip?.([]);
+  window.updateTestProgress?.();
 }
 
 function getActiveOwnerForExactPage(pageNum){
@@ -418,19 +448,29 @@ function syncNavToPage(pageNum){
     const _ilkAk = konu.altKonular?.[0];
     const _konuKartBazli = _ilkAk && _ilkAk.sorular?.length > 0 && !!_ilkAk.sorular[0]?.sayfa;
     if(_konuKartBazli){
+      let firstQuestionPage = Infinity;
       for(const ak of konu.altKonular || []){
         // Tam eşleşme (kesin sahip) → kesin kazanır. Kartlar süreksiz
         // sayfalarda olabildiği için (ör. Konu Kartları: 1,2,11,21) gevşek
         // "ilk..son" aralığı yanlış altKonuyu seçtiriyordu.
-        if((ak.sorular||[]).some(s => s.sayfa === pageNum)){
+        if((ak.sorular||[]).some(s => questionCoversPage(s, pageNum))){
           targetKonu = konu; targetAlt = ak;
           break outer;
         }
         // Tam eşleşme yoksa: sayfası <= pageNum olan en yakın kart (kitap geneli)
         for(const s of ak.sorular || []){
           const sp = s.sayfa || 0;
+          if(sp && sp < firstQuestionPage) firstQuestionPage = sp;
           if(sp <= pageNum && sp > bestPage){ bestPage = sp; targetKonu = konu; targetAlt = ak; }
         }
+      }
+      // Bazı fasiküllerde ünite açılış/uygulama sayfası, ilk seçenekli sorudan
+      // bir sayfa önce gelir. Bu sayfada A-E seçenekli soru yoksa önceki testin
+      // son kartı panelde kalmamalı.
+      if(firstQuestionPage !== Infinity && firstQuestionPage - pageNum === 1 && pageNum > bestPage){
+        bestPage = pageNum;
+        targetKonu = konu;
+        targetAlt = null;
       }
       continue;
     }
@@ -494,20 +534,14 @@ function syncNavToPage(pageNum){
     const ownerIsTest = owner && (owner.tur==='test' || (owner.altKonular||[]).some(ak=>(ak.sorular||[]).length));
     if(owner && !ownerIsTest){
       if(appState.aktifKonu?.id !== owner.id || appState.aktifAltKonu){
-        appState.aktifKonu = owner;
-        appState.aktifAltKonu = null;
-        appState.activeQuestionIdx = 0;
-        const select = document.getElementById('anaKonuSelect');
-        if(select) select.value = owner.id;
-        renderAltKonuList(owner);
-        updateRightPanelTitle(owner.ad);
-        const rpSay = document.getElementById('rpSoruSayisi');
-        if(rpSay) rpSay.textContent = 'Konu';
-        const list = document.getElementById('soruList');
         // Konu adı zaten updateRightPanelTitle() ile üstteki başlıkta gösteriliyor —
         // burada tekrar basmıyoruz (mükerrer görünüp satır bölünmesine yol açıyordu).
-        if(list) list.innerHTML = `<div class="tek-soru-card" style="text-align:center;padding:32px 18px;color:var(--text-muted)"><div style="font-size:30px;margin-bottom:8px">📄</div><div style="font-size:12px;opacity:.75">Konu anlatım sayfası — bu bölümde çözülecek soru yok.</div></div>`;
+        renderQuestionlessTopicPage(owner, pageNum, 'Konu anlatım sayfası — bu bölümde çözülecek soru yok.');
       }
+      return;
+    }
+    if(owner && ownerIsTest){
+      renderQuestionlessTopicPage(owner, pageNum, 'Bu sayfada cevaplanacak seçenekli soru yok.');
       return;
     }
   }
@@ -533,14 +567,12 @@ function syncNavToPage(pageNum){
     const _isKartBazliNew = targetAlt.sorular?.length > 0 && !!targetAlt.sorular[0]?.sayfa;
     if(_isKartBazliNew){
       const sorular = targetAlt.sorular || [];
-      const exactIdx = sorular.findIndex(s => s.sayfa === pageNum);
-      let startIdx = exactIdx >= 0 ? exactIdx : 0;
+      const exactIdx = sorular.findIndex(s => questionCoversPage(s, pageNum));
       if(exactIdx < 0){
-        for(let i = 0; i < sorular.length; i++){
-          if((sorular[i].sayfa || 0) <= pageNum) startIdx = i;
-        }
+        renderQuestionlessTopicPage(targetKonu, pageNum, 'Bu sayfada cevaplanacak seçenekli soru yok.');
+        return;
       }
-      appState.activeQuestionIdx = startIdx;
+      appState.activeQuestionIdx = exactIdx;
     }
 
     document.querySelectorAll('.alt-konu-item').forEach(el=>el.classList.remove('active'));
@@ -561,13 +593,11 @@ function syncNavToPage(pageNum){
       // Aynı sayfada birden fazla soru olabilir. Sayfa değişince o sayfanın ilk
       // sorusuna geç; kullanıcı aynı sayfadaki başka bir soruyu seçtiyse koru.
       const sorular = targetAlt.sorular || [];
-      const activeIsOnPage = sorular[appState.activeQuestionIdx]?.sayfa === pageNum;
-      let bestIdx = activeIsOnPage ? appState.activeQuestionIdx : sorular.findIndex(s => s.sayfa === pageNum);
+      const activeIsOnPage = questionCoversPage(sorular[appState.activeQuestionIdx], pageNum);
+      let bestIdx = activeIsOnPage ? appState.activeQuestionIdx : sorular.findIndex(s => questionCoversPage(s, pageNum));
       if(bestIdx < 0){
-        bestIdx = 0;
-        for(let i = 0; i < sorular.length; i++){
-          if((sorular[i].sayfa || 0) <= pageNum) bestIdx = i;
-        }
+        renderQuestionlessTopicPage(targetKonu, pageNum, 'Bu sayfada cevaplanacak seçenekli soru yok.');
+        return;
       }
       if(bestIdx !== appState.activeQuestionIdx){
         appState.activeQuestionIdx = bestIdx;
