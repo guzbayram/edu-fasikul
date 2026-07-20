@@ -1132,12 +1132,9 @@ function scheduleCardZoomRender(anchor, delay = 90){
 
 // Bir sonraki pinch/pan jesti başlamadan HEMEN önce çağrılır. Önceki jestin
 // gecikmeli "kaliteli render'a geçiş" ı (scheduleCardZoomRender) henüz
-// tamamlanmadıysa, sahne (stage) elemanlarının genişlik/yükseklik/transform
-// stilleri hâlâ ESKİ jestin BÜYÜTÜLMÜŞ halinde kalır. Yeni jest bu ŞİŞMİŞ
-// boyutu "orijinal" sanıp üstüne kendi ölçeğini uygularsa, art arda birkaç
-// pinch sonunda boyutlar katlanarak devasalaşıp tarayıcıyı kilitliyordu
-// ("peş peşe 3-4 kez yapınca donuyor"). Bekleyen bir yerleşme varsa hemen
-// (gecikmesiz) tamamlanır — yeni jest DAİMA temiz/gerçek ölçülerle başlar.
+// tamamlanmadıysa elle zoom butonları gibi işlemler önce bunu bitirebilir.
+// Dokunma pinch'i ise bunu beklemez; aksi halde ilk parmak hareketleri kaçıyor
+// ve büyüme ancak parmak bırakılınca geliyormuş gibi hissediliyordu.
 async function flushPendingCardZoomRender(){
   if(!appState._zoomRenderTimer) return;
   const wrap = document.getElementById('readerCanvasWrap');
@@ -1145,6 +1142,16 @@ async function flushPendingCardZoomRender(){
   clearTimeout(appState._zoomRenderTimer);
   appState._zoomRenderTimer = null;
   await runCardZoomSettle(wrap);
+}
+
+function cancelPendingCardZoomRender(){
+  if(!appState._zoomRenderTimer) return;
+  const wrap = document.getElementById('readerCanvasWrap');
+  clearTimeout(appState._zoomRenderTimer);
+  appState._zoomRenderTimer = null;
+  appState._zoomAnchor = null;
+  appState._zoomSettlingUntil = 0;
+  wrap?.classList.remove('zoom-settling');
 }
 
 // Anlık görsel ölçek (transform) — render gelene kadar akıcı geri bildirim.
@@ -1258,12 +1265,13 @@ function initTouchGestures() {
   // ÇAĞRILMAZ — o an yazdığımız scrollLeft/Top farkından ANALİTİK hesaplanır.
   // (touchmove içinde ölçüp-hemen-yazmak "layout thrashing" yaratıp pinch'i
   // titrek/takılı hissettiriyordu — asıl sorun buydu.)
-  function getGestureTargets(wrapRect, visibleStageBuffer) {
+  function getGestureTargets(wrapRect, visibleStageBuffer, exclude) {
     const stageNodes = [...wrap.querySelectorAll('.reader-page-stage')];
     const rawNodes = stageNodes.length ? stageNodes : [...wrap.querySelectorAll('[data-page-num]')];
     if(!rawNodes.length && wrap.firstElementChild) rawNodes.push(wrap.firstElementChild);
 
     return rawNodes
+      .filter(stage => !exclude || !exclude.has(stage))
       .map(stage => {
         const directPage = stage.matches?.('[data-page-num],.pdf-page-wrap,.pdf-page-mock') ? stage : null;
         const page = stage.querySelector?.('.pdf-page-wrap,.pdf-page-mock,[data-page-num]') || directPage || stage.firstElementChild || stage;
@@ -1337,10 +1345,12 @@ function initTouchGestures() {
     // beginGesture'da hesaplanan sahne üst sınırının hiç aşılmamasını
     // garantiler, hem de Preview'daki gibi sınırda "duran" (aşırı
     // büyüyüp release'te aniden geri zıplayan değil) bir his verir.
-    const rawScale = d / g.startDist;
-    const minScale = ZOOM_MIN / g.startZoom, maxScale = ZOOM_MAX / g.startZoom;
-    g.scale = Math.max(minScale, Math.min(maxScale, rawScale));
-    const visualScale = g.visualBaseScale * g.scale;
+    const rawScale = d / Math.max(1, g.startDist);
+    const liveZoom = clampZoom(g.startZoom * rawScale);
+    g.scale = liveZoom / g.startZoom;
+    appState.zoom = liveZoom;
+    setZoomLabel(liveZoom);
+    const visualScale = liveZoom / g.renderedZoom;
     // wrap'in kendi ekran konumu/boyutu jest sırasında değişmez (yalnız
     // içeriği kaydırılır) — jest başında BİR KEZ ölçülen startWrapRect
     // yeniden kullanılır. Her karede getBoundingClientRect() çağırmak,
@@ -1349,9 +1359,10 @@ function initTouchGestures() {
     const rect = g.startWrapRect;
     const viewportX = m.x - rect.left;
     const viewportY = m.y - rect.top;
-    const scaleRatio = visualScale / g.visualBaseScale;
+    const scaleRatio = liveZoom / g.startZoom;
     wrap.scrollLeft = Math.max(0, g.anchorContentX * scaleRatio - viewportX);
     wrap.scrollTop = Math.max(0, g.anchorContentY * scaleRatio - viewportY);
+    retargetStagesIfNeeded();
     applyVisualScale(visualScale);
     g.lastMid = m;
     g.lastDist = d;
@@ -1363,6 +1374,18 @@ function initTouchGestures() {
   // Yeni jestin başlangıç durumunu kurar (t0/t1 düz {x,y} nesneleridir —
   // ham Touch nesnesi değil, çünkü flushPendingCardZoomRender'ın await'i
   // sırasında olay bittiği için Touch referansına güvenmek riskli olurdu).
+  // Sahne (stage) boyutunu ulaşılabilecek EN BÜYÜK ölçeğe (ZOOM_MAX) göre BİR KEZ
+  // sabitler — böylece karede yalnız transform:scale (GPU, layout'suz) değişir.
+  function sizeStagesForGesture(stages, renderedZoom) {
+    const maxReachableScale = ZOOM_MAX / renderedZoom;
+    stages.forEach(s => {
+      s.stage.style.width = Math.ceil(Math.max(wrap.clientWidth, s.basePageW * maxReachableScale + 32, s.baseStageW)) + 'px';
+      s.stage.style.height = Math.ceil(Math.max(wrap.clientHeight, s.basePageH * maxReachableScale + 32, s.baseStageH)) + 'px';
+      s.stage.style.justifyContent = 'flex-start';
+      s.stage.style.alignItems = 'flex-start';
+    });
+  }
+
   function beginGesture(p0, p1){
     // Kart zoom'lanmışsa (kaydıracak fazla içerik var) 2-parmak hareketi SADECE
     // pan'dir, sayfa-geçişi flick'i sanmayalım (bkz. tek-parmak eşdeğeri).
@@ -1373,22 +1396,11 @@ function initTouchGestures() {
     const renderedZoom = appState._renderedZoom || appState.zoom || 100;
     const startMid = midpt(p0, p1);
     const startDist = dist(p0, p1);
-    // Jest boyunca sahne (stage) boyutu BİR KEZ, ulaşılabilecek EN BÜYÜK
-    // ölçeğe (ZOOM_MAX) göre hesaplanıp sabitlenir — her karede width/height
-    // YAZMAK (applyVisualScale eskiden böyleydi) senkron layout'a zorlayıp
-    // pinch'i "ağır/titrek" hissettiriyordu. Artık karede yalnız
-    // transform:scale (GPU, layout'suz) değişiyor. applyPendingGestureFrame
-    // canlı ölçeği de ZOOM_MAX ile sınırladığından bu üst sınır asla aşılmaz.
-    const maxReachableScale = ZOOM_MAX / renderedZoom;
-    stages.forEach(s => {
-      s.stage.style.width = Math.ceil(Math.max(wrap.clientWidth, s.basePageW * maxReachableScale + 32, s.baseStageW)) + 'px';
-      s.stage.style.height = Math.ceil(Math.max(wrap.clientHeight, s.basePageH * maxReachableScale + 32, s.baseStageH)) + 'px';
-      s.stage.style.justifyContent = 'flex-start';
-      s.stage.style.alignItems = 'flex-start';
-    });
+    sizeStagesForGesture(stages, renderedZoom);
     g = {
       startDist,
       startZoom: appState.zoom,
+      renderedZoom,
       visualBaseScale: appState.zoom / renderedZoom,
       startMid,
       lastMid: startMid,
@@ -1404,7 +1416,45 @@ function initTouchGestures() {
       viewportW: wrap.clientWidth,
       viewportH: wrap.clientHeight,
       stages,
+      visibleStageBuffer,
+      // Sahne kümesinin hangi scroll konumunda yakalandığı — jest sırasında
+      // (özellikle uzun/derin bir dokümanda büyük bir zoom, anchor'ı koruma
+      // formülüyle scroll'u çok uzağa taşıyabiliyor) bu konumdan yeterince
+      // uzaklaşılırsa retargetStagesIfNeeded() kümeyi tazeler. Aksi halde canlı
+      // önizleme artık EKRAN DIŞINDA kalmış eski sayfalara uygulanmaya devam
+      // eder ve gerçekte görünen sayfalar hiç büyümüyormuş gibi hissettirir.
+      stagesScrollLeft: wrap.scrollLeft,
+      stagesScrollTop: wrap.scrollTop,
     };
+  }
+
+  // Jest sırasında scroll, sahne kümesinin yakalandığı konumdan tampon
+  // bölgesinin yarısından fazla uzaklaştıysa görünür kümeyi yeniler: artık
+  // yakında olmayan sahneleri orijinal haline döndürür, yeni yakındaki
+  // sahneleri (yalnızca henüz izlenmeyenleri) yakalayıp aynı üst sınıra göre
+  // boyutlandırır. wrap'in EKRANDAKİ konumu (startWrapRect) jest boyunca
+  // değişmez — yalnız İÇERİĞİ kayar — bu yüzden yeniden ölçmeye gerek yok.
+  function retargetStagesIfNeeded() {
+    const driftLeft = Math.abs(wrap.scrollLeft - g.stagesScrollLeft);
+    const driftTop = Math.abs(wrap.scrollTop - g.stagesScrollTop);
+    if (driftLeft <= g.visibleStageBuffer * 0.5 && driftTop <= g.visibleStageBuffer * 0.5) return;
+
+    const wrapRect = g.startWrapRect;
+    const stillNear = (s) => {
+      const r = s.stage.getBoundingClientRect();
+      return r.bottom >= wrapRect.top - g.visibleStageBuffer && r.top <= wrapRect.bottom + g.visibleStageBuffer;
+    };
+    const kept = [], dropped = [];
+    g.stages.forEach(s => (stillNear(s) ? kept : dropped).push(s));
+    dropped.forEach(s => restoreGestureNode(s.stage));
+
+    const keptSet = new Set(kept.map(s => s.stage));
+    const fresh = getGestureTargets(wrapRect, g.visibleStageBuffer, keptSet);
+    sizeStagesForGesture(fresh, g.renderedZoom);
+
+    g.stages = [...kept, ...fresh];
+    g.stagesScrollLeft = wrap.scrollLeft;
+    g.stagesScrollTop = wrap.scrollTop;
   }
 
   wrap.addEventListener('touchstart', e => {
@@ -1412,14 +1462,11 @@ function initTouchGestures() {
       e.preventDefault();
       e.stopPropagation();
       appState._touchGestureActive = true;
-      g = null; // önceki jest hâlâ kurulu olmasın diye (flush sırasında touchmove gelmesin)
+      g = null; // önceki jest hâlâ kurulu olmasın
       const p0 = { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
       const p1 = { clientX: e.touches[1].clientX, clientY: e.touches[1].clientY };
-      if(appState._zoomRenderTimer){
-        flushPendingCardZoomRender().then(() => beginGesture(p0, p1));
-      } else {
-        beginGesture(p0, p1);
-      }
+      cancelPendingCardZoomRender();
+      beginGesture(p0, p1);
     } else {
       g = null;
       appState._touchGestureActive = false;
