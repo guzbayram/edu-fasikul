@@ -590,7 +590,7 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     const pdfCanvas = document.createElement('canvas');
     pdfCanvas.width = viewport.width;
     pdfCanvas.height = viewport.height;
-    pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;';
+    pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;z-index:1;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
     pdfCanvas.style.background = 'transparent';
     pageWrap.insertBefore(pdfCanvas, pageWrap.firstChild);
 
@@ -625,7 +625,7 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     drawEl.className = 'fabric-draw-canvas';
     drawEl.width = viewport.width;
     drawEl.height = viewport.height;
-    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;';
+    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
     pageWrap.insertBefore(drawEl, pageWrap.querySelector('.page-num-label'));
 
     initFabricForPage(drawEl, viewport.width, viewport.height, pageNum, { disableRetinaScaling: true });
@@ -672,7 +672,7 @@ function renderSingleFallbackPage(pageNum, pageWrap){
   drawEl.className = 'fabric-draw-canvas';
   drawEl.width = displayW;
   drawEl.height = displayH;
-  drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;';
+  drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
   pageWrap.insertBefore(drawEl, pageWrap.querySelector('.page-num-label'));
   initFabricForPage(drawEl, displayW, displayH, pageNum);
 }
@@ -845,7 +845,7 @@ async function renderSinglePageMode(pageNum){
       const pdfCanvas = document.createElement('canvas');
       pdfCanvas.width = viewport.width;
       pdfCanvas.height = viewport.height;
-      pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;';
+      pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;z-index:1;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
       pageWrap.appendChild(pdfCanvas);
 
       const ctx2d = pdfCanvas.getContext('2d');
@@ -875,7 +875,7 @@ async function renderSinglePageMode(pageNum){
       const drawEl = document.createElement('canvas');
       drawEl.className = 'fabric-draw-canvas';
       drawEl.width = viewport.width; drawEl.height = viewport.height;
-      drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;';
+      drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
       pageWrap.appendChild(drawEl);
       initFabricForPage(drawEl, viewport.width, viewport.height, pageNum, { disableRetinaScaling: true });
       const fc = appState.fabricCanvases[pageNum];
@@ -904,7 +904,7 @@ async function renderSinglePageMode(pageNum){
     const drawEl = document.createElement('canvas');
     drawEl.className = 'fabric-draw-canvas';
     drawEl.width = displayW; drawEl.height = displayH;
-    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;';
+    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
     pageWrap.appendChild(drawEl);
     stage.appendChild(pageWrap);
     wrap.appendChild(stage);
@@ -982,9 +982,37 @@ function initPDFContextMenu(){
     });
   }
 
+  const isDrawingTool = ()=>['pen','tukenmez','marker','eraser','text'].includes(appState.drawTool);
+  const clearReaderSelection = ()=>{
+    try{
+      const sel = window.getSelection?.();
+      if(sel && !sel.isCollapsed) sel.removeAllRanges();
+    }catch(_e){}
+  };
+  const suppressNativeReaderMenu = e=>{
+    if(!e.target.closest?.('#readerCanvasWrap')) return;
+    if(e.target.closest?.('button,input,textarea,select,.tool-btn,.color-dot,.size-slider')) return;
+    if(!isDrawingTool()) return;
+    e.preventDefault();
+    if(!['touchstart','pointerdown'].includes(e.type)) e.stopPropagation();
+    clearReaderSelection();
+  };
+  ['contextmenu','selectstart','webkitmouseforcewillbegin','touchstart','pointerdown'].forEach(type=>{
+    wrap.addEventListener(type, suppressNativeReaderMenu, { capture:true });
+  });
+  document.addEventListener('selectionchange', ()=>{
+    if(!document.getElementById('reader-overlay')?.classList.contains('open')) return;
+    if(!isDrawingTool()) return;
+    const sel = window.getSelection?.();
+    const node = sel?.anchorNode;
+    const el = node?.nodeType === 1 ? node : node?.parentElement;
+    if(el?.closest?.('#readerCanvasWrap')) clearReaderSelection();
+  });
+
   // Sağ tık (masaüstü)
   wrap.addEventListener('contextmenu', e=>{
     e.preventDefault();
+    if(isDrawingTool()) return;
     showContextMenu(e.clientX, e.clientY);
   });
 }

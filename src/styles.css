@@ -499,6 +499,32 @@ body.reader-locked .main-content{visibility:hidden!important}
 .reader-canvas-wrap .canvas-container,
 .reader-canvas-wrap .upper-canvas,
 .reader-canvas-wrap .lower-canvas{ touch-action:none!important; }
+.reader-canvas-wrap .canvas-container{
+  z-index:30!important;
+  pointer-events:auto!important;
+}
+.reader-canvas-wrap .upper-canvas{
+  z-index:32!important;
+  pointer-events:auto!important;
+}
+.reader-canvas-wrap .lower-canvas{
+  z-index:31!important;
+  pointer-events:none!important;
+}
+.reader-canvas-wrap .pdf-page-wrap > canvas:not(.fabric-draw-canvas):not(.upper-canvas):not(.lower-canvas){
+  z-index:1!important;
+  pointer-events:none!important;
+}
+.reader-canvas-wrap,
+.reader-canvas-wrap *,
+.pdf-page-wrap,
+.pdf-page-wrap *,
+.pdf-page-wrap canvas{
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+  -webkit-user-drag:none!important;
+}
 
 /* Özel tooltip balonu (uzun-basışta açılır, otomatik gizlenir) */
 .tip-bubble{

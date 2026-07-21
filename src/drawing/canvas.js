@@ -118,6 +118,35 @@ function bindCanvasDrawTapMemory(fc){
   });
 }
 
+function liftFabricHitLayer(fc){
+  const container = fc?.wrapperEl || fc?.upperCanvasEl?.parentElement;
+  if(container){
+    container.style.position = 'absolute';
+    container.style.left = '0';
+    container.style.top = '0';
+    container.style.zIndex = '30';
+    container.style.pointerEvents = 'auto';
+    container.style.webkitUserSelect = 'none';
+    container.style.userSelect = 'none';
+    container.style.webkitTouchCallout = 'none';
+  }
+  if(fc?.upperCanvasEl){
+    fc.upperCanvasEl.style.zIndex = '32';
+    fc.upperCanvasEl.style.pointerEvents = 'auto';
+    fc.upperCanvasEl.style.touchAction = 'none';
+    fc.upperCanvasEl.style.webkitUserSelect = 'none';
+    fc.upperCanvasEl.style.userSelect = 'none';
+    fc.upperCanvasEl.style.webkitTouchCallout = 'none';
+  }
+  if(fc?.lowerCanvasEl){
+    fc.lowerCanvasEl.style.zIndex = '31';
+    fc.lowerCanvasEl.style.pointerEvents = 'none';
+    fc.lowerCanvasEl.style.webkitUserSelect = 'none';
+    fc.lowerCanvasEl.style.userSelect = 'none';
+    fc.lowerCanvasEl.style.webkitTouchCallout = 'none';
+  }
+}
+
 function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   patchFabricTouchStartPreventDefault();
   const fc = new fabric.Canvas(canvasEl, {
@@ -135,6 +164,7 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   });
   patchGetPointer(fc);
   bindCanvasDrawTapMemory(fc);
+  liftFabricHitLayer(fc);
   fc._pageNum = pageNum;
   appState.fabricCanvases[pageNum] = fc;
 
@@ -300,6 +330,7 @@ function initFabricOnCanvas(canvasEl, w, h){
   });
   patchGetPointer(fc);
   bindCanvasDrawTapMemory(fc);
+  liftFabricHitLayer(fc);
   appState.fabricCanvas = fc;
 
   // Sayfa için kayıtlı çizim varsa yükle
