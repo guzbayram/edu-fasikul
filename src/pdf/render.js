@@ -1101,6 +1101,23 @@ async function runCardZoomSettle(wrap){
   wrap.style.scrollBehavior = 'auto';
   appState._preserveScrollAfterRender = true;
   await Promise.resolve(renderPages());
+  // Sürekli (scroll) modda renderAllPages() TÜM sayfalar için önce genel
+  // tahminli bir YER TUTUCU boyut kurar; gerçek/PDF'e-özgü boyut yalnızca
+  // IntersectionObserver sayfayı görününce (asenkron, gecikmeli) geliyor.
+  // Anchor sayfası TAM O SIRADA hâlâ yer tutucuysa, konum onun üzerinden
+  // hesaplanır ve gerçek boyut biraz sonra gelince içerik kayar — "bırakınca
+  // ekran değişiyor" şikayetinin gerçek PDF ile doğrulanan ikinci kaynağı.
+  // Anchor sayfasını ölçmeden ÖNCE zorla/senkron gerçek render'ını bekleriz.
+  if(savedAnchor?.pageNum != null && appState.viewMode === 'scroll'){
+    const anchorPageEl = wrap.querySelector(`[data-page-num="${savedAnchor.pageNum}"]`);
+    if(anchorPageEl && anchorPageEl.dataset.rendered !== '1'){
+      anchorPageEl.dataset.rendered = '1';
+      try{
+        if(appState.pdfDoc) await renderSinglePDFPage(Number(savedAnchor.pageNum), anchorPageEl);
+        else renderSingleFallbackPage(Number(savedAnchor.pageNum), anchorPageEl);
+      }catch(e){ console.warn('Anchor sayfası zorla render edilemedi:', e); }
+    }
+  }
   await new Promise(resolve => requestAnimationFrame(()=>{
     if(savedAnchor){
       // wrap'in ekrandaki konumu commit anından (jest bitişi) settle anına
