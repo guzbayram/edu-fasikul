@@ -12,6 +12,7 @@ export const appState = {
   visiblePages: [],
   zoom: 100,
   drawTool: 'pen',
+  trackpadDrawMode: false,
   drawColor: '#dc2626',
   brushSize: 3,
   eraserSize: 22,
