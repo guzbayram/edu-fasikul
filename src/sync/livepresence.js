@@ -18,6 +18,10 @@ let _pubTimer = null, _drawPubTimer = null;
 let _roster = [];
 let _followUid = null;
 let _lastFollowSig = '';
+let _followApplyTimer = null;
+let _followApplySeq = 0;
+const FOLLOW_APPLY_DELAY_MS = 90;
+const FOLLOW_DRAW_APPLY_DELAY_MS = 90;
 
 function _esc(s){ return String(s??'').replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
 function _escAttr(s){ return _esc(s).replace(/'/g,"\\'"); }
@@ -51,7 +55,7 @@ export function startCanliPresence(){
     });
     _roster = list;
     _renderRoster();
-    if(_followUid) _applyFollow();
+    if(_followUid) scheduleApplyFollow();
     if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
   }, (err)=>console.warn('Canlı oturum dinleme hatası:',err));
   _heartbeatTimer = setInterval(_writePresence, HEARTBEAT_MS);
@@ -61,8 +65,10 @@ export function startCanliPresence(){
 export function stopCanliPresence(silent){
   if(_rosterUnsub){ _rosterUnsub(); _rosterUnsub = null; }
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
-  clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer);
+  clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
   _followUid = null; _lastFollowSig = '';
+  _followApplyTimer = null;
+  _followApplySeq++;
   if(appState.sharedBoard){ appState.sharedBoard = false; _clearOverlay(); }
   const me = _me();
   if(me && _presFasikulId && _ready() && window._fsDeleteDoc){
@@ -118,7 +124,7 @@ export function followCanliMember(uid, name){
   _lastFollowSig = '';
   window.showToast?.(`🔴 ${name||'Katılımcı'} takip ediliyor`,'success');
   _renderRoster();
-  _applyFollow();
+  scheduleApplyFollow();
 }
 
 export function unfollowCanliMember(){
@@ -128,7 +134,13 @@ export function unfollowCanliMember(){
   window.showToast?.('Takip durduruldu','info');
 }
 
-function _applyFollow(){
+function scheduleApplyFollow(){
+  const seq = ++_followApplySeq;
+  clearTimeout(_followApplyTimer);
+  _followApplyTimer = setTimeout(()=>_applyFollow(seq), FOLLOW_APPLY_DELAY_MS);
+}
+
+function _applyFollow(seq){
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
   const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${(m.draw||'').length}`;
@@ -145,7 +157,9 @@ function _applyFollow(){
   }catch(e){ console.warn('Takip uygula hatası:',e); }
   finally{ setTimeout(()=>{ appState._presSuppress = false; }, 400); }
   // Sayfa/canvas oturunca çizimi yansıt
-  setTimeout(()=>_renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh), 320);
+  setTimeout(()=>{
+    if(seq === _followApplySeq) _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh);
+  }, 320);
 }
 
 function _renderFollowDraw(json, drawKey, dw, dh){
@@ -159,21 +173,45 @@ function _renderFollowDraw(json, drawKey, dw, dh){
   if(!fc){
     setTimeout(()=>{
       const fc2 = appState.fabricCanvases?.[appState.currentPage] || appState.fabricCanvas;
-      if(fc2) _loadFollowJSON(fc2, json, drawKey);
+      if(fc2) _queueFollowJSON(fc2, json, drawKey);
     }, 1200);
     return;
   }
-  _loadFollowJSON(fc, json, drawKey);
+  _queueFollowJSON(fc, json, drawKey);
+}
+function _queueFollowJSON(fc, json, drawKey){
+  if(!fc || !json || !drawKey) return;
+  fc._queuedFollowDrawing = { json, drawKey };
+  clearTimeout(fc._followDrawingTimer);
+  fc._followDrawingTimer = setTimeout(()=>_drainFollowJSON(fc), FOLLOW_DRAW_APPLY_DELAY_MS);
+}
+function _drainFollowJSON(fc){
+  if(!fc || fc._followDrawingLoading) return;
+  const queued = fc._queuedFollowDrawing;
+  fc._queuedFollowDrawing = null;
+  if(!queued) return;
+  _loadFollowJSON(fc, queued.json, queued.drawKey);
 }
 function _loadFollowJSON(fc, json, drawKey){
+  fc._followDrawingLoading = true;
   fc._applyingRemoteDrawing = true;
+  const token = (fc._followDrawingToken = (fc._followDrawingToken || 0) + 1);
   try{
     fc.loadFromJSON(json, ()=>{
-      window.applyDrawingScale?.(fc, drawKey);
+      if(fc._followDrawingToken === token && !fc._queuedFollowDrawing){
+        window.applyDrawingScale?.(fc, drawKey);
+        fc.renderAll();
+      }
+      fc._followDrawingLoading = false;
       fc._applyingRemoteDrawing = false;
-      fc.renderAll();
+      if(fc._queuedFollowDrawing) setTimeout(()=>_drainFollowJSON(fc), 0);
     });
-  }catch(e){ fc._applyingRemoteDrawing = false; console.warn('Takip çizimi yüklenemedi:',e); }
+  }catch(e){
+    fc._followDrawingLoading = false;
+    fc._applyingRemoteDrawing = false;
+    console.warn('Takip çizimi yüklenemedi:',e);
+    if(fc._queuedFollowDrawing) setTimeout(()=>_drainFollowJSON(fc), 0);
+  }
 }
 
 // ── ORTAK TAHTA — aynı sayfadaki herkesin kalemi overlay olarak birleşir ──

@@ -354,7 +354,7 @@ function saveDrawing(){
     const fc = appState.fabricCanvas;
     if(!fc) return;
     const key = drawingKeyForPage(appState.currentPage);
-    const json=JSON.stringify(fc);
+    const json=localCanvasJSON(fc);
     appState.drawings[key] = json;
     appState.drawingDims[key] = { w: fc.width, h: fc.height };
     persistDrawingCloud(key, json, fc.width, fc.height);
