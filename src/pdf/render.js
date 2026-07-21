@@ -652,15 +652,40 @@ function getReaderFitScale(page, wrap){
   // Sayfanın oranı kutununkinden farklıysa bir kenarı ekran dışına taşabilir —
   // ortalanır (align/justify-content:center) ve pan/scroll ile ulaşılır.
   const ov = document.getElementById('reader-overlay');
-  if(ov?.classList.contains('solve-mode')){
+  const solveMode = !!ov?.classList.contains('solve-mode');
+  let baseH = null;
+  if(solveMode){
     const padY = styles ? parseFloat(styles.paddingTop || 0) + parseFloat(styles.paddingBottom || 0) : 0;
     const rawH = container?.clientHeight || 0;
     const viewportH = Math.max(280, (rawH > 0 ? rawH : window.innerHeight) - padY - 2);
-    const baseH = viewportH / natural.height;
-    return Math.max(0.35, Math.max(base, baseH) * zoomScale);
+    baseH = viewportH / natural.height;
   }
+  // Bu sayfanın "sığdır" oranını (base/baseH) ÖNBELLEKLER — zoom-gesture motoru
+  // (createZoomGestureState) canlı pinch/pan önizlemesinde AYNI 0.35 alt-sınır
+  // kırpmasını taklit edebilsin diye. Aşağıdaki Math.max(0.35, ...) MUTLAK
+  // ÖLÇEĞE (sayfanın kendi doğal boyutuna göre) uygulanıyor — appState.zoom
+  // yüzdesiyle DOĞRUSAL bir ilişkisi YOK. Canlı önizleme salt CSS transform'la
+  // appState.zoom'a göre DOĞRUSAL ölçeklendirdiğinden, gerçek render bu alt
+  // sınıra çarptığında (küçük zoom%'lerde) ikisi arasında fark oluşup
+  // bırakınca boyut/konum "zıplıyordu" — gerçek PDF ile ölçülüp doğrulandı.
+  appState._fitScaleInfo = { pageNum: page.pageNumber, base, baseH, solveMode };
+  if(solveMode) return Math.max(0.35, Math.max(base, baseH) * zoomScale);
   // Normal: genişliğe sığdır (fill-width)
   return Math.max(0.35, base * zoomScale);
+}
+
+// getReaderFitScale'in AYNI formülünü (0.35 alt-sınırı dahil), appState.zoom'u
+// DEĞİŞTİRMEDEN, VERİLEN herhangi bir zoomPct için hesaplar — zoom-gesture
+// motorunun canlı önizlemesi bunu kullanarak gerçek render'ın hangi ölçeğe
+// varacağını ÖNCEDEN, senkron biçimde bilir. Önbellek bu sayfa için henüz
+// kurulmadıysa (ör. gösterilen sayfa hâlâ yer tutucuysa) null döner — çağıran
+// o zaman eski doğrusal (Math.max yok) varsayıma düşer.
+function computeFitScaleForZoom(pageNum, zoomPct){
+  const info = appState._fitScaleInfo;
+  if(!info || String(info.pageNum) !== String(pageNum)) return null;
+  const zoomScale = zoomPct / 100;
+  if(info.solveMode) return Math.max(0.35, Math.max(info.base, info.baseH) * zoomScale);
+  return Math.max(0.35, info.base * zoomScale);
 }
 
 function sizeReaderStage(stage, wrap, displayW, displayH){
@@ -1101,6 +1126,10 @@ async function runCardZoomSettle(wrap){
   wrap.style.scrollBehavior = 'auto';
   appState._preserveScrollAfterRender = true;
   await Promise.resolve(renderPages());
+  // Gerçek render wrap.innerHTML'i baştan kurdu — geçici transform'lu
+  // sarmalayıcı artık yok, overflow:auto'yu (beginZoomGesture'da otomatik
+  // scroll-kırpmasını önlemek için hidden yapılmıştı) güvenle geri açabiliriz.
+  wrap.style.overflow = '';
   // Sürekli (scroll) modda renderAllPages() TÜM sayfalar için önce genel
   // tahminli bir YER TUTUCU boyut kurar; gerçek/PDF'e-özgü boyut yalnızca
   // IntersectionObserver sayfayı görününce (asenkron, gecikmeli) geliyor.
@@ -1220,41 +1249,153 @@ let zg = null; // aktif jest durumu — touch ve wheel/trackpad paylaşır
 function createZoomGestureState(anchorScreenX, anchorScreenY){
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap || !wrap.firstChild) return null;
+  // KRİTİK: wrap 'overflow:auto' olduğu sürece, transform'la ölçeklenen inner'ın
+  // taştığı alan (CSS'e göre TRANSFORM SONRASI/görsel geometriyle hesaplanır)
+  // wrap'in scrollWidth/Height'ını jest SIRASINDA canlı canlı küçültüyor —
+  // tarayıcı bunun üzerine scrollLeft/Top'u JS'in HİÇ haberi olmadan otomatik
+  // kırpıyor (ör. zoom-out'ta 416px'ten 98px'e). Bu, innerOriginX/Y'nin jest
+  // başında ölçülen (ve konum hesaplarının dayandığı) değerini geçersiz kılıp
+  // gerçek, ölçülmüş bir kaymaya yol açıyordu. Jest boyunca overflow:hidden
+  // yaparak bu otomatik kırpmayı tamamen devre dışı bırakıyoruz — commit/settle
+  // tamamlanınca (gerçek scroll konumu KENDİMİZ ayarladıktan sonra) geri açılır.
+  wrap.style.overflow = 'hidden';
   const wrapRect = wrap.getBoundingClientRect();
   const wrapStyles = getComputedStyle(wrap);
-  const padX = parseFloat(wrapStyles.paddingLeft || 0) + parseFloat(wrapStyles.paddingRight || 0);
+  const padLeft = parseFloat(wrapStyles.paddingLeft || 0), padRight = parseFloat(wrapStyles.paddingRight || 0);
+  const padTop = parseFloat(wrapStyles.paddingTop || 0), padBottom = parseFloat(wrapStyles.paddingBottom || 0);
+  const padX = padLeft + padRight, padY = padTop + padBottom;
   const inner = document.createElement('div');
   inner.className = 'reader-zoom-inner';
   inner.style.cssText = 'display:flex;flex-direction:column;align-items:flex-start;gap:20px;transform-origin:0 0;will-change:transform;';
   inner.style.width = Math.max(0, wrap.clientWidth - padX) + 'px';
   while(wrap.firstChild) inner.appendChild(wrap.firstChild);
   wrap.appendChild(inner);
+  // inner'ın EKRANDAKİ gerçek konumu HESAPLANMAZ, DOĞRUDAN ÖLÇÜLÜR:
+  // wrapRect.left - scrollLeft gibi bir formül wrap'in kendi padding'ini
+  // (ör. sol/üst 20-84px) atlıyor, gerçek PDF ile ölçülüp doğrulanan küçük
+  // ama gerçek bir kaymaya yol açıyordu. getBoundingClientRect() konumlanma
+  // BAĞLAMINDAN (offsetParent zincirinden) VE padding hesaplarından tamamen
+  // bağımsız, her zaman doğru gerçek piksel konumu verir.
+  const innerRect0 = inner.getBoundingClientRect();
+  const innerOriginX = innerRect0.left, innerOriginY = innerRect0.top;
 
   const startZoom = appState.zoom;
   const renderedZoom = appState._renderedZoom || startZoom || 100;
+  const anchorContentX = anchorScreenX - innerOriginX;
+  const anchorContentY = anchorScreenY - innerOriginY;
+  // Anchor sayfasının DOĞAL (o an render edilmiş, ölçeklenmemiş) geometrisi.
+  // .reader-page-stage sayfayı kendi içinde ORTALAR (justify-content/
+  // align-items:center) — sayfa bir eksende viewport'tan dar/kısa kalırsa
+  // (örn. zum %100'ün altına inince) o eksende scrollLeft/Top'un HİÇBİR
+  // görsel etkisi kalmaz, gerçek render CSS ile ortalanır. Canlı önizleme
+  // bunu bilmeden ham anchor-takibiyle devam ederse, bırakılınca gerçek
+  // render'ın CSS-ortalamasıyla çakışıp görünür bir zıplama olur — aşağıda
+  // updateZoomGestureState bu geometriyi kullanarak aynı ortalamayı canlıda
+  // da uygular.
+  const pageLoc = locatePageInInner(inner, anchorContentX, anchorContentY);
+  // getReaderFitScale'in appState.zoom%→gerçek-ölçek dönüşümü HER ZAMAN
+  // doğrusal DEĞİL: 0.35 alt sınırı var (sayfanın KENDİ doğal boyutuna göre,
+  // yüzdeye göre değil). computeFitScaleForZoom bu FORMÜLÜ (önbelleklenmiş
+  // base/baseH ile) tekrar kurup renderedZoom↔hedef-zoom arasındaki GERÇEK
+  // ölçek oranını hesaplar — mevcutsa doğrusal s=liveZoom/renderedZoom yerine
+  // bu kullanılır, aksi halde (önbellek boşsa) doğrusal varsayıma düşülür.
+  const fitScaleAtRendered = pageLoc ? computeFitScaleForZoom(pageLoc.pageNum, renderedZoom) : null;
   return {
     wrap, inner, wrapRect, startZoom, renderedZoom, liveZoom: startZoom,
-    innerOriginX: wrapRect.left - wrap.scrollLeft,
-    innerOriginY: wrapRect.top - wrap.scrollTop,
-    anchorContentX: wrap.scrollLeft + (anchorScreenX - wrapRect.left),
-    anchorContentY: wrap.scrollTop + (anchorScreenY - wrapRect.top),
+    anchorPageNum: pageLoc?.pageNum ?? null, fitScaleAtRendered,
+    anchorContentX, anchorContentY,
     lastScreenX: anchorScreenX, lastScreenY: anchorScreenY,
     startScreenX: anchorScreenX, startScreenY: anchorScreenY,
     startTime: Date.now(),
+    viewportW: Math.max(0, wrap.clientWidth - padX),
+    viewportH: Math.max(0, wrap.clientHeight - padY),
+    // Görünür içerik alanının EKRANDAKİ (scroll'dan bağımsız, sabit) sol/üst
+    // kenarı — sayfa ortalanacaksa (updateZoomGestureState) bu temel alınır.
+    contentAreaLeft: wrapRect.left + padLeft,
+    contentAreaTop: wrapRect.top + padTop,
+    basePageLeft: pageLoc?.left ?? null, basePageTop: pageLoc?.top ?? null,
+    basePageW: pageLoc?.width || 0, basePageH: pageLoc?.height || 0,
+    // YATAY ortalama HER İKİ modda da gerçek CSS davranışı: tek-sayfa modunda
+    // .reader-page-stage (justify-content:center) + sayfanın kendi
+    // margin:auto'su, sürekli/scroll modunda SADECE .pdf-page-wrap'in
+    // margin:12px auto'su — sayfa viewport'tan darsa HER İKİSİ de yatayda
+    // ortalar, koşulsuz güvenli. DİKEY ortalama ise SADECE tek-sayfa modunda
+    // VE SADECE .reader-page-stage'in align-items'i GERÇEKTEN 'center' ise
+    // (bir breakpoint'te — ör. 769-1366px tablet genişliği — align-items
+    // bilerek flex-start'a çevriliyor, sayfa üstten hizalı kalıyor). Sabit
+    // bir viewMode kontrolü YETMEZ, gerçek COMPUTED STYLE'a bakılmalı —
+    // aksi halde bu breakpoint'te canlı önizleme sayfayı olmadık biçimde
+    // dikeyde ortalayıp bırakınca gerçek (üstten hizalı) konuma "zıplar".
+    centerY: appState.viewMode === 'single'
+      && pageLoc?.el?.parentElement?.classList.contains('reader-page-stage')
+      && getComputedStyle(pageLoc.el.parentElement).alignItems === 'center',
   };
 }
 
 // liveZoom hedef zum; screenX/Y parmak(lar)ın/imlecin GÜNCEL ekran konumu —
 // içerikteki anchor noktası (jest başındaki dokunma noktası) HER ZAMAN bu
-// noktanın altında kalacak şekilde tek bir translate+scale hesaplanır.
+// noktanın altında kalacak şekilde tek bir translate+scale hesaplanır — AMA
+// sadece o eksende sayfa viewport'tan BÜYÜKSE (kaydıracak yer varsa). Sayfa
+// bir eksende viewport'a sığıyorsa (CSS'in gerçek render'da zaten ORTALAYACAĞI
+// durum) canlı önizleme de aynı ortalamayı uygular; aksi halde bırakınca
+// gerçek render'ın CSS-ortalamasına aniden "zıplar".
 function updateZoomGestureState(state, liveZoom, screenX, screenY){
   if(!state) return;
   liveZoom = clampZoom(liveZoom);
   state.liveZoom = liveZoom;
   state.lastScreenX = screenX; state.lastScreenY = screenY;
-  const s = liveZoom / state.renderedZoom;
-  const tx = screenX - state.innerOriginX - s * state.anchorContentX;
-  const ty = screenY - state.innerOriginY - s * state.anchorContentY;
+  // s NORMALDE doğrusal (liveZoom/renderedZoom) — AMA getReaderFitScale'in
+  // 0.35 alt sınırı yüzdeyle DOĞRUSAL değil (bkz. computeFitScaleForZoom).
+  // Önbellek bu sayfa için hazırsa GERÇEK oran kullanılır: düşük zoom%'lerde
+  // gerçek render alt sınıra çarpıp küçülmeyi DURDURUR, canlı önizleme salt
+  // doğrusal ölçeklemeye devam ederse bırakınca boyut/konum "zıplar" — gerçek
+  // PDF ile ölçülüp doğrulandı (200%→30% pinch'te canlı 259px, gerçek 307px).
+  let s = liveZoom / state.renderedZoom;
+  if(state.fitScaleAtRendered){
+    const fitScaleAtTarget = computeFitScaleForZoom(state.anchorPageNum, liveZoom);
+    if(fitScaleAtTarget) s = fitScaleAtTarget / state.fitScaleAtRendered;
+  }
+  // innerOriginX/Y JEST BAŞINDA BİR KEZ ölçülüp önbelleğe ALINAMAZ: wrap hâlâ
+  // 'overflow:auto/hidden' bir scroll konteyneri ve inner'ın transform'la
+  // KÜÇÜLEN görsel geometrisi CSS'e göre wrap'in scrollWidth/Height'ını jest
+  // SIRASINDA canlı değiştiriyor — tarayıcı bunun üzerine wrap.scrollLeft/Top'u
+  // JS'in hiç haberi olmadan sessizce kırpıyor (gerçek PDF ile ölçülüp
+  // doğrulandı: zoom-out+pan'da 416px'ten 98px'e). overflow:hidden bile bu
+  // kırpmayı ENGELLEMİYOR (scrollWidth/scrollLeft kırpması overflow değerinden
+  // BAĞIMSIZ uygulanıyor). Çözüm: kırpmayla SAVAŞMAK yerine ona UYUM SAĞLAMAK —
+  // inner'ın EKRANDAKİ (transform uygulanmadan ÖNCEki) konumunu HER KAREDE
+  // wrap'in O ANKİ GERÇEK scroll konumundan taze türetiyoruz. contentAreaLeft/Top
+  // (wrap'in kendi konumu+padding'i) jest boyunca sabit kalır, sadece scroll
+  // konumu değişir — bu formül tarayıcının ne kırptığından bağımsız her zaman
+  // doğru sonucu verir.
+  const innerOriginX = state.contentAreaLeft - state.wrap.scrollLeft;
+  const innerOriginY = state.contentAreaTop - state.wrap.scrollTop;
+  let tx;
+  if(state.basePageW > 0 && state.basePageW * s <= state.viewportW){
+    const scaledW = state.basePageW * s;
+    const pageLeftOnScreen = state.contentAreaLeft + (state.viewportW - scaledW) / 2;
+    tx = pageLeftOnScreen - innerOriginX - s * state.basePageLeft;
+  } else {
+    tx = screenX - innerOriginX - s * state.anchorContentX;
+  }
+
+  let ty;
+  if(state.basePageH > 0 && state.basePageH * s <= state.viewportH){
+    // Sayfa dikeyde viewport'a SIĞIYOR → bu eksende scroll YAPILAMAZ (scrollTop
+    // her zaman 0'a kilitlenir), parmak/imleç konumu ne olursa olsun. Gerçek
+    // CSS bu durumda ya ORTALAR (centerY, bkz. yukarıdaki not) ya da align-
+    // items:flex-start olduğunda sade ÜSTTEN hizalar (contentAreaTop) — iki
+    // durumda da anchor-takip UYGULANMAZ, aksi halde bırakınca gerçek render'ın
+    // sabit (scroll'suz) konumuna "zıplar".
+    const scaledH = state.basePageH * s;
+    const pageTopOnScreen = state.centerY
+      ? state.contentAreaTop + (state.viewportH - scaledH) / 2
+      : state.contentAreaTop;
+    ty = pageTopOnScreen - innerOriginY - s * state.basePageTop;
+  } else {
+    ty = screenY - innerOriginY - s * state.anchorContentY;
+  }
+
   state.inner.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
   appState.zoom = liveZoom;
   setZoomLabel(liveZoom);
@@ -1274,14 +1415,16 @@ function updateZoomGestureState(state, liveZoom, screenX, screenY){
 // yerleştirilirse, "tahmin edilen ölçek" yanlış çıksa bile nokta doğru yerde
 // kalır (bu, art arda birkaç uygulamada tekrarlayan "bırakınca zıplama"
 // şikayetinin kök nedeniydi).
-function locatePageFraction(inner, contentX, contentY){
-  // offsetLeft/offsetTop KULLANILMAZ: inner (ve arada .reader-page-stage gibi
-  // sarmalayıcılar) position:static olduğundan CSS'in bulduğu offsetParent
-  // wrap'ten tamamen farklı bir konumlanmış atada olabilir — gerçek PDF ile
-  // ölçülüp doğrulanan sabit bir kaymaya yol açıyordu (bkz. runCardZoomSettle).
-  // getBoundingClientRect() konumlanma bağlamından bağımsız çalışır; inner'ın
-  // canlı transform'u geçici olarak kaldırılıp (senkron, boyama arası
-  // olmadığından görsel titreşim YOK) gerçek/transformsuz konum ölçülür.
+// inner içindeki (jest o an transform'suzken) HAM sayfa geometrisi (inner'a
+// göre konum+boyut) + verilen içerik noktasının o sayfa içindeki oranı.
+// offsetLeft/offsetTop KULLANILMAZ: inner (ve arada .reader-page-stage gibi
+// sarmalayıcılar) position:static olduğundan CSS'in bulduğu offsetParent
+// wrap'ten tamamen farklı bir konumlanmış atada olabilir — gerçek PDF ile
+// ölçülüp doğrulanan sabit bir kaymaya yol açıyordu (bkz. runCardZoomSettle).
+// getBoundingClientRect() konumlanma bağlamından bağımsız çalışır; inner'ın
+// canlı transform'u geçici olarak kaldırılıp (senkron, boyama arası olmadığından
+// görsel titreşim YOK) gerçek/transformsuz konum ölçülür.
+function locatePageInInner(inner, contentX, contentY){
   const prevTransform = inner.style.transform;
   inner.style.transform = 'none';
   const innerRect = inner.getBoundingClientRect();
@@ -1294,7 +1437,7 @@ function locatePageFraction(inner, contentX, contentY){
     if(!w || !h) continue;
     if(contentX >= left - 4 && contentX <= left + w + 4 && contentY >= top - 4 && contentY <= top + h + 4){
       result = {
-        pageNum: p.dataset.pageNum,
+        pageNum: p.dataset.pageNum, left, top, width: w, height: h, el: p,
         fracX: Math.min(1, Math.max(0, (contentX - left) / w)),
         fracY: Math.min(1, Math.max(0, (contentY - top) / h)),
       };
@@ -1304,9 +1447,26 @@ function locatePageFraction(inner, contentX, contentY){
   inner.style.transform = prevTransform;
   return result;
 }
+function locatePageFraction(inner, contentX, contentY){
+  const r = locatePageInInner(inner, contentX, contentY);
+  return r ? { pageNum: r.pageNum, fracX: r.fracX, fracY: r.fracY } : null;
+}
 
 function commitZoomGestureState(state){
   if(!state) return null;
+  // Son karede uygulanan transform, BİR ÖNCEKİ karenin (henüz tarayıcı
+  // tarafından işlenmemiş/kırpılmamış) scrollLeft/Top'una göre hesaplanmıştı —
+  // updateZoomGestureState her karede "ÖNCEKİ transform'un sonucu olan
+  // scrollLeft'i OKU, YENİ transform'u SETLE" sırasıyla çalıştığından, HER
+  // zaman bir kare GERİDE kalan (ama ardışık karelerde kendini düzelten) küçük
+  // bir gecikme var — SON karede düzeltecek bir "sonraki kare" olmadığından bu
+  // kalıcı, ölçülüp doğrulanan küçük bir konum hatası (~21px) bırakıyordu.
+  // getBoundingClientRect() tarayıcıyı SENKRON reflow'a zorlar (bekleyen
+  // transform'un scrollLeft/Top üzerindeki gerçek etkisini hemen işler) — bunu
+  // tetikleyip AYNI liveZoom/screenX/Y ile hesaplamayı BİR KEZ daha tazeleyerek
+  // dondurulacak son transform'un artık gerçekten güncel olmasını sağlıyoruz.
+  void state.wrap.getBoundingClientRect();
+  updateZoomGestureState(state, state.liveZoom, state.lastScreenX, state.lastScreenY);
   const { wrap, inner, wrapRect, liveZoom, renderedZoom, startZoom, anchorContentX, anchorContentY, lastScreenX, lastScreenY, startScreenX, startScreenY, startTime } = state;
   const s = liveZoom / renderedZoom;
   const zoomChanged = Math.abs(liveZoom - startZoom) >= 2;
@@ -1330,6 +1490,9 @@ function commitZoomGestureState(state){
   } else {
     while(inner.firstChild) wrap.appendChild(inner.firstChild);
     inner.remove();
+    // Sarmalayıcı (ve onun transform'u) tamamen kaldırıldı — overflow:auto'yu
+    // güvenle geri açabiliriz, artık kırpılacak "canlı küçülen" bir taşma yok.
+    wrap.style.overflow = '';
     wrap.scrollLeft = Math.max(0, anchorContentX * s - (lastScreenX - wrapRect.left));
     wrap.scrollTop = Math.max(0, anchorContentY * s - (lastScreenY - wrapRect.top));
   }
@@ -1356,6 +1519,7 @@ function cancelZoomGesture(){
   const { wrap, inner } = zg;
   while(inner.firstChild) wrap.appendChild(inner.firstChild);
   inner.remove();
+  wrap.style.overflow = '';
   zg = null;
 }
 

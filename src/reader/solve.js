@@ -193,7 +193,7 @@ function resetZoomAndPan(){
   const r = wrap.getBoundingClientRect();
   window.previewZoomTo?.(100, r.left + wrap.clientWidth / 2, r.top + wrap.clientHeight / 2);
   appState._fillBaseZoom = null;
-  setTimeout(() => { window.renderPages?.(); }, 90);
+  setTimeout(() => { window.renderPages?.()?.then(() => { wrap.style.overflow = ''; }); }, 90);
 }
 window.toggleCardFill = resetZoomAndPan; // eski ad — geriye dönük uyumluluk
 window.resetZoomAndPan = resetZoomAndPan;
