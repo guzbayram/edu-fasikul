@@ -43,7 +43,6 @@ import './reader/solve.js';
 import './ui/toast.js';
 import './ui/tooltip.js';
 import './ui/router.js';
-import './ui/onboarding.js';
 import './ui/viewportfix.js';
 import './panels/dashboard.js';
 import './panels/hatalilar.js';
@@ -174,28 +173,8 @@ function initGithubConfigUI(){
 const MANIFEST = {
   dersler: [
     {
-      id:'mat', ad:'Matematik', ikon:'🔢', renk:'var(--mat)', progPct:42,
-      fasikuller:[
-        { id:'analitik-duzlem', ad:'Analitik Düzlem', thumb:'📐', thumbBg:'linear-gradient(135deg,#312e81,#1e1b4b)', sinif:10, konuSayisi:7, soruSayisi:66, progPct:45, sonCalisma:'2 saat önce', konular:[] },
-        { id:'tyt-matematik', ad:'3 Adımda TYT Matematik', thumb:'📊', thumbBg:'linear-gradient(135deg,#1e1b4b,#312e81)', sinif:12, konuSayisi:34, soruSayisi:1061, progPct:0, sonCalisma:'—', konular:[] },
-        { id:'limit-turev', ad:'Limit ve Türev', thumb:'📉', thumbBg:'linear-gradient(135deg,#1e1b4b,#0c4a6e)', sinif:12, konuSayisi:5, soruSayisi:48, progPct:20, sonCalisma:'2 gün önce', konular:[] }
-      ]
-    },
-    { id:'bio', ad:'Biyoloji', ikon:'🧬', renk:'var(--bio)', progPct:15, fasikuller:[
-      { id:'bio-1', ad:'Hücre Biyolojisi', thumb:'🔬', thumbBg:'linear-gradient(135deg,#431407,#450a0a)', sinif:10, konuSayisi:1, soruSayisi:20, progPct:15, sonCalisma:'1 hafta önce', konular:[] }
-    ]},
-    { id:'fiz', ad:'Fizik', ikon:'⚡', renk:'var(--fiz)', progPct:28, fasikuller:[
-      { id:'fiz-1', ad:'Kuvvet ve Hareket', thumb:'🌀', thumbBg:'linear-gradient(135deg,#164e63,#0c4a6e)', sinif:10, konuSayisi:1, soruSayisi:40, progPct:28, sonCalisma:'3 gün önce', konular:[] }
-    ]},
-    { id:'tar', ad:'Tarih', ikon:'🏛️', renk:'var(--tar)', progPct:33, fasikuller:[
-      { id:'tar-1', ad:'Osmanlı Kuruluş', thumb:'📜', thumbBg:'linear-gradient(135deg,#500724,#2d1657)', sinif:10, konuSayisi:1, soruSayisi:35, progPct:33, sonCalisma:'4 gün önce', konular:[] }
-    ]},
-    { id:'kim', ad:'Kimya', ikon:'🧪', renk:'var(--kim)', progPct:60, fasikuller:[
-      { id:'kim-1', ad:'Atom ve Periyodik Tablo', thumb:'⚗️', thumbBg:'linear-gradient(135deg,#064e3b,#052e16)', sinif:10, konuSayisi:1, soruSayisi:28, progPct:60, sonCalisma:'1 gün önce', konular:[] }
-    ]},
-    { id:'edb', ad:'Edebiyat', ikon:'📖', renk:'var(--edb)', progPct:55, fasikuller:[
-      { id:'siir', ad:'Şiir Türleri', thumb:'📝', thumbBg:'linear-gradient(135deg,#2e1065,#1a0533)', sinif:10, konuSayisi:2, soruSayisi:22, progPct:55, sonCalisma:'5 saat önce', konular:[] }
-    ]}
+      id:'mat', ad:'Matematik', ikon:'🔢', renk:'var(--mat)', progPct:0, fasikuller:[]
+    }
   ]
 };
 
@@ -437,14 +416,6 @@ function deleteFasikul(dersId, fasikulId){
 window.deleteFasikul = deleteFasikul;
 mergeCustomGithubSources();
 
-// Demo verilerinin orijinal anlık görüntüsü (Demo Verileri açma/kapama ve sıfırlama için)
-const DEMO_SNAPSHOT = MANIFEST.dersler.map(d=>({
-  id:d.id, progPct:d.progPct,
-  fasikuller: d.fasikuller.map(f=>({ id:f.id, progPct:f.progPct, sonCalisma:f.sonCalisma }))
-}));
-
-
-
 // ══════════════════════════════
 // INIT
 // ══════════════════════════════
@@ -453,21 +424,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // değişiklikleri normal biçimde saklanmaya devam eder.
   if(!localStorage.getItem('edu_defaults_v5')){
     localStorage.setItem('edu_theme','light');
-    localStorage.setItem('edu_demo_mode','0');
     localStorage.setItem('edu_preferences',JSON.stringify({sound:true,autoNext:true,goal:100}));
     localStorage.setItem('edu_defaults_v5','1');
   }
+  localStorage.removeItem('edu_demo_mode');
   renderMathSymbols();
   renderStreakDots();
   await loadAllKonular();
   await loadBundledFasikuller();
   await restoreEduDirHandle();
   initGithubConfigUI();
-  // Demo Verileri tercihini uygula
-  const demoMode = localStorage.getItem('edu_demo_mode') === '1';
-  window.applyDemoMode?.(demoMode, false);
-  const demoToggle = document.getElementById('demoDataToggle');
-  if(demoToggle){ demoToggle.textContent=demoMode?'Açık':'Kapalı'; demoToggle.classList.toggle('off',!demoMode); }
   renderDerslerGrid();
   renderDate();
   // Load saved theme
@@ -483,8 +449,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   recalcFasikulProgress();
   updateDashboard();
   renderDerslerGrid();
-
-  // Onboarding turu kaldırıldı (otomatik tetik yok)
 
   // Drag & drop PDF yükleme
   const uploadZone = document.getElementById('pdfUploadZone');
@@ -1956,81 +1920,6 @@ async function openHataliInReader(idx){
   showToast('PDF sayfası bulunamadı','error');
 }
 
-async function resetAllData(){
-  if(!confirm('Tüm veriler (hatalılar, cevaplar, çizimler, ders/fasikül değişiklikleri ve yüklenen JSON\'lar) silinecek. Bu işlem geri alınamaz. Emin misiniz?')) return;
-
-  // 1) Bellek temizle
-  appState.hatalilar = [];
-  appState.sorularState = {};
-  appState.drawings = {};
-  appState.cloudIstatistik = null;
-  appState.cloudSolutionsLoaded = false;
-
-  // 2) localStorage temizle
-  const keysToRemove = [];
-  for(let i=0;i<localStorage.length;i++){
-    const k = localStorage.key(i);
-    if(k && (k.startsWith('edu_konular_') || k==='edu_hatalilar' || k==='edu_sorularState' || k==='edu_manifest_meta' || k==='edu_deleted_dersler')) keysToRemove.push(k);
-  }
-  keysToRemove.forEach(k=>localStorage.removeItem(k));
-
-  // 3) Manifest konularını ve ilerlemeyi sıfırla
-  MANIFEST.dersler.forEach(d=>{
-    d.progPct = 0;
-    d.fasikuller.forEach(f=>{ f.konular=[]; f.progPct=0; f._solvedCount=0; f.sonCalisma='—'; });
-  });
-  document.getElementById('hataliCount').textContent = '0';
-  document.getElementById('hataliCountBig').textContent = '0 Soru';
-
-  // 4) Firestore temizle (cozumler + cizimler alt koleksiyonları + istatistik alanı)
-  const uid = _getUserKey();
-  if(uid && window._firestoreReady){
-    showToast('Bulut verileri siliniyor…','info');
-    try{
-      // cozumler alt koleksiyonu
-      const cSnap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cozumler'));
-      const cDels=[]; cSnap.forEach(d=>cDels.push(window._fsDeleteDoc(d.ref)));
-      await Promise.all(cDels);
-      // cizimler alt koleksiyonu
-      const dSnap2 = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cizimler'));
-      const dDels=[]; dSnap2.forEach(d=>dDels.push(window._fsDeleteDoc(d.ref)));
-      await Promise.all(dDels);
-      // Ana belgedeki istatistik, hatalilar, fasikulIstatistik alanlarını sıfırla
-      const emptyStats = {toplam:0,dogru:0,yanlis:0,bos:0,konular:{}};
-      await window._fsSetDoc(_userDocRef(uid),{
-        hatalilar:[],
-        istatistik: emptyStats,
-        fasikulIstatistik:{},
-        guncelleme: new Date().toISOString()
-      },{merge:true});
-    }catch(e){ console.warn('Firestore sıfırlama hatası:',e); showToast('Bulut temizleme kısmi başarısız','error'); }
-  }
-
-  // 5) Demo modu kapat
-  applyDemoMode(false);
-  const demoToggle = document.getElementById('demoDataToggle');
-  if(demoToggle){ demoToggle.textContent='Kapalı'; demoToggle.classList.add('off'); }
-  localStorage.setItem('edu_demo_mode','0');
-
-  recalcFasikulProgress();
-  updateDashboard();
-  renderDerslerGrid();
-  showToast('Tüm veriler sıfırlandı 🗑️','success');
-}
-
-// ══════════════════════════════
-// STATS RENDER
-// ══════════════════════════════
-const DEMO_STATS = {
-  streak:7, streakDelta:'↗ Devam et!',
-  totalSolved:142, solvedDelta:'↗ +12 bugün',
-  weekly:38, weeklyDelta:'↗ +8 geçen hafta',
-  accuracy:'%74', accuracyDelta:'↗ +5% geçen ay',
-  kpiSolved:142, kpiSolvedSub:'↗ Bu hafta +38',
-  kpiAccuracy:'%74', kpiAccuracySub:'↗ +5% geçen haftaya',
-  kpiTime:'18s', kpiTimeSub:'Bu ay 18 saat',
-  kpiLongest:'12🔥', kpiLongestSub:'Kişisel rekor'
-};
 // ══════════════════════════════
 // DERS CRUD
 // ══════════════════════════════
@@ -2724,8 +2613,6 @@ function loadManifestMeta(){
 // ══════════════════════════════
 
 // ══════════════════════════════
-// INIT UPDATES (v4) — persistence and onboarding are handled in the main DOMContentLoaded above
-
 function launchConfetti(count=40){
   const colors=['#818cf8','#22d3ee','#34d399','#f472b6','#fbbf24','#ef4444','#a78bfa'];
   for(let i=0;i<count;i++){
@@ -2745,13 +2632,6 @@ function launchConfetti(count=40){
     setTimeout(()=>el.remove(), 4000);
   }
 }
-
-// ══════════════════════════════
-// INIT UPDATES (v4)
-// ══════════════════════════════
-// Onboarding on first login — triggered from original enterApp
-// (Onboarding check done in the first DOMContentLoaded listener above)
-
 
 // ── Window globals: modüllerin main.js fonksiyonlarını çağırabilmesi için ──
 // Faz 3/4'te panel modülleri ayrılınca bu satırlar da kalkacak.
@@ -2848,7 +2728,6 @@ window.loadMyStudyPlan = loadMyStudyPlan;
 window.toggleTeacherAssignField = toggleTeacherAssignField;
 window.toggleUserFasikulVisibility = toggleUserFasikulVisibility;
 window.applyUserFasikulVisibility = applyUserFasikulVisibility;
-window.DEMO_SNAPSHOT = DEMO_SNAPSHOT;
 window.selectEduDir = selectEduDir;
 window.handleBulkPdfImport = handleBulkPdfImport;
 window.updateEduDirUI = updateEduDirUI;

@@ -82,6 +82,38 @@ async function _persistSharedManifestIfNeeded(){
   try{ localStorage.removeItem('edu_manifest_dirty'); }catch(e){}
 }
 
+function _leafManifestFasikulIds(){
+  const ids = [];
+  const walkDers = (ders, seen=new Set())=>{
+    if(!ders || seen.has(ders.id)) return;
+    seen.add(ders.id);
+    (ders.fasikuller || []).forEach(fas=>{
+      if(fas?.type === 'folder' && fas.childDersId){
+        const child = window.MANIFEST?.dersler?.find(d=>d.id === fas.childDersId);
+        walkDers(child, seen);
+      } else if(fas?.id){
+        ids.push(fas.id);
+      }
+    });
+  };
+  (window.MANIFEST?.dersler || []).filter(d=>!d.parentDersId).forEach(d=>walkDers(d));
+  return [...new Set(ids)];
+}
+
+async function _ensureVisibleFasikulAllowlist(docRef, data){
+  if(!appState.user || appState.user.role === 'admin' || appState.user.email === 'misafir@demo.com') return;
+  if(Array.isArray(data?.visibleFasikulIds)) return;
+  if(!Array.isArray(data?.hiddenFasikulIds)) return;
+  const hidden = new Set(data.hiddenFasikulIds);
+  const visibleFasikulIds = _leafManifestFasikulIds().filter(id=>!hidden.has(id));
+  appState.user.visibleFasikulIds = visibleFasikulIds;
+  try{
+    await window._fsSetDoc(docRef, {visibleFasikulIds}, {merge:true});
+  }catch(e){
+    console.warn('Fasikül allowlist migrasyonu yazılamadı:', e);
+  }
+}
+
 export function scheduleCloudPersist(){
   if(!appState.user || appState.user.email==='misafir@demo.com') return;
   if(appState._cloudPersistTimer) clearTimeout(appState._cloudPersistTimer);
@@ -413,6 +445,10 @@ export async function loadFromFirestore(){
       if(appState.user && Array.isArray(data.hiddenFasikulIds)){
         appState.user.hiddenFasikulIds = data.hiddenFasikulIds;
       }
+      if(appState.user && Array.isArray(data.visibleFasikulIds)){
+        appState.user.visibleFasikulIds = data.visibleFasikulIds;
+      }
+      await _ensureVisibleFasikulAllowlist(docRef, data);
       if(data.preferences){
         appState.preferences={...appState.preferences,...data.preferences};
         localStorage.setItem('edu_preferences',JSON.stringify(appState.preferences));

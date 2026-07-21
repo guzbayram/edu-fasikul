@@ -300,10 +300,6 @@
             <button class="pref-action pref-chip" onclick="exportData()">JSON İndir</button>
           </div>
           <div class="pref-row">
-            <span class="pref-label">🧪 Demo Verileri</span>
-            <button class="pref-action pref-toggle" id="demoDataToggle" onclick="toggleDemoData(this)">Açık</button>
-          </div>
-          <div class="pref-row">
             <span class="pref-label">Tüm verileri sıfırla</span>
             <button class="pref-action pref-chip" style="background:var(--red-dim);color:var(--red)" onclick="resetAllData()">🗑️ Sıfırla</button>
           </div>
@@ -857,17 +853,6 @@
 
 <!-- Toast -->
 <div class="toast-container" id="toastContainer"></div>
-
-<!-- Onboarding overlay -->
-<div id="onboardOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:340;backdrop-filter:blur(2px)"></div>
-<div id="onboardTip" class="onboard-tip" style="display:none">
-  <h4 id="onboardTitle">Hoş Geldin! 👋</h4>
-  <p id="onboardDesc">EduFasikül'e hoş geldin. Sana kısa bir tur yapayım.</p>
-  <div class="onboard-nav">
-    <div class="onboard-dots" id="onboardDots"></div>
-    <button class="onboard-btn" id="onboardNextBtn" onclick="onboardNext()">İleri →</button>
-  </div>
-</div>
 
 <!-- ═══════ DERS CRUD MODAL ═══════ -->
 <div class="modal-overlay" id="dersModal" onclick="event.target===this&&closeDersModal()">

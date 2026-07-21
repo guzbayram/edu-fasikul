@@ -293,8 +293,11 @@ function subscribeUserProfile(uid){
   window._realtimeUnsubUserProfile = window._fsOnSnapshot(ref, (snap)=>{
     if(!snap.exists() || snap.metadata.hasPendingWrites || !appState.user) return;
     const data = snap.data() || {};
-    if(Array.isArray(data.hiddenFasikulIds) && !arraysSameOrderless(appState.user.hiddenFasikulIds, data.hiddenFasikulIds)){
-      appState.user.hiddenFasikulIds = data.hiddenFasikulIds;
+    const hiddenChanged = Array.isArray(data.hiddenFasikulIds) && !arraysSameOrderless(appState.user.hiddenFasikulIds, data.hiddenFasikulIds);
+    const visibleChanged = Array.isArray(data.visibleFasikulIds) && !arraysSameOrderless(appState.user.visibleFasikulIds || [], data.visibleFasikulIds);
+    if(hiddenChanged || visibleChanged){
+      if(Array.isArray(data.hiddenFasikulIds)) appState.user.hiddenFasikulIds = data.hiddenFasikulIds;
+      appState.user.visibleFasikulIds = Array.isArray(data.visibleFasikulIds) ? data.visibleFasikulIds : appState.user.visibleFasikulIds;
       refreshVisibleFasikulUi();
       window.showToast?.('Fasikül yetkileri güncellendi', 'success');
     }
