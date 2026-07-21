@@ -1335,11 +1335,18 @@ async function endZoomGesture(){
     // tarayıcı 0'a kırpar. Bu durumda dokunmayız (0 zaten doğru); aksi halde
     // "hedef" hesabımız gerçek CSS-ortalamasıyla çakışıp sabit bir kaymaya
     // yol açardı (gerçek PDF ile ölçülüp doğrulandı: %100'e dönüşte ~19px).
+    // DİKEY EKSEN İSTİSNASI: bu "sığıyorsa dokunma" kuralı SADECE tek sayfa
+    // modunda geçerli (.reader-page-stage TEK sayfayı ortalar). Sürekli
+    // (scroll) modda sayfalar art arda dizilidir — bir sayfanın KENDİ
+    // yüksekliği viewport'tan kısa olsa bile (düşük zoom'da kaçınılmaz)
+    // belgenin genel scroll konumu HÂLÂ ayarlanmalı; aksi halde scrollTop
+    // hep 0'da kalıp hangi sayfada olursan ol 1. sayfaya "zıplıyordu" (gerçek
+    // PDF ile ölçülüp doğrulandı: ~%55 zoom'un altında her yerden 1. sayfaya).
     const pr = freshPageEl.getBoundingClientRect();
     if(pr.width > wrap.clientWidth){
       wrap.scrollLeft = Math.max(0, pr.left + pageAnchor.fracX * pr.width - focalX);
     }
-    if(pr.height > wrap.clientHeight){
+    if(appState.viewMode === 'scroll' || pr.height > wrap.clientHeight){
       wrap.scrollTop = Math.max(0, pr.top + pageAnchor.fracY * pr.height - focalY);
     }
   } else {
