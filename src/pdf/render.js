@@ -1694,7 +1694,7 @@ function initCardZoomPan(){
       clearTimeout(wrap._wheelZoomIdleTimer);
       wrap._wheelZoomIdleTimer = setTimeout(()=>{
         wrap._suppressWheelPanUntil = Date.now() + 900;
-        holdZoomGesturePreview();
+        commitZoomGesture();
       }, 220);
     } else if(Date.now() < (wrap._suppressWheelPanUntil || 0)){
       e.preventDefault();
@@ -1734,7 +1734,7 @@ function initCardZoomPan(){
     e.preventDefault();
     e.stopPropagation();
     wrap._suppressWheelPanUntil = Date.now() + 1100;
-    holdZoomGesturePreview();
+    commitZoomGesture();
   }, { passive:false });
 
   wrap.addEventListener('pointerdown', (e)=>{
@@ -1846,8 +1846,7 @@ function initTouchGestures() {
     if (e.touches.length >= 2) return; // hâlâ 2 parmak
     if (rafId != null) { cancelAnimationFrame(rafId); rafId = null; }
     applyPendingTouchFrame();
-    const zoomChanged = !!zg && Math.abs(zg.liveZoom - zg.startZoom) >= 2;
-    const result = zoomChanged ? holdZoomGesturePreview() : commitZoomGesture();
+    const result = commitZoomGesture();
     if (result && !result.zoomChanged && !startScrollable) {
       // Pinch değil (zum ~sabit) ve zum'lanmamış → hızlı/uzun 2-parmak
       // sürükleme = sayfa geçişi flick'i.
