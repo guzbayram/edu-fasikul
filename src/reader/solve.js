@@ -180,8 +180,8 @@ function initSolvePaletteDrag(){
 // Karta çift tıkla/çift dokun → zum %100'e SIFIRLANIR (macOS Preview'daki "orijinal
 // boyuta dön"). Pan da otomatik sıfırlanır: renderPages() her render'da canvas
 // alanını (wrap.innerHTML) baştan kurduğundan scrollLeft/Top doğal olarak 0'a
-// döner — burada scheduleCardZoomRender'ın imleç-odaklı geri-kaydırma ("anchor")
-// yolunu KULLANMIYORUZ ki bu doğal sıfırlama korunsun.
+// döner — burada endZoomGesture'ın imleç-odaklı geri-kaydırma yolunu
+// KULLANMIYORUZ (previewZoomTo bağımsız çalışır) ki bu doğal sıfırlama korunsun.
 function resetZoomAndPan(){
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap || !wrap.firstChild) return;

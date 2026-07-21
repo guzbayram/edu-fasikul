@@ -1,5 +1,33 @@
 import { appState } from '../state/appState.js';
 
+// Fabric.js 5.5.2 hatası: Canvas.prototype._onTouchStart HER touchstart'ta
+// koşulsuz e.preventDefault() çağırıyor — allowTouchScrolling:true olsa BİLE
+// (bu bayrağı yalnız _onMouseMove/touchmove kontrol ediyor, _onTouchStart hiç
+// bakmıyor). Tek bir touchstart'ta preventDefault çağrılması tarayıcının O
+// DOKUNUŞ DİZİSİ için native kaydırmayı TAMAMEN iptal etmesine yetiyor — bu
+// yüzden pan-mode'da (bkz. updateCanvasPanMode, render.js) touch-action CSS'i
+// doğru "pan-x pan-y" olsa BİLE tek parmakla kaydırma hiç çalışmıyordu (gerçek
+// PDF ile ölçülüp doğrulandı: canvas DOM'dan kaldırılınca kaydırma anında
+// düzeliyor). Prototip metodunu SARMALIYORUZ (yeniden yazmıyoruz — Fabric'in
+// kendi touchmove/touchend yeniden-bağlama mantığı olduğu gibi çalışmaya
+// devam etsin): allowTouchScrolling true iken preventDefault'u orijinal
+// çağrı SIRASINDA geçici olarak etkisizleştiriyoruz.
+// NOT: main.js henüz `window.fabric = fabric` atamasını yapmadan bu modül
+// evaluate edilebildiğinden yama modül-üstü DEĞİL, ilk canvas kurulumunda
+// (initFabricForPage/initFabricOnCanvas) çağrılır — fabric o an garanti hazır.
+function patchFabricTouchStartPreventDefault(){
+  const proto = window.fabric?.Canvas?.prototype;
+  if(!proto || proto.__touchScrollPatched) return;
+  proto.__touchScrollPatched = true;
+  const orig = proto._onTouchStart;
+  proto._onTouchStart = function(e){
+    if(!this.allowTouchScrolling) return orig.call(this, e);
+    const realPreventDefault = e.preventDefault;
+    e.preventDefault = function(){};
+    try{ orig.call(this, e); } finally { e.preventDefault = realPreventDefault; }
+  };
+}
+
 // Çizim, kaydedildiği canvas boyutuna göre saklanır. Zoom değişip canvas yeniden
 // boyutlanınca nesneleri orana göre ölçekle ki konum/boyut kullanıcının çizdiği
 // yerde kalsın (zoom'dan etkilensin ama kaymasın).
@@ -92,9 +120,16 @@ function bindCanvasDrawTapMemory(fc){
 }
 
 function initFabricForPage(canvasEl, w, h, pageNum){
+  patchFabricTouchStartPreventDefault();
   const fc = new fabric.Canvas(canvasEl, {
     isDrawingMode: false, selection: true,
-    width: w, height: h, backgroundColor: 'transparent'
+    width: w, height: h, backgroundColor: 'transparent',
+    // Fabric varsayılanı (false) kendi canvas'ında HER touchstart'ta
+    // preventDefault çağırır — bu, pan-mode'da (bkz. updateCanvasPanMode,
+    // render.js) native tek-parmak kaydırmayı touch-action CSS'i doğru
+    // ayarlanmış olsa BİLE engelliyordu. true iken Fabric preventDefault
+    // çağırmaz; asıl karar CSS touch-action'a (çizim mi kaydırma mı) kalır.
+    allowTouchScrolling: true,
   });
   patchGetPointer(fc);
   bindCanvasDrawTapMemory(fc);
@@ -248,6 +283,7 @@ function initFabricCanvas(){
  */
 
 function initFabricOnCanvas(canvasEl, w, h){
+  patchFabricTouchStartPreventDefault();
   if(appState.fabricCanvas){ try{ appState.fabricCanvas.dispose(); }catch(e){} }
 
   const fc = new fabric.Canvas(canvasEl, {
@@ -255,7 +291,10 @@ function initFabricOnCanvas(canvasEl, w, h){
     selection: true,
     width: w,
     height: h,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    // bkz. initFabricForPage'deki not: Fabric'in kendi preventDefault'unu
+    // kapatır, native pan/scroll kararı CSS touch-action'a kalır.
+    allowTouchScrolling: true,
   });
   patchGetPointer(fc);
   bindCanvasDrawTapMemory(fc);
