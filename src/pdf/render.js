@@ -1122,10 +1122,16 @@ function changeZoom(delta){
 async function runCardZoomSettle(wrap){
   const savedAnchor = appState._zoomAnchor;
   appState._zoomAnchor = null;
+  const freeze = createZoomFreezeOverlay(wrap);
   const oldScrollBehavior = wrap.style.scrollBehavior;
   wrap.style.scrollBehavior = 'auto';
   appState._preserveScrollAfterRender = true;
-  await Promise.resolve(renderPages());
+  try{
+    await Promise.resolve(renderPages());
+  }catch(e){
+    freeze?.();
+    throw e;
+  }
   // Gerçek render wrap.innerHTML'i baştan kurdu — geçici transform'lu
   // sarmalayıcı artık yok, overflow:auto'yu (beginZoomGesture'da otomatik
   // scroll-kırpmasını önlemek için hidden yapılmıştı) güvenle geri açabiliriz.
@@ -1187,8 +1193,32 @@ async function runCardZoomSettle(wrap){
     wrap.style.scrollBehavior = oldScrollBehavior;
     wrap.classList.remove('zoom-settling');
     appState._zoomSettlingUntil = Date.now() + 250;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>freeze?.()));
     resolve();
   }));
+}
+
+function createZoomFreezeOverlay(wrap){
+  if(!wrap) return null;
+  const liveInner = wrap.querySelector(':scope > .reader-zoom-inner');
+  if(!liveInner) return null;
+  const rect = wrap.getBoundingClientRect();
+  const overlay = document.createElement('div');
+  overlay.className = 'reader-zoom-freeze';
+  overlay.style.cssText = [
+    'position:fixed',
+    `left:${rect.left}px`,
+    `top:${rect.top}px`,
+    `width:${rect.width}px`,
+    `height:${rect.height}px`,
+    'overflow:hidden',
+    'pointer-events:none',
+    'z-index:9998',
+    `background:${getComputedStyle(wrap).backgroundColor || 'transparent'}`
+  ].join(';');
+  overlay.appendChild(liveInner);
+  document.body.appendChild(overlay);
+  return () => overlay.remove();
 }
 
 function scheduleCardZoomRender(anchor, delay = 90){
