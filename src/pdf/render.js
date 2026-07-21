@@ -1,5 +1,18 @@
 import { appState } from '../state/appState.js';
 
+// Gerçek kanvas piksel arabelleğinin (width/height, GÖRSEL/CSS boyut değil)
+// güvenli tavanı. Zoom%×DPR sınırsız büyürse (ör. %400 zoom + DPR2, iPad'de
+// ölçülüp doğrulandı: TEK bir sayfa kanvası 6336×8960≈217MB'a çıkıyor;
+// sürekli modda birden çok sayfa + her sayfanın 3 kanvası — PDF render +
+// Fabric alt/üst — aynı anda böyle kalınca toplam 1GB'ı aşabiliyor) gerçek
+// cihazda WebKit bellek baskısı altında sekmeyi KAPATIYOR ("çok büyük zoom
+// hareketi yapınca kapanıyor" olarak bildirildi). PDF vektör olduğundan
+// yüksek zoom'da netlik için piksel yoğunluğu gerekir AMA bir tavanı olmalı:
+// bu sınırı aşan kısım tarayıcının kendi CSS upscale'ine (görsel boyut AYNI
+// kalır — pageWrap/displayW/H hiç değişmez — hafif bulanıklaşabilir ama
+// ÇÖKME riski olmaz) bırakılır.
+const MAX_CANVAS_DIM = 4096;
+
 async function loadPDFFile(file, targetPage=1){
   const arrayBuffer = await file.arrayBuffer();
   return await loadPDFDocument({data: arrayBuffer}, targetPage);
@@ -560,13 +573,18 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     const readerWrap = document.getElementById('readerCanvasWrap');
     const baseScale = getReaderFitScale(page, readerWrap, getStableRenderZoom(readerWrap));
     const renderScale = baseScale * dpr;
-    const viewport = page.getViewport({scale: renderScale});
-    const displayW = viewport.width / dpr;
-    const displayH = viewport.height / dpr;
+    const fullViewport = page.getViewport({scale: renderScale});
+    const displayW = fullViewport.width / dpr;
+    const displayH = fullViewport.height / dpr;
 
     pageWrap.style.width = displayW + 'px';
     pageWrap.style.height = displayH + 'px';
     pageWrap.style.background = '#fff';
+
+    // bkz. MAX_CANVAS_DIM üstündeki not — GERÇEK arabellek bu tavanı aşmasın,
+    // GÖRSEL boyut (pageWrap/displayW/H, yukarıda) hep zoom%'e tam orantılı kalır.
+    const capRatio = Math.min(1, MAX_CANVAS_DIM / fullViewport.width, MAX_CANVAS_DIM / fullViewport.height);
+    const viewport = capRatio < 1 ? page.getViewport({scale: renderScale * capRatio}) : fullViewport;
 
     // PDF render canvas
     const pdfCanvas = document.createElement('canvas');
@@ -593,15 +611,30 @@ async function renderSinglePDFPage(pageNum, pageWrap){
       ctx2d.restore();
     }
 
-    // Fabric çizim canvas
+    // Fabric çizim canvas — arabelleği (canvas.width/height) PDF kanvasıyla
+    // AYNI, zaten hesaplanmış viewport.width/height'a (dpr+tavan uygulanmış)
+    // BİZ elle veriyoruz; initFabricForPage'e disableRetinaScaling:true
+    // geçerek Fabric'in KENDİ retina ölçeklemesini (window.devicePixelRatio'ya
+    // göre — BİZİM tavanlı dpr'imizden BAĞIMSIZ, ör. iPhone'da 3, bu yüzden
+    // arabellek 4096 hedeflenirken 5906'ya çıkıyordu) kapatıyoruz. CSS/görsel
+    // boyutu (her zaman, arabellek küçültülmüş olsun olmasın) displayW/H'a
+    // elle sabitliyoruz ki PDF katmanıyla hizalı kalsın — patchGetPointer
+    // zaten canlı canvas.width/boundsWidth oranına göre çalıştığından bu
+    // arabellek/CSS uyumsuzluğunda da doğru koordinat üretir.
     const drawEl = document.createElement('canvas');
     drawEl.className = 'fabric-draw-canvas';
-    drawEl.width = displayW;
-    drawEl.height = displayH;
+    drawEl.width = viewport.width;
+    drawEl.height = viewport.height;
     drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;';
     pageWrap.insertBefore(drawEl, pageWrap.querySelector('.page-num-label'));
 
-    initFabricForPage(drawEl, displayW, displayH, pageNum);
+    initFabricForPage(drawEl, viewport.width, viewport.height, pageNum, { disableRetinaScaling: true });
+    const fc = appState.fabricCanvases[pageNum];
+    [fc?.wrapperEl, fc?.lowerCanvasEl, fc?.upperCanvasEl].forEach(el=>{
+      if(!el) return;
+      el.style.width = displayW + 'px';
+      el.style.height = displayH + 'px';
+    });
 
   } catch(err){
     console.error('Sayfa render hatası:', err);
@@ -788,9 +821,9 @@ async function renderSinglePageMode(pageNum){
       void wrap.getBoundingClientRect();
       const baseScale = getReaderFitScale(page, wrap);
       const renderScale = baseScale * dpr;
-      const viewport = page.getViewport({scale: renderScale});
-      const displayW = viewport.width / dpr;
-      const displayH = viewport.height / dpr;
+      const fullViewport = page.getViewport({scale: renderScale});
+      const displayW = fullViewport.width / dpr;
+      const displayH = fullViewport.height / dpr;
 
       pageWrap.style.width = displayW + 'px';
       pageWrap.style.height = displayH + 'px';
@@ -800,6 +833,14 @@ async function renderSinglePageMode(pageNum){
       // DOM'a önce ekle — Safari off-DOM canvas render'ı sessizce başarısız olur
       stage.appendChild(pageWrap);
       wrap.appendChild(stage);
+
+      // bkz. MAX_CANVAS_DIM üstündeki not — DPR tavanı (yukarıdaki dpr=min(...,2))
+      // tek başına yetmiyor: %400 zoom + DPR2 ile bile tek kanvas 6336×8960
+      // (~217MB) oluyor (gerçek iPad'de ölçülüp "çok büyük zoom hareketi
+      // yapınca kapanıyor" olarak bildirildi). GÖRSEL boyut (displayW/H,
+      // yukarıda) hep zoom%'e tam orantılı kalır, yalnız arabellek sınırlanır.
+      const capRatio = Math.min(1, MAX_CANVAS_DIM / fullViewport.width, MAX_CANVAS_DIM / fullViewport.height);
+      const viewport = capRatio < 1 ? page.getViewport({scale: renderScale * capRatio}) : fullViewport;
 
       const pdfCanvas = document.createElement('canvas');
       pdfCanvas.width = viewport.width;
@@ -826,12 +867,23 @@ async function renderSinglePageMode(pageNum){
         ctx2d.restore();
       }
 
+      // bkz. renderSinglePDFPage'deki aynı yorum — arabelleği PDF kanvasıyla
+      // AYNI viewport.width/height'a elle veriyoruz, Fabric'in KENDİ retina
+      // ölçeklemesini (window.devicePixelRatio'ya göre — bizim tavanlı dpr'imizden
+      // BAĞIMSIZ) disableRetinaScaling:true ile kapatıyoruz, CSS/görsel boyutu
+      // her zaman displayW/H'a elle sabitliyoruz.
       const drawEl = document.createElement('canvas');
       drawEl.className = 'fabric-draw-canvas';
-      drawEl.width = displayW; drawEl.height = displayH;
+      drawEl.width = viewport.width; drawEl.height = viewport.height;
       drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;';
       pageWrap.appendChild(drawEl);
-      initFabricForPage(drawEl, displayW, displayH, pageNum);
+      initFabricForPage(drawEl, viewport.width, viewport.height, pageNum, { disableRetinaScaling: true });
+      const fc = appState.fabricCanvases[pageNum];
+      [fc?.wrapperEl, fc?.lowerCanvasEl, fc?.upperCanvasEl].forEach(el=>{
+        if(!el) return;
+        el.style.width = displayW + 'px';
+        el.style.height = displayH + 'px';
+      });
     } catch(err){
       console.error('Sayfa render hatası:', err);
       showToast('Sayfa ' + pageNum + ' render hatası: ' + err.message, 'error');
@@ -1314,7 +1366,18 @@ async function endZoomGesture(){
   // SIRADA hâlâ yer tutucuysa, konum onun üzerinden hesaplanır ve gerçek boyut
   // az sonra gelince içerik hafifçe kayar (gerçek PDF ile ölçülüp doğrulandı:
   // %193 zoom'da ~11px). Ölçmeden ÖNCE zorla/senkron gerçek render'ını bekleriz.
-  if(freshPageEl && freshPageEl.dataset.rendered !== '1'){
+  // SADECE sürekli modda anlamlı: bu 'dataset.rendered' işareti YALNIZ
+  // renderAllPages()'in IntersectionObserver akışında set edilir. Tek sayfa
+  // modunda renderSinglePageMode() sayfayı bu ÇAĞRIYLA AYNI renderPages()
+  // içinde SENKRON olarak ZATEN tam render etmiştir ve bu işareti hiç
+  // kullanmaz — kontrolsüz bırakılırsa (dataset.rendered hep undefined
+  // kalır) HER zoom değişiminde freshPageEl'e İKİNCİ bir pdfCanvas+Fabric
+  // katmanı daha eklenir: kanvas belleği ikiye katlanır VE üst üste binen
+  // iki Fabric canvas'ı arasında hangisinin appState.fabricCanvas olduğu
+  // belirsizleşip çizim/dokunma eşleşmesi bozulur (gerçek cihazda "çok
+  // büyük zoom hareketi yapınca kapanıyor" ve test ortamında dokunuşun
+  // yanlış canvas'a düşmesiyle doğrulandı).
+  if(appState.viewMode === 'scroll' && freshPageEl && freshPageEl.dataset.rendered !== '1'){
     freshPageEl.dataset.rendered = '1';
     try{
       if(appState.pdfDoc) await renderSinglePDFPage(Number(pageAnchor.pageNum), freshPageEl);

@@ -118,13 +118,20 @@ function bindCanvasDrawTapMemory(fc){
   });
 }
 
-function initFabricForPage(canvasEl, w, h, pageNum){
+function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   patchFabricTouchStartPreventDefault();
   const fc = new fabric.Canvas(canvasEl, {
     isDrawingMode: false, selection: true,
     width: w, height: h, backgroundColor: 'transparent',
     // bkz. patchFabricTouchStartPreventDefault üstündeki not.
     allowTouchScrolling: true,
+    // render.js MAX_CANVAS_DIM tavanı: çağıran taraf zaten kendi DPR+tavan
+    // hesabıyla arabellek boyutunu (w,h) belirlediyse Fabric'in KENDİ
+    // retina ölçeklemesi (varsayılan açık, window.devicePixelRatio'ya göre —
+    // BİZİM tavanlı dpr sabitimizden BAĞIMSIZ, ör. iPhone'da 3) bunun ÜSTÜNE
+    // BİR KEZ DAHA çarpıp arabelleği beklenenden ~1.5× büyük bırakıyordu
+    // (4096 hedeflenirken gerçekte 5906 ölçüldü) — tavan etkisiz kalıyordu.
+    ...(opts.disableRetinaScaling ? { enableRetinaScaling: false } : {}),
   });
   patchGetPointer(fc);
   bindCanvasDrawTapMemory(fc);
