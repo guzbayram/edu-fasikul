@@ -1159,6 +1159,25 @@ function getPagesInner(wrap){
   return wrap?.querySelector(':scope > .reader-pages-inner, :scope > .reader-page-stage') || null;
 }
 
+// inner içindeki sayfalar arasından (ekran x,y) noktasını içeren sayfayı
+// bulur — tek sayfa modunda zaten tek aday, sürekli modda hit-test yapar.
+// Tam üzerine denk gelen yoksa (sayfalar arası boşluk/kenar) en yakın
+// sayfaya düşer — anchor hiçbir zaman tamamen kaybolmasın.
+function locatePageAt(inner, x, y){
+  const pages = inner.querySelectorAll('[data-page-num]');
+  for(const p of pages){
+    const r = p.getBoundingClientRect();
+    if(x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return p;
+  }
+  let closest = null, minDist = Infinity;
+  for(const p of pages){
+    const r = p.getBoundingClientRect();
+    const d = Math.hypot((r.left + r.width/2) - x, (r.top + r.height/2) - y);
+    if(d < minDist){ minDist = d; closest = p; }
+  }
+  return closest;
+}
+
 // Aktif bir canlı zoom önizlemesi sürüyor mu? (lazy render edilen yeni
 // sayfaların hangi taban zoom'u kullanacağını bilmesi için — bkz.
 // getStableRenderZoom: önizleme sırasında lazy sayfalar RENDEREDzoom'da
@@ -1176,30 +1195,32 @@ function beginZoomGesture(focalX, focalY){
   // bu yüzden ayrıca wrap.scrollLeft/Top eklemeye gerek YOK — eklemek yanlış
   // (wrap'in padding'i + inner'ın kendi konumu wrap'in rect'inden farklı)
   // bir referans noktasına göre ölçüp gerçek bir kaymaya yol açıyordu.
+  // KRİTİK: Aşağıdaki TÜM rect ölçümleri (innerRect + pageAnchor) wrap'in
+  // DOĞAL/DOKUNULMAMIŞ (overflow:auto) yerleşimine göre, TEK bir tutarlı
+  // anda alınır — overflow'u 'hidden' yapmadan ÖNCE. wrap'in overflow'unu
+  // 'hidden' yapmak WebKit'te (iPad'de gerçek PDF ile ölçülüp doğrulandı)
+  // scrollbar'ın kayboluşuyla birlikte ANINDA küçük (~birkaç piksel) bir
+  // reflow'a yol açabiliyor — innerRect BUNDAN ÖNCE, pageAnchor BUNDAN
+  // SONRA ölçülseydi iki değer FARKLI referans çerçevelerine göre olur ve
+  // aralarında sabit küçük bir tutarsızlık (zıplama) oluşurdu.
   const innerRect = inner.getBoundingClientRect();
   const originX = focalX - innerRect.left;
   const originY = focalY - innerRect.top;
-  inner.style.transformOrigin = `${originX}px ${originY}px`;
-  inner.style.willChange = 'transform';
-  // KRİTİK (eski koddan doğrulanmış gerçek bir tarayıcı davranışı): wrap
-  // 'overflow:auto' iken transform'la KÜÇÜLEN inner'ın taştığı alan wrap'in
-  // scrollWidth/Height'ını jest SIRASINDA canlı küçültür — tarayıcı bunun
-  // üzerine scrollLeft/Top'u JS'in haberi olmadan otomatik kırpar. Jest
-  // boyunca overflow:hidden ile bunu devre dışı bırakıyoruz; commit'te
-  // gerçek scroll konumunu KENDİMİZ ayarladıktan sonra geri açılır.
-  wrap.style.overflow = 'hidden';
-  // Tek sayfa modunda .reader-page-stage kendi boyutunu (pan alanı için,
-  // bkz. sizeReaderStage) viewport'a göre TABAN alıp büyütür — sayfa
-  // viewport'u aşana kadar stage boyutu SABİT kalır, aşınca sayfayla
-  // birlikte büyür: zoom%'e göre DOĞRUSAL DEĞİL. originX*ratio bu yüzden bu
-  // modda (özellikle "sığar↔sığmaz" eşiğini aşan jestlerde) yanlış çıkabilir.
-  // Tek sayfa modunda sayfa ARAMAYA gerek yok (her zaman TEK aday), bu yüzden
-  // ek olarak sayfanın KENDİ kutusuna göre bir ORAN da saklıyoruz — settle'da
-  // varsa bu kullanılır, stage'in doğrusal-olmayan boyutlanmasından tamamen
-  // bağımsız her zaman doğru sonuç verir. Sürekli modda (çok sayfalı) bu YOK
-  // — orada inner zaten tamamen doğrusal, pure-ratio yeterli ve daha basit.
+  // Odak noktasının hangi SAYFAya denk geldiğini ve o sayfa içindeki ORANSAL
+  // (0..1) konumunu da saklıyoruz — settle'da bunu KULLANIRIZ (pure-ratio
+  // yerine). İki ayrı sebep var: (1) tek sayfa modunda .reader-page-stage
+  // kendi boyutunu (pan alanı için, bkz. sizeReaderStage) viewport'a göre
+  // TABAN alıp büyütür — sayfa viewport'u aşana kadar stage boyutu SABİT
+  // kalır, aşınca sayfayla birlikte büyür: zoom%'e göre DOĞRUSAL DEĞİL.
+  // (2) sürekli modda IntersectionObserver'ın "yer tutucu → gerçek boyut"
+  // geçişi ASENKRON — settle anında odak sayfası hâlâ tahmini yer tutucu
+  // boyutundaysa, gerçek boyut az sonra gelince içerik hafifçe kayar (gerçek
+  // PDF ile ölçülüp doğrulandı: %193 zoom'da ~11px dikey kayma). Sayfanın
+  // KENDİ taze kutusunu (settle'da force-render edilmiş hâliyle) ölçmek her
+  // iki sorunu da kökten çözer — inner'ın toplam boyutunun nasıl büyüdüğüne
+  // hiç bağlı değil.
   let pageAnchor = null;
-  const pageEl = appState.viewMode !== 'scroll' ? inner.querySelector('[data-page-num]') : null;
+  const pageEl = locatePageAt(inner, focalX, focalY);
   if(pageEl){
     const pr = pageEl.getBoundingClientRect();
     if(pr.width && pr.height){
@@ -1210,6 +1231,16 @@ function beginZoomGesture(focalX, focalY){
       };
     }
   }
+  inner.style.transformOrigin = `${originX}px ${originY}px`;
+  inner.style.willChange = 'transform';
+  // KRİTİK (eski koddan doğrulanmış gerçek bir tarayıcı davranışı): wrap
+  // 'overflow:auto' iken transform'la KÜÇÜLEN inner'ın taştığı alan wrap'in
+  // scrollWidth/Height'ını jest SIRASINDA canlı küçültür — tarayıcı bunun
+  // üzerine scrollLeft/Top'u JS'in haberi olmadan otomatik kırpar. Jest
+  // boyunca overflow:hidden ile bunu devre dışı bırakıyoruz (yukarıdaki TÜM
+  // ölçümlerden SONRA, ki onları etkilemesin); commit'te gerçek scroll
+  // konumunu KENDİMİZ ayarladıktan sonra geri açılır.
+  wrap.style.overflow = 'hidden';
   gz = {
     wrap, inner, focalX, focalY, pageAnchor,
     startZoom: appState.zoom,
@@ -1276,17 +1307,41 @@ async function endZoomGesture(){
   wrap.scrollLeft = 0; wrap.scrollTop = 0;
   const freshInner = getPagesInner(wrap);
   const freshRect = freshInner.getBoundingClientRect();
+  const freshPageEl = pageAnchor ? freshInner.querySelector(`[data-page-num="${pageAnchor.pageNum}"]`) : null;
+  // Sürekli modda renderAllPages() TÜM sayfalar için önce genel tahminli bir
+  // YER TUTUCU boyut kurar; gerçek/PDF'e-özgü boyut yalnızca IntersectionObserver
+  // sayfayı görününce (asenkron, gecikmeli) geliyor. Anchor sayfası TAM O
+  // SIRADA hâlâ yer tutucuysa, konum onun üzerinden hesaplanır ve gerçek boyut
+  // az sonra gelince içerik hafifçe kayar (gerçek PDF ile ölçülüp doğrulandı:
+  // %193 zoom'da ~11px). Ölçmeden ÖNCE zorla/senkron gerçek render'ını bekleriz.
+  if(freshPageEl && freshPageEl.dataset.rendered !== '1'){
+    freshPageEl.dataset.rendered = '1';
+    try{
+      if(appState.pdfDoc) await renderSinglePDFPage(Number(pageAnchor.pageNum), freshPageEl);
+      else renderSingleFallbackPage(Number(pageAnchor.pageNum), freshPageEl);
+    }catch(e){ console.warn('Anchor sayfası zorla render edilemedi:', e); }
+    if(myGen !== _zoomSettleGen) return result; // bu bekleme sırasında yeni bir jest başladı
+  }
   // Tek sayfa modunda (bkz. beginZoomGesture'daki not — stage boyutu zoom%'e
   // göre doğrusal değil) sayfanın KENDİ taze kutusu + saklanan oran tercih
   // edilir; pure-ratio'dan HER ZAMAN daha doğru, çünkü stage'in nasıl
   // büyüdüğüne hiç bağlı değil.
-  const freshPageEl = pageAnchor ? freshInner.querySelector(`[data-page-num="${pageAnchor.pageNum}"]`) : null;
   if(freshPageEl && freshPageEl.offsetWidth && freshPageEl.offsetHeight){
     // scrollLeft henüz 0 olduğundan pr.left/top mevcut (kaydırılmamış)
     // ekran konumu — istenen scroll = o konum + oran*boyut - hedef ekran konumu.
+    // AMA: sayfa o eksende viewport'a SIĞIYORSA (pr.width<=clientWidth vb.)
+    // o eksende scroll YAPILAMAZ/GEREKMEZ — CSS zaten margin:auto/justify-
+    // content:center ile ORTALAR, scrollLeft/Top'u ne yazarsak yazalım
+    // tarayıcı 0'a kırpar. Bu durumda dokunmayız (0 zaten doğru); aksi halde
+    // "hedef" hesabımız gerçek CSS-ortalamasıyla çakışıp sabit bir kaymaya
+    // yol açardı (gerçek PDF ile ölçülüp doğrulandı: %100'e dönüşte ~19px).
     const pr = freshPageEl.getBoundingClientRect();
-    wrap.scrollLeft = Math.max(0, pr.left + pageAnchor.fracX * pr.width - focalX);
-    wrap.scrollTop = Math.max(0, pr.top + pageAnchor.fracY * pr.height - focalY);
+    if(pr.width > wrap.clientWidth){
+      wrap.scrollLeft = Math.max(0, pr.left + pageAnchor.fracX * pr.width - focalX);
+    }
+    if(pr.height > wrap.clientHeight){
+      wrap.scrollTop = Math.max(0, pr.top + pageAnchor.fracY * pr.height - focalY);
+    }
   } else {
     wrap.scrollLeft = Math.max(0, freshRect.left + targetContentX - focalX);
     wrap.scrollTop = Math.max(0, freshRect.top + targetContentY - focalY);
