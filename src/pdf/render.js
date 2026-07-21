@@ -694,24 +694,34 @@ function sizeReaderStage(stage, wrap, displayW, displayH){
   const padY = parseFloat(styles.paddingTop || 0) + parseFloat(styles.paddingBottom || 0);
   const viewportW = Math.max(0, wrap.clientWidth - padX);
   const viewportH = Math.max(0, wrap.clientHeight - padY);
-  stage.style.width = Math.ceil(Math.max(viewportW, displayW + 32)) + 'px';
-  stage.style.height = Math.ceil(Math.max(viewportH, displayH + 32)) + 'px';
+  const panExtraX = displayW > viewportW ? viewportW : 0;
+  const panExtraY = displayH > viewportH ? viewportH : 0;
+  stage.style.width = Math.ceil(Math.max(viewportW, displayW + 32 + panExtraX)) + 'px';
+  stage.style.height = Math.ceil(Math.max(viewportH, displayH + 32 + panExtraY)) + 'px';
 }
 
 // ── renderPages: mod'a göre tek sayfa veya scroll
 
 function renderPages(){
   window.flushActiveTextEditing?.();
+  // Önceki trackpad/pinch önizlemesi gerçek render'a çevrilmeden ekranda
+  // tutulmuş olabilir. Yeni sayfa/render isteği geldiğinde eski jest durumunu
+  // bırak; renderPages zaten wrap'i baştan kuracak.
+  if(zg) zg = null;
   const preserveScroll = !!appState._preserveScrollAfterRender;
   appState._preserveScrollAfterRender = false;
   if(appState.viewMode === 'scroll'){
     return renderAllPages().then(()=>{
       appState._renderedZoom = appState.zoom;
+      initCardZoomPan();
+      initTouchGestures();
       if(!preserveScroll) setTimeout(()=>scrollToPage(appState.currentPage, 'auto'), 50);
     });
   } else {
     return renderSinglePageMode(appState.currentPage).then(()=>{
       appState._renderedZoom = appState.zoom;
+      initCardZoomPan();
+      initTouchGestures();
     });
   }
 }
@@ -1183,6 +1193,11 @@ async function runCardZoomSettle(wrap){
         const contentY = pageTopInWrap + savedAnchor.fracY * pageRect.height;
         wrap.scrollLeft = Math.max(0, contentX - viewportX);
         wrap.scrollTop = Math.max(0, contentY - viewportY);
+        if(savedAnchor.livePageRect){
+          const adjustedRect = pageEl.getBoundingClientRect();
+          wrap.scrollLeft = Math.max(0, wrap.scrollLeft + (adjustedRect.left - savedAnchor.livePageRect.left));
+          wrap.scrollTop = Math.max(0, wrap.scrollTop + (adjustedRect.top - savedAnchor.livePageRect.top));
+        }
       } else {
         // Geriye dönük güvenlik ağı: sayfa bulunamadıysa (mock/konu anlatım
         // içeriği vb.) eski oran-tabanlı tahmine düş.
@@ -1202,6 +1217,16 @@ function createZoomFreezeOverlay(wrap){
   if(!wrap) return null;
   const liveInner = wrap.querySelector(':scope > .reader-zoom-inner');
   if(!liveInner) return null;
+  const frozenInner = liveInner.cloneNode(true);
+  const sourceCanvases = [...liveInner.querySelectorAll('canvas')];
+  const frozenCanvases = [...frozenInner.querySelectorAll('canvas')];
+  sourceCanvases.forEach((source, i)=>{
+    const target = frozenCanvases[i];
+    if(!target) return;
+    target.width = source.width;
+    target.height = source.height;
+    try{ target.getContext('2d')?.drawImage(source, 0, 0); }catch(_e){}
+  });
   const rect = wrap.getBoundingClientRect();
   const overlay = document.createElement('div');
   overlay.className = 'reader-zoom-freeze';
@@ -1213,10 +1238,10 @@ function createZoomFreezeOverlay(wrap){
     `height:${rect.height}px`,
     'overflow:hidden',
     'pointer-events:none',
-    'z-index:9998',
+    'z-index:2147483647',
     `background:${getComputedStyle(wrap).backgroundColor || 'transparent'}`
   ].join(';');
-  overlay.appendChild(liveInner);
+  overlay.appendChild(frozenInner);
   document.body.appendChild(overlay);
   return () => overlay.remove();
 }
@@ -1502,8 +1527,17 @@ function commitZoomGestureState(state){
   const zoomChanged = Math.abs(liveZoom - startZoom) >= 2;
   if(zoomChanged){
     const loc = locatePageFraction(inner, anchorContentX, anchorContentY);
+    const livePageNum = loc?.pageNum ?? state.anchorPageNum ?? null;
+    const livePageEl = livePageNum != null ? inner.querySelector(`[data-page-num="${livePageNum}"]`) : null;
+    const livePageRect = livePageEl?.getBoundingClientRect?.();
     scheduleCardZoomRender({
       pageNum: loc?.pageNum ?? null, fracX: loc?.fracX ?? 0.5, fracY: loc?.fracY ?? 0.5,
+      livePageRect: livePageRect ? {
+        left: livePageRect.left,
+        top: livePageRect.top,
+        width: livePageRect.width,
+        height: livePageRect.height
+      } : null,
       // Sayfa bulunamazsa (ör. konu anlatım/mock içerik) eski oran-tabanlı
       // yönteme düşülür — geriye dönük güvenlik ağı.
       contentX: anchorContentX, contentY: anchorContentY,
@@ -1541,6 +1575,18 @@ function commitZoomGesture(){
   const result = commitZoomGestureState(zg);
   zg = null;
   return result;
+}
+function holdZoomGesturePreview(){
+  if(!zg) return null;
+  void zg.wrap.getBoundingClientRect();
+  updateZoomGestureState(zg, zg.liveZoom, zg.lastScreenX, zg.lastScreenY);
+  zg.wrap.style.overflow = '';
+  return {
+    zoomChanged: Math.abs(zg.liveZoom - zg.startZoom) >= 2,
+    dx: zg.lastScreenX - zg.startScreenX,
+    dy: zg.lastScreenY - zg.startScreenY,
+    dur: Date.now() - zg.startTime
+  };
 }
 // Jest hiç anlamlı bir değişiklik üretmeden iptal edilirse: sarmalayıcıyı aç,
 // hiçbir yan etki (scroll/zoom değişikliği) bırakma.
@@ -1592,7 +1638,7 @@ function initCardZoomPan(){
       const factor = Math.exp(-e.deltaY * ZOOM_WHEEL_SENS);
       updateZoomGesture(zg.liveZoom * factor, e.clientX, e.clientY);
       clearTimeout(wrap._wheelZoomIdleTimer);
-      wrap._wheelZoomIdleTimer = setTimeout(()=>{ commitZoomGesture(); }, 180);
+      wrap._wheelZoomIdleTimer = setTimeout(()=>{ holdZoomGesturePreview(); }, 220);
     }
   }, {passive:false});
 

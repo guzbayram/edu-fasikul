@@ -693,6 +693,9 @@ export function enterApp(name){
   const roleLabel = {ogretmen:'Öğretmen',admin:'Yönetici'}[appState.user.role] || 'Öğrenci';
   document.getElementById('profileSub').textContent = `${roleLabel} · ${appState.user.email}`;
   document.getElementById('screen-login').classList.remove('active');
+  if(appState.user && appState.user.email !== 'misafir@demo.com'){
+    prepareDashboardForCloudLoad();
+  }
   document.getElementById('screen-app').classList.add('active');
   window.showToast?.(`Hoş geldin, ${name}! 👋`, 'success');
 
@@ -715,6 +718,26 @@ export function enterApp(name){
   }
 
   // Onboarding turu kaldırıldı — girişte tur tetiklenmez
+}
+
+function prepareDashboardForCloudLoad(){
+  const grid = document.getElementById('derslerGrid');
+  if(grid){
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-2);color:var(--text-muted);text-align:center">
+        Dersler buluttan yükleniyor...
+      </div>`;
+  }
+  const sayac = document.getElementById('derslerSayac');
+  if(sayac) sayac.textContent = 'yükleniyor';
+  const lastName = document.getElementById('lastOpenName');
+  const lastMeta = document.getElementById('lastOpenMeta');
+  const lastPct = document.getElementById('lastOpenPct');
+  const lastBar = document.getElementById('lastOpenPbar');
+  if(lastName) lastName.textContent = 'Yükleniyor';
+  if(lastMeta) lastMeta.textContent = 'Ders ve fasiküller buluttan alınıyor';
+  if(lastPct) lastPct.textContent = '%0';
+  if(lastBar) lastBar.style.width = '0%';
 }
 
 export async function doLogout(){
