@@ -486,7 +486,7 @@ body.reader-locked .main-content{visibility:hidden!important}
    olduğunu AYIRT ETMEZ: canvas'ı 'pan-x pan-y' yapmak (eski v2 denemesi)
    tablette kalemle ÇİZERKEN de sayfayı native kaydırmaya "kaçırıyordu"
    (gerçek iPad+Apple Pencil ile doğrulandı). Bu yüzden canvas üzerindeki
-   parmak-pan'i (tablette her zaman / telefonda "Seç" aracında) elle JS ile
+   parmak-pan'i ("Seç" aracında, tablet/telefon fark etmeksizin) elle JS ile
    sürüyoruz (bkz. initLongPressDraw, render.js) — kalem oraya hiç girmez,
    Fabric'in kendi çizim motoruna kalır. !important ZORUNLU: Fabric kendi
    upper-canvas/lower-canvas'ına INLINE touch-action:none yazıyor, inline
