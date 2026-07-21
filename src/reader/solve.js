@@ -1,0 +1,232 @@
+import { appState } from '../state/appState.js';
+
+// ══════════════════════════════════════════════════════════
+// TELEFON: Tam ekran ÇÖZÜM MODU
+// Karta çift dokun → PDF tüm ekranı kaplar; yüzer/sürüklenebilir
+// araç paleti (kalem/silgi/renkler · A–E · kopyala) ile çözülür.
+// ══════════════════════════════════════════════════════════
+
+// Canvas alanını paletin boyutu kadar içeriden başlat → PDF palete kadar büyür,
+// altında gizlenmez/kesilmez (yatay: soldan, dikey: üstten).
+// Telefon yatay-kısa modda GEREKSİZ: #solvePalette artık .solve-left-col ile gerçek
+// flex çocuğu (position:static) — reader-canvas-wrap kalan genişliği CSS'ten otomatik
+// alır, JS ile ölçüp padding enjekte etmeye gerek yok (ve fixed-panel varsayımıyla
+// hesaplanan padding, artık flex'in verdiği gerçek alanla çakışıp gereksiz boşluk
+// bırakabilirdi — bu yüzden bu modda devre dışı).
+function fitCanvasToPalette(){
+  const ov = document.getElementById('reader-overlay');
+  const wrap = document.getElementById('readerCanvasWrap');
+  const panel = document.getElementById('solvePalette');  // sabit kenar panel (yalnız tablet/masaüstü/dikey'de fixed)
+  if(!wrap) return;
+  if(!ov?.classList.contains('solve-mode') || isPhoneLandscape()){
+    ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k));
+    return;
+  }
+  // Sabit panel kadar offset → kart panelin hemen yanında/altında (boşluksuz), ORTALI.
+  const G = 2;
+  const portrait = window.matchMedia('(orientation:portrait)').matches;
+  const pr = panel ? panel.getBoundingClientRect() : {width:0, height:0};
+  const set = (k,v)=>wrap.style.setProperty(k, v, 'important');
+  set('padding-right', G+'px'); set('padding-bottom', G+'px');
+  if(portrait){ set('padding-top', (Math.round(pr.height)+G)+'px'); set('padding-left', G+'px'); }
+  else        { set('padding-left', (Math.round(pr.width)+G)+'px'); set('padding-top', G+'px'); }
+  // Alt zoom çubuğu, sol panelden sonraki KALAN genişlikte ortalansın (yatayda)
+  document.documentElement.style.setProperty('--sp-panel-w', (portrait ? 0 : Math.round(pr.width)) + 'px');
+}
+function reflowSolve(){
+  fitCanvasToPalette();
+  // Padding değişti → PDF yeni alana sığacak şekilde yeniden render.
+  // scheduleReaderViewportReflow: gerçek cihazda Safari araç çubuğu animasyonu
+  // bitene kadar visualViewport'u izleyip #reader-overlay'i buna göre defalarca
+  // yeniden hizalar (bkz. viewportfix.js) — yalnız senkron 'resize' event'ine
+  // güvenmek gerçek cihazda son boyut geç yerleştiğinde eski/küçük render'da
+  // kalıp altında/sağında gri boşluk bırakıyordu.
+  window.scheduleReaderViewportReflow?.();
+  setTimeout(()=>{ try{ window.renderPages?.(); }catch(_e){} }, 90);
+}
+function enterSolveMode(){
+  const ov = document.getElementById('reader-overlay');
+  if(!ov || !ov.classList.contains('open')) return;
+  ov.classList.add('solve-mode');
+  // Kart kalan alanı doldursun: zoom %100 → getReaderFitScale (solve) contain ile en büyük
+  appState.zoom = 100; appState._fillBaseZoom = null; window.setZoomLabel?.(100);
+  renderSolveAnswers();
+  // Gez artık ayrı bir araç değil (2 parmakla her zaman pan/zoom çalışır) —
+  // tam ekrana girerken mevcut çizim aracı (varsayılan ✏️ Kalem) korunur.
+  // Palet ölçülüp canvas ona göre konumlansın, sonra PDF yeniden render/sığsın
+  setTimeout(reflowSolve, 60);
+}
+function exitSolveMode(){
+  // Cep telefonu YATAY modda sadece tam ekran var → çıkış reader'ı tamamen kapatır
+  if(isPhoneLandscape()){ window.closeReader?.(); return; }
+  document.getElementById('reader-overlay')?.classList.remove('solve-mode');
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(wrap){ ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k)); }
+  setTimeout(()=>{ try{ window.dispatchEvent(new Event('resize')); }catch(_e){} }, 60);
+}
+
+// Cep telefonu yatay modu (kısa yükseklik) → tam ekran zorunlu
+function isPhoneLandscape(){
+  return window.matchMedia('(orientation:landscape) and (max-height:500px)').matches;
+}
+// Yatayda reader açıksa otomatik tam ekran (solve) moduna geç
+function autoSolveForLandscape(){
+  const ov = document.getElementById('reader-overlay');
+  if(!ov || !ov.classList.contains('open')) return;
+  if(isPhoneLandscape() && !ov.classList.contains('solve-mode')) enterSolveMode();
+}
+window.autoSolveForLandscape = autoSolveForLandscape;
+
+window.addEventListener('resize', ()=>{
+  autoSolveForLandscape();
+  if(document.getElementById('reader-overlay')?.classList.contains('solve-mode')) fitCanvasToPalette();
+});
+window.addEventListener('orientationchange', ()=>{ setTimeout(()=>{ autoSolveForLandscape(); reflowSolve(); }, 200); });
+function toggleSolveMode(){
+  const ov = document.getElementById('reader-overlay');
+  if(!ov) return;
+  ov.classList.contains('solve-mode') ? exitSolveMode() : enterSolveMode();
+}
+
+// Palet A–E cevap butonlarını güncel soruya göre çiz
+function renderSolveAnswers(){
+  const wrap = document.getElementById('spAnswers');
+  if(!wrap) return;
+  const alt = appState.aktifAltKonu;
+  const idx = appState.activeQuestionIdx;
+  const s = (alt?.sorular || [])[idx];
+  const isKonu = window.isKonuKartSoru?.(s) || window.isKonuKartAltKonu?.(alt);
+  if(!s || isKonu){ wrap.innerHTML = ''; return; }
+  const state = appState.sorularState[s._uid || s.no];
+  const answered = !!state?.answered;
+  // Şıkların başına soru no
+  const noHtml = `<span class="sp-no">S.${s.no}</span>`;
+  if(s.cevapTipi === 'acik-uclu'){
+    const inputId = window.getOpenAnswerInputIdForQuestion?.(s, 'sp') || `sp-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+    // "Kontrol Et" yok — yazmayı bırakınca (debounce) ya da Enter'a basınca
+    // otomatik gönderilir. Altında sistem klavyesi yerine dokunmatik tuş takımı.
+    wrap.innerHTML = `<div class="sp-open-row">${noHtml}<input id="${inputId}" class="sp-open-input" inputmode="text" enterkeyhint="next"
+      placeholder="Cevap" value="${answered ? (state?.selected ?? '') : ''}"
+      oninput="scheduleOpenAnswerAutoSubmit('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();submitOpenAnswer('${s._uid||s.no}','${s.cevap}',${idx},'${inputId}')}"
+      ${answered?'readonly':''}></div>
+      ${answered ? '' : window.buildOpenAnswerKeypadHtml?.(inputId, s.cevap, idx, s._uid||s.no, 'sp-open-keypad') || ''}`;
+    return;
+  }
+  const secenekler = appState.aktifFasikul?.secenekSayisi === 4 ? ['A','B','C','D'] : ['A','B','C','D','E'];
+  wrap.innerHTML = noHtml + secenekler.map(opt=>{
+    let cls = 'sp-ans';
+    if(answered){
+      if(opt === s.cevap) cls += ' correct-ans';
+      else if(opt === state?.selected) cls += ' wrong-ans';
+    }
+    return `<button class="${cls}" onclick="selectAnswer('${s._uid || s.no}','${opt}','${s.cevap}',${idx})" ${answered?'disabled':''}>${opt}</button>`;
+  }).join('');
+}
+
+// Yüzer paleti sürükle (tutamaçtan) — birden çok palet için genel
+function makeDraggable(palId, handleId){
+  const pal = document.getElementById(palId);
+  const handle = document.getElementById(handleId);
+  if(!pal || !handle || handle.dataset.dragReady) return;
+  handle.dataset.dragReady = '1';
+  let sx=0, sy=0, ox=0, oy=0, dragging=false;
+  const start = (x,y)=>{
+    dragging = true;
+    sx = x; sy = y;
+    const r = pal.getBoundingClientRect();
+    ox = r.left; oy = r.top;
+    pal.style.transform = 'none';
+    pal.classList.add('dragging');
+  };
+  const move = (x,y)=>{
+    if(!dragging) return;
+    let nx = ox + (x - sx), ny = oy + (y - sy);
+    nx = Math.max(4, Math.min(window.innerWidth  - pal.offsetWidth  - 4, nx));
+    ny = Math.max(4, Math.min(window.innerHeight - pal.offsetHeight - 4, ny));
+    pal.style.left = nx + 'px'; pal.style.top = ny + 'px';
+    pal.style.right = 'auto'; pal.style.bottom = 'auto';
+  };
+  const end = ()=>{ dragging = false; pal.classList.remove('dragging'); };
+  handle.addEventListener('pointerdown', e=>{ e.preventDefault(); handle.setPointerCapture?.(e.pointerId); start(e.clientX, e.clientY); });
+  handle.addEventListener('pointermove', e=>{ if(dragging){ e.preventDefault(); move(e.clientX, e.clientY); } });
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', end);
+}
+// Köşeden boyutlandır → pencere genişliği değişir, butonlar flex-wrap ile yeniden dizilir
+function makeResizable(palId){
+  const pal = document.getElementById(palId);
+  const grip = pal?.querySelector('.sp-resize');
+  if(!pal || !grip || grip.dataset.rzReady) return;
+  grip.dataset.rzReady = '1';
+  let sx=0, sw=0, rz=false;
+  const start = x => { rz=true; sx=x; sw=pal.getBoundingClientRect().width; };
+  const move  = x => { if(!rz) return; pal.style.width = Math.max(92, Math.min(window.innerWidth-20, sw + (x-sx))) + 'px'; };
+  const end   = () => { rz=false; };
+  grip.addEventListener('pointerdown', e=>{ e.preventDefault(); e.stopPropagation(); grip.setPointerCapture?.(e.pointerId); start(e.clientX); });
+  grip.addEventListener('pointermove', e=>{ if(rz){ e.preventDefault(); move(e.clientX); } });
+  grip.addEventListener('pointerup', end);
+  grip.addEventListener('pointercancel', end);
+}
+function initSolvePaletteDrag(){
+  makeDraggable('solvePalette', 'spHandle');
+  makeDraggable('solveToolPalette', 'spToolHandle');
+  makeResizable('solvePalette');
+  makeResizable('solveToolPalette');
+}
+
+// Görünüm Modu menüsü: telefonda 1sn sabit basışla açılır (initLongPressDraw içinde).
+// Burada yalnız masaüstü çift-tık desteklenir (yazarken kazara açılmasın diye dokunmada yok).
+// Karta çift tıkla/çift dokun → zum %100'e SIFIRLANIR (macOS Preview'daki "orijinal
+// boyuta dön"). Pan da otomatik sıfırlanır: renderPages() her render'da canvas
+// alanını (wrap.innerHTML) baştan kurduğundan scrollLeft/Top doğal olarak 0'a
+// döner — burada scheduleCardZoomRender'ın imleç-odaklı geri-kaydırma ("anchor")
+// yolunu KULLANMIYORUZ ki bu doğal sıfırlama korunsun.
+function resetZoomAndPan(){
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap || !wrap.firstChild) return;
+  if(Math.round(appState.zoom) === 100) return; // zaten %100 — yapacak bir şey yok
+  // Anlık görsel ön-izleme (sert sıçrama değil, yumuşak geçiş hissi) — render
+  // bitene kadar kartın kendi merkezine göre ölçeklenir. Pan da otomatik
+  // sıfırlanır: renderPages() her render'da canvas alanını (wrap.innerHTML)
+  // baştan kurduğundan scrollLeft/Top doğal olarak 0'a döner.
+  const r = wrap.getBoundingClientRect();
+  window.previewZoomTo?.(100, r.left + wrap.clientWidth / 2, r.top + wrap.clientHeight / 2);
+  appState._fillBaseZoom = null;
+  setTimeout(() => { window.renderPages?.()?.then(() => { wrap.style.overflow = ''; }); }, 90);
+}
+window.toggleCardFill = resetZoomAndPan; // eski ad — geriye dönük uyumluluk
+window.resetZoomAndPan = resetZoomAndPan;
+
+function initSolveDoubleTap(){
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap || wrap.dataset.solveDtReady) return;
+  wrap.dataset.solveDtReady = '1';
+  // Not: eskiden yalnız ✋ Gez aracında çalışıyordu (drawTool==='select'); Gez
+  // artık ayrı bir araç olmadığından bu şart kaldırıldı — hangi çizim aracı
+  // seçili olursa olsun çift tık/dokunuşla zum sıfırlanabilir.
+  const shouldIgnoreFillTap = ()=>{
+    return Date.now() - (appState._lastCanvasDrawTapAt || 0) < 700;
+  };
+  // Masaüstü çift tık + dokunmatik çift dokunma → zum sıfırla
+  wrap.addEventListener('dblclick', ()=>{
+    if(shouldIgnoreFillTap()) return;
+    resetZoomAndPan();
+  });
+  let lastTap = 0, lx = 0, ly = 0;
+  wrap.addEventListener('touchend', e=>{
+    if(shouldIgnoreFillTap()){ lastTap = 0; return; }
+    if(e.changedTouches.length !== 1) return;
+    const t = e.changedTouches[0], now = Date.now();
+    if(now - lastTap < 300 && Math.hypot(t.clientX - lx, t.clientY - ly) < 30){
+      lastTap = 0; resetZoomAndPan();
+    } else { lastTap = now; lx = t.clientX; ly = t.clientY; }
+  }, { passive:true });
+}
+
+window.enterSolveMode = enterSolveMode;
+window.exitSolveMode = exitSolveMode;
+window.toggleSolveMode = toggleSolveMode;
+window.renderSolveAnswers = renderSolveAnswers;
+
+document.addEventListener('DOMContentLoaded', ()=>{ initSolvePaletteDrag(); initSolveDoubleTap(); });

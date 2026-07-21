@@ -1,0 +1,32 @@
+{
+  "ad": "Kuvvet ve Hareket",
+  "sinif": 10,
+  "konular": [
+    {
+      "id": "fiz-1-1",
+      "ad": "Hareket Çeşitleri",
+      "sayfaBasl": 3,
+      "sayfaBitis": 10,
+      "altKonular": [
+        {
+          "id": "fiz-1-1-1",
+          "ad": "Düzgün Doğrusal Hareket",
+          "sayfa": 3,
+          "sorular": [
+            { "no": 1, "cevap": "C", "zorluk": "kolay" },
+            { "no": 2, "cevap": "A", "zorluk": "orta" }
+          ]
+        },
+        {
+          "id": "fiz-1-1-2",
+          "ad": "İvmeli Hareket",
+          "sayfa": 6,
+          "sorular": [
+            { "no": 3, "cevap": "D", "zorluk": "orta" },
+            { "no": 4, "cevap": "B", "zorluk": "zor" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1754 @@
+{
+  "ad": "Yarıçap 10.Sınıf Matematik 3.Fasikül - Fonksiyonlar, Sayma ve Olasılık",
+  "sinif": 10,
+  "ders": "Matematik",
+  "kaynakPdf": "29-Yarıçap - 10.Sınıf-Matematik-3.Fasikul.pdf",
+  "pdf": "29-Yarıçap - 10.Sınıf-Matematik-3.Fasikul.pdf",
+  "kartKlasoru": null,
+  "soruSayisi": 163,
+  "toplamSoru": 163,
+  "konuSayisi": 8,
+  "testSayisi": 21,
+  "cevapMaskele": true,
+  "konular": [
+    {
+      "id": "gercek-sayilarda-tanimli-fonksiyonlar",
+      "ad": "Gerçek Sayılarda Tanımlı Fonksiyonların Nitel Özellikleri",
+      "anaKonu": "Gerçek Sayılarda Tanımlı Fonksiyonların Nitel Özellikleri",
+      "altKonular": [
+        {
+          "id": "test-1",
+          "ad": "Test 1",
+          "tip": "test",
+          "sayfa": 17,
+          "sayfaBitis": 18,
+          "soruSayisi": 9,
+          "sorular": [
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-1",
+              "baslik": "Test 1 - Soru 1",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-2",
+              "baslik": "Test 1 - Soru 2",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-3",
+              "baslik": "Test 1 - Soru 3",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-4",
+              "baslik": "Test 1 - Soru 4",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-5",
+              "baslik": "Test 1 - Soru 5",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-6",
+              "baslik": "Test 1 - Soru 6",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-7",
+              "baslik": "Test 1 - Soru 7",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-8",
+              "baslik": "Test 1 - Soru 8",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-fonksiyonlar-test-1-9",
+              "baslik": "Test 1 - Soru 9",
+              "pdfSayfa": 17,
+              "sayfaBitis": 18,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "E"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar",
+      "ad": "Gerçek Sayılarda Tanımlı Karesel Fonksiyonlar ve Nitel Özellikleri",
+      "anaKonu": "Gerçek Sayılarda Tanımlı Karesel Fonksiyonlar ve Nitel Özellikleri",
+      "altKonular": [
+        {
+          "id": "test-2",
+          "ad": "Test 2",
+          "tip": "test",
+          "sayfa": 29,
+          "sayfaBitis": 30,
+          "soruSayisi": 11,
+          "sorular": [
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-1",
+              "baslik": "Test 2 - Soru 1",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-2",
+              "baslik": "Test 2 - Soru 2",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-3",
+              "baslik": "Test 2 - Soru 3",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-4",
+              "baslik": "Test 2 - Soru 4",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-5",
+              "baslik": "Test 2 - Soru 5",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-6",
+              "baslik": "Test 2 - Soru 6",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-7",
+              "baslik": "Test 2 - Soru 7",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-8",
+              "baslik": "Test 2 - Soru 8",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "B"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-9",
+              "baslik": "Test 2 - Soru 9",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-10",
+              "baslik": "Test 2 - Soru 10",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karesel-fonksiyonlar-test-2-11",
+              "baslik": "Test 2 - Soru 11",
+              "pdfSayfa": 29,
+              "sayfaBitis": 30,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "C"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "karesel-referans-turetilen-fonksiyonlar",
+      "ad": "Karesel Referans Fonksiyonunundan Türetilen Gerçek Sayılarda Tanımlı g(x)=a·f(x±r)±k Karesel Fonksiyonunun Nitel Özellikleri",
+      "anaKonu": "Karesel Referans Fonksiyonunundan Türetilen Gerçek Sayılarda Tanımlı g(x)=a·f(x±r)±k Karesel Fonksiyonunun Nitel Özellikleri",
+      "altKonular": [
+        {
+          "id": "test-3",
+          "ad": "Test 3",
+          "tip": "test",
+          "sayfa": 38,
+          "sayfaBitis": 39,
+          "soruSayisi": 10,
+          "sorular": [
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-1",
+              "baslik": "Test 3 - Soru 1",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-2",
+              "baslik": "Test 3 - Soru 2",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-3",
+              "baslik": "Test 3 - Soru 3",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-4",
+              "baslik": "Test 3 - Soru 4",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-5",
+              "baslik": "Test 3 - Soru 5",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-6",
+              "baslik": "Test 3 - Soru 6",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "C"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-7",
+              "baslik": "Test 3 - Soru 7",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-8",
+              "baslik": "Test 3 - Soru 8",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-9",
+              "baslik": "Test 3 - Soru 9",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "A"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-3-10",
+              "baslik": "Test 3 - Soru 10",
+              "pdfSayfa": 38,
+              "sayfaBitis": 39,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "test-4",
+          "ad": "Test 4",
+          "tip": "test",
+          "sayfa": 46,
+          "sayfaBitis": 47,
+          "soruSayisi": 10,
+          "sorular": [
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-1",
+              "baslik": "Test 4 - Soru 1",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "A"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-2",
+              "baslik": "Test 4 - Soru 2",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-3",
+              "baslik": "Test 4 - Soru 3",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-4",
+              "baslik": "Test 4 - Soru 4",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-5",
+              "baslik": "Test 4 - Soru 5",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "C"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-6",
+              "baslik": "Test 4 - Soru 6",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-7",
+              "baslik": "Test 4 - Soru 7",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-8",
+              "baslik": "Test 4 - Soru 8",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-9",
+              "baslik": "Test 4 - Soru 9",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-4-10",
+              "baslik": "Test 4 - Soru 10",
+              "pdfSayfa": 46,
+              "sayfaBitis": 47,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "A"
+            }
+          ]
+        },
+        {
+          "id": "test-5",
+          "ad": "Test 5",
+          "tip": "test",
+          "sayfa": 52,
+          "sayfaBitis": 52,
+          "soruSayisi": 6,
+          "sorular": [
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-5-1",
+              "baslik": "Test 5 - Soru 1",
+              "pdfSayfa": 52,
+              "sayfaBitis": 52,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-5-2",
+              "baslik": "Test 5 - Soru 2",
+              "pdfSayfa": 52,
+              "sayfaBitis": 52,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "A"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-5-3",
+              "baslik": "Test 5 - Soru 3",
+              "pdfSayfa": 52,
+              "sayfaBitis": 52,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "C"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-5-4",
+              "baslik": "Test 5 - Soru 4",
+              "pdfSayfa": 52,
+              "sayfaBitis": 52,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-5-5",
+              "baslik": "Test 5 - Soru 5",
+              "pdfSayfa": 52,
+              "sayfaBitis": 52,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "C"
+            },
+            {
+              "id": "karesel-referans-turetilen-fonksiyonlar-test-5-6",
+              "baslik": "Test 5 - Soru 6",
+              "pdfSayfa": 52,
+              "sayfaBitis": 52,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "bolum-degerlendirme-1",
+          "ad": "Bölüm Değerlendirme Test 1",
+          "tip": "test",
+          "sayfa": 53,
+          "sayfaBitis": 54,
+          "soruSayisi": 11,
+          "sorular": [
+            {
+              "id": "bolum-degerlendirme-1-1",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 1",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-1-2",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 2",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "A"
+            },
+            {
+              "id": "bolum-degerlendirme-1-3",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 3",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "bolum-degerlendirme-1-4",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 4",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "bolum-degerlendirme-1-5",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 5",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "C"
+            },
+            {
+              "id": "bolum-degerlendirme-1-6",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 6",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "A"
+            },
+            {
+              "id": "bolum-degerlendirme-1-7",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 7",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "B"
+            },
+            {
+              "id": "bolum-degerlendirme-1-8",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 8",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-1-9",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 9",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "B"
+            },
+            {
+              "id": "bolum-degerlendirme-1-10",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 10",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "E"
+            },
+            {
+              "id": "bolum-degerlendirme-1-11",
+              "baslik": "Bölüm Değerlendirme 1 - Soru 11",
+              "pdfSayfa": 53,
+              "sayfaBitis": 54,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "karesel-fonksiyonlar-gercek-yasam",
+      "ad": "Karesel Fonksiyonların Nitel Özelliklerinin Gerçek Yaşam Durumlarına Uygulanması",
+      "anaKonu": "Karesel Fonksiyonların Nitel Özelliklerinin Gerçek Yaşam Durumlarına Uygulanması",
+      "altKonular": [
+        {
+          "id": "test-6",
+          "ad": "Test 6",
+          "tip": "test",
+          "sayfa": 58,
+          "sayfaBitis": 59,
+          "soruSayisi": 10,
+          "sorular": [
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-1",
+              "baslik": "Test 6 - Soru 1",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-2",
+              "baslik": "Test 6 - Soru 2",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "A"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-3",
+              "baslik": "Test 6 - Soru 3",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-4",
+              "baslik": "Test 6 - Soru 4",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-5",
+              "baslik": "Test 6 - Soru 5",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-6",
+              "baslik": "Test 6 - Soru 6",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-7",
+              "baslik": "Test 6 - Soru 7",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-8",
+              "baslik": "Test 6 - Soru 8",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "B"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-9",
+              "baslik": "Test 6 - Soru 9",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-6-10",
+              "baslik": "Test 6 - Soru 10",
+              "pdfSayfa": 58,
+              "sayfaBitis": 59,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "E"
+            }
+          ]
+        },
+        {
+          "id": "test-7",
+          "ad": "Test 7",
+          "tip": "test",
+          "sayfa": 62,
+          "sayfaBitis": 62,
+          "soruSayisi": 5,
+          "sorular": [
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-7-1",
+              "baslik": "Test 7 - Soru 1",
+              "pdfSayfa": 62,
+              "sayfaBitis": 62,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-7-2",
+              "baslik": "Test 7 - Soru 2",
+              "pdfSayfa": 62,
+              "sayfaBitis": 62,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-7-3",
+              "baslik": "Test 7 - Soru 3",
+              "pdfSayfa": 62,
+              "sayfaBitis": 62,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "E"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-7-4",
+              "baslik": "Test 7 - Soru 4",
+              "pdfSayfa": 62,
+              "sayfaBitis": 62,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "karesel-fonksiyonlar-gercek-yasam-test-7-5",
+              "baslik": "Test 7 - Soru 5",
+              "pdfSayfa": 62,
+              "sayfaBitis": 62,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar",
+      "ad": "Gerçek Sayılarda Tanımlı Karekök Fonksiyonlar ve Nitel Özellikleri",
+      "anaKonu": "Gerçek Sayılarda Tanımlı Karekök Fonksiyonlar ve Nitel Özellikleri",
+      "altKonular": [
+        {
+          "id": "test-8",
+          "ad": "Test 8",
+          "tip": "test",
+          "sayfa": 67,
+          "sayfaBitis": 68,
+          "soruSayisi": 10,
+          "sorular": [
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-1",
+              "baslik": "Test 8 - Soru 1",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-2",
+              "baslik": "Test 8 - Soru 2",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-3",
+              "baslik": "Test 8 - Soru 3",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-4",
+              "baslik": "Test 8 - Soru 4",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-5",
+              "baslik": "Test 8 - Soru 5",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "A"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-6",
+              "baslik": "Test 8 - Soru 6",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-7",
+              "baslik": "Test 8 - Soru 7",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "B"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-8",
+              "baslik": "Test 8 - Soru 8",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-9",
+              "baslik": "Test 8 - Soru 9",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "A"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-karekok-fonksiyonlar-test-8-10",
+              "baslik": "Test 8 - Soru 10",
+              "pdfSayfa": 67,
+              "sayfaBitis": 68,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gercek-sayilarda-tanimli-rasyonel-fonksiyonlar",
+      "ad": "Gerçek Sayılarda Tanımlı Rasyonel Fonksiyonlar ve Nitel Özellikleri",
+      "anaKonu": "Gerçek Sayılarda Tanımlı Rasyonel Fonksiyonlar ve Nitel Özellikleri",
+      "altKonular": [
+        {
+          "id": "test-9",
+          "ad": "Test 9",
+          "tip": "test",
+          "sayfa": 73,
+          "sayfaBitis": 73,
+          "soruSayisi": 6,
+          "sorular": [
+            {
+              "id": "gercek-sayilarda-tanimli-rasyonel-fonksiyonlar-test-9-1",
+              "baslik": "Test 9 - Soru 1",
+              "pdfSayfa": 73,
+              "sayfaBitis": 73,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "A"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-rasyonel-fonksiyonlar-test-9-2",
+              "baslik": "Test 9 - Soru 2",
+              "pdfSayfa": 73,
+              "sayfaBitis": 73,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-rasyonel-fonksiyonlar-test-9-3",
+              "baslik": "Test 9 - Soru 3",
+              "pdfSayfa": 73,
+              "sayfaBitis": 73,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-rasyonel-fonksiyonlar-test-9-4",
+              "baslik": "Test 9 - Soru 4",
+              "pdfSayfa": 73,
+              "sayfaBitis": 73,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-rasyonel-fonksiyonlar-test-9-5",
+              "baslik": "Test 9 - Soru 5",
+              "pdfSayfa": 73,
+              "sayfaBitis": 73,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-sayilarda-tanimli-rasyonel-fonksiyonlar-test-9-6",
+              "baslik": "Test 9 - Soru 6",
+              "pdfSayfa": 73,
+              "sayfaBitis": 73,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "D"
+            }
+          ]
+        },
+        {
+          "id": "bolum-degerlendirme-2",
+          "ad": "Bölüm Değerlendirme Test 2",
+          "tip": "test",
+          "sayfa": 74,
+          "sayfaBitis": 75,
+          "soruSayisi": 10,
+          "sorular": [
+            {
+              "id": "bolum-degerlendirme-2-1",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 1",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-2-2",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 2",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-2-3",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 3",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "C"
+            },
+            {
+              "id": "bolum-degerlendirme-2-4",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 4",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "bolum-degerlendirme-2-5",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 5",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "B"
+            },
+            {
+              "id": "bolum-degerlendirme-2-6",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 6",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            },
+            {
+              "id": "bolum-degerlendirme-2-7",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 7",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "C"
+            },
+            {
+              "id": "bolum-degerlendirme-2-8",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 8",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-2-9",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 9",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "E"
+            },
+            {
+              "id": "bolum-degerlendirme-2-10",
+              "baslik": "Bölüm Değerlendirme 2 - Soru 10",
+              "pdfSayfa": 74,
+              "sayfaBitis": 75,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "gercek-yasam-problemleri-1",
+          "ad": "Gerçek Yaşam Problemleri",
+          "tip": "test",
+          "sayfa": 76,
+          "sayfaBitis": 76,
+          "soruSayisi": 6,
+          "sorular": [
+            {
+              "id": "gercek-yasam-problemleri-1-1",
+              "baslik": "Gerçek Yaşam Problemleri - Soru 1",
+              "pdfSayfa": 76,
+              "sayfaBitis": 76,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-yasam-problemleri-1-2",
+              "baslik": "Gerçek Yaşam Problemleri - Soru 2",
+              "pdfSayfa": 76,
+              "sayfaBitis": 76,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-yasam-problemleri-1-3",
+              "baslik": "Gerçek Yaşam Problemleri - Soru 3",
+              "pdfSayfa": 76,
+              "sayfaBitis": 76,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-yasam-problemleri-1-4",
+              "baslik": "Gerçek Yaşam Problemleri - Soru 4",
+              "pdfSayfa": 76,
+              "sayfaBitis": 76,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-yasam-problemleri-1-5",
+              "baslik": "Gerçek Yaşam Problemleri - Soru 5",
+              "pdfSayfa": 76,
+              "sayfaBitis": 76,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "B"
+            },
+            {
+              "id": "gercek-yasam-problemleri-1-6",
+              "baslik": "Gerçek Yaşam Problemleri - Soru 6",
+              "pdfSayfa": 76,
+              "sayfaBitis": 76,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "D"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "referans-fonksiyonlarin-ters-fonksiyonlari",
+      "ad": "Doğrusal, Karesel, Karekök ve Rasyonel Referans Fonksiyonlar ile Bu Fonksiyonlardan Türetilebilen Fonksiyonların Ters Fonksiyonları",
+      "anaKonu": "Doğrusal, Karesel, Karekök ve Rasyonel Referans Fonksiyonlar ile Bu Fonksiyonlardan Türetilebilen Fonksiyonların Ters Fonksiyonları",
+      "altKonular": [
+        {
+          "id": "test-10",
+          "ad": "Test 10",
+          "tip": "test",
+          "sayfa": 80,
+          "sayfaBitis": 80,
+          "soruSayisi": 5,
+          "sorular": [
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-10-1",
+              "baslik": "Test 10 - Soru 1",
+              "pdfSayfa": 80,
+              "sayfaBitis": 80,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "C"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-10-2",
+              "baslik": "Test 10 - Soru 2",
+              "pdfSayfa": 80,
+              "sayfaBitis": 80,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-10-3",
+              "baslik": "Test 10 - Soru 3",
+              "pdfSayfa": 80,
+              "sayfaBitis": 80,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "A"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-10-4",
+              "baslik": "Test 10 - Soru 4",
+              "pdfSayfa": 80,
+              "sayfaBitis": 80,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-10-5",
+              "baslik": "Test 10 - Soru 5",
+              "pdfSayfa": 80,
+              "sayfaBitis": 80,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            }
+          ]
+        },
+        {
+          "id": "test-11",
+          "ad": "Test 11",
+          "tip": "test",
+          "sayfa": 83,
+          "sayfaBitis": 83,
+          "soruSayisi": 5,
+          "sorular": [
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-11-1",
+              "baslik": "Test 11 - Soru 1",
+              "pdfSayfa": 83,
+              "sayfaBitis": 83,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "C"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-11-2",
+              "baslik": "Test 11 - Soru 2",
+              "pdfSayfa": 83,
+              "sayfaBitis": 83,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-11-3",
+              "baslik": "Test 11 - Soru 3",
+              "pdfSayfa": 83,
+              "sayfaBitis": 83,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-11-4",
+              "baslik": "Test 11 - Soru 4",
+              "pdfSayfa": 83,
+              "sayfaBitis": 83,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "referans-fonksiyonlarin-ters-fonksiyonlari-test-11-5",
+              "baslik": "Test 11 - Soru 5",
+              "pdfSayfa": 83,
+              "sayfaBitis": 83,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "E"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "referans-fonksiyonlarla-denklem-esitsizlik",
+      "ad": "Doğrusal, Karesel, Karekök, Rasyonel Referans Fonksiyonlar ve Bunlardan Türetilen Fonksiyonlarla İfade Edilebilen Denklem ve Eşitsizlikler İçeren Problemlerin Çözümü",
+      "anaKonu": "Doğrusal, Karesel, Karekök, Rasyonel Referans Fonksiyonlar ve Bunlardan Türetilen Fonksiyonlarla İfade Edilebilen Denklem ve Eşitsizlikler İçeren Problemlerin Çözümü",
+      "altKonular": [
+        {
+          "id": "test-12",
+          "ad": "Test 12",
+          "tip": "test",
+          "sayfa": 90,
+          "sayfaBitis": 90,
+          "soruSayisi": 6,
+          "sorular": [
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-12-1",
+              "baslik": "Test 12 - Soru 1",
+              "pdfSayfa": 90,
+              "sayfaBitis": 90,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-12-2",
+              "baslik": "Test 12 - Soru 2",
+              "pdfSayfa": 90,
+              "sayfaBitis": 90,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-12-3",
+              "baslik": "Test 12 - Soru 3",
+              "pdfSayfa": 90,
+              "sayfaBitis": 90,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "A"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-12-4",
+              "baslik": "Test 12 - Soru 4",
+              "pdfSayfa": 90,
+              "sayfaBitis": 90,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-12-5",
+              "baslik": "Test 12 - Soru 5",
+              "pdfSayfa": 90,
+              "sayfaBitis": 90,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-12-6",
+              "baslik": "Test 12 - Soru 6",
+              "pdfSayfa": 90,
+              "sayfaBitis": 90,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "test-13",
+          "ad": "Test 13",
+          "tip": "test",
+          "sayfa": 93,
+          "sayfaBitis": 93,
+          "soruSayisi": 6,
+          "sorular": [
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-13-1",
+              "baslik": "Test 13 - Soru 1",
+              "pdfSayfa": 93,
+              "sayfaBitis": 93,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-13-2",
+              "baslik": "Test 13 - Soru 2",
+              "pdfSayfa": 93,
+              "sayfaBitis": 93,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "C"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-13-3",
+              "baslik": "Test 13 - Soru 3",
+              "pdfSayfa": 93,
+              "sayfaBitis": 93,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "E"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-13-4",
+              "baslik": "Test 13 - Soru 4",
+              "pdfSayfa": 93,
+              "sayfaBitis": 93,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-13-5",
+              "baslik": "Test 13 - Soru 5",
+              "pdfSayfa": 93,
+              "sayfaBitis": 93,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-13-6",
+              "baslik": "Test 13 - Soru 6",
+              "pdfSayfa": 93,
+              "sayfaBitis": 93,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "B"
+            }
+          ]
+        },
+        {
+          "id": "test-14",
+          "ad": "Test 14",
+          "tip": "test",
+          "sayfa": 99,
+          "sayfaBitis": 99,
+          "soruSayisi": 6,
+          "sorular": [
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-14-1",
+              "baslik": "Test 14 - Soru 1",
+              "pdfSayfa": 99,
+              "sayfaBitis": 99,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "A"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-14-2",
+              "baslik": "Test 14 - Soru 2",
+              "pdfSayfa": 99,
+              "sayfaBitis": 99,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "B"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-14-3",
+              "baslik": "Test 14 - Soru 3",
+              "pdfSayfa": 99,
+              "sayfaBitis": 99,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-14-4",
+              "baslik": "Test 14 - Soru 4",
+              "pdfSayfa": 99,
+              "sayfaBitis": 99,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "C"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-14-5",
+              "baslik": "Test 14 - Soru 5",
+              "pdfSayfa": 99,
+              "sayfaBitis": 99,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-14-6",
+              "baslik": "Test 14 - Soru 6",
+              "pdfSayfa": 99,
+              "sayfaBitis": 99,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "C"
+            }
+          ]
+        },
+        {
+          "id": "test-15",
+          "ad": "Test 15",
+          "tip": "test",
+          "sayfa": 103,
+          "sayfaBitis": 103,
+          "soruSayisi": 6,
+          "sorular": [
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-15-1",
+              "baslik": "Test 15 - Soru 1",
+              "pdfSayfa": 103,
+              "sayfaBitis": 103,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-15-2",
+              "baslik": "Test 15 - Soru 2",
+              "pdfSayfa": 103,
+              "sayfaBitis": 103,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-15-3",
+              "baslik": "Test 15 - Soru 3",
+              "pdfSayfa": 103,
+              "sayfaBitis": 103,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-15-4",
+              "baslik": "Test 15 - Soru 4",
+              "pdfSayfa": 103,
+              "sayfaBitis": 103,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "D"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-15-5",
+              "baslik": "Test 15 - Soru 5",
+              "pdfSayfa": 103,
+              "sayfaBitis": 103,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "A"
+            },
+            {
+              "id": "referans-fonksiyonlarla-denklem-esitsizlik-test-15-6",
+              "baslik": "Test 15 - Soru 6",
+              "pdfSayfa": 103,
+              "sayfaBitis": 103,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "D"
+            }
+          ]
+        },
+        {
+          "id": "bolum-degerlendirme-3",
+          "ad": "Bölüm Değerlendirme Test 3",
+          "tip": "test",
+          "sayfa": 105,
+          "sayfaBitis": 106,
+          "soruSayisi": 11,
+          "sorular": [
+            {
+              "id": "bolum-degerlendirme-3-1",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 1",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "C"
+            },
+            {
+              "id": "bolum-degerlendirme-3-2",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 2",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "E"
+            },
+            {
+              "id": "bolum-degerlendirme-3-3",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 3",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "B"
+            },
+            {
+              "id": "bolum-degerlendirme-3-4",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 4",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            },
+            {
+              "id": "bolum-degerlendirme-3-5",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 5",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-3-6",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 6",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "E"
+            },
+            {
+              "id": "bolum-degerlendirme-3-7",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 7",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "B"
+            },
+            {
+              "id": "bolum-degerlendirme-3-8",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 8",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "E"
+            },
+            {
+              "id": "bolum-degerlendirme-3-9",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 9",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-3-10",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 10",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "D"
+            },
+            {
+              "id": "bolum-degerlendirme-3-11",
+              "baslik": "Bölüm Değerlendirme 3 - Soru 11",
+              "pdfSayfa": 105,
+              "sayfaBitis": 106,
+              "tip": "soru",
+              "soruNo": 11,
+              "cevap": "E"
+            }
+          ]
+        },
+        {
+          "id": "gercek-yasam-problemleri-2",
+          "ad": "Gerçek Yaşam Problemleri 2",
+          "tip": "test",
+          "sayfa": 107,
+          "sayfaBitis": 108,
+          "soruSayisi": 10,
+          "sorular": [
+            {
+              "id": "gercek-yasam-problemleri-2-1",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 1",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "B"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-2",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 2",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-3",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 3",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "A"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-4",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 4",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-5",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 5",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 5,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-6",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 6",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 6,
+              "cevap": "A"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-7",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 7",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 7,
+              "cevap": "D"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-8",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 8",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 8,
+              "cevap": "C"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-9",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 9",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 9,
+              "cevap": "E"
+            },
+            {
+              "id": "gercek-yasam-problemleri-2-10",
+              "baslik": "Gerçek Yaşam Problemleri 2 - Soru 10",
+              "pdfSayfa": 107,
+              "sayfaBitis": 108,
+              "tip": "soru",
+              "soruNo": 10,
+              "cevap": "B"
+            }
+          ]
+        },
+        {
+          "id": "osym-sorulari-1",
+          "ad": "ÖSYM Soruları Test 1",
+          "tip": "test",
+          "sayfa": 111,
+          "sayfaBitis": 111,
+          "soruSayisi": 4,
+          "sorular": [
+            {
+              "id": "osym-sorulari-1-1",
+              "baslik": "ÖSYM Soruları 1 - Soru 1",
+              "pdfSayfa": 111,
+              "sayfaBitis": 111,
+              "tip": "soru",
+              "soruNo": 1,
+              "cevap": "E"
+            },
+            {
+              "id": "osym-sorulari-1-2",
+              "baslik": "ÖSYM Soruları 1 - Soru 2",
+              "pdfSayfa": 111,
+              "sayfaBitis": 111,
+              "tip": "soru",
+              "soruNo": 2,
+              "cevap": "A"
+            },
+            {
+              "id": "osym-sorulari-1-3",
+              "baslik": "ÖSYM Soruları 1 - Soru 3",
+              "pdfSayfa": 111,
+              "sayfaBitis": 111,
+              "tip": "soru",
+              "soruNo": 3,
+              "cevap": "D"
+            },
+            {
+              "id": "osym-sorulari-1-4",
+              "baslik": "ÖSYM Soruları 1 - Soru 4",
+              "pdfSayfa": 111,
+              "sayfaBitis": 111,
+              "tip": "soru",
+              "soruNo": 4,
+              "cevap": "A"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_uretimRaporu": {
+    "kapsam": "1-8. konu işlendi (Test1-15, Bölüm Değ.1-3, Gerçek Yaşam Prob.1-2, ÖSYM Sorular 1, s.17-113) — \"Yazılıya Hazırlık Soruları\" (s.112, açık uçlu) atlandı. 5. Tema (Sayma/Algoritma/Bilişim) henüz eklenmedi.",
+    "kaynakSayfaSayisi": 113,
+    "cevapKaynak": "Her testin son sayfasındaki dairesel cevap şeridi OCR+görsel doğrulama ile okundu. Yalnızca gerçek çoktan seçmeli TEST sayfaları soru olarak eklendi; teori/örnek/tartışma sayfaları PDF görünümünde kalıyor.",
+    "uyarilar": []
+  }
+}

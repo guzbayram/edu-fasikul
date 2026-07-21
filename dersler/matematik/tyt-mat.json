@@ -1,0 +1,23 @@
+{
+  "ad": "3 Adımda TYT Matematik",
+  "sinif": 12,
+  "konular": [
+    {
+      "id": "tyt-1",
+      "ad": "Temel Kavramlar",
+      "sayfaBasl": 4,
+      "sayfaBitis": 12,
+      "altKonular": [
+        {
+          "id": "tyt-1-1",
+          "ad": "Sayı Basamakları",
+          "sayfa": 4,
+          "sorular": [
+            { "no": 1, "cevap": "B", "zorluk": "kolay" },
+            { "no": 2, "cevap": "C", "zorluk": "kolay" }
+          ]
+        }
+      ]
+    }
+  ]
+}

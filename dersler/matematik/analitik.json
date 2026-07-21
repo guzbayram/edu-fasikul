@@ -1,0 +1,61 @@
+{
+  "ad": "Analitik Düzlem",
+  "sinif": 10,
+  "konular": [
+    {
+      "id": "ad-1",
+      "ad": "Noktanın Analitik İncelenmesi",
+      "sayfaBasl": 4,
+      "sayfaBitis": 9,
+      "altKonular": [
+        {
+          "id": "ad-1-1",
+          "ad": "Koordinat Sistemi ve Bölgeler",
+          "sayfa": 4,
+          "sorular": [
+            { "no": 1, "cevap": "C", "zorluk": "kolay" },
+            { "no": 2, "cevap": "A", "zorluk": "kolay" },
+            { "no": 3, "cevap": "D", "zorluk": "orta" }
+          ]
+        },
+        {
+          "id": "ad-1-2",
+          "ad": "İki Nokta Arası Uzaklık",
+          "sayfa": 6,
+          "sorular": [
+            { "no": 4, "cevap": "B", "zorluk": "orta" },
+            { "no": 5, "cevap": "E", "zorluk": "orta" },
+            { "no": 6, "cevap": "C", "zorluk": "zor" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ad-2",
+      "ad": "Doğrunun Analitik İncelenmesi",
+      "sayfaBasl": 10,
+      "sayfaBitis": 17,
+      "altKonular": [
+        {
+          "id": "ad-2-1",
+          "ad": "Doğrunun Eğimi",
+          "sayfa": 10,
+          "sorular": [
+            { "no": 7, "cevap": "A", "zorluk": "kolay" },
+            { "no": 8, "cevap": "D", "zorluk": "orta" }
+          ]
+        },
+        {
+          "id": "ad-2-2",
+          "ad": "Doğru Denklemleri",
+          "sayfa": 13,
+          "sorular": [
+            { "no": 9, "cevap": "B", "zorluk": "orta" },
+            { "no": 10, "cevap": "E", "zorluk": "zor" },
+            { "no": 11, "cevap": "C", "zorluk": "orta" }
+          ]
+        }
+      ]
+    }
+  ]
+}

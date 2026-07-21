@@ -1,0 +1,63 @@
+{
+  "ad": "Örnek Matematik Fasikülü",
+  "sinif": 9,
+  "thumb": "📘",
+  "konuSayisi": 2,
+  "soruSayisi": 6,
+  "konular": [
+    {
+      "id": "temel-kavramlar",
+      "ad": "Temel Kavramlar",
+      "sayfaBasl": 1,
+      "sayfaBitis": 3,
+      "soruSayisi": 3,
+      "sorular": [
+        {
+          "no": 1,
+          "sayfa": 1,
+          "cevap": "A",
+          "zorluk": "kolay"
+        },
+        {
+          "no": 2,
+          "sayfa": 2,
+          "cevap": "C",
+          "zorluk": "orta"
+        },
+        {
+          "no": 3,
+          "sayfa": 3,
+          "cevap": "E",
+          "zorluk": "orta"
+        }
+      ]
+    },
+    {
+      "id": "sayi-kumeleri",
+      "ad": "Sayı Kümeleri",
+      "sayfaBasl": 4,
+      "sayfaBitis": 6,
+      "soruSayisi": 3,
+      "sorular": [
+        {
+          "no": 1,
+          "sayfa": 4,
+          "cevap": "B",
+          "zorluk": "kolay"
+        },
+        {
+          "no": 2,
+          "sayfa": 5,
+          "cevap": "D",
+          "zorluk": "orta"
+        },
+        {
+          "no": 3,
+          "sayfa": 6,
+          "cevap": "A",
+          "zorluk": "zor"
+        }
+      ]
+    }
+  ]
+}

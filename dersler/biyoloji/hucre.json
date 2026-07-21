@@ -1,0 +1,33 @@
+{
+  "ad": "Hücre Biyolojisi",
+  "sinif": 10,
+  "konular": [
+    {
+      "id": "bio-1-1",
+      "ad": "Hücre Zarı ve Organeller",
+      "sayfaBasl": 3,
+      "sayfaBitis": 11,
+      "altKonular": [
+        {
+          "id": "bio-1-1-1",
+          "ad": "Hücre Zarının Yapısı",
+          "sayfa": 3,
+          "sorular": [
+            { "no": 1, "cevap": "A", "zorluk": "kolay" },
+            { "no": 2, "cevap": "D", "zorluk": "orta" },
+            { "no": 3, "cevap": "B", "zorluk": "kolay" }
+          ]
+        },
+        {
+          "id": "bio-1-1-2",
+          "ad": "Organeller ve Görevleri",
+          "sayfa": 6,
+          "sorular": [
+            { "no": 4, "cevap": "C", "zorluk": "orta" },
+            { "no": 5, "cevap": "E", "zorluk": "zor" }
+          ]
+        }
+      ]
+    }
+  ]
+}

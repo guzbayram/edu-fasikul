@@ -1,0 +1,374 @@
+import { appState } from '../state/appState.js';
+
+// Çizim, kaydedildiği canvas boyutuna göre saklanır. Zoom değişip canvas yeniden
+// boyutlanınca nesneleri orana göre ölçekle ki konum/boyut kullanıcının çizdiği
+// yerde kalsın (zoom'dan etkilensin ama kaymasın).
+function applyDrawingScale(fc, key){
+  const dim = appState.drawingDims?.[key];
+  if(!dim || !dim.w || !dim.h || !fc.width || !fc.height) return;
+  const rw = fc.width / dim.w, rh = fc.height / dim.h;
+  if(Math.abs(rw - 1) < 0.002 && Math.abs(rh - 1) < 0.002) return;
+  fc.getObjects().forEach(o => {
+    o.left   = (o.left   || 0) * rw;
+    o.top    = (o.top    || 0) * rh;
+    o.scaleX = (o.scaleX || 1) * rw;
+    o.scaleY = (o.scaleY || 1) * rh;
+    o.setCoords();
+  });
+}
+window.applyDrawingScale = applyDrawingScale;
+
+// Ortak tahta: başka kullanıcıların çizim nesneleri canvas'a _owner ile işaretlenip
+// eklenir (overlay). Kaydederken/undo alırken YALNIZ kendi (yerel) nesnelerimizi
+// serialize et — başkasının kalemi ne buluta kaydedilsin ne de bize ait sayılsın.
+function localCanvasJSON(fc){
+  if(!fc) return '{}';
+  const data = fc.toJSON(['_owner']);
+  if(Array.isArray(data.objects)) data.objects = data.objects.filter(o=>!o._owner);
+  return JSON.stringify(data);
+}
+window._localCanvasJSON = localCanvasJSON;
+
+// KÖK NEDEN (yatay çizim kayması): Fabric'in getPointer'ı, dokunma noktasını
+// `clientX + getScrollLeftTop(target)` (tüm üst elementlerin scroll toplamı, canvas-wrap
+// scrollTop'u dahil) - calcOffset offset'i ile hesaplıyor. Bizim canvas-wrap iç-scroll'u
+// bu toplama girince ve getBoundingClientRect zaten scroll'u yansıtınca aynı scroll ÇİFT
+// sayılıyor → kart aşağı kaydırılınca (yalnız yatayda gerekiyor) çizim ~2×scroll kayıyor.
+//
+// Çözüm: getPointer'ı tamamen değiştir; noktayı SADECE `clientX - rect.left` ile bul.
+// clientX/Y ve getBoundingClientRect aynı viewport koordinat sisteminde olduğundan hiçbir
+// scroll/offset terimi gerekmez; her olayda canlı rect ile hesaplanır (bayatlama yok).
+function patchGetPointer(fc){
+  fc.getPointer = function(e, ignoreZoom){
+    if(this._absolutePointer && !ignoreZoom) return this._absolutePointer;
+    if(this._pointer && ignoreZoom) return this._pointer;
+    const upperCanvasEl = this.upperCanvasEl;
+    const bounds = upperCanvasEl.getBoundingClientRect();
+    const boundsWidth = bounds.width || 0, boundsHeight = bounds.height || 0;
+    const te = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
+    // iPhone 14 Pro MAX'te visualViewport.offsetTop=-59 ölçüldü (Pro'da 0 → orada etkisiz).
+    // position:fixed RENDER parmakla hizalı (yeşil nokta altında) ama getBoundingClientRect
+    // LAYOUT çerçevesinde → ikisi vvTop kadar ayrı; mürekkep parmağın ÜSTÜne kayıyordu.
+    // vvTop'u ÇIKAR → mürekkep aşağı, parmağa iner (vvTop<0 olduğundan +59 etki).
+    const vv = window.visualViewport;
+    const vox = vv ? vv.offsetLeft : 0, voy = vv ? vv.offsetTop : 0;
+    let pointer = { x: (te.clientX - bounds.left) - vox, y: (te.clientY - bounds.top) - voy };
+    if(!ignoreZoom) pointer = this.restorePointerVpt(pointer);
+    const retina = this.getRetinaScaling();
+    if(retina !== 1){ pointer.x /= retina; pointer.y /= retina; }
+    const cssScale = (boundsWidth === 0 || boundsHeight === 0)
+      ? { width: 1, height: 1 }
+      : { width: upperCanvasEl.width / boundsWidth, height: upperCanvasEl.height / boundsHeight };
+    return { x: pointer.x * cssScale.width, y: pointer.y * cssScale.height };
+  };
+  return fc;
+}
+window.patchGetPointer = patchGetPointer;
+
+function rememberCanvasDrawTap(){
+  if(['pen','tukenmez','marker'].includes(appState.drawTool)){
+    appState._lastCanvasDrawTapAt = Date.now();
+    const pageNum = appState.fabricCanvas?._pageNum || appState.currentPage;
+    markLocalDrawingEdit(pageNum);
+  }
+}
+
+function drawingKeyForPage(pageNum){
+  return appState.aktifFasikul ? `drawing_${appState.aktifFasikul.id}_p${pageNum}` : '';
+}
+
+function markLocalDrawingEdit(pageNum){
+  const key = drawingKeyForPage(pageNum);
+  if(!key) return;
+  appState.drawingLocalEditAt[key] = Date.now();
+}
+
+function bindCanvasDrawTapMemory(fc){
+  if(!fc?.upperCanvasEl || fc._drawTapMemoryReady) return;
+  fc._drawTapMemoryReady = true;
+  ['pointerdown','touchstart','mousedown'].forEach(type=>{
+    fc.upperCanvasEl.addEventListener(type, rememberCanvasDrawTap, { passive: true, capture: true });
+  });
+}
+
+function initFabricForPage(canvasEl, w, h, pageNum){
+  const fc = new fabric.Canvas(canvasEl, {
+    isDrawingMode: false, selection: true,
+    width: w, height: h, backgroundColor: 'transparent'
+  });
+  patchGetPointer(fc);
+  bindCanvasDrawTapMemory(fc);
+  fc._pageNum = pageNum;
+  appState.fabricCanvases[pageNum] = fc;
+
+  // Aktif sayfaysa ana canvas olarak işaretle
+  if(pageNum === appState.currentPage){
+    appState.fabricCanvas = fc;
+    applyTool(appState.drawTool);
+  }
+
+  // Kayıtlı çizim varsa yükle
+  const key = drawingKeyForPage(pageNum);
+  const saved = appState.drawings[key];
+  if(saved){ try{ fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); applyTool(appState.drawTool); fc.renderAll(); window.refreshSharedBoard?.(); }); }catch(e){} }
+  else { window.refreshSharedBoard?.(); }
+
+  // Tıklandığında aktif canvas olarak seç
+  fc._pageSelectHandler = ()=>{
+    if(appState.currentPage !== pageNum){
+      saveDrawingForPage(appState.currentPage);
+      appState.currentPage = pageNum;
+      appState.fabricCanvas = fc;
+      applyTool(appState.drawTool);
+      updatePageIndicator();
+      document.getElementById('prevPageBtn').disabled = pageNum === 1;
+      document.getElementById('nextPageBtn').disabled = pageNum === appState.totalPages;
+    }
+  };
+  fc.on('mouse:down', fc._pageSelectHandler);
+  fc.on('mouse:down', rememberCanvasDrawTap);
+
+  // Otomatik kayıt
+  const debounceSave = ()=>{
+    if(appState._saveTimeout) clearTimeout(appState._saveTimeout);
+    appState._saveTimeout = setTimeout(()=>saveDrawingForPage(pageNum), 800);
+  };
+  const localCanvasChanged = ()=>{
+    if(fc._loadingDrawing || fc._applyingRemoteDrawing) return;
+    markLocalDrawingEdit(pageNum);
+    debounceSave();
+  };
+  fc.on('object:added', localCanvasChanged);
+  fc.on('object:modified', localCanvasChanged);
+  fc.on('object:removed', localCanvasChanged);
+  fc.on('text:changed', opt=>{
+    stabilizeTextSelection(opt?.target);
+    debounceSave();
+  });
+  fc.on('text:editing:exited', opt=>{
+    const target = opt?.target;
+    detachTextInputGuard(target);
+    if(target && target.type === 'i-text' && !String(target.text || '').trim()){
+      fc.remove(target);
+    }
+    saveDrawingForPage(pageNum);
+  });
+  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(localCanvasJSON(fc)); appState.redoStack=[]; } });
+}
+
+function saveDrawingForPage(pageNum){
+  const fc = appState.fabricCanvases[pageNum];
+  if(!fc || !appState.aktifFasikul) return;
+  const key = drawingKeyForPage(pageNum);
+  const json=localCanvasJSON(fc);
+  appState.drawings[key] = json;
+  appState.drawingDims[key] = { w: fc.width, h: fc.height };
+  persistDrawingCloud(key, json, fc.width, fc.height);
+}
+
+function stabilizeTextSelection(target){
+  if(!target || target.type !== 'i-text' || !target.isEditing || !target.hiddenTextarea) return;
+  const ta = target.hiddenTextarea;
+  const len = ta.value.length;
+  const textareaAllSelected = ta.selectionStart === 0 && ta.selectionEnd === len;
+  const fabricAllSelected = target.selectionStart === 0 && target.selectionEnd === len;
+  if(len > 0 && (textareaAllSelected || fabricAllSelected)){
+    ta.selectionStart = len;
+    ta.selectionEnd = len;
+    target.selectionStart = len;
+    target.selectionEnd = len;
+  }
+}
+
+function attachTextInputGuard(target){
+  if(!target || target.type !== 'i-text' || !target.hiddenTextarea || target._textInputGuard) return;
+  const ta = target.hiddenTextarea;
+  const collapseBeforeInsert = e=>{
+    const isInsert = e.type === 'beforeinput'
+      ? String(e.inputType || '').startsWith('insert')
+      : (!e.ctrlKey && !e.metaKey && !e.altKey && String(e.key || '').length === 1);
+    if(isInsert) stabilizeTextSelection(target);
+  };
+  const collapseAfterInput = ()=>setTimeout(()=>stabilizeTextSelection(target), 0);
+  ta.addEventListener('beforeinput', collapseBeforeInsert);
+  ta.addEventListener('keydown', collapseBeforeInsert);
+  ta.addEventListener('input', collapseAfterInput);
+  target._textInputGuard = { collapseBeforeInsert, collapseAfterInput };
+}
+
+function detachTextInputGuard(target){
+  const guard = target?._textInputGuard;
+  const ta = target?.hiddenTextarea;
+  if(!guard || !ta) return;
+  ta.removeEventListener('beforeinput', guard.collapseBeforeInsert);
+  ta.removeEventListener('keydown', guard.collapseBeforeInsert);
+  ta.removeEventListener('input', guard.collapseAfterInput);
+  target._textInputGuard = null;
+}
+
+function setObjectsInteractive(fc, selectable){
+  if(!fc) return;
+  fc.forEachObject(obj=>{
+    obj.selectable = selectable;
+    obj.evented = true;
+  });
+}
+
+function clearToolHandlers(fc){
+  if(!fc) return;
+  if(fc._textToolHandler){
+    fc.off('mouse:down', fc._textToolHandler);
+    fc._textToolHandler = null;
+  }
+  if(fc._eraserToolHandler){
+    fc.off('mouse:down', fc._eraserToolHandler);
+    fc._eraserToolHandler = null;
+  }
+  if(fc._eraserMoveHandler){
+    fc.off('mouse:move', fc._eraserMoveHandler);
+    fc._eraserMoveHandler = null;
+  }
+  if(fc._eraserUpHandler){
+    fc.off('mouse:up', fc._eraserUpHandler);
+    fc._eraserUpHandler = null;
+  }
+}
+
+function initFabricCanvas(){
+  // Eski yöntem: sadece fallback için çağrılabilir, artık initFabricOnCanvas kullanılıyor
+  const el = document.getElementById('fabric-canvas');
+  if(el) initFabricOnCanvas(el, el.width, el.height);
+}
+
+/**
+ * Verilen canvas elementine Fabric.js bağlar
+ * @param {HTMLCanvasElement} canvasEl
+ * @param {number} w - display genişlik
+ * @param {number} h - display yükseklik
+ */
+
+function initFabricOnCanvas(canvasEl, w, h){
+  if(appState.fabricCanvas){ try{ appState.fabricCanvas.dispose(); }catch(e){} }
+
+  const fc = new fabric.Canvas(canvasEl, {
+    isDrawingMode: false,
+    selection: true,
+    width: w,
+    height: h,
+    backgroundColor: 'transparent'
+  });
+  patchGetPointer(fc);
+  bindCanvasDrawTapMemory(fc);
+  appState.fabricCanvas = fc;
+
+  // Sayfa için kayıtlı çizim varsa yükle
+  const key = drawingKeyForPage(appState.currentPage);
+  const saved = appState.drawings[key];
+  if(saved){
+    try{
+      fc._loadingDrawing = true;
+      fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); fc._loadingDrawing = false; fc.renderAll(); window.refreshSharedBoard?.(); });
+    }catch(e){ fc._loadingDrawing = false; }
+  } else { window.refreshSharedBoard?.(); }
+
+  // Otomatik kayıt (800ms debounce)
+  const localCanvasChanged = ()=>{
+    if(fc._loadingDrawing || fc._applyingRemoteDrawing) return;
+    markLocalDrawingEdit(appState.currentPage);
+    debounceAutoSave();
+  };
+  fc.on('object:added', localCanvasChanged);
+  fc.on('object:modified', localCanvasChanged);
+  fc.on('object:removed', localCanvasChanged);
+  fc.on('text:changed', opt=>{
+    stabilizeTextSelection(opt?.target);
+    debounceAutoSave();
+  });
+  fc.on('text:editing:exited', opt=>{
+    const target = opt?.target;
+    detachTextInputGuard(target);
+    if(target && target.type === 'i-text' && !String(target.text || '').trim()){
+      fc.remove(target);
+    }
+    saveDrawing();
+  });
+
+  // Undo stack
+  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(localCanvasJSON(fc)); appState.redoStack=[]; } });
+  fc.on('mouse:down', rememberCanvasDrawTap);
+
+  applyTool(appState.drawTool);
+}
+
+function debounceAutoSave(){
+  if(appState._saveTimeout) clearTimeout(appState._saveTimeout);
+  appState._saveTimeout = setTimeout(saveDrawing, 800);
+}
+
+function saveDrawing(){
+  if(!appState.aktifFasikul) return;
+  if(appState.viewMode === 'scroll'){
+    // Tüm render edilmiş sayfaları kaydet
+    Object.entries(appState.fabricCanvases).forEach(([pn, fc])=>{
+      const key = drawingKeyForPage(pn);
+      const json=localCanvasJSON(fc);
+      appState.drawings[key] = json;
+      appState.drawingDims[key] = { w: fc.width, h: fc.height };
+      persistDrawingCloud(key, json, fc.width, fc.height);
+    });
+  } else {
+    const fc = appState.fabricCanvas;
+    if(!fc) return;
+    const key = drawingKeyForPage(appState.currentPage);
+    const json=JSON.stringify(fc);
+    appState.drawings[key] = json;
+    appState.drawingDims[key] = { w: fc.width, h: fc.height };
+    persistDrawingCloud(key, json, fc.width, fc.height);
+  }
+  const ind = document.getElementById('readerToolbar').querySelector('[title="Kaydet (Ctrl+S)"]');
+  if(ind) { ind.style.color='var(--green)'; setTimeout(()=>ind.style.color='',800); }
+}
+
+function getActiveTextObject(){
+  const canvases = appState.viewMode === 'scroll'
+    ? Object.values(appState.fabricCanvases || {})
+    : (appState.fabricCanvas ? [appState.fabricCanvas] : []);
+  for(const fc of canvases){
+    const active = fc?.getActiveObject?.();
+    if(active && active.type === 'i-text' && active.isEditing) return { fc, active };
+  }
+  return null;
+}
+
+function isFabricTextEditing(){
+  return !!getActiveTextObject();
+}
+
+function flushActiveTextEditing(){
+  const info = getActiveTextObject();
+  if(!info) return false;
+  info.active.setCoords();
+  info.fc.requestRenderAll();
+  const pageNum = Number(info.fc._pageNum || appState.currentPage);
+  if(appState.viewMode === 'scroll') saveDrawingForPage(pageNum);
+  else saveDrawing();
+  return true;
+}
+
+// ── Tools
+
+
+// ── Bu modülün fonksiyonlarını window'a kaydet ──
+// main.js ve diğer modüller window.xxx ile çağırabilsin
+window.initFabricForPage = initFabricForPage;
+window.saveDrawingForPage = saveDrawingForPage;
+window.markLocalDrawingEdit = markLocalDrawingEdit;
+window.attachTextInputGuard = attachTextInputGuard;
+window.setObjectsInteractive = setObjectsInteractive;
+window.clearToolHandlers = clearToolHandlers;
+window.initFabricCanvas = initFabricCanvas;
+window.initFabricOnCanvas = initFabricOnCanvas;
+window.debounceAutoSave = debounceAutoSave;
+window.saveDrawing = saveDrawing;
+window.isFabricTextEditing = isFabricTextEditing;
+window.flushActiveTextEditing = flushActiveTextEditing;
