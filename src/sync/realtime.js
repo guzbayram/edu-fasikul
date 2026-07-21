@@ -9,7 +9,12 @@ import { _getUserKey } from '../firebase/firestore.js';
 // ══════════════════════════════════════════════════════════
 let _canliUnsub = null;
 let _publishTimer = null;
+let _lastPublishCanliSig = '';
+let _lastPublishCanliAt = 0;
+let _followTimer = null;
+let _followSeq = 0;
 const DRAWING_REMOTE_EDIT_GUARD_MS = 3500;
+const REMOTE_DRAWING_APPLY_DELAY_MS = 90;
 
 function _liveDeviceId(){
   if(!appState._liveDeviceId)
@@ -26,6 +31,11 @@ export function publishCanli(){
   const uid = _getUserKey();
   const fas = appState.aktifFasikul;
   if(!uid || !fas || !window._firestoreReady || !window._db) return;
+  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}`;
+  const now = Date.now();
+  if(sig === _lastPublishCanliSig && now - _lastPublishCanliAt < 1500) return;
+  _lastPublishCanliSig = sig;
+  _lastPublishCanliAt = now;
   clearTimeout(_publishTimer);
   _publishTimer = setTimeout(()=>{
     // Kullanıcı dokümanına yaz (cizimler/cozumler gibi kesinlikle izinli yol).
@@ -41,16 +51,24 @@ export function publishCanli(){
   }, 200);
 }
 
-async function _followCanli(d){
+function scheduleFollowCanli(d){
+  const seq = ++_followSeq;
+  clearTimeout(_followTimer);
+  _followTimer = setTimeout(()=>_followCanli(d, seq), 90);
+}
+
+async function _followCanli(d, seq){
   appState._liveSuppress = true;
   try{
     if(d.fasikulId && appState.aktifFasikul?.id !== d.fasikulId){
       await window.openReader?.(d.dersId, d.fasikulId);
+      if(seq !== _followSeq) return;
     }
     if(d.altKonuId && appState.aktifAltKonu?.id !== d.altKonuId){
       let foundAk = null;
       (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(ak=>{ if(ak.id===d.altKonuId) foundAk=ak; }));
       if(foundAk) window.selectAltKonu?.(foundAk, `altk-${foundAk.id}`);
+      if(seq !== _followSeq) return;
     }
     if(d.page && appState.currentPage !== d.page){
       window.goToPage?.(d.page);
@@ -70,10 +88,15 @@ export function subscribeCanli(uid){
     if(d.ts && d.ts <= (appState._lastCanliTs||0)) return; // zaten uygulandı
     appState._lastCanliTs = d.ts || Date.now();
     appState._watchGotData = true;   // izleme modu: en az bir veri geldi
-    if(appState.liveSession || appState.watchMode) _followCanli(d);
+    if(appState.liveSession || appState.watchMode) scheduleFollowCanli(d);
   }, (err)=>console.warn('Canlı dinleme hatası:',err));
 }
-export function unsubscribeCanli(){ if(_canliUnsub){ _canliUnsub(); _canliUnsub=null; } }
+export function unsubscribeCanli(){
+  if(_canliUnsub){ _canliUnsub(); _canliUnsub=null; }
+  clearTimeout(_followTimer);
+  _followTimer = null;
+  _followSeq++;
+}
 
 export function toggleLiveSession(){
   const uid = _getUserKey();
@@ -183,11 +206,11 @@ function subscribeRealtimeDrawings(uid){
       if(currentKey === key){
         const fc = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
         if(fc){
-          loadRealtimeDrawing(fc, key, data);
+          queueRealtimeDrawing(fc, key, data);
         } else {
           setTimeout(()=>{
             const fc2 = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
-            if(fc2 && appState.drawings[key]) loadRealtimeDrawing(fc2, key, data);
+            if(fc2 && appState.drawings[key]) queueRealtimeDrawing(fc2, key, data);
           }, 1500);
         }
       }
@@ -199,18 +222,41 @@ function subscribeRealtimeDrawings(uid){
   });
 }
 
+function queueRealtimeDrawing(fc, key, data){
+  if(!fc || !data?.json) return;
+  fc._queuedRealtimeDrawing = { key, data };
+  clearTimeout(fc._remoteDrawingTimer);
+  fc._remoteDrawingTimer = setTimeout(()=>drainRealtimeDrawingQueue(fc), REMOTE_DRAWING_APPLY_DELAY_MS);
+}
+
+function drainRealtimeDrawingQueue(fc){
+  if(!fc || fc._remoteDrawingLoading) return;
+  const queued = fc._queuedRealtimeDrawing;
+  fc._queuedRealtimeDrawing = null;
+  if(!queued) return;
+  loadRealtimeDrawing(fc, queued.key, queued.data);
+}
+
 function loadRealtimeDrawing(fc, key, data){
   if(!fc || !data?.json) return;
+  fc._remoteDrawingLoading = true;
   fc._applyingRemoteDrawing = true;
+  const token = (fc._remoteDrawingToken = (fc._remoteDrawingToken || 0) + 1);
   try{
     fc.loadFromJSON(data.json, ()=>{
-      window.applyDrawingScale?.(fc, key);
+      if(fc._remoteDrawingToken === token && !fc._queuedRealtimeDrawing){
+        window.applyDrawingScale?.(fc, key);
+        fc.renderAll();
+      }
+      fc._remoteDrawingLoading = false;
       fc._applyingRemoteDrawing = false;
-      fc.renderAll();
+      if(fc._queuedRealtimeDrawing) setTimeout(()=>drainRealtimeDrawingQueue(fc), 0);
     });
   }catch(e){
+    fc._remoteDrawingLoading = false;
     fc._applyingRemoteDrawing = false;
     console.warn('Canlı çizim yüklenemedi:', e);
+    if(fc._queuedRealtimeDrawing) setTimeout(()=>drainRealtimeDrawingQueue(fc), 0);
   }
 }
 
