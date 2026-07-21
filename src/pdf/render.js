@@ -549,7 +549,8 @@ async function renderSinglePDFPage(pageNum, pageWrap){
   try{
     const page = await appState.pdfDoc.getPage(pageNum);
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const baseScale = getReaderFitScale(page, document.getElementById('readerCanvasWrap'));
+    const readerWrap = document.getElementById('readerCanvasWrap');
+    const baseScale = getReaderFitScale(page, readerWrap, getStableRenderZoom(readerWrap));
     const renderScale = baseScale * dpr;
     const viewport = page.getViewport({scale: renderScale});
     const displayW = viewport.width / dpr;
@@ -612,8 +613,9 @@ async function renderSinglePDFPage(pageNum, pageWrap){
 function renderSingleFallbackPage(pageNum, pageWrap){
   const fas = appState.aktifFasikul;
   if(!fas) return;
-  const displayW = Math.round(appState.zoom / 100 * 700);
-  const displayH = Math.round(appState.zoom / 100 * 990);
+  const renderZoom = getStableRenderZoom(document.getElementById('readerCanvasWrap'));
+  const displayW = Math.round(renderZoom / 100 * 700);
+  const displayH = Math.round(renderZoom / 100 * 990);
   pageWrap.style.width = displayW + 'px';
   pageWrap.style.height = displayH + 'px';
   pageWrap.style.background = 'transparent';
@@ -651,8 +653,21 @@ function isTabletDevice(){
   return Math.min(window.innerWidth, window.innerHeight) > 500;
 }
 
-function getReaderFitScale(page, wrap){
-  const zoomScale = appState.zoom / 100;
+function getStableRenderZoom(wrap){
+  const container = wrap || document.getElementById('readerCanvasWrap');
+  // Canlı pinch/trackpad zoom önizlemesi aktifken DOM'daki sayfalar CSS
+  // transform ile ölçeklenir. Bu sırada lazy render edilen yeni sayfalar da
+  // appState.zoom ile çizilirse çift ölçeklenir ve ekranda farklı sayfa
+  // boyutları oluşur. Bu yüzden aktif önizlemede gerçek render tabanı sabit
+  // kalır; canlı zoom yalnız transform olarak uygulanır.
+  if(container?.querySelector(':scope > .reader-zoom-inner')){
+    return appState._renderedZoom || appState.zoom || 100;
+  }
+  return appState.zoom || 100;
+}
+
+function getReaderFitScale(page, wrap, zoomPct = appState.zoom){
+  const zoomScale = zoomPct / 100;
   const container = wrap || document.getElementById('readerCanvasWrap');
   const styles = container ? getComputedStyle(container) : null;
   const padX = styles ? parseFloat(styles.paddingLeft || 0) + parseFloat(styles.paddingRight || 0) : 0;
@@ -1791,7 +1806,10 @@ function initTouchGestures() {
       e.preventDefault();
       e.stopPropagation();
       appState._touchGestureActive = true;
-      if (zg) cancelZoomGesture(); // önceki jest her nasılsa açık kalmışsa temizle
+      // Önceki zoom önizlemesi ekranda tutuluyorsa onu bozma. cancelZoomGesture()
+      // çocukları transform sarmalayıcısından çıkarır ve özellikle tablet
+      // Safari'de yeni pinch başlarken görüntüyü eski/sol konuma sıçratabilir.
+      if (zg) holdZoomGesturePreview();
       const p0 = { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
       const p1 = { clientX: e.touches[1].clientX, clientY: e.touches[1].clientY };
       startDist = dist(p0, p1);
@@ -1801,7 +1819,8 @@ function initTouchGestures() {
       // SADECE pan'dir, sayfa-geçişi flick'i sanmayalım.
       startScrollable = (wrap.scrollWidth > wrap.clientWidth + 1) || (wrap.scrollHeight > wrap.clientHeight + 1);
       cancelPendingCardZoomRender();
-      beginZoomGesture(startMid.x, startMid.y);
+      if(!zg) beginZoomGesture(startMid.x, startMid.y);
+      if(zg) zg.startZoom = appState.zoom;
     } else {
       appState._touchGestureActive = false;
     }
@@ -1827,7 +1846,8 @@ function initTouchGestures() {
     if (e.touches.length >= 2) return; // hâlâ 2 parmak
     if (rafId != null) { cancelAnimationFrame(rafId); rafId = null; }
     applyPendingTouchFrame();
-    const result = commitZoomGesture();
+    const zoomChanged = !!zg && Math.abs(zg.liveZoom - zg.startZoom) >= 2;
+    const result = zoomChanged ? holdZoomGesturePreview() : commitZoomGesture();
     if (result && !result.zoomChanged && !startScrollable) {
       // Pinch değil (zum ~sabit) ve zum'lanmamış → hızlı/uzun 2-parmak
       // sürükleme = sayfa geçişi flick'i.
