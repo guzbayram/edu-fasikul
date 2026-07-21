@@ -1947,8 +1947,19 @@ function initLongPressDraw(){
     e.preventDefault(); e.stopPropagation();
     const t = e.touches[0];
     s.lastX = t.clientX; s.lastY = t.clientY;
-    if(s.mode === 'pending' && Math.hypot(t.clientX - s.x0, t.clientY - s.y0) > MOVE_THRESHOLD){
-      clearTimeout(s.menuTimer); s.mode = 'pan';
+    // Parmak MENU_HOLD (1sn) dolana kadar hareket etmezse mode 'menu'ya
+    // geçip bağlam menüsünü açar. Ama kullanıcı bir süre bekleyip SONRA
+    // kaydırmaya başlarsa (gayet doğal bir jest) bu artık niyetin kaydırma
+    // olduğunu gösterir — 'pending' İLE 'menu'da da eşiği aşan hareket pan'a
+    // geçmeli, aksi halde jest kalıcı olarak sessizce hiçbir şey yapmaz
+    // (kaydırma "takılmış" gibi hissettirir) ve menü ekranda asılı kalır.
+    if((s.mode === 'pending' || s.mode === 'menu') && Math.hypot(t.clientX - s.x0, t.clientY - s.y0) > MOVE_THRESHOLD){
+      clearTimeout(s.menuTimer);
+      if(s.mode === 'menu'){
+        const menu = document.getElementById('pdfContextMenu');
+        if(menu) menu.style.display = 'none';
+      }
+      s.mode = 'pan';
     }
     if(s.mode === 'pan'){
       wrap.scrollLeft = s.sl - (t.clientX - s.x0);
