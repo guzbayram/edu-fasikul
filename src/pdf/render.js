@@ -652,6 +652,15 @@ function isNarrowReader(){
   return window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
 }
 
+// Tablet mi telefon mu? Genişlik/yükseklik yön değiştiğinde yer değiştirdiğinden
+// (yatay/dikey) tek bir eksene bakmak yanıltır — KISA kenar telefon/tablet
+// arasında yönden bağımsız güvenilir bir ayraç: iPad'ler (mini dahil) yatay/
+// dikey fark etmeksizin kısa kenarda ~744px+, telefonlar (Pro Max dahil)
+// ~430px'i geçmez. Eşik 500px iki grup arasında güvenli bir orta nokta.
+function isTabletDevice(){
+  return Math.min(window.innerWidth, window.innerHeight) > 500;
+}
+
 function getStableRenderZoom(wrap){
   // Canlı pinch/trackpad zoom önizlemesi aktifken (bkz. isZoomGestureLive,
   // aşağıda) sayfalar CSS transform ile ölçekleniyor. Bu sırada lazy render
@@ -1542,20 +1551,24 @@ function initLongPressDraw(){
     if(e.touches.length !== 1){ if(s){ clearTimeout(s.menuTimer); s = null; } return; }
     const t = e.touches[0];
     if(t.touchType === 'stylus') return; // kalem → Fabric native çizim, HER ZAMAN, buraya hiç girmez
-    // ÇİZİM ARACI aktifken (tablet FARK ETMEKSİZİN) canvas'taki tek-parmak
-    // dokunuşu HER ZAMAN Fabric'e bırak. Önceki hâl "tablette araç ne olursa
-    // olsun parmak = pan" varsayıyordu — bu SADECE touchType==='stylus'
-    // ayrımına güveniyordu. touchType her an %100 güvenilir olmasa (ör. çok
-    // hafif değen kalem ucu bir an 'direct' raporlanabilir) BU satır atlanıp
-    // ayNI dokunuş hem Fabric'te çizim hem burada scrollLeft/Top kaydırması
-    // olarak işlenir → mürekkep VE sayfa aynı anda kayar (gerçek cihazda
-    // "kalem yazma hassasiyeti bozuldu" olarak bildirildi). Artık tek
-    // güvenilir ayraç: aktif araç. 'select' dışındaki araçlarda (pen/
-    // tukenmez/marker/eraser) parmak da olsa native pan asla devreye girmez.
-    if(appState.drawTool !== 'select') return;
+    // Tablette ARAÇ FARK ETMEKSİZİN, telefonda yalnız "Seç" aracında: parmak
+    // HER ZAMAN pan'dir (GoodNotes/Notability tarzı: parmak gezinir, kalem
+    // yazar). Diğer durumda (telefon + çizim aracı) tamamen Fabric'e bırak.
+    if(!isTabletDevice() && appState.drawTool !== 'select') return;
     // Canvas ÜZERİNDE mi başladı? Değilse (wrap'in boşluk/kenarı) native
     // scroll zaten çalışıyor, elle pan GEREKMİYOR — sadece TANIMA (menü/flick).
     const onCanvas = !!e.target.closest('canvas');
+    // KRİTİK: canvas'taki bu parmak dokunuşu, bir çizim aracı (Seç DIŞINDA
+    // pen/tukenmez/marker/eraser/text) aktifken Fabric'e HİÇ ulaşmamalı —
+    // aksi halde HEM biz pan ederiz HEM Fabric aynı dokunuşu çizim/silme
+    // sayar (touchType tek başına yeterli ayraç değil: parmakla test/yanlışlık
+    // kalemle karışabilir) → mürekkep VE sayfa aynı anda kayar (gerçek
+    // cihazda "kalem yazma hassasiyeti bozuldu" olarak bildirildi). CAPTURE
+    // fazında stopPropagation ile durdurulunca Fabric'in canvas'a bağlı
+    // touchstart dinleyicisi (target fazı, capture'dan SONRA çalışır) hiç
+    // tetiklenmez; kendi iç "sürüklüyor" bayrağı (brush/silgi/seçim) hiç set
+    // edilmediğinden sonraki touchmove/touchend'lar da Fabric için no-op olur.
+    if(onCanvas && appState.drawTool !== 'select') e.stopPropagation();
     const scrollable = wrap.scrollWidth > wrap.clientWidth + 1 || wrap.scrollHeight > wrap.clientHeight + 1;
     s = { x0: t.clientX, y0: t.clientY, sl: wrap.scrollLeft, st: wrap.scrollTop, t0: Date.now(), scrollable, onCanvas, moved: false, menuShown: false, menuTimer: null };
     s.menuTimer = setTimeout(() => {
@@ -1564,7 +1577,7 @@ function initLongPressDraw(){
       window.showContextMenu?.(s.x0, s.y0);
       navigator.vibrate?.(15);
     }, MENU_HOLD);
-  }, { passive: true }); // PASİF: canvas dışı native kaydırmayı ASLA engellemiyoruz
+  }, { capture: true, passive: true }); // CAPTURE: Fabric'e (target fazı) ulaşmadan ÖNCE karar verip gerekirse durdurmalıyız
 
   wrap.addEventListener('touchmove', e => {
     if(!s || e.touches.length !== 1) return;
