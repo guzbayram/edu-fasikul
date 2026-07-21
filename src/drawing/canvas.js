@@ -3,12 +3,11 @@ import { appState } from '../state/appState.js';
 // Fabric.js 5.5.2 hatası: Canvas.prototype._onTouchStart HER touchstart'ta
 // koşulsuz e.preventDefault() çağırıyor — allowTouchScrolling:true olsa BİLE
 // (bu bayrağı yalnız _onMouseMove/touchmove kontrol ediyor, _onTouchStart hiç
-// bakmıyor). Tek bir touchstart'ta preventDefault çağrılması tarayıcının O
-// DOKUNUŞ DİZİSİ için native kaydırmayı TAMAMEN iptal etmesine yetiyor — bu
-// yüzden pan-mode'da (bkz. updateCanvasPanMode, render.js) touch-action CSS'i
-// doğru "pan-x pan-y" olsa BİLE tek parmakla kaydırma hiç çalışmıyordu (gerçek
-// PDF ile ölçülüp doğrulandı: canvas DOM'dan kaldırılınca kaydırma anında
-// düzeliyor). Prototip metodunu SARMALIYORUZ (yeniden yazmıyoruz — Fabric'in
+// bakmıyor). Artık canvas'ın touch-action'ı zaten HER ZAMAN 'none' olduğundan
+// (bkz. styles.css — parmak-pan'i elle JS ile sürüyoruz, initLongPressDraw)
+// bu preventDefault pratikte zararsız hâle geldi, ama zaten var olan bir
+// Fabric hatası olduğu ve başka bir yerde işe yarayabileceği için düzeltme
+// duruyor: Prototip metodunu SARMALIYORUZ (yeniden yazmıyoruz — Fabric'in
 // kendi touchmove/touchend yeniden-bağlama mantığı olduğu gibi çalışmaya
 // devam etsin): allowTouchScrolling true iken preventDefault'u orijinal
 // çağrı SIRASINDA geçici olarak etkisizleştiriyoruz.
@@ -124,11 +123,7 @@ function initFabricForPage(canvasEl, w, h, pageNum){
   const fc = new fabric.Canvas(canvasEl, {
     isDrawingMode: false, selection: true,
     width: w, height: h, backgroundColor: 'transparent',
-    // Fabric varsayılanı (false) kendi canvas'ında HER touchstart'ta
-    // preventDefault çağırır — bu, pan-mode'da (bkz. updateCanvasPanMode,
-    // render.js) native tek-parmak kaydırmayı touch-action CSS'i doğru
-    // ayarlanmış olsa BİLE engelliyordu. true iken Fabric preventDefault
-    // çağırmaz; asıl karar CSS touch-action'a (çizim mi kaydırma mı) kalır.
+    // bkz. patchFabricTouchStartPreventDefault üstündeki not.
     allowTouchScrolling: true,
   });
   patchGetPointer(fc);

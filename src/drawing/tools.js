@@ -18,9 +18,6 @@ function setTool(btn, tool){
     g.style.display = (tool==='eraser') ? 'inline-flex' : 'none';
   });
   applyTool(tool);
-  // "Seç/Taşı" aracı → PDF üzerinde tek parmak dokunma artık ÇİZMEZ, native
-  // kaydırır (bkz. updateCanvasPanMode, render.js + styles.css .pan-mode).
-  window.updateCanvasPanMode?.();
 }
 
 function setEraserSize(btn, size){

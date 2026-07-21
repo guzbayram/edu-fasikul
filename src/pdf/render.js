@@ -1381,18 +1381,6 @@ function changeZoom(delta){
 }
 window.changeZoom = changeZoom;
 
-// Tablet mi telefon mu? (bkz. isTabletDevice, yukarıda tanımlı) + telefonda
-// "Seç/Taşı" aracı aktif mi → PDF üzerinde tek parmak dokunma ÇİZMEZ,
-// NATİF kaydırır (bkz. styles.css .pan-mode kuralları). setTool() (tools.js)
-// her araç değişiminde bunu çağırır; resize/orientation'da da tazelenir.
-function updateCanvasPanMode(){
-  const wrap = document.getElementById('readerCanvasWrap');
-  if(!wrap) return;
-  wrap.classList.toggle('pan-mode', isTabletDevice() || appState.drawTool === 'select');
-}
-window.updateCanvasPanMode = updateCanvasPanMode;
-window.addEventListener('resize', updateCanvasPanMode);
-
 // ══════════════════════════════════════════════════════════
 // GİRİŞ UYARLAYICILARI — trackpad (ctrl/meta+wheel), Safari native gesture
 // olayları (gesturestart/change/end) ve masaüstü fare-sürükle pan'i. Hepsi
@@ -1404,7 +1392,6 @@ function initCardZoomPan(){
   if(!wrap || wrap.dataset.zoomPanReady) return;
   wrap.dataset.zoomPanReady = '1';
   wrap.classList.add('card-pan-ready');
-  updateCanvasPanMode();
 
   const isGestureTarget = (target) =>
     !!target.closest('#readerCanvasWrap') && !target.closest('button,label,input,select,.reader-right,.reader-toolbar,.reader-bottom-bar');
@@ -1537,18 +1524,17 @@ function initTouchGestures(){
 }
 
 // ══════════════════════════════════════════════════════════
-// TEK PARMAK: kaydırma tamamen NATİF tarayıcıya bırakılır (bkz. styles.css
-// touch-action:pan-x pan-y) — momentum/inertia bedava gelir ve "duraklayıp
-// SONRA kaydır" gibi jestlerde asla takılmaz (eski özel state-machine'in
-// kök nedeni olduğu bug sınıfı böylece yapısal olarak imkânsız hale gelir).
-// Bu fonksiyon tamamen PASİF dinleyicilerle (preventDefault YOK) sadece İKİ
-// şeyi TANIR — native kaydırmayı asla yönetmez, sadece SEYREDER:
-//   1) 1sn hareketsiz basılı tutma  → Görünüm Modu bağlam menüsü
-//   2) hızlı+kısa kaydırma (kaydıracak içerik YOKKEN, ör. tek sayfa %100
-//      sığdırmada) → sayfa geçişi flick'i
-// Kalem (stylus) ve telefonda aktif çizim aracı (select değilken) burada
-// hiç devreye girmez — Fabric.js kendi dokunma motoruyla çizer (o durumda
-// .lower-canvas touch-action:none kalır, bkz. updateCanvasPanMode).
+// TEK PARMAK: wrap'in KENDİ boşluk/kenar alanında kaydırma NATİF tarayıcıya
+// bırakılır (touch-action:pan-x pan-y, bkz. styles.css) — momentum bedava
+// gelir. AMA canvas'ın (.lower-canvas/.upper-canvas) touch-action'ı HER ZAMAN
+// 'none': touch-action dokunuşun PARMAK mı KALEM mi olduğunu AYIRT ETMEZ —
+// canvas'ı native pan'e açmak (önceki v2 denemesi) tablette KALEMLE
+// ÇİZERKEN de sayfayı native kaydırmaya "kaçırıyordu" (gerçek iPad+Apple
+// Pencil ile doğrulandı: "kalemle yazarken sayfa oynuyor, yazamıyorum").
+// Çözüm: canvas üzerindeki parmak-pan'i (tablette HER ZAMAN, telefonda
+// "Seç/Taşı" aracında) BURADA elle (JS ile, scrollLeft/Top) sürüyoruz —
+// kalem bu koda HİÇ girmez (ilk kontrol), Fabric'in kendi çizim motoruna
+// kalır, touch-action:none olduğundan tarayıcı da hiç karışmaz.
 // ══════════════════════════════════════════════════════════
 function initLongPressDraw(){
   const wrap = document.getElementById('readerCanvasWrap');
@@ -1559,27 +1545,29 @@ function initLongPressDraw(){
   const MENU_HOLD = 1000;     // 1sn sabit basış → Görünüm Modu menüsü
   const FLICK_MAX_MS = 500;   // bu süreden hızlı + uzun kaydırma = flick
   const FLICK_MIN = 70;       // flick için min mesafe
-  let s = null; // jest durumu (sadece TANIMA için, kaydırmayı biz yapmıyoruz)
+  let s = null;
 
   wrap.addEventListener('touchstart', e => {
     if(e.touches.length !== 1){ if(s){ clearTimeout(s.menuTimer); s = null; } return; }
     const t = e.touches[0];
-    if(t.touchType === 'stylus') return; // kalem → Fabric native çizim, her zaman
+    if(t.touchType === 'stylus') return; // kalem → Fabric native çizim, HER ZAMAN, buraya hiç girmez
     if(!isTabletDevice() && appState.drawTool !== 'select') return; // telefon + çizim aracı → Fabric native
+    // Canvas ÜZERİNDE mi başladı? Değilse (wrap'in boşluk/kenarı) native
+    // scroll zaten çalışıyor, elle pan GEREKMİYOR — sadece TANIMA (menü/flick).
+    const onCanvas = !!e.target.closest('canvas');
     const scrollable = wrap.scrollWidth > wrap.clientWidth + 1 || wrap.scrollHeight > wrap.clientHeight + 1;
-    s = { x0: t.clientX, y0: t.clientY, t0: Date.now(), scrollable, moved: false, menuShown: false, menuTimer: null };
+    s = { x0: t.clientX, y0: t.clientY, sl: wrap.scrollLeft, st: wrap.scrollTop, t0: Date.now(), scrollable, onCanvas, moved: false, menuShown: false, menuTimer: null };
     s.menuTimer = setTimeout(() => {
       if(!s || s.menuShown || s.moved) return;
       s.menuShown = true;
       window.showContextMenu?.(s.x0, s.y0);
       navigator.vibrate?.(15);
     }, MENU_HOLD);
-  }, { passive: true }); // PASİF: native kaydırmayı ASLA engellemiyoruz
+  }, { passive: true }); // PASİF: canvas dışı native kaydırmayı ASLA engellemiyoruz
 
   wrap.addEventListener('touchmove', e => {
     if(!s || e.touches.length !== 1) return;
     const t = e.touches[0];
-    s.lastX = t.clientX; s.lastY = t.clientY;
     if(!s.moved && Math.hypot(t.clientX - s.x0, t.clientY - s.y0) > MOVE_THRESHOLD){
       s.moved = true;
       clearTimeout(s.menuTimer);
@@ -1588,13 +1576,21 @@ function initLongPressDraw(){
         if(menu) menu.style.display = 'none';
       }
     }
+    s.lastX = t.clientX; s.lastY = t.clientY;
+    // Canvas üzerinde başladıysa (touch-action orada 'none', native pan
+    // OLAMAZ) pan'i biz sürüyoruz. Canvas dışında native scroll zaten
+    // çalışıyor, dokunmuyoruz.
+    if(s.moved && s.onCanvas){
+      wrap.scrollLeft = s.sl - (t.clientX - s.x0);
+      wrap.scrollTop = s.st - (t.clientY - s.y0);
+    }
   }, { passive: true });
 
   const onEnd = () => {
     if(!s) return;
     clearTimeout(s.menuTimer);
     // Sol/yukarı flick → sonraki sayfa, sağ/aşağı → önceki. Yalnız kaydıracak
-    // içerik YOKKEN (aksi halde bu zaten native pan'dir, sayfa değişmemeli).
+    // içerik YOKKEN (aksi halde bu zaten pan'dir, sayfa değişmemeli).
     if(s.moved && !s.scrollable){
       const dx = (s.lastX ?? s.x0) - s.x0, dy = (s.lastY ?? s.y0) - s.y0, dur = Date.now() - s.t0;
       if(dur < FLICK_MAX_MS && Math.max(Math.abs(dx), Math.abs(dy)) > FLICK_MIN){

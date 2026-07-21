@@ -480,24 +480,21 @@ body.reader-locked .main-content{visibility:hidden!important}
 .reader-right,.reader-right *,.solve-palette,.solve-palette *,.reader-toolbar,.reader-toolbar *,
 .reader-bottom-bar,.reader-bottom-bar *{ touch-action:manipulation; }
 /* Kart alanı — v2 tasarım: TEK parmak kaydırma NATİF tarayıcıya bırakılır
-   (momentum/inertia bedava gelir, özel bir state-machine hiç yok, o yüzden
-   "takılma" sınıfı bugların kökü ortadan kalkar). Listede pinch-zoom YOK ki
-   2 parmak native sayfa-zoom'u bizim JS pinch-zoom motorumuzla çakışmasın —
-   onu tamamen initCardZoomPan/initTouchGestures (render.js) yönetir.
-   .lower-canvas (Fabric çizim katmanı) varsayılan touch-action:none — dokunma
-   Fabric'in kendi çizim motoruna gitsin. Tablette (parmakla yazma yok, her
-   zaman pan) veya telefonda "Seç/Taşı" aracı aktifken .pan-mode sınıfı
-   eklenir (bkz. updateCanvasPanMode, render.js) ve kanvas da native pan'e
-   açılır — o an dokunma ÇİZMEZ, native kaydırır. !important ZORUNLU: Fabric
-   kendi upper-canvas/lower-canvas'ına INLINE touch-action:none yazıyor,
-   inline stil !important olmayan bir dış kural tarafından asla ezilemez. */
+   (momentum/inertia bedava gelir), AMA SADECE wrap'in kendi boşluk/kenar
+   alanında. .lower-canvas/.upper-canvas (Fabric çizim katmanı) HER ZAMAN
+   touch-action:none — çünkü touch-action, dokunuşun PARMAK mı KALEM mi
+   olduğunu AYIRT ETMEZ: canvas'ı 'pan-x pan-y' yapmak (eski v2 denemesi)
+   tablette kalemle ÇİZERKEN de sayfayı native kaydırmaya "kaçırıyordu"
+   (gerçek iPad+Apple Pencil ile doğrulandı). Bu yüzden canvas üzerindeki
+   parmak-pan'i (tablette her zaman / telefonda "Seç" aracında) elle JS ile
+   sürüyoruz (bkz. initLongPressDraw, render.js) — kalem oraya hiç girmez,
+   Fabric'in kendi çizim motoruna kalır. !important ZORUNLU: Fabric kendi
+   upper-canvas/lower-canvas'ına INLINE touch-action:none yazıyor, inline
+   stil !important olmayan bir dış kural tarafından asla ezilemez. */
 .reader-canvas-wrap{ touch-action:pan-x pan-y; }
 .reader-canvas-wrap .canvas-container,
 .reader-canvas-wrap .upper-canvas,
 .reader-canvas-wrap .lower-canvas{ touch-action:none!important; }
-.reader-canvas-wrap.pan-mode .canvas-container,
-.reader-canvas-wrap.pan-mode .upper-canvas,
-.reader-canvas-wrap.pan-mode .lower-canvas{ touch-action:pan-x pan-y!important; }
 
 /* Özel tooltip balonu (uzun-basışta açılır, otomatik gizlenir) */
 .tip-bubble{
