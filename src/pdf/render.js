@@ -85,6 +85,20 @@ async function renderAllPages(){
   const totalPages = appState.totalPages;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const baseScale = appState.zoom / 100;
+  let placeholderW = Math.round(baseScale * 700);
+  let placeholderH = Math.round(baseScale * 990);
+
+  if(appState.pdfDoc){
+    try{
+      const firstPage = await appState.pdfDoc.getPage(1);
+      const firstScale = getReaderFitScale(firstPage, wrap);
+      const firstViewport = firstPage.getViewport({ scale: firstScale * dpr });
+      placeholderW = firstViewport.width / dpr;
+      placeholderH = firstViewport.height / dpr;
+    }catch(e){
+      console.warn('PDF placeholder boyutu hesaplanamadı, varsayılan kullanılıyor:', e);
+    }
+  }
 
   // Her sayfa için önce placeholder oluştur (boyut sonra doldurulacak)
   for(let i = 1; i <= totalPages; i++){
@@ -94,9 +108,9 @@ async function renderAllPages(){
     pageWrap.dataset.pageNum = i;
     pageWrap.style.cssText = 'position:relative;display:flex;align-items:center;justify-content:center;margin:12px auto;flex-shrink:0;';
 
-    // Placeholder boyut (PDF yoksa sabit, PDF varsa ilk sayfa boyutundan tahmin)
-    const placeholderH = Math.round(baseScale * 990);
-    const placeholderW = Math.round(baseScale * 700);
+    // Placeholder boyutu gerçek PDF sayfasıyla aynı olmalı. Aksi halde lazy
+    // render edilen sayfalar yükseklik değiştirip zoom/pan sonrası scroll
+    // konumunu başka sayfaya kaydırır.
     pageWrap.style.width = placeholderW + 'px';
     pageWrap.style.height = placeholderH + 'px';
     pageWrap.style.background = 'var(--bg-2)';
@@ -1581,6 +1595,7 @@ function holdZoomGesturePreview(){
   void zg.wrap.getBoundingClientRect();
   updateZoomGestureState(zg, zg.liveZoom, zg.lastScreenX, zg.lastScreenY);
   zg.wrap.style.overflow = '';
+  lockZoomReleaseScroll(zg.wrap, 900);
   return {
     zoomChanged: Math.abs(zg.liveZoom - zg.startZoom) >= 2,
     dx: zg.lastScreenX - zg.startScreenX,
@@ -1597,6 +1612,13 @@ function cancelZoomGesture(){
   inner.remove();
   wrap.style.overflow = '';
   zg = null;
+}
+
+function lockZoomReleaseScroll(wrap, ms = 700){
+  if(!wrap) return;
+  wrap._zoomReleaseLockUntil = Date.now() + ms;
+  wrap._zoomReleaseScrollLeft = wrap.scrollLeft;
+  wrap._zoomReleaseScrollTop = wrap.scrollTop;
 }
 
 // Paylaşılan zg jest durumunu KULLANMAYAN, TEK SEFERLİK anlık önizleme —
@@ -1620,6 +1642,16 @@ function initCardZoomPan(){
   const isCardGestureTarget = (target) =>
     !!target.closest('#readerCanvasWrap') && !target.closest('button,label,input,select,.reader-right,.reader-toolbar,.reader-bottom-bar');
 
+  wrap.addEventListener('scroll', ()=>{
+    if(Date.now() >= (wrap._zoomReleaseLockUntil || 0)) return;
+    const left = wrap._zoomReleaseScrollLeft ?? wrap.scrollLeft;
+    const top = wrap._zoomReleaseScrollTop ?? wrap.scrollTop;
+    if(Math.abs(wrap.scrollLeft - left) > 1 || Math.abs(wrap.scrollTop - top) > 1){
+      wrap.scrollLeft = left;
+      wrap.scrollTop = top;
+    }
+  }, { passive:true });
+
   wrap.addEventListener('wheel', (e)=>{
     if(!document.getElementById('reader-overlay')?.classList.contains('open')) return;
     if(!isCardGestureTarget(e.target)) return;
@@ -1627,6 +1659,13 @@ function initCardZoomPan(){
     // Trackpad pinch on Chrome/Safari arrives as ctrl/meta wheel. Plain wheel remains pan/scroll.
     if(e.ctrlKey || e.metaKey){
       e.preventDefault();
+      e.stopPropagation();
+      // Trackpad pinch bittikten hemen sonra bazı tarayıcılar aynı fiziksel
+      // hareketin artığını normal wheel/pan olarak gönderebiliyor. Bu artık
+      // olaylar, kullanıcı parmaklarını kaldırınca odağı sağdaki sorudan
+      // sayfanın soluna kaydırıyordu. Pinch sürdükçe ve bittikten kısa süre
+      // sonra düz wheel pan'ini bastırıyoruz.
+      wrap._suppressWheelPanUntil = Date.now() + 700;
       // Trackpad pinch tek bir jest olarak GELMİYOR — kısa aralıklarla art arda
       // çok sayıda wheel olayı olarak geliyor. İlkinde jesti aç, sonraki her
       // olayda güncelle; 180ms sessizlik (parmaklar kalktı) jesti kapatır.
@@ -1638,9 +1677,50 @@ function initCardZoomPan(){
       const factor = Math.exp(-e.deltaY * ZOOM_WHEEL_SENS);
       updateZoomGesture(zg.liveZoom * factor, e.clientX, e.clientY);
       clearTimeout(wrap._wheelZoomIdleTimer);
-      wrap._wheelZoomIdleTimer = setTimeout(()=>{ holdZoomGesturePreview(); }, 220);
+      wrap._wheelZoomIdleTimer = setTimeout(()=>{
+        wrap._suppressWheelPanUntil = Date.now() + 900;
+        holdZoomGesturePreview();
+      }, 220);
+    } else if(Date.now() < (wrap._suppressWheelPanUntil || 0)){
+      e.preventDefault();
+      e.stopPropagation();
     }
   }, {passive:false});
+
+  // Safari/macOS trackpad pinch çoğu durumda ctrl/meta wheel yerine
+  // gesturestart/gesturechange/gestureend üretir. Bu yolu yakalamazsak Safari
+  // kendi sayfa zoom/pan yorumunu uygulayıp parmaklar kalkınca PDF'i soldaki/
+  // başka soruya kaydırabilir.
+  wrap.addEventListener('gesturestart', (e)=>{
+    if(!isCardGestureTarget(e.target)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    cancelPendingCardZoomRender();
+    if(zg) cancelZoomGesture();
+    beginZoomGesture(e.clientX || (wrap.getBoundingClientRect().left + wrap.clientWidth / 2), e.clientY || (wrap.getBoundingClientRect().top + wrap.clientHeight / 2));
+    wrap._gestureZoomStart = zg?.startZoom || appState.zoom || 100;
+    wrap._suppressWheelPanUntil = Date.now() + 900;
+  }, { passive:false });
+
+  wrap.addEventListener('gesturechange', (e)=>{
+    if(!zg) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const scale = Number.isFinite(e.scale) && e.scale > 0 ? e.scale : 1;
+    const rect = wrap.getBoundingClientRect();
+    const x = e.clientX || (rect.left + wrap.clientWidth / 2);
+    const y = e.clientY || (rect.top + wrap.clientHeight / 2);
+    updateZoomGesture((wrap._gestureZoomStart || zg.startZoom) * scale, x, y);
+    wrap._suppressWheelPanUntil = Date.now() + 900;
+  }, { passive:false });
+
+  wrap.addEventListener('gestureend', (e)=>{
+    if(!zg) return;
+    e.preventDefault();
+    e.stopPropagation();
+    wrap._suppressWheelPanUntil = Date.now() + 1100;
+    holdZoomGesturePreview();
+  }, { passive:false });
 
   wrap.addEventListener('pointerdown', (e)=>{
     // Tek-parmak DOKUNMA pan'i initLongPressDraw() içindeki touchstart/touchmove
