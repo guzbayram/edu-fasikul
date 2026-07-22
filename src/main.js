@@ -698,33 +698,6 @@ function initCatDrag(){
 window.initCatDrag = initCatDrag;
 
 // ══════════════════════════════
-// THEME
-// ══════════════════════════════
-function savePreferences(){ localStorage.setItem('edu_preferences',JSON.stringify(appState.preferences)); scheduleCloudPersist(); }
-function loadPreferences(){
-  try{
-    const saved=JSON.parse(localStorage.getItem('edu_preferences')||'null');
-    if(saved){
-      if(typeof saved.sound==='boolean') appState.preferences.sound=saved.sound;
-      if(typeof saved.autoNext==='boolean') appState.preferences.autoNext=saved.autoNext;
-      if(Number.isFinite(Number(saved.goal))) appState.preferences.goal=Math.min(300,Math.max(5,Number(saved.goal)));
-    }
-  }catch(e){}
-  const sound=document.getElementById('soundToggle');
-  if(sound){sound.textContent=appState.preferences.sound?'Açık':'Kapalı';sound.classList.toggle('off',!appState.preferences.sound);}
-  const auto=document.getElementById('autoNextToggle');
-  if(auto){auto.textContent=appState.preferences.autoNext?'Açık':'Kapalı';auto.classList.toggle('off',!appState.preferences.autoNext);}
-  const slider=document.getElementById('goalSlider');
-  if(slider) slider.value=appState.preferences.goal;
-  updateGoal(appState.preferences.goal,false);
-}
-function toggleSound(btn){ appState.preferences.sound=!appState.preferences.sound;btn.textContent=appState.preferences.sound?'Açık':'Kapalı';btn.classList.toggle('off',!appState.preferences.sound);savePreferences(); }
-function toggleAutoNext(btn){ appState.preferences.autoNext=!appState.preferences.autoNext;btn.textContent=appState.preferences.autoNext?'Açık':'Kapalı';btn.classList.toggle('off',!appState.preferences.autoNext);savePreferences(); }
-function updateGoal(v,persist=true){ const goal=Math.min(300,Math.max(5,parseInt(v)||100));document.getElementById('goalVal').textContent=`${goal} soru`;document.getElementById('goalDisplay').textContent=`${goal} soru`;appState.preferences.goal=goal;if(persist)savePreferences(); }
-function cycleAvatar(){ appState.avatarIdx=(appState.avatarIdx+1)%appState.avatarEmojis.length; const em=appState.avatarEmojis[appState.avatarIdx]; document.getElementById('profilAvatar').textContent=em; document.getElementById('avatarBtn').textContent=em; }
-function exportData(){ const d={user:appState.user,hatalilar:appState.hatalilar,drawings:Object.keys(appState.drawings)}; const b=document.createElement('a'); b.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(d,null,2)); b.download='edufasikuler_data.json'; b.click(); showToast('Veriler indirildi ✓','success'); }
-
-// ══════════════════════════════
 // SIDEBAR & PANELS
 // ══════════════════════════════
 // toggleSidebar/showPanel: bkz src/ui/router.js — window'a bağlanan (gerçekten
@@ -1266,122 +1239,6 @@ function recalcFasikulProgress(){
 }
 
 // ══════════════════════════════
-// FASİKÜL VERİ SIFIRLAMA
-// ══════════════════════════════
-// ══════════════════════════════
-// HATALIJLAR
-// ══════════════════════════════
-function renderHatalilar(){
-  const list=document.getElementById('hataliList');
-  list.innerHTML='';
-  const dersFilter=document.getElementById('hataliDersFilter').value;
-  let filtered=[...appState.hatalilar];
-  if(dersFilter) filtered=filtered.filter(h=>h.ders===dersFilter);
-  const sort=document.getElementById('hataliSortFilter').value;
-  if(sort==='yanlis') filtered.sort((a,b)=>b.yanlisSayisi-a.yanlisSayisi);
-  else if(sort==='ders') filtered.sort((a,b)=>a.ders.localeCompare(b.ders));
-
-  if(!filtered.length){
-    list.innerHTML='<div style="text-align:center;padding:48px;color:var(--text-muted)"><div style="font-size:48px;margin-bottom:12px">🎉</div><div style="font-size:16px;font-weight:600">Harika! Hiç hatalı sorun yok.</div></div>';
-    return;
-  }
-  const dersRenkler={mat:'var(--mat)',fiz:'var(--fiz)',kim:'var(--kim)',bio:'var(--bio)',tar:'var(--tar)',edb:'var(--edb)'};
-  filtered.forEach((h,i)=>{
-    const card=document.createElement('div');
-    card.className='hatali-card';
-    card.innerHTML=`
-      <div class="hatali-ders-dot" style="background:${dersRenkler[h.ders]||'var(--mat)'}"></div>
-      <div class="hatali-info">
-        <div class="hatali-breadcrumb">${h.dersAd} → ${h.konu}</div>
-        <div class="hatali-soru-no">Soru ${h.soruEtiket || h.soruNo}</div>
-        <div class="hatali-meta">${h.tarih} · <span>${h.yanlisSayisi}× yanlış</span></div>
-      </div>
-      <div class="hatali-actions">
-        <button class="hatali-action ha-pdf" onclick="openHataliInReader(${appState.hatalilar.indexOf(h)})">📄 PDF'de Gör</button>
-        <button class="hatali-action ha-ok" onclick="removeHatali(${appState.hatalilar.indexOf(h)});showToast('Öğrenildi olarak işaretlendi ✅','success')">✅ Öğrendim</button>
-        <button class="hatali-action ha-sil" onclick="removeHatali(${appState.hatalilar.indexOf(h)})">🗑️</button>
-      </div>`;
-    list.appendChild(card);
-  });
-}
-function removeHatali(idx){
-  appState.hatalilar.splice(idx,1);
-  document.getElementById('hataliCount').textContent=appState.hatalilar.length;
-  document.getElementById('hataliCountBig').textContent=`${appState.hatalilar.length} Soru`;
-  renderHatalilar();
-  showToast('Hatalılar defterinden kaldırıldı','info');
-}
-function startTekrarModu(){
-  if(!appState.hatalilar.length){ showToast('Hatalılar listeniz boş!','info'); return; }
-  // Build a virtual alt konu from hatalilar
-  const allSorular = [];
-  appState.hatalilar.forEach(h => {
-    // Try to find in manifest
-    for(const ders of MANIFEST.dersler){
-      for(const fas of ders.fasikuller||[]){
-        for(const konu of fas.konular||[]){
-          for(const ak of konu.altKonular||[]){
-            const s = ak.sorular?.find(q=>q.no===h.soruNo);
-            if(s) { allSorular.push({...s, sayfa: s.sayfa||ak.sayfa, _dersId:ders.id, _fasId:fas.id}); }
-          }
-        }
-      }
-    }
-  });
-  if(!allSorular.length){
-    // Create dummy questions from hatalilar
-    appState.hatalilar.forEach(h=>{
-      allSorular.push({no:h.soruNo, onizleme:`Soru ${h.soruNo} — ${h.konu}`, cevap:'A', zorluk:'orta', sayfa:1});
-    });
-  }
-  // Pick first ders/fasikul as context (or use mat/analitik as fallback)
-  const firstH = appState.hatalilar[0];
-  let contextDers = MANIFEST.dersler.find(d=>d.id===firstH.ders)||MANIFEST.dersler[0];
-  let contextFas = contextDers.fasikuller[0];
-
-  appState.aktifDers = contextDers;
-  appState.aktifFasikul = contextFas;
-  appState.aktifAltKonu = {
-    id:'tekrar-modu',
-    ad:`Tekrar Modu (${allSorular.length} Hatalı Soru)`,
-    sayfa:1,
-    sorular:allSorular
-  };
-  appState.sorularState = {};
-  appState.activeQuestionIdx = 0;
-
-  // Open reader
-  openReader(contextDers, contextFas);
-
-  setTimeout(()=>{
-    updateRightPanelTitle('🔁 Tekrar Modu');
-    renderSoruList(allSorular);
-    const startBtn = document.getElementById('startTestBtn');
-    startBtn.classList.add('tekrar-modu-active');
-    showToast(`Tekrar modu: ${allSorular.length} hatalı soru yüklendi 🔁`, 'info');
-  }, 300);
-}
-
-// ══════════════════════════════
-// MODALS
-// ══════════════════════════════
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-function showKbModal(){ document.getElementById('kbModal').classList.add('open'); }
-
-// ══════════════════════════════
-// TOAST
-// ══════════════════════════════
-function showToast(msg, type='info'){
-  const container=document.getElementById('toastContainer');
-  const toast=document.createElement('div');
-  toast.className=`toast toast-${type}`;
-  const icons={success:'✅',error:'❌',info:'ℹ️'};
-  toast.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span style="flex:1">${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">×</span>`;
-  container.appendChild(toast);
-  setTimeout(()=>{ toast.classList.add('hiding'); setTimeout(()=>toast.remove(),300); },3500);
-}
-
-// ══════════════════════════════
 // KEYBOARD SHORTCUTS
 // ══════════════════════════════
 document.addEventListener('keydown', e=>{
@@ -1902,122 +1759,6 @@ async function ensureReaderPdfLoaded(targetPage=1){
 }
 
 
-function findHataliContext(h){
-  const wantedKeys = [h.soruKey, h.uid, h.soruNo].filter(v=>v!==undefined && v!==null).map(v=>String(v));
-  for(const ders of MANIFEST.dersler){
-    if(h.ders && ders.id !== h.ders) continue;
-    for(const fas of ders.fasikuller||[]){
-      if(h.fasikulId && fas.id !== h.fasikulId) continue;
-      if(!h.fasikulId && h.fasikulAd && fas.ad !== h.fasikulAd) continue;
-      for(const konu of fas.konular||[]){
-        if(h.konuId && konu.id !== h.konuId) continue;
-        for(const ak of konu.altKonular||[]){
-          if(h.altKonuId && ak.id !== h.altKonuId) continue;
-          const s = ak.sorular?.find(q=>{
-            const modernKey = `${fas.id}__${ak.id}_${q.no}`;
-            const legacyKey = `${ak.id}_${q.no}`;
-            const qKey = String(q._uid || modernKey);
-            const qNo = String(q.no);
-            return wantedKeys.includes(qKey)
-              || wantedKeys.includes(legacyKey)
-              || wantedKeys.includes(qNo)
-              || (h.sayfa && Number(q.sayfa || ak.sayfa) === Number(h.sayfa));
-          });
-          if(s){
-            s._uid = `${fas.id}__${ak.id}_${s.no}`;
-            if(!s.sayfa && ak.sayfa) s.sayfa = ak.sayfa;
-            return {ders, fas, konu, ak, s, page:s.sayfa || ak.sayfa || h.sayfa || 1};
-          }
-        }
-      }
-    }
-  }
-  return null;
-}
-
-async function openHataliInReader(idx){
-  const h = appState.hatalilar[idx];
-  if(!h) return;
-  const ctx = findHataliContext(h);
-  if(ctx){
-    openReader(ctx.ders.id, ctx.fas.id);
-    appState.aktifKonu = ctx.konu;
-    const select = document.getElementById('anaKonuSelect');
-    if(select) select.value = ctx.konu.id;
-    renderAltKonuList(ctx.konu);
-    selectAltKonu(ctx.ak, `altk-${ctx.ak.id}`);
-    const opened = await ensureReaderPdfLoaded(ctx.page);
-    if(opened){
-      goToPage(ctx.page);
-      showToast(`Soru ${h.soruEtiket || ctx.s.no} PDF'de açıldı`,'success');
-    }
-    return;
-  }
-  showToast('PDF sayfası bulunamadı','error');
-}
-
-async function resetAllData(){
-  if(!confirm('Tüm veriler (hatalılar, cevaplar, çizimler, ders/fasikül değişiklikleri ve yüklenen JSON\'lar) silinecek. Bu işlem geri alınamaz. Emin misiniz?')) return;
-
-  // 1) Bellek temizle
-  appState.hatalilar = [];
-  appState.sorularState = {};
-  appState.drawings = {};
-  appState.cloudIstatistik = null;
-  appState.cloudSolutionsLoaded = false;
-
-  // 2) localStorage temizle
-  const keysToRemove = [];
-  for(let i=0;i<localStorage.length;i++){
-    const k = localStorage.key(i);
-    if(k && (k.startsWith('edu_konular_') || k==='edu_hatalilar' || k==='edu_sorularState' || k==='edu_manifest_meta' || k==='edu_deleted_dersler')) keysToRemove.push(k);
-  }
-  keysToRemove.forEach(k=>localStorage.removeItem(k));
-
-  // 3) Manifest konularını ve ilerlemeyi sıfırla
-  MANIFEST.dersler.forEach(d=>{
-    d.progPct = 0;
-    d.fasikuller.forEach(f=>{ f.konular=[]; f.progPct=0; f._solvedCount=0; f.sonCalisma='—'; });
-  });
-  document.getElementById('hataliCount').textContent = '0';
-  document.getElementById('hataliCountBig').textContent = '0 Soru';
-
-  // 4) Firestore temizle (cozumler + cizimler alt koleksiyonları + istatistik alanı)
-  const uid = _getUserKey();
-  if(uid && window._firestoreReady){
-    showToast('Bulut verileri siliniyor…','info');
-    try{
-      // cozumler alt koleksiyonu
-      const cSnap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cozumler'));
-      const cDels=[]; cSnap.forEach(d=>cDels.push(window._fsDeleteDoc(d.ref)));
-      await Promise.all(cDels);
-      // cizimler alt koleksiyonu
-      const dSnap2 = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cizimler'));
-      const dDels=[]; dSnap2.forEach(d=>dDels.push(window._fsDeleteDoc(d.ref)));
-      await Promise.all(dDels);
-      // Ana belgedeki istatistik, hatalilar, fasikulIstatistik alanlarını sıfırla
-      const emptyStats = {toplam:0,dogru:0,yanlis:0,bos:0,konular:{}};
-      await window._fsSetDoc(_userDocRef(uid),{
-        hatalilar:[],
-        istatistik: emptyStats,
-        fasikulIstatistik:{},
-        guncelleme: new Date().toISOString()
-      },{merge:true});
-    }catch(e){ console.warn('Firestore sıfırlama hatası:',e); showToast('Bulut temizleme kısmi başarısız','error'); }
-  }
-
-  // 5) Demo modu kapat
-  applyDemoMode(false);
-  const demoToggle = document.getElementById('demoDataToggle');
-  if(demoToggle){ demoToggle.textContent='Kapalı'; demoToggle.classList.add('off'); }
-  localStorage.setItem('edu_demo_mode','0');
-
-  recalcFasikulProgress();
-  updateDashboard();
-  renderDerslerGrid();
-  showToast('Tüm veriler sıfırlandı 🗑️','success');
-}
-
 // ══════════════════════════════
 // STATS RENDER
 // ══════════════════════════════
@@ -2041,27 +1782,6 @@ const DEMO_STATS = {
 // KÜTÜPHANE MODAL — Bundled fasiküllerden ekleme/çıkarma
 // ══════════════════════════════
 let _kutuphaneFasikulAll = []; // {source, raw, ders (config)}
-
-function _buildKutuphaneBtns(source, existingDersIds){
-  // Her ders için ekle/çıkar butonu
-  const targetDers = document.getElementById('kutuphaneFasikulModal')?.dataset?.targetDers;
-  let btns = '';
-
-  MANIFEST.dersler.forEach(ders=>{
-    const isIn = existingDersIds.includes(ders.id);
-    const highlight = ders.id === targetDers ? 'font-weight:700;' : '';
-    if(isIn){
-      btns += `<button onclick="kutuphaneCikar('${source.id}','${ders.id}')" title="${ders.ad}'dan çıkar"
-        style="${highlight}padding:4px 8px;border-radius:6px;font-size:10px;background:var(--red-dim);color:var(--red);cursor:pointer;border:none;white-space:nowrap">
-        ✕ ${ders.ikon||ders.ad}</button>`;
-    } else {
-      btns += `<button onclick="kutuphaneDersEkle('${source.id}','${ders.id}')" title="${ders.ad}'a ekle"
-        style="${highlight}padding:4px 8px;border-radius:6px;font-size:10px;background:var(--bg-4);color:var(--text-1);cursor:pointer;border:none;white-space:nowrap">
-        + ${ders.ikon||ders.ad}</button>`;
-    }
-  });
-  return btns;
-}
 
 // ══════════════════════════════
 // JSON YÜKLEME (Fasikül Konuları)
@@ -2760,7 +2480,6 @@ window.BUNDLED_FASIKUL_SOURCES = BUNDLED_FASIKUL_SOURCES;
 window.BUNDLED_DERS_CONFIG = BUNDLED_DERS_CONFIG;
 window.GUEST_DEMO_FASIKUL_IDS = GUEST_DEMO_FASIKUL_IDS;
 window.currentDrawerDers = null;
-window.showToast = showToast;
 window.closeDrawer = closeDrawer;
 window.openDrawer = openDrawer;
 window.renderFasikulCards = renderFasikulCards;
@@ -2773,7 +2492,6 @@ window.bundledSourceCache = bundledSourceCache;
 window.hydrateBundledFasikul = hydrateBundledFasikul;
 window.saveCustomGithubSource = saveCustomGithubSource;
 window.isGuestSession = isGuestSession;
-window.closeModal = closeModal;
 window.ensureReaderPdfLoaded = ensureReaderPdfLoaded;
 window.launchConfetti = launchConfetti;
 window.recalcFasikulProgress = recalcFasikulProgress;
@@ -2783,7 +2501,6 @@ window.loadManifestMeta = loadManifestMeta;
 window.applyManifestMeta = applyManifestMeta;
 window.loadBundledFasikuller = loadBundledFasikuller;
 window.buildManifestMeta = buildManifestMeta;
-window.loadPreferences = loadPreferences;
 window.loadFromFirestore = loadFromFirestore;
 window.startRealtimeSync = startRealtimeSync;
 window.stopRealtimeSync = stopRealtimeSync;
