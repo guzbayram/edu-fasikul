@@ -25,7 +25,7 @@ function _liveDeviceId(){
 export function publishCanli(){
   window.publishCanliPresence?.();   // aynı fasikül canlı oturum listesi (tüm roller)
   window.refreshSharedBoard?.();     // gezinince ortak tahtayı yeni sayfaya uyarla
-  if(appState.watchMode) return;   // izleyen öğretmen kendi konumunu yayınlamaz
+  if(appState.watchMode || appState.reviewMode) return;   // izleyen/inceleyen öğretmen kendi konumunu yayınlamaz
   // Yayın koşulu: elle açılan Canlı Ders VEYA öğrenci için otomatik yayın açık
   if((!appState.liveSession && !appState.autoPublishLive) || appState._liveSuppress) return;
   const uid = _getUserKey();

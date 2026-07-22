@@ -338,6 +338,7 @@ function _persistYeniCozumler(uid){
 }
 
 export function persistDrawingCloud(key,json,w,h){
+  if(appState.reviewMode) return;   // öğrenci inceleme modunda öğretmenin kendi hesabına yazma
   const uid=_getUserKey();
   if(!uid || !json || !window._firestoreReady) return;
   if(!appState._cloudDeviceId) appState._cloudDeviceId = Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -357,13 +358,59 @@ export function persistDrawingCloud(key,json,w,h){
 }
 
 export function deleteDrawingCloud(key){
+  if(appState.reviewMode) return;   // öğrenci inceleme modunda öğretmenin kendi hesabına yazma
   const uid=_getUserKey();
   if(!uid || !window._firestoreReady || !window._fsDeleteDoc) return;
   window._fsDeleteDoc(window._fsDoc(window._db,'kullanicilar',uid,'cizimler',_safeDocId(key)))
     .catch(e=>console.warn('Çizim buluttan silinemedi:',e));
 }
 
+// Öğretmen/admin "İnceleme Modu": hedef öğrencinin TÜM cevap+çizim geçmişini
+// appState'e HİÇ DOKUNMADAN çeker (yan etkisiz) — login akışındaki
+// cozumler/cizimler yükleme mantığının salt-veri döndüren kopyası (bkz.
+// yukarıdaki login bloğu). Çağıran taraf appState.sorularState/drawings/
+// drawingDims'i bu sonuçla DEĞİŞTİRMEDEN önce kendi verisini yedeklemeli.
+export async function fetchStudentReviewData(uid){
+  const sorularState = {};
+  const drawings = {};
+  const drawingDims = {};
+  if(!uid || !window._firestoreReady) return {sorularState, drawings, drawingDims};
+  try{
+    const cozumSnap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cozumler'));
+    cozumSnap.forEach(d=>{
+      const c = d.data();
+      const soruKey = c.soruKey || decodeURIComponent(d.id);
+      const restoredState = {
+        answered:true,
+        selected:c.ogrenciCevap ?? null,
+        correct:c.dogru===true,
+        skipped:c.atladi===true,
+        correct_answer:c.dogruCevap||'',
+        timeSec:c.sureSaniye||0,
+        dersId:c.dersId||'', dersAd:c.dersAd||'',
+        fasikulId:c.fasikulId||'', fasikulAd:c.fasikulAd||'',
+        konu:c.konu||'', altKonu:c.altKonu||'', zorluk:c.zorluk||'',
+        tarih:c.tarih||'',
+        _synced:true
+      };
+      sorularState[soruKey] = restoredState;
+      if(c.fasikulId && !String(soruKey).startsWith(`${c.fasikulId}__`)){
+        sorularState[`${c.fasikulId}__${soruKey}`] = restoredState;
+      }
+    });
+  }catch(e){ console.warn('İnceleme: öğrenci çözümleri yüklenemedi:',e); }
+  try{
+    const drawingSnap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cizimler'));
+    drawingSnap.forEach(d=>{
+      const c = d.data();
+      if(c.key && c.json){ drawings[c.key]=c.json; if(c.w && c.h) drawingDims[c.key]={w:c.w,h:c.h}; }
+    });
+  }catch(e){ console.warn('İnceleme: öğrenci çizimleri yüklenemedi:',e); }
+  return {sorularState, drawings, drawingDims};
+}
+
 export function persistData(){
+  if(appState.reviewMode) return;   // öğrenci inceleme modunda öğretmenin kendi hesabına yazma
   try{
     localStorage.setItem('edu_hatalilar', JSON.stringify(appState.hatalilar));
     localStorage.setItem('edu_sorularState', JSON.stringify(appState.sorularState));

@@ -291,11 +291,13 @@ function renderTekSoruKartEl(card, sorular, idx){
   const badgeClass = s.zorluk==='kolay'?'badge-easy':s.zorluk==='zor'?'badge-hard':'badge-mid';
   const badgeTxt = isKonuKart ? '📘 Konu Kartı' : (s.zorluk==='kolay'?'🟢 Kolay':s.zorluk==='zor'?'🔴 Zor':'🟡 Orta');
 
+  const reviewTimeChip = appState.reviewMode && answered && state.timeSec
+    ? ` <span class="tsk-review-time">⏱ ${state.timeSec}sn</span>` : '';
   const feedbackHtml = isKonuKart
     ? ''
     : answered
     ? `<div class="tsk-feedback ${state.correct?'show-correct':'show-wrong'}">
-        ${state.skipped ? '⏭️ Atlandı' : state.correct ? '✅ Doğru! Harika!' : `❌ Yanlış! Doğru cevap: ${s.cevap}`}
+        ${state.skipped ? '⏭️ Atlandı' : state.correct ? '✅ Doğru! Harika!' : `❌ Yanlış! Doğru cevap: ${s.cevap}`}${reviewTimeChip}
        </div>`
     : `<div class="tsk-feedback" id="tsk-feedback"></div>`;
 
@@ -906,6 +908,7 @@ function resetAltKonuStats(){
 }
 
 function selectAnswer(soruNo, selected, correct, idx, options = {}){
+  if(appState.reviewMode){ window.showToast?.('İnceleme modunda düzenleme yapılamaz','info'); return; }
   if(appState.sorularState[soruNo]?.answered) return;
 
   const isCorrect = selected===correct;
@@ -972,6 +975,7 @@ function selectAnswer(soruNo, selected, correct, idx, options = {}){
 }
 
 function skipQuestion(soruNo, idx){
+  if(appState.reviewMode){ window.showToast?.('İnceleme modunda düzenleme yapılamaz','info'); return; }
   const aktifSoru = (appState.aktifAltKonu?.sorular||[]).find(s=>(s._uid||s.no)===soruNo);
   appState.sorularState[soruNo] = {
     answered:true, selected:null, correct:false, skipped:true,

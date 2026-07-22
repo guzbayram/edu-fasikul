@@ -168,16 +168,34 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   fc._pageNum = pageNum;
   appState.fabricCanvases[pageNum] = fc;
 
+  // İnceleme modu: tuval tamamen salt-okunur (görüntüleme amaçlı) kalır —
+  // öğretmen öğrencinin çizimini asla düzenleyemez/silemez.
+  if(appState.reviewMode){
+    fc.isDrawingMode = false;
+    fc.selection = false;
+    fc.skipTargetFind = true;
+  }
+
   // Aktif sayfaysa ana canvas olarak işaretle
   if(pageNum === appState.currentPage){
     appState.fabricCanvas = fc;
-    applyTool(appState.drawTool);
+    if(!appState.reviewMode) applyTool(appState.drawTool);
   }
 
   // Kayıtlı çizim varsa yükle
   const key = drawingKeyForPage(pageNum);
   const saved = appState.drawings[key];
-  if(saved){ try{ fc.loadFromJSON(saved, ()=>{ applyDrawingScale(fc, key); applyTool(appState.drawTool); fc.renderAll(); window.refreshSharedBoard?.(); }); }catch(e){} }
+  if(saved){
+    try{
+      fc.loadFromJSON(saved, ()=>{
+        applyDrawingScale(fc, key);
+        if(appState.reviewMode) setObjectsInteractive(fc, false);
+        else applyTool(appState.drawTool);
+        fc.renderAll();
+        window.refreshSharedBoard?.();
+      });
+    }catch(e){}
+  }
   else { window.refreshSharedBoard?.(); }
 
   // Tıklandığında aktif canvas olarak seç

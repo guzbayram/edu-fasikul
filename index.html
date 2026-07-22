@@ -468,6 +468,18 @@
 <!-- READER OVERLAY -->
 <div id="reader-overlay">
 
+  <!-- İnceleme Modu banner'ı (öğretmen/admin bir öğrencinin geçmiş çözümlerini incelerken) -->
+  <div id="reviewBanner" class="review-banner" style="display:none">
+    <span class="rb-icon">🔒</span>
+    <div class="rb-text">
+      <b id="reviewBannerName">Öğrenci</b>
+      <span>Salt okunur inceleme — canlı değil</span>
+    </div>
+    <button class="rb-btn" onclick="reviewJumpToWrong(-1)" title="Önceki yanlış soru">◀ Yanlış</button>
+    <button class="rb-btn" onclick="reviewJumpToWrong(1)" title="Sonraki yanlış soru">Yanlış ▶</button>
+    <button class="rb-btn rb-close" onclick="closeStudentFasikulReview()">✕ İncelemeyi Kapat</button>
+  </div>
+
   <!-- Center -->
   <div class="reader-center" id="readerCenter">
     <!-- Top Toolbar -->

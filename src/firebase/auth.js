@@ -1,4 +1,5 @@
 import { appState } from '../state/appState.js';
+import { fetchStudentReviewData } from './firestore.js';
 
 const ADMIN_EMAIL = 'admin@edufasikuler.com';
 export { ADMIN_EMAIL };
@@ -70,6 +71,19 @@ function formatDateTime(dateLike){
   const d = new Date(dateLike);
   if(Number.isNaN(d.getTime())) return formatDate(dateLike);
   return d.toLocaleString('tr-TR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+}
+
+function formatRelativeTr(dateLike){
+  if(!dateLike) return 'Tarih yok';
+  const d = new Date(dateLike);
+  if(Number.isNaN(d.getTime())) return 'Tarih yok';
+  const startOfDay = x => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+  const diffDays = Math.round((startOfDay(new Date()) - startOfDay(d)) / 86400000);
+  if(diffDays <= 0) return `Bugün ${d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})}`;
+  if(diffDays === 1) return 'Dün';
+  if(diffDays < 7) return `${diffDays} gün önce`;
+  if(diffDays < 30) return `${Math.floor(diffDays/7)} hafta önce`;
+  return formatDate(dateLike);
 }
 
 function dateTimeInputValue(dateLike){
@@ -392,6 +406,26 @@ function computeRecordsSummary(records){
   });
   const solved = dogru + yanlis;
   return {total, dogru, yanlis, bos, weekly, accuracy: solved ? Math.round(dogru / solved * 100) : 0, byTopic};
+}
+
+// Öğrencinin çözüm kayıtlarını fasikül bazında grupla, en son çalışılan fasikül
+// en başta olacak şekilde sırala — "Çalışılan Fasiküller" listesi için.
+function groupRecordsByFasikul(records){
+  const byFas = {};
+  records.forEach(r=>{
+    if(!r.fasikulId) return;
+    if(!byFas[r.fasikulId]) byFas[r.fasikulId] = {
+      fasikulId:r.fasikulId, fasikulAd:r.fasikulAd || r.fasikulId, dersId:r.dersId || '',
+      total:0, dogru:0, yanlis:0, bos:0, lastTarih:''
+    };
+    const g = byFas[r.fasikulId];
+    g.total++;
+    if(r.atladi || r.skipped) g.bos++;
+    else if(r.dogru === true || r.correct === true) g.dogru++;
+    else g.yanlis++;
+    if(String(r.tarih||'') > g.lastTarih) g.lastTarih = r.tarih || '';
+  });
+  return Object.values(byFas).sort((a,b)=> b.lastTarih.localeCompare(a.lastTarih));
 }
 
 function expectedQuestionCountForTask(task){
@@ -981,6 +1015,7 @@ export async function selectManagedStudent(uid){
       loadWarnings.push('Çözüm kayıtları okunamadı.');
     }
     const summary = computeRecordsSummary(records);
+    const fasikulGroups = groupRecordsByFasikul(records);
     try{
       const gorevSnap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'gorevler'));
       gorevSnap.forEach(d=>{
@@ -1003,6 +1038,7 @@ export async function selectManagedStudent(uid){
       loadWarnings.push('Kayıtlı çalışma planı okunamadı; yeni plan yine oluşturulabilir.');
     }
     planItems = mergePendingStudyPlan(uid, planWeek, planItems);
+    const escName = esc(String(student.name||student.email||'')).replace(/'/g,"\\'");
     detail.innerHTML = `
       <div class="managed-student-select">
         <label>Öğrenci Seç</label>
@@ -1026,6 +1062,17 @@ export async function selectManagedStudent(uid){
         <button class="watch-live-btn" onclick="watchStudentLive('${esc(uid)}','${esc(String(student.name||student.email||'')).replace(/'/g,"\\'")}')" title="Öğrencinin şu an açık olduğu sayfayı ve çizimlerini canlı gör">🔴 Canlı İzle</button>
       </div>
       ${loadWarnings.length ? `<div class="managed-warning">${loadWarnings.map(esc).join(' ')}</div>` : ''}
+      <div class="managed-fasikul-list">
+        <div class="managed-fasikul-list-title">📚 Çalışılan Fasiküller</div>
+        ${fasikulGroups.length ? fasikulGroups.map((g,i)=>{
+          const acc = g.dogru + g.yanlis ? Math.round(g.dogru / (g.dogru+g.yanlis) * 100) : 0;
+          return `<div class="fasikul-review-row${i===0?' latest':''}" onclick="openStudentFasikulReview('${esc(uid)}','${escName}','${esc(g.dersId)}','${esc(g.fasikulId)}')" title="Bu fasikülü öğrencinin çözümleriyle incele">
+            ${i===0?'<span class="frr-badge">🕐 Son çalışılan</span>':''}
+            <div class="frr-main"><b>${esc(g.fasikulAd)}</b><span>${esc(formatRelativeTr(g.lastTarih))}</span></div>
+            <div class="frr-stats">${g.total} soru · %${acc} doğru</div>
+          </div>`;
+        }).join('') : '<div style="color:var(--text-muted);font-size:13px">Henüz fasikül çalışılmadı.</div>'}
+      </div>
       <div class="managed-topic-list">
         ${Object.entries(summary.byTopic).slice(0,8).map(([name,k])=>{
           const acc = k.dogru + k.yanlis ? Math.round(k.dogru / (k.dogru+k.yanlis) * 100) : 0;
@@ -1056,6 +1103,107 @@ export async function selectManagedStudent(uid){
     console.warn('Öğrenci takip bilgisi yüklenemedi:', e);
     detail.innerHTML = '<div style="color:var(--red);font-size:13px">Öğrenci bilgileri yüklenemedi.</div>';
   }
+}
+
+// ══════════════════════════════════════════════════════════
+// ÖĞRENCİ FASİKÜL İNCELEME MODU (salt okunur, tarihsel)
+// Öğretmen/admin bir öğrencinin geçmişte çözdüğü bir fasikülü, o öğrencinin
+// cevap/çizim verisiyle açar. appState.sorularState/drawings/drawingDims
+// geçici olarak öğrencinin verisiyle DEĞİŞTİRİLİR (mevcut reader/PDF/çizim
+// render kodu hep appState üzerinden okur, böylece sıfır ek kod ile çalışır),
+// öğretmenin kendisininki yedeklenip inceleme kapanınca geri yüklenir.
+// ══════════════════════════════════════════════════════════
+
+export async function openStudentFasikulReview(studentUid, studentName, dersId, fasikulId){
+  const student = (window._managedStudents || []).find(s=>s.id === studentUid);
+  if(!student || !canViewStudent(student)){ window.showToast?.('Bu öğrenci için yetkiniz yok.', 'error'); return; }
+  if(appState.reviewMode){ window.showToast?.('Zaten bir inceleme açık.', 'info'); return; }
+  window.stopWatchStudent?.(true);
+  window.stopRealtimeSync?.();
+  window.showToast?.('Öğrenci verisi yükleniyor…', 'info');
+  let data;
+  try{
+    data = await fetchStudentReviewData(studentUid);
+  }catch(e){
+    console.warn('İnceleme verisi yüklenemedi:', e);
+    window.showToast?.('Öğrenci verisi yüklenemedi.', 'error');
+    window.startRealtimeSync?.(appState.user?.uid);
+    return;
+  }
+  appState.reviewMode = {
+    studentUid, studentName,
+    savedSorularState: appState.sorularState,
+    savedDrawings: appState.drawings,
+    savedDrawingDims: appState.drawingDims
+  };
+  appState.sorularState = data.sorularState;
+  appState.drawings = data.drawings;
+  appState.drawingDims = data.drawingDims;
+
+  await window.openReader(dersId, fasikulId);
+
+  document.getElementById('reader-overlay')?.classList.add('review-mode');
+  const banner = document.getElementById('reviewBanner');
+  if(banner){
+    banner.style.display = 'flex';
+    const nameEl = document.getElementById('reviewBannerName');
+    if(nameEl) nameEl.textContent = studentName || 'Öğrenci';
+  }
+
+  // Öğrencinin bu fasikülde en son bıraktığı konu/soruya otomatik atla.
+  try{
+    const records = await fetchStudentRecords(studentUid);
+    const fasRecords = records.filter(r=>r.fasikulId === fasikulId).sort((a,b)=>String(b.tarih||'').localeCompare(String(a.tarih||'')));
+    const last = fasRecords[0];
+    if(last){
+      const fas = appState.aktifFasikul;
+      const allAlts = (fas?.konular||[]).flatMap(k=>k.altKonular||[]);
+      const targetAlt = allAlts.find(ak=>ak.ad === last.altKonu) || allAlts.find(ak=>(ak.sorular||[]).some(s=>(s._uid)===last.soruKey));
+      if(targetAlt){
+        window.selectAltKonu?.(targetAlt, `altk-${targetAlt.id}`);
+        const idx = (targetAlt.sorular||[]).findIndex(s=>s._uid === last.soruKey);
+        if(idx >= 0) window.goToSoru?.(idx);
+      }
+    }
+  }catch(e){ console.warn('İnceleme: son çalışılan konuma gidilemedi:', e); }
+}
+
+export function closeStudentFasikulReview(){
+  if(!appState.reviewMode) return;
+  const saved = appState.reviewMode;
+  // ÖNEMLİ SIRA: appState.sorularState/drawings'i closeReader()'dan ÖNCE geri
+  // yükle — closeReader() markLastWorked/recalcFasikulProgress/updateDashboard/
+  // persistManifest çağırır, bunlar mevcut appState.sorularState'i okuyup
+  // PAYLAŞILAN manifest'e yazar; restore önce yapılmazsa öğrencinin verisi
+  // öğretmenin "son çalışma"sı gibi sızabilir.
+  appState.sorularState = saved.savedSorularState;
+  appState.drawings = saved.savedDrawings;
+  appState.drawingDims = saved.savedDrawingDims;
+  appState.reviewMode = null;
+  document.getElementById('reader-overlay')?.classList.remove('review-mode');
+  const banner = document.getElementById('reviewBanner');
+  if(banner) banner.style.display = 'none';
+  window.closeReader?.();
+  window.startRealtimeSync?.(appState.user?.uid);
+}
+
+// Aktif alt konu içinde yalnız yanlış cevaplanmış sorular arasında gezin (review modu).
+export function reviewJumpToWrong(direction){
+  if(!appState.reviewMode) return;
+  const sorular = appState.aktifAltKonu?.sorular || [];
+  if(!sorular.length) return;
+  const isWrong = s => {
+    const st = appState.sorularState[s._uid || s.no];
+    return st?.answered && !st.correct && !st.skipped;
+  };
+  const cur = appState.activeQuestionIdx;
+  let idx = cur;
+  for(let step=0; step<sorular.length; step++){
+    idx += direction > 0 ? 1 : -1;
+    if(idx < 0 || idx >= sorular.length) break;
+    if(isWrong(sorular[idx])){ window.goToSoru?.(idx); return; }
+  }
+  window.showToast?.('Bu yönde başka yanlış soru yok.', 'info');
 }
 
 export async function refreshAssignTopicOptions(){

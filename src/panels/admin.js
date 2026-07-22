@@ -8,7 +8,8 @@ import {
   refreshEditAssignmentTopicOptions,
   refreshPlanFasikulOptions, refreshPlanTopicOptions, prefillStudyPlanSlot, openStudyPlanModal, closeStudyPlanModal, shiftStudyPlanWeek, changeStudyPlanWeek,
   createStudyPlanSlot, clearStudyPlanSlot, dragStudyPlanSlot, dropStudyPlanSlot, startResizeStudyPlanSlot, approveStudyPlanChanges, loadMyStudyPlan,
-  toggleTeacherAssignField, toggleUserFasikulVisibility, applyUserFasikulVisibility, bulkSetUserFasikulVisibility
+  toggleTeacherAssignField, toggleUserFasikulVisibility, applyUserFasikulVisibility, bulkSetUserFasikulVisibility,
+  openStudentFasikulReview, closeStudentFasikulReview, reviewJumpToWrong
 } from '../firebase/auth.js';
 
 window.loadKullaniciList = loadKullaniciList;
@@ -41,3 +42,6 @@ window.toggleTeacherAssignField = toggleTeacherAssignField;
 window.toggleUserFasikulVisibility = toggleUserFasikulVisibility;
 window.applyUserFasikulVisibility = applyUserFasikulVisibility;
 window.bulkSetUserFasikulVisibility = bulkSetUserFasikulVisibility;
+window.openStudentFasikulReview = openStudentFasikulReview;
+window.closeStudentFasikulReview = closeStudentFasikulReview;
+window.reviewJumpToWrong = reviewJumpToWrong;
