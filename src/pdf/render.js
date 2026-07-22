@@ -181,6 +181,11 @@ function throttleScrollHandler(){
     appState._scrollThrottle = null;
     if(appState._scrollingToPage || Date.now() < (appState._zoomSettlingUntil || 0)) return;
     updateCurrentPageFromScroll();
+    // Sayfa DEĞİŞMESE bile (aynı sayfa içinde pan) canlı izleyenler için
+    // yayınla — publishCanli() zaten kendi debounce/dedup'ına sahip (bkz.
+    // realtime.js _publishTimer + sig karşılaştırması), burada koşulsuz
+    // çağırmak Firestore'u spamlamaz.
+    window.publishCanli?.();
   }, 80);
 }
 
@@ -201,7 +206,6 @@ function updateCurrentPageFromScroll(){
     document.getElementById('prevPageBtn').disabled = appState.currentPage === 1;
     document.getElementById('nextPageBtn').disabled = appState.currentPage === appState.totalPages;
     syncNavToPage(closest);
-    window.publishCanli?.();
   }
 }
 
@@ -982,11 +986,18 @@ function initPDFContextMenu(){
     });
   }
 
-  // Sağ tık (masaüstü)
-  wrap.addEventListener('contextmenu', e=>{
-    e.preventDefault();
-    showContextMenu(e.clientX, e.clientY);
-  });
+  // Sağ tık (masaüstü) — initPDFContextMenu() her openReader()'da tekrar
+  // çağrılır; bu koruma OLMADAN her fasikül açılışında wrap'e BİR TANE DAHA
+  // 'contextmenu' dinleyicisi ekleniyor, birikip uzun oturumlarda gereksiz
+  // bellek/işlem tüketiyordu (initCardZoomPan/initLongPressDraw'daki aynı
+  // dataset bayrağı deseni burada da uygulanıyor).
+  if(!wrap.dataset.ctxMenuReady){
+    wrap.dataset.ctxMenuReady = '1';
+    wrap.addEventListener('contextmenu', e=>{
+      e.preventDefault();
+      showContextMenu(e.clientX, e.clientY);
+    });
+  }
 }
 
 function showContextMenu(x, y){
@@ -1230,6 +1241,46 @@ function locatePageAt(inner, x, y){
   return closest;
 }
 
+// ── Canlı izleme: sayfa-göreli pan konumu ──────────────────────────────
+// Ekran boyutu farklı olabileceğinden MUTLAK piksel yerine, görünen sayfanın
+// KENDİ kutusuna göre ORAN (0..1) taşınır — beginZoomGesture'daki pageAnchor
+// ile aynı fikir, ama sürekli (her scroll/pan'de okunabilir/uygulanabilir).
+function getCurrentPageScrollFraction(){
+  const wrap = document.getElementById('readerCanvasWrap');
+  const inner = getPagesInner(wrap);
+  if(!wrap || !inner) return null;
+  const r = wrap.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  const pageEl = locatePageAt(inner, cx, cy);
+  if(!pageEl) return null;
+  const pr = pageEl.getBoundingClientRect();
+  if(!pr.width || !pr.height) return null;
+  return {
+    pageNum: Number(pageEl.dataset.pageNum),
+    fracX: (cx - pr.left) / pr.width,
+    fracY: (cy - pr.top) / pr.height,
+  };
+}
+window.getCurrentPageScrollFraction = getCurrentPageScrollFraction;
+
+// Takip edilenin fracX/fracY'sini KENDİ ekranımızda aynı sayfa-göreli noktayı
+// viewport ortasına getirecek şekilde uygular (zoom zaten ayrıca uygulanmış olmalı).
+function applyPageScrollFraction(pageNum, fracX, fracY){
+  const wrap = document.getElementById('readerCanvasWrap');
+  const inner = getPagesInner(wrap);
+  if(!wrap || !inner || fracX == null || fracY == null) return;
+  const pageEl = inner.querySelector(`[data-page-num="${pageNum}"]`);
+  if(!pageEl) return;
+  const pr = pageEl.getBoundingClientRect();
+  if(!pr.width || !pr.height) return;
+  const wr = wrap.getBoundingClientRect();
+  const targetX = pr.left + fracX * pr.width;
+  const targetY = pr.top + fracY * pr.height;
+  wrap.scrollLeft += targetX - (wr.left + wr.width / 2);
+  wrap.scrollTop += targetY - (wr.top + wr.height / 2);
+}
+window.applyPageScrollFraction = applyPageScrollFraction;
+
 // Aktif bir canlı zoom önizlemesi sürüyor mu? (lazy render edilen yeni
 // sayfaların hangi taban zoom'u kullanacağını bilmesi için — bkz.
 // getStableRenderZoom: önizleme sırasında lazy sayfalar RENDEREDzoom'da
@@ -1419,6 +1470,7 @@ async function endZoomGesture(){
   wrap.style.overflow = '';
   wrap.classList.remove('zoom-settling');
   appState._zoomSettlingUntil = Date.now() + 250;
+  window.publishCanli?.();   // canlı izleyenler zoom/pan'i de görsün
   return result;
 }
 
@@ -1440,9 +1492,19 @@ function changeZoom(delta){
   if(gz) endZoomGesture();
   beginZoomGesture(cx, cy);
   updateZoomGesture(appState.zoom + delta);
-  endZoomGesture();
+  // endZoomGesture() bir Promise döner (render tamamlanınca çözülür) —
+  // canlı izleme takibi (setZoomAbsolute) zoom'un GERÇEKTEN oturmasını
+  // bekleyip ondan SONRA pan/fraksiyon uygulayabilsin diye döndürüyoruz.
+  return endZoomGesture();
 }
 window.changeZoom = changeZoom;
+
+// Canlı izlemede takip edilenin MUTLAK zoom%'ini uygulamak için — changeZoom
+// göreli (delta) çalışır, takip tarafı hedefi doğrudan bilir.
+function setZoomAbsolute(targetZoom){
+  return changeZoom(clampZoom(targetZoom) - appState.zoom);
+}
+window.setZoomAbsolute = setZoomAbsolute;
 
 // ══════════════════════════════════════════════════════════
 // GİRİŞ UYARLAYICILARI — trackpad (ctrl/meta+wheel), Safari native gesture

@@ -84,12 +84,19 @@ function _writePresence(){
   const me = _me();
   const fas = appState.aktifFasikul;
   if(!me || !fas || fas.id !== _presFasikulId || !_ready()) return;
+  // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
+  // (kaydırma dahil) görsün — ekran boyutundan bağımsız kalması için MUTLAK
+  // piksel değil ORAN (fracX/fracY, bkz. getCurrentPageScrollFraction).
+  const frac = window.getCurrentPageScrollFraction?.();
   window._fsSetDoc(_memberRef(fas.id, me.uid), {
     uid: me.uid, name: me.name, role: me.role,
     dersId: appState.aktifDers?.id || '',
     fasikulId: fas.id,
     page: appState.currentPage || 1,
     altKonuId: appState.aktifAltKonu?.id || '',
+    zoom: appState.zoom || 100,
+    fracX: frac?.fracX ?? null,
+    fracY: frac?.fracY ?? null,
     ts: Date.now()
   }, {merge:true}).catch(e=>console.warn('Canlı oturum yazma hatası:',e));
 }
@@ -143,7 +150,7 @@ function scheduleApplyFollow(){
 function _applyFollow(seq){
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
-  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${(m.draw||'').length}`;
+  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${(m.draw||'').length}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}`;
   if(sig === _lastFollowSig) return;              // değişmedi → tekrar uygulama
   _lastFollowSig = sig;
   appState._presSuppress = true;
@@ -156,9 +163,19 @@ function _applyFollow(seq){
     if(m.page && appState.currentPage !== m.page) window.goToPage?.(m.page);
   }catch(e){ console.warn('Takip uygula hatası:',e); }
   finally{ setTimeout(()=>{ appState._presSuppress = false; }, 400); }
-  // Sayfa/canvas oturunca çizimi yansıt
-  setTimeout(()=>{
-    if(seq === _followApplySeq) _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh);
+  // Sayfa/canvas oturunca ZOOM, SONRA pan, SONRA çizimi uygula — sırayla:
+  // zoom kendi render+scroll-restore döngüsünü tetikler, pan/çizim ONDAN
+  // ÖNCE uygulanırsa zoom'un kendi düzeltmesi tarafından ezilir.
+  setTimeout(async ()=>{
+    if(seq !== _followApplySeq) return;
+    if(m.zoom && Math.abs(m.zoom - appState.zoom) >= 2){
+      try{ await window.setZoomAbsolute?.(m.zoom); }catch(e){}
+      if(seq !== _followApplySeq) return;
+    }
+    if(m.fracX != null && m.fracY != null){
+      window.applyPageScrollFraction?.(m.page || appState.currentPage, m.fracX, m.fracY);
+    }
+    _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh);
   }, 320);
 }
 

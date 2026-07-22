@@ -31,7 +31,14 @@ export function publishCanli(){
   const uid = _getUserKey();
   const fas = appState.aktifFasikul;
   if(!uid || !fas || !window._firestoreReady || !window._db) return;
-  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}`;
+  // Zoom + sayfa-göreli pan (fracX/fracY, bkz. getCurrentPageScrollFraction)
+  // de sig'e dahil — yoksa aynı sayfada sadece zoom/pan değişince 1500ms'lik
+  // dedup bunu "değişmedi" sayıp izleyene HİÇ yansıtmazdı.
+  const frac = window.getCurrentPageScrollFraction?.();
+  const zoom = Math.round(appState.zoom || 100);
+  const fracX = frac ? frac.fracX.toFixed(3) : '';
+  const fracY = frac ? frac.fracY.toFixed(3) : '';
+  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}|${zoom}|${fracX}|${fracY}`;
   const now = Date.now();
   if(sig === _lastPublishCanliSig && now - _lastPublishCanliAt < 1500) return;
   _lastPublishCanliSig = sig;
@@ -45,33 +52,73 @@ export function publishCanli(){
       fasikulId: fas.id,
       page: appState.currentPage || 1,
       altKonuId: appState.aktifAltKonu?.id || '',
+      zoom,
+      fracX: frac?.fracX ?? null,
+      fracY: frac?.fracY ?? null,
       by: _liveDeviceId(),
       ts: Date.now()
     }}, {merge:true}).catch(e=>console.warn('Canlı yayın hatası:',e));
   }, 200);
 }
 
+let _latestCanliData = null;
+let _openReaderPromise = null;
+let _openReaderFasikulId = null;
+
 function scheduleFollowCanli(d){
+  _latestCanliData = d;
   const seq = ++_followSeq;
   clearTimeout(_followTimer);
-  _followTimer = setTimeout(()=>_followCanli(d, seq), 90);
+  _followTimer = setTimeout(()=>_followCanli(seq), 90);
 }
 
-async function _followCanli(d, seq){
+// KÖK NEDEN (bağlantı gecikmesinde admin PDF'i baştaki sayfalara "kayıyordu"):
+// openReader() HER ZAMAN appState.currentPage=1 ile başlar, admin'in bu
+// fasiküldeki KENDİ son bıraktığı konuyu seçer (öğrencinin DEĞİL) ve sayfa 1'i
+// render eder — normalde bu fonksiyonun altındaki altKonuId/page adımları bunu
+// hemen düzeltir. Ama openReader() bir ağ isteği (GitHub JSON + PDF) içerir;
+// bağlantı yavaşsa bu adım uzar, o sırada öğrenciden YENİ bir konum gelirse
+// (yeni bir scheduleFollowCanli → yeni seq) ESKİ çağrı "if(seq!==_followSeq)
+// return" ile burada TERK EDİLİYORDU — açık sayfa 1 + admin'in eski konusu
+// olarak KALICI kalıyordu, hiç düzeltilmiyordu. Çözüm: (1) 'seq' ile iptal
+// ETMEK yerine her adımda EN GÜNCEL veriyi (_latestCanliData) yeniden okuyoruz
+// — hangi çağrı sona ererse ersin, sonuçta uygulanan hep en taze konum olur;
+// (2) aynı fasikül için ZATEN devam eden bir openReader() varsa YENİSİNİ
+// BAŞLATMAK yerine mevcut olanı bekliyoruz (art arda çakışan openReader
+// çağrıları hem gereksiz hem de kendi aralarında yarışıyordu).
+async function _followCanli(seq){
   appState._liveSuppress = true;
   try{
+    let d = _latestCanliData;
+    if(!d) return;
     if(d.fasikulId && appState.aktifFasikul?.id !== d.fasikulId){
-      await window.openReader?.(d.dersId, d.fasikulId);
-      if(seq !== _followSeq) return;
+      if(_openReaderPromise && _openReaderFasikulId === d.fasikulId){
+        await _openReaderPromise;
+      } else {
+        _openReaderFasikulId = d.fasikulId;
+        _openReaderPromise = Promise.resolve(window.openReader?.(d.dersId, d.fasikulId));
+        try{ await _openReaderPromise; } finally { _openReaderPromise = null; _openReaderFasikulId = null; }
+      }
+      d = _latestCanliData || d;   // beklerken daha yeni bir konum gelmiş olabilir
     }
     if(d.altKonuId && appState.aktifAltKonu?.id !== d.altKonuId){
       let foundAk = null;
       (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(ak=>{ if(ak.id===d.altKonuId) foundAk=ak; }));
       if(foundAk) window.selectAltKonu?.(foundAk, `altk-${foundAk.id}`);
-      if(seq !== _followSeq) return;
     }
+    d = _latestCanliData || d;
     if(d.page && appState.currentPage !== d.page){
       window.goToPage?.(d.page);
+    }
+    // Sayfa oturduktan SONRA zoom, SONRA pan — zoom kendi render+scroll-
+    // restore döngüsünü tetiklediğinden pan ondan ÖNCE uygulanırsa ezilir.
+    d = _latestCanliData || d;
+    if(d.zoom && Math.abs(d.zoom - appState.zoom) >= 2){
+      try{ await window.setZoomAbsolute?.(d.zoom); }catch(e){}
+    }
+    d = _latestCanliData || d;
+    if(d.fracX != null && d.fracY != null){
+      window.applyPageScrollFraction?.(d.page || appState.currentPage, d.fracX, d.fracY);
     }
   }catch(e){ console.warn('Canlı takip hatası:',e); }
   finally{ setTimeout(()=>{ appState._liveSuppress = false; }, 500); }
@@ -96,6 +143,7 @@ export function unsubscribeCanli(){
   clearTimeout(_followTimer);
   _followTimer = null;
   _followSeq++;
+  _latestCanliData = null;
 }
 
 export function toggleLiveSession(){
