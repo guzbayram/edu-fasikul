@@ -4299,40 +4299,65 @@ body.reader-locked .main-content{visibility:hidden!important}
   color:#fff!important;
   box-shadow:0 6px 14px rgba(124,92,255,.2)!important;
 }
+.reader-right .auto-timer-bar{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.reader-right .auto-timer-bar .timer-display,
+.reader-right .auto-timer-bar .tsk-action-btn,
+.reader-right .auto-timer-bar .atb-cikis{
+  width:100%!important;
+  min-width:0!important;
+  height:46px!important;
+  min-height:46px!important;
+  padding:0 8px!important;
+  border-radius:16px!important;
+  font-size:18px!important;
+  font-weight:800!important;
+}
 .reader-right .rp-tools-bar{
-  flex-wrap:nowrap!important;
-  overflow:hidden!important;
-  row-gap:0!important;
-  gap:3px!important;
-  height:var(--rp-row,32px)!important;
-  min-height:var(--rp-row,32px)!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:visible!important;
+  overflow-x:hidden!important;
+  row-gap:6px!important;
+  column-gap:6px!important;
+  height:auto!important;
+  min-height:104px!important;
+  padding:8px 10px!important;
 }
 .reader-right .rp-tools-bar .rp-brush-size{
-  flex:0 0 48px!important;
-  width:48px!important;
-  min-width:48px!important;
-  height:22px!important;
+  flex:0 0 96px!important;
+  width:96px!important;
+  min-width:96px!important;
+  height:26px!important;
 }
 .reader-right .rp-tools-bar [data-tool="tukenmez"],
 .reader-right .rp-tools-bar [data-tool="marker"],
-.reader-right .rp-tools-bar [data-tool="text"],
+.reader-right .rp-tools-bar [data-tool="text"]{
+  display:flex!important;
+}
 .reader-right .rp-tools-bar .rp-tools-sep,
 .reader-right .rp-tools-bar .eraser-size-group{
   display:none!important;
 }
 .reader-right .rp-tools-bar .tool-btn{
-  width:26px!important;
-  height:26px!important;
-  min-width:26px!important;
-  flex:0 0 26px!important;
-  border-radius:8px!important;
-  font-size:13px!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  flex:0 0 34px!important;
+  border-radius:10px!important;
+  font-size:16px!important;
 }
 .reader-right .rp-tools-bar .color-dot{
-  width:18px!important;
-  height:18px!important;
-  min-width:18px!important;
-  flex:0 0 18px!important;
+  width:24px!important;
+  height:24px!important;
+  min-width:24px!important;
+  flex:0 0 24px!important;
 }
 .reader-right .rp-zoom-bar .rp-page-nav{
   width:40px!important;
