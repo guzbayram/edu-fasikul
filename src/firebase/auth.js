@@ -53,7 +53,8 @@ function userSessionFromProfile(profile, fallbackName, uid){
     uid,
     assignedTeacherUid: profile.assignedTeacherUid || '',
     assignedTeacherEmail: profile.assignedTeacherEmail || '',
-    hiddenFasikulIds: Array.isArray(profile.hiddenFasikulIds) ? profile.hiddenFasikulIds : []
+    hiddenFasikulIds: Array.isArray(profile.hiddenFasikulIds) ? profile.hiddenFasikulIds : [],
+    visibleFasikulIds: Array.isArray(profile.visibleFasikulIds) ? profile.visibleFasikulIds : null
   };
 }
 
@@ -210,6 +211,10 @@ function manifestFasikulOptions(){
 }
 
 function visibleFasikulOptionsForStudent(student){
+  if(Array.isArray(student?.visibleFasikulIds)){
+    const visible = new Set(student.visibleFasikulIds);
+    return manifestFasikulOptions().filter(f=>visible.has(f.id));
+  }
   const hidden = new Set(Array.isArray(student?.hiddenFasikulIds) ? student.hiddenFasikulIds : []);
   return manifestFasikulOptions().filter(f=>!hidden.has(f.id));
 }
@@ -327,8 +332,14 @@ function selectedTopicPayloads(topicSelect){
 function renderFasikulVisibilityControls(user){
   if(!canManageUsers() || user.role === 'admin') return '';
   const staged = window._pendingFasikulVisibility?.[user.id];
-  const hidden = new Set(Array.isArray(staged) ? staged : (Array.isArray(user.hiddenFasikulIds) ? user.hiddenFasikulIds : []));
   const rows = manifestFasikulOptions();
+  const visible = Array.isArray(user.visibleFasikulIds) ? new Set(user.visibleFasikulIds) : null;
+  const hidden = new Set(Array.isArray(staged)
+    ? staged
+    : visible
+      ? rows.filter(row=>!visible.has(row.id)).map(row=>row.id)
+      : (Array.isArray(user.hiddenFasikulIds) ? user.hiddenFasikulIds : [])
+  );
   if(!rows.length) return '';
   return `
     <details class="fasikul-access-panel">
@@ -717,7 +728,6 @@ export function enterApp(name){
     window.renderDerslerGrid?.();
   }
 
-  // Onboarding turu kaldırıldı — girişte tur tetiklenmez
 }
 
 function prepareDashboardForCloudLoad(){
@@ -841,6 +851,7 @@ export async function addKullanici(){
       assignedTeacherEmail: role === 'ogrenci' ? (teacherProfile?.email || '') : '',
       assignedTeacherName: role === 'ogrenci' ? (teacherProfile?.name || '') : '',
       hiddenFasikulIds: [],
+      visibleFasikulIds: [],
       addedBy: appState.user?.email || 'admin',
       createdAt: new Date().toISOString()
     });
@@ -865,6 +876,7 @@ export async function addKullanici(){
           assignedTeacherEmail: role === 'ogrenci' ? (teacherProfile?.email || '') : '',
           assignedTeacherName: role === 'ogrenci' ? (teacherProfile?.name || '') : '',
           hiddenFasikulIds: [],
+          visibleFasikulIds: [],
           addedBy: appState.user?.email || 'admin',
           createdAt: new Date().toISOString()
         });
@@ -1579,7 +1591,10 @@ export async function applyUserFasikulVisibility(uid){
     return;
   }
   try{
-    await window._fsSetDoc(window._fsDoc(window._db,'kullanicilar',uid), {hiddenFasikulIds:staged}, {merge:true});
+    const allIds = manifestFasikulOptions().map(f=>f.id);
+    const hidden = new Set(staged);
+    const visibleFasikulIds = allIds.filter(id=>!hidden.has(id));
+    await window._fsSetDoc(window._fsDoc(window._db,'kullanicilar',uid), {hiddenFasikulIds:staged, visibleFasikulIds}, {merge:true});
     delete window._pendingFasikulVisibility[uid];
     window.showToast?.('Fasikül yetkileri onaylandı', 'success');
   }catch(e){

@@ -78,11 +78,7 @@ async function resetAllData(){
     }catch(e){ console.warn('Firestore sıfırlama hatası:',e); showToast('Bulut temizleme kısmi başarısız','error'); }
   }
 
-  // 5) Demo modu kapat
-  applyDemoMode(false);
-  const demoToggle = document.getElementById('demoDataToggle');
-  if(demoToggle){ demoToggle.textContent='Kapalı'; demoToggle.classList.add('off'); }
-  localStorage.setItem('edu_demo_mode','0');
+  localStorage.removeItem('edu_demo_mode');
 
   recalcFasikulProgress();
   updateDashboard();

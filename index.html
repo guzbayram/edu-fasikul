@@ -300,10 +300,6 @@
             <button class="pref-action pref-chip" onclick="exportData()">JSON İndir</button>
           </div>
           <div class="pref-row">
-            <span class="pref-label">🧪 Demo Verileri</span>
-            <button class="pref-action pref-toggle" id="demoDataToggle" onclick="toggleDemoData(this)">Açık</button>
-          </div>
-          <div class="pref-row">
             <span class="pref-label">Tüm verileri sıfırla</span>
             <button class="pref-action pref-chip" style="background:var(--red-dim);color:var(--red)" onclick="resetAllData()">🗑️ Sıfırla</button>
           </div>
@@ -490,6 +486,7 @@
         <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
         <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
         <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+        <button class="tool-btn trackpad-draw-btn" onclick="toggleTrackpadDrawMode()" title="Trackpad tek parmak çizim">▣</button>
       </div>
       <div class="tool-group eraser-size-group" style="display:none">
         <button class="tool-btn eraser-size-btn" data-esize="8" onclick="setEraserSize(this,8)" title="Küçük silgi"><span style="font-size:9px;line-height:1">⬤</span></button>
@@ -641,6 +638,7 @@
         <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
         <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
         <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+        <button class="tool-btn trackpad-draw-btn" onclick="toggleTrackpadDrawMode()" title="Trackpad tek parmak çizim">▣</button>
         <span class="eraser-size-group" style="display:none;gap:4px;align-items:center">
           <button class="tool-btn eraser-size-btn" data-esize="8" onclick="setEraserSize(this,8)" title="Küçük silgi"><span style="font-size:9px;line-height:1">⬤</span></button>
           <button class="tool-btn eraser-size-btn active" data-esize="22" onclick="setEraserSize(this,22)" title="Orta silgi"><span style="font-size:14px;line-height:1">⬤</span></button>
@@ -654,11 +652,14 @@
         <div class="color-dot" style="background:#d97706" data-color="#d97706" onclick="setColor(this)" title="Turuncu"></div>
         <div class="color-dot" style="background:#7c3aed" data-color="#7c3aed" onclick="setColor(this)" title="Mor"></div>
         <div class="color-dot" style="background:#db2777" data-color="#db2777" onclick="setColor(this)" title="Pembe"></div>
+        <input type="range" class="size-slider rp-brush-size" min="1" max="20" value="3" title="Kalınlık">
         <span class="rp-tools-sep"></span>
-        <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
-        <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
+        <span class="rp-row-break rp-action-break" aria-hidden="true"></span>
+        <button class="tool-btn rp-undo-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
+        <button class="tool-btn canli-roster-btn rp-live-btn" onclick="toggleCanliRoster()" title="Canlı — bu fasikülde olanları gör ve izle">📡<span class="crb-count"></span></button>
+        <button class="tool-btn rp-redo-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
         <span class="rp-tools-sep"></span>
-        <button class="tool-btn canli-roster-btn" onclick="toggleCanliRoster()" title="Canlı — bu fasikülde olanları gör ve izle">📡<span class="crb-count"></span></button>
+        <span class="rp-row-break rp-util-break" aria-hidden="true"></span>
         <button class="tool-btn rp-copy-btn" onclick="copySoruKart()" title="Soruyu kopyala — Gemini/GPT/Claude'a yapıştırıp çözüm sor">📋</button>
         <button class="tool-btn solution-card-btn" onclick="toggleCozumKart()" title="Çözüm Kartı / Soru Kartı">💡</button>
         <button class="tool-btn" onclick="openViewModeMenu(event)" title="Görünüm Modu">📄</button>
@@ -692,6 +693,7 @@
       <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
       <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
       <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
+      <button class="tool-btn trackpad-draw-btn" onclick="toggleTrackpadDrawMode()" title="Trackpad tek parmak çizim">▣</button>
     </div>
     <div class="sp-row sp-colors-row">
       <span class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></span>
@@ -702,13 +704,16 @@
       <span class="color-dot" style="background:#7c3aed" data-color="#7c3aed" onclick="setColor(this)" title="Mor"></span>
       <span class="color-dot" style="background:#db2777" data-color="#db2777" onclick="setColor(this)" title="Pembe"></span>
     </div>
+    <div class="sp-row sp-size-row">
+      <input type="range" class="size-slider sp-brush-size" min="1" max="20" value="3" title="Kalınlık">
+    </div>
     <div class="sp-row sp-actions-row">
       <button class="tool-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
+      <button class="tool-btn canli-roster-btn" onclick="toggleCanliRoster()" title="Canlı — bu fasikülde olanları gör ve izle">📡<span class="crb-count"></span></button>
       <button class="tool-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
     </div>
     <div class="sp-row sp-answers" id="spAnswers"></div>
     <div class="sp-row sp-util-row">
-      <button class="tool-btn canli-roster-btn" onclick="toggleCanliRoster()" title="Canlı — bu fasikülde olanları gör ve izle">📡<span class="crb-count"></span></button>
       <button class="tool-btn" onclick="copySoruKart()" title="Soruyu kopyala — LLM'e çözüm sor">📋</button>
       <button class="tool-btn solution-card-btn" onclick="toggleCozumKart()" title="Çözüm Kartı / Soru Kartı">💡</button>
       <button class="tool-btn" onclick="openViewModeMenu(event)" title="Görünüm Modu">📄</button>
@@ -848,17 +853,6 @@
 
 <!-- Toast -->
 <div class="toast-container" id="toastContainer"></div>
-
-<!-- Onboarding overlay -->
-<div id="onboardOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:340;backdrop-filter:blur(2px)"></div>
-<div id="onboardTip" class="onboard-tip" style="display:none">
-  <h4 id="onboardTitle">Hoş Geldin! 👋</h4>
-  <p id="onboardDesc">EduFasikül'e hoş geldin. Sana kısa bir tur yapayım.</p>
-  <div class="onboard-nav">
-    <div class="onboard-dots" id="onboardDots"></div>
-    <button class="onboard-btn" id="onboardNextBtn" onclick="onboardNext()">İleri →</button>
-  </div>
-</div>
 
 <!-- ═══════ DERS CRUD MODAL ═══════ -->
 <div class="modal-overlay" id="dersModal" onclick="event.target===this&&closeDersModal()">

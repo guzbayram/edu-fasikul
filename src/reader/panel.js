@@ -20,6 +20,7 @@ function renderSoruList(sorular){
     renderSoruStrip([]);
     updateTestProgress();
     document.getElementById('rpSoruSayisi').textContent = `${sorular?.length||0} Soru`;
+    updateSolutionCardButtons(false);
     return;
   }
 
@@ -30,8 +31,9 @@ function renderSoruList(sorular){
           <div style="font-size:32px;margin-bottom:8px">📭</div>
           <div style="font-size:13px">Bu bölümde soru bulunmuyor.</div>
         </div>
-      </div>`;
+    </div>`;
     updateTestProgress();
+    updateSolutionCardButtons(false);
     return;
   }
   if(appState.soruListMode === 'scroll'){
@@ -358,6 +360,7 @@ function renderTekSoruKartEl(card, sorular, idx){
 function renderTekSoruKart(sorular, idx){
   const card = document.getElementById('tekSoruCard');
   renderTekSoruKartEl(card, sorular, idx);
+  updateSolutionCardButtons(hasSolutionForQuestion(sorular?.[idx]));
   // Çözüm modu paleti açıksa A–E cevaplarını da güncelle
   window.renderSolveAnswers?.();
 }
@@ -412,6 +415,7 @@ function goToSoru(idx){
     }
     renderSoruStrip(sorular);
     updateTestProgress();
+    updateSolutionCardButtons(hasSolutionForQuestion(sorular[idx]));
   } else {
     renderTekSoruKart(sorular, idx);
     renderSoruStrip(sorular);
@@ -507,6 +511,27 @@ function getSolutionForQuestion(altKonu, soru){
   const solutionAlt = getSolutionAltKonu(parentKonu);
   if(!solutionAlt || !altKonu || isCozumAltKonu(altKonu) || !/^çözümlü sorular$/i.test(altKonu.ad || '')) return null;
   return (solutionAlt.sorular||[]).find(s=>s.no === soru.no) || null;
+}
+
+function hasSolutionForQuestion(soru=null){
+  if(!soru) return false;
+  const alt = appState.aktifAltKonu;
+  const parentKonu = getParentKonuForAlt(alt);
+  const solutionAlt = getSolutionAltKonu(parentKonu);
+  const solution = getSolutionForQuestion(alt, soru)
+    || (solutionAlt?.sorular||[]).find(s=>s.no === soru.no);
+  return !!(soru.cozumSayfa || solution?.sayfa);
+}
+
+function updateSolutionCardButtons(forceState=null){
+  const sorular = appState.aktifAltKonu?.sorular || [];
+  const hasSolution = forceState ?? hasSolutionForQuestion(sorular[appState.activeQuestionIdx]);
+  document.querySelectorAll('.solution-card-btn').forEach(btn=>{
+    btn.classList.toggle('is-disabled', !hasSolution);
+    btn.disabled = !hasSolution;
+    btn.title = hasSolution ? 'Çözüm Kartı / Soru Kartı' : 'Bu fasikülde/soruda çözüm kartı yok';
+    btn.setAttribute('aria-disabled', String(!hasSolution));
+  });
 }
 
 function findQuestionFlowIndexByPage(pageNum){

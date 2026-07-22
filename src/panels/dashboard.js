@@ -89,12 +89,14 @@ function visibleFasikullerFor(ders, seenDersIds=new Set()){
     })
     : allItems;
   if(appState.user?.role === 'admin') return base;
+  const explicitVisible = Array.isArray(appState.user?.visibleFasikulIds) ? new Set(appState.user.visibleFasikulIds) : null;
   const hidden = new Set(Array.isArray(appState.user?.hiddenFasikulIds) ? appState.user.hiddenFasikulIds : []);
   return base.filter(f=>{
     if(f.type === 'folder' && f.childDersId){
       const child = window.MANIFEST?.dersler?.find(d=>d.id===f.childDersId);
       return visibleFasikullerFor(child, new Set(seenDersIds)).length > 0;
     }
+    if(explicitVisible) return explicitVisible.has(f.id);
     return !hidden.has(f.id);
   });
 }
@@ -350,81 +352,6 @@ async function resetFasikulData(dersId, fasId){
   showToast(`Fasikül sıfırlandı — ${removedCount} hatalı silindi 🗑️`, 'success');
 }
 
-// ══════════════════════════════
-// HATALIJLAR
-// ══════════════════════════════
-const DEMO_STATS = {
-  streak:7, streakDelta:'↗ Devam et!',
-  totalSolved:142, solvedDelta:'↗ +12 bugün',
-  weekly:38, weeklyDelta:'↗ +8 geçen hafta',
-  accuracy:'%74', accuracyDelta:'↗ +5% geçen ay',
-  kpiSolved:142, kpiSolvedSub:'↗ Bu hafta +38',
-  kpiAccuracy:'%74', kpiAccuracySub:'↗ +5% geçen haftaya',
-  kpiTime:'18s', kpiTimeSub:'Bu ay 18 saat',
-  kpiLongest:'12🔥', kpiLongestSub:'Kişisel rekor'
-};
-function applyDemoStats(on){
-  const s = on ? DEMO_STATS : {
-    streak:0, streakDelta:'—',
-    totalSolved:0, solvedDelta:'—',
-    weekly:0, weeklyDelta:'—',
-    accuracy:'%0', accuracyDelta:'—',
-    kpiSolved:0, kpiSolvedSub:'—',
-    kpiAccuracy:'%0', kpiAccuracySub:'—',
-    kpiTime:'0s', kpiTimeSub:'—',
-    kpiLongest:'0🔥', kpiLongestSub:'—'
-  };
-  const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-  set('sidebarStreakCount', s.streak+' Gün');
-  set('statStreak', s.streak);
-  set('statStreakDelta', s.streakDelta);
-  set('totalSolved', s.totalSolved);
-  set('statSolvedDelta', s.solvedDelta);
-  set('statWeekly', s.weekly);
-  set('statWeeklyDelta', s.weeklyDelta);
-  set('statAccuracy', s.accuracy);
-  set('statAccuracyDelta', s.accuracyDelta);
-  set('kpiTotalSolved', s.kpiSolved);
-  set('kpiSolvedSub', s.kpiSolvedSub);
-  set('kpiAccuracy', s.kpiAccuracy);
-  set('kpiAccuracySub', s.kpiAccuracySub);
-  set('kpiTime', s.kpiTime);
-  set('kpiTimeSub', s.kpiTimeSub);
-  set('kpiLongestStreak', s.kpiLongest);
-  set('kpiLongestSub', s.kpiLongestSub);
-  set('profileSolved', s.totalSolved);
-  set('profileStreak', s.streak+'🔥');
-  set('profileAccuracy', s.accuracy);
-  // Streak dots
-  document.querySelectorAll('.streak-dot').forEach((d,i)=>{ d.classList.toggle('done', on && i<7); });
-}
-function applyDemoMode(on, persist=true){
-  window.DEMO_SNAPSHOT.forEach(sd=>{
-    const ders = window.MANIFEST.dersler.find(d=>d.id===sd.id);
-    if(!ders) return;
-    ders.progPct = on ? sd.progPct : 0;
-    sd.fasikuller.forEach(sf=>{
-      const fas = ders.fasikuller.find(f=>f.id===sf.id);
-      if(!fas) return;
-      fas.progPct = on ? sf.progPct : 0;
-      fas.sonCalisma = on ? sf.sonCalisma : '—';
-    });
-  });
-  if(persist) persistManifest();
-  applyDemoStats(on);
-  renderDerslerGrid();
-  // Açık olan fasikül çekmecesini de güncelle
-  if(window.currentDrawerDers){
-    renderFasikulCards(visibleFasikullerFor(window.currentDrawerDers), window.currentDrawerDers);
-  }
-}
-function toggleDemoData(btn){
-  const isOff = btn.classList.toggle('off');
-  btn.textContent = isOff ? 'Kapalı' : 'Açık';
-  localStorage.setItem('edu_demo_mode', isOff ? '0' : '1');
-  applyDemoMode(!isOff);
-  showToast(isOff ? 'Demo verileri kapatıldı' : 'Demo verileri açıldı', 'success');
-}
 function openDersModal(dersId, e, parentDersId=null){
   if(isGuestSession()){ showToast('Ders eklemek için yetkili hesabıyla giriş yapın','info'); return; }
   if(appState.user?.role!=='admin'){ showToast('Bu işlem sadece admin için açık','error'); return; }
@@ -1125,9 +1052,6 @@ window.safeDateKey = safeDateKey;
 window.getDailyCounts = getDailyCounts;
 window.calcCurrentStreak = calcCurrentStreak;
 window.resetFasikulData = resetFasikulData;
-window.applyDemoStats = applyDemoStats;
-window.applyDemoMode = applyDemoMode;
-window.toggleDemoData = toggleDemoData;
 window.openDersModal = openDersModal;
 window.openAltDersModal = openAltDersModal;
 window.closeDersModal = closeDersModal;

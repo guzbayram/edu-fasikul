@@ -499,6 +499,32 @@ body.reader-locked .main-content{visibility:hidden!important}
 .reader-canvas-wrap .canvas-container,
 .reader-canvas-wrap .upper-canvas,
 .reader-canvas-wrap .lower-canvas{ touch-action:none!important; }
+.reader-canvas-wrap .canvas-container{
+  z-index:30!important;
+  pointer-events:auto!important;
+}
+.reader-canvas-wrap .upper-canvas{
+  z-index:32!important;
+  pointer-events:auto!important;
+}
+.reader-canvas-wrap .lower-canvas{
+  z-index:31!important;
+  pointer-events:none!important;
+}
+.reader-canvas-wrap .pdf-page-wrap > canvas:not(.fabric-draw-canvas):not(.upper-canvas):not(.lower-canvas){
+  z-index:1!important;
+  pointer-events:none!important;
+}
+.reader-canvas-wrap,
+.reader-canvas-wrap *,
+.pdf-page-wrap,
+.pdf-page-wrap *,
+.pdf-page-wrap canvas{
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+  -webkit-user-drag:none!important;
+}
 
 /* Özel tooltip balonu (uzun-basışta açılır, otomatik gizlenir) */
 .tip-bubble{
@@ -685,6 +711,101 @@ body.reader-locked .main-content{visibility:hidden!important}
   }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Reader sol panel araç düzeni
+   - Kalınlık slider'ı tablet/telefon panelinde görünür.
+   - Geri al + canlı + ileri al aynı satır.
+   - Kopyala + çözüm kartı + görünüm modu ayrı yardımcı satır.
+   ───────────────────────────────────────────────────────────── */
+.rp-tools-bar .rp-brush-size,
+.solve-palette .sp-brush-size{
+  display:block!important;
+  width:min(150px,62%)!important;
+  height:28px!important;
+  accent-color:var(--mat)!important;
+  cursor:pointer!important;
+  flex:0 0 min(150px,62%)!important;
+}
+.rp-tools-bar .rp-row-break{
+  flex:0 0 100%!important;
+  width:100%!important;
+  height:0!important;
+  padding:0!important;
+  margin:0!important;
+}
+.rp-tools-bar .rp-undo-btn,
+.rp-tools-bar .rp-live-btn,
+.rp-tools-bar .rp-redo-btn{
+  order:20!important;
+}
+.rp-tools-bar .rp-action-break{order:19!important}
+.rp-tools-bar .rp-util-break{order:29!important}
+.rp-tools-bar .rp-copy-btn,
+.rp-tools-bar .solution-card-btn,
+.rp-tools-bar button[onclick*="openViewModeMenu"]{
+  order:30!important;
+}
+.solution-card-btn.is-disabled{
+  opacity:.36!important;
+  filter:grayscale(1)!important;
+  cursor:not-allowed!important;
+  box-shadow:none!important;
+}
+.auto-timer-bar .atb-cikis,
+.rp-back-fasikul-btn,
+.sp-exit{
+  background:linear-gradient(135deg,var(--mat),var(--mat-2,var(--mat)))!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(124,92,255,.22)!important;
+}
+
+@media (min-width:769px) and (orientation:portrait){
+  .rp-tools-bar .rp-brush-size{
+    flex:0 0 min(220px,70%)!important;
+    width:min(220px,70%)!important;
+  }
+}
+
+@media (orientation:landscape) and (max-height:500px){
+  .rp-tools-bar .rp-brush-size{
+    flex:0 0 min(132px,72%)!important;
+    width:min(132px,72%)!important;
+    height:24px!important;
+  }
+  .rp-tools-bar .rp-undo-btn,
+  .rp-tools-bar .rp-live-btn,
+  .rp-tools-bar .rp-redo-btn,
+  .rp-tools-bar .rp-copy-btn,
+  .rp-tools-bar .solution-card-btn,
+  .rp-tools-bar button[onclick*="openViewModeMenu"]{
+    width:32px!important;
+    height:32px!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-size-row{
+    display:flex!important;
+    grid-template-columns:none!important;
+    width:100%!important;
+    justify-content:center!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-size-row .sp-brush-size{
+    width:100%!important;
+    max-width:86px!important;
+    flex:0 0 86px!important;
+    height:22px!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-actions-row{
+    display:grid!important;
+    grid-template-columns:repeat(3, minmax(0,1fr))!important;
+    width:100%!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-util-row{
+    display:grid!important;
+    grid-template-columns:repeat(5, minmax(0,1fr))!important;
+    width:100%!important;
+  }
+}
+
 /* Kart: kalan alanın ORTASINDA (yatay+dikey), contain ile olabildiğince büyük; kayık olmasın */
 #reader-overlay.solve-mode .reader-page-stage{justify-content:center!important;align-items:center!important}
 #reader-overlay.solve-mode .reader-page-stage > *,
@@ -749,6 +870,13 @@ body.reader-locked .main-content{visibility:hidden!important}
 .tool-btn[data-tool="select"].active{
   background:var(--mat);color:#fff;border-color:var(--mat);
   box-shadow:0 0 0 2px var(--mat-glow),0 4px 12px rgba(76,29,149,.2);
+}
+.trackpad-draw-btn{
+  font-size:15px;
+}
+.trackpad-draw-btn.active{
+  background:var(--green);color:#fff;border-color:var(--green);
+  box-shadow:0 0 0 2px rgba(34,197,94,.2),0 4px 12px rgba(22,163,74,.24);
 }
 .tool-btn[title]:hover::after{
   content:attr(title);position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);
@@ -1244,6 +1372,27 @@ body.reader-locked .main-content{visibility:hidden!important}
 .watch-live-banner .wlb-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .watch-live-banner .wlb-stop{flex:none;padding:5px 12px;border:none;border-radius:99px;background:var(--red);color:#fff;font-weight:700;font-size:12px;cursor:pointer}
 .watch-live-banner .wlb-stop:hover{filter:brightness(1.08)}
+.watch-live-stats-panel{
+  position:fixed;top:58px;right:12px;z-index:9997;display:none;width:min(420px,calc(100vw - 24px));
+  padding:12px;border:1px solid var(--border-strong);border-radius:var(--radius);
+  background:rgba(255,255,255,.94);box-shadow:0 12px 36px rgba(0,0,0,.22);
+  backdrop-filter:blur(10px);font-family:var(--font-ui);color:var(--text-0);
+}
+[data-theme="dark"] .watch-live-stats-panel{background:rgba(21,18,38,.94)}
+.wls-head{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.wls-head .wlb-dot{width:9px;height:9px;border-radius:99px;background:var(--red);flex:none;animation:wlbPulse 1.1s infinite}
+.wls-head b{display:block;font-size:13px;line-height:1.1}
+.wls-head small{display:block;margin-top:2px;font-size:10px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wls-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.wls-card{min-width:0;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-2)}
+.wls-card b{display:block;font-size:18px;line-height:1.05;color:var(--mat)}
+.wls-card span{display:block;margin-top:4px;font-size:10px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wls-foot{display:flex;justify-content:space-between;gap:10px;margin-top:9px;font-size:11px;color:var(--text-muted)}
+.wls-foot span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:700px){
+  .watch-live-stats-panel{top:52px;left:8px;right:8px;width:auto}
+  .wls-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @keyframes wlbPulse{0%,100%{opacity:1}50%{opacity:.25}}
 
 /* Canlı katılımcı (roster) butonu + paneli */
@@ -1850,20 +1999,6 @@ body.reader-locked .main-content{visibility:hidden!important}
 .kb-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg-3);border-radius:var(--radius-sm)}
 .kb-key{background:var(--bg-5);border:1px solid var(--border-strong);padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;color:var(--text-0)}
 .kb-desc{font-size:12px;color:var(--text-muted)}
-
-/* Onboarding tooltip */
-.onboard-tip{
-  position:fixed;z-index:350;background:var(--bg-1);border:1px solid var(--mat);border-radius:var(--radius-lg);
-  padding:18px 20px;max-width:280px;box-shadow:var(--shadow-xl);
-  animation:modalIn .3s ease;
-}
-.onboard-tip h4{font-family:var(--font-display);font-size:15px;font-weight:700;margin-bottom:8px;color:var(--mat)}
-.onboard-tip p{font-size:13px;color:var(--text-1);line-height:1.5;margin-bottom:14px}
-.onboard-nav{display:flex;align-items:center;justify-content:space-between}
-.onboard-dots{display:flex;gap:5px}
-.onboard-dot{width:6px;height:6px;border-radius:99px;background:var(--bg-5)}
-.onboard-dot.active{background:var(--mat);width:14px}
-.onboard-btn{padding:7px 16px;background:var(--mat);color:#fff;border-radius:var(--radius-sm);font-size:13px;font-weight:600}
 
 /* ════ CONFETTI ════ */
 .confetti-piece{
@@ -2516,6 +2651,15 @@ body.reader-locked .main-content{visibility:hidden!important}
 .ctx-item:hover{background:var(--bg-3)}
 .ctx-item.ctx-active{background:var(--mat-dim);}
 .ctx-item.ctx-active > div > div:first-child{color:var(--mat)}
+#pdfContextMenu.ctx-modal{
+  min-width:min(320px,calc(100vw - 32px))!important;
+  padding:10px!important;
+  border-radius:18px!important;
+}
+#pdfContextMenu.ctx-modal .ctx-item{
+  min-height:54px;
+  padding:11px 12px;
+}
 
 /* ════════════════════════════════════════════════════════
    TWO-ROW STUDY CONTROLS + RIGHT TOOL PANEL

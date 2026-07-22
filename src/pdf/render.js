@@ -594,7 +594,7 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     const pdfCanvas = document.createElement('canvas');
     pdfCanvas.width = viewport.width;
     pdfCanvas.height = viewport.height;
-    pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;';
+    pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;z-index:1;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
     pdfCanvas.style.background = 'transparent';
     pageWrap.insertBefore(pdfCanvas, pageWrap.firstChild);
 
@@ -629,7 +629,7 @@ async function renderSinglePDFPage(pageNum, pageWrap){
     drawEl.className = 'fabric-draw-canvas';
     drawEl.width = viewport.width;
     drawEl.height = viewport.height;
-    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;';
+    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
     pageWrap.insertBefore(drawEl, pageWrap.querySelector('.page-num-label'));
 
     initFabricForPage(drawEl, viewport.width, viewport.height, pageNum, { disableRetinaScaling: true });
@@ -676,7 +676,7 @@ function renderSingleFallbackPage(pageNum, pageWrap){
   drawEl.className = 'fabric-draw-canvas';
   drawEl.width = displayW;
   drawEl.height = displayH;
-  drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;';
+  drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
   pageWrap.insertBefore(drawEl, pageWrap.querySelector('.page-num-label'));
   initFabricForPage(drawEl, displayW, displayH, pageNum);
 }
@@ -849,7 +849,7 @@ async function renderSinglePageMode(pageNum){
       const pdfCanvas = document.createElement('canvas');
       pdfCanvas.width = viewport.width;
       pdfCanvas.height = viewport.height;
-      pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;';
+      pdfCanvas.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;z-index:1;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
       pageWrap.appendChild(pdfCanvas);
 
       const ctx2d = pdfCanvas.getContext('2d');
@@ -879,7 +879,7 @@ async function renderSinglePageMode(pageNum){
       const drawEl = document.createElement('canvas');
       drawEl.className = 'fabric-draw-canvas';
       drawEl.width = viewport.width; drawEl.height = viewport.height;
-      drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;';
+      drawEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
       pageWrap.appendChild(drawEl);
       initFabricForPage(drawEl, viewport.width, viewport.height, pageNum, { disableRetinaScaling: true });
       const fc = appState.fabricCanvases[pageNum];
@@ -908,7 +908,7 @@ async function renderSinglePageMode(pageNum){
     const drawEl = document.createElement('canvas');
     drawEl.className = 'fabric-draw-canvas';
     drawEl.width = displayW; drawEl.height = displayH;
-    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;';
+    drawEl.style.cssText = 'position:absolute;top:0;left:0;width:' + displayW + 'px;height:' + displayH + 'px;z-index:20;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;';
     pageWrap.appendChild(drawEl);
     stage.appendChild(pageWrap);
     wrap.appendChild(stage);
@@ -931,9 +931,7 @@ function renderFallbackPage(pageNum){ renderPages(); }
 
 function setViewMode(mode){
   appState.viewMode = mode;
-  // Context menu'yu kapat
-  const cm = document.getElementById('pdfContextMenu');
-  if(cm) cm.style.display = 'none';
+  hideContextMenu();
   // Toolbar butonunu güncelle
   const btn = document.getElementById('viewModeBtn');
   if(btn) btn.textContent = mode === 'scroll' ? '📜' : '📄';
@@ -947,6 +945,17 @@ function initPDFContextMenu(){
   const wrap = document.getElementById('readerCanvasWrap');
 
   // Context menu DOM
+  let backdrop = document.getElementById('pdfContextBackdrop');
+  if(!backdrop){
+    backdrop = document.createElement('div');
+    backdrop.id = 'pdfContextBackdrop';
+    backdrop.style.cssText = `
+      position:fixed;inset:0;z-index:9998;background:rgba(15,12,35,.18);
+      backdrop-filter:blur(1px);display:none;
+    `;
+    backdrop.addEventListener('click', hideContextMenu);
+    document.body.appendChild(backdrop);
+  }
   let menu = document.getElementById('pdfContextMenu');
   if(!menu){
     menu = document.createElement('div');
@@ -968,12 +977,12 @@ function initPDFContextMenu(){
         <div><div style="font-weight:600;font-size:13px">Sürekli Kaydırma</div><div style="font-size:11px;color:var(--text-muted)">Tüm sayfalar dikey sırada</div></div>
       </button>
       <div style="height:1px;background:var(--border);margin:6px 0"></div>
-      <button class="ctx-item" onclick="promptPageJump();document.getElementById('pdfContextMenu').style.display='none'">
+      <button class="ctx-item" onclick="promptPageJump();hideContextMenu()">
         <span style="font-size:15px">🔢</span>
         <div><div style="font-weight:600;font-size:13px">Sayfaya Git…</div><div style="font-size:11px;color:var(--text-muted)">Sayfa numarası gir</div></div>
       </button>
       <div style="height:1px;background:var(--border);margin:6px 0"></div>
-      <button class="ctx-item" id="ctxFullscreen" onclick="window.toggleSolveMode&&window.toggleSolveMode();document.getElementById('pdfContextMenu').style.display='none'">
+      <button class="ctx-item" id="ctxFullscreen" onclick="window.toggleSolveMode&&window.toggleSolveMode();hideContextMenu()">
         <span style="font-size:15px">⛶</span>
         <div><div style="font-weight:600;font-size:13px">Tam Ekran</div><div style="font-size:11px;color:var(--text-muted)">Soru kartı tüm ekranı kaplar</div></div>
       </button>
@@ -982,27 +991,78 @@ function initPDFContextMenu(){
 
     // Dışarı tıklayınca kapat
     document.addEventListener('click', e=>{
-      if(!menu.contains(e.target)) menu.style.display = 'none';
+      if(!menu.contains(e.target)) hideContextMenu();
     });
   }
 
-  // Sağ tık (masaüstü) — initPDFContextMenu() her openReader()'da tekrar
-  // çağrılır; bu koruma OLMADAN her fasikül açılışında wrap'e BİR TANE DAHA
-  // 'contextmenu' dinleyicisi ekleniyor, birikip uzun oturumlarda gereksiz
-  // bellek/işlem tüketiyordu (initCardZoomPan/initLongPressDraw'daki aynı
-  // dataset bayrağı deseni burada da uygulanıyor).
+  // initPDFContextMenu() her openReader()'da tekrar çağrılır; bu koruma
+  // OLMADAN her fasikül açılışında wrap'e bir tane daha dinleyici ekleniyor,
+  // birikip uzun oturumlarda gereksiz bellek/işlem tüketiyordu
+  // (initCardZoomPan/initLongPressDraw'daki aynı dataset bayrağı deseni).
   if(!wrap.dataset.ctxMenuReady){
     wrap.dataset.ctxMenuReady = '1';
+    const isDrawingTool = ()=>['pen','tukenmez','marker','eraser','text'].includes(appState.drawTool);
+    const clearReaderSelection = ()=>{
+      try{
+        const sel = window.getSelection?.();
+        if(sel && !sel.isCollapsed) sel.removeAllRanges();
+      }catch(_e){}
+    };
+    const suppressNativeReaderMenu = e=>{
+      if(!e.target.closest?.('#readerCanvasWrap')) return;
+      if(e.target.closest?.('button,input,textarea,select,.tool-btn,.color-dot,.size-slider')) return;
+      if(!isDrawingTool()) return;
+      // KRİTİK: 'pointerdown'da preventDefault() çağırmak (fare/mouse için)
+      // tarayıcının bu pointer'dan türettiği 'mousedown' olayını TAMAMEN
+      // BASTIRIYOR — Fabric.js'in çizim/silme başlatma mantığı 'mouse:down'
+      // (native mousedown'dan) dinlediğinden masaüstünde farla çizim/silgi
+      // SESSİZCE çalışmaz oluyordu (ekran görüntüsüyle doğrulandı: mouse
+      // sürükleme hiçbir iz bırakmıyordu). Bu bastırma SADECE dokunma/kalemin
+      // tetiklediği Safari native menüsünü/metin seçimini engellemek için var;
+      // fare pointer'ında (e.pointerType==='mouse') dokunulmaz.
+      if(e.type === 'pointerdown' && e.pointerType === 'mouse') return;
+      e.preventDefault();
+      if(!['touchstart','pointerdown'].includes(e.type)) e.stopPropagation();
+      clearReaderSelection();
+    };
+    ['contextmenu','selectstart','webkitmouseforcewillbegin','touchstart','pointerdown'].forEach(type=>{
+      wrap.addEventListener(type, suppressNativeReaderMenu, { capture:true });
+    });
+    document.addEventListener('selectionchange', ()=>{
+      if(!document.getElementById('reader-overlay')?.classList.contains('open')) return;
+      if(!isDrawingTool()) return;
+      const sel = window.getSelection?.();
+      const node = sel?.anchorNode;
+      const el = node?.nodeType === 1 ? node : node?.parentElement;
+      if(el?.closest?.('#readerCanvasWrap')) clearReaderSelection();
+    });
+
+    // Sağ tık (masaüstü)
     wrap.addEventListener('contextmenu', e=>{
       e.preventDefault();
+      if(isDrawingTool()) return;
       showContextMenu(e.clientX, e.clientY);
     });
   }
 }
 
-function showContextMenu(x, y){
+function hideContextMenu(){
+  const menu = document.getElementById('pdfContextMenu');
+  const backdrop = document.getElementById('pdfContextBackdrop');
+  if(menu){
+    menu.style.display = 'none';
+    menu.classList.remove('ctx-modal');
+  }
+  if(backdrop) backdrop.style.display = 'none';
+}
+
+function showContextMenu(x, y, opts={}){
   const menu = document.getElementById('pdfContextMenu');
   if(!menu) return;
+  const asModal = !!opts.modal;
+  const backdrop = document.getElementById('pdfContextBackdrop');
+  menu.classList.toggle('ctx-modal', asModal);
+  if(backdrop) backdrop.style.display = asModal ? 'block' : 'none';
   document.getElementById('ctxSingle')?.classList.toggle('ctx-active', appState.viewMode === 'single');
   document.getElementById('ctxScroll')?.classList.toggle('ctx-active', appState.viewMode === 'scroll');
   // Önce göster ki gerçek boyut ölçülebilsin (max-height:85vh + scroll ile sınırlı)
@@ -1010,8 +1070,8 @@ function showContextMenu(x, y){
   menu.style.display = 'block';
   const mw = menu.offsetWidth || 200;
   const mh = menu.offsetHeight || 180;
-  const mx = Math.max(6, Math.min(x, window.innerWidth - mw - 6));
-  const my = Math.max(6, Math.min(y, window.innerHeight - mh - 6));
+  const mx = asModal ? Math.max(10, (window.innerWidth - mw) / 2) : Math.max(6, Math.min(x, window.innerWidth - mw - 6));
+  const my = asModal ? Math.max(10, (window.innerHeight - mh) / 2) : Math.max(6, Math.min(y, window.innerHeight - mh - 6));
   menu.style.left = mx + 'px';
   menu.style.top = my + 'px';
   menu.style.visibility = '';
@@ -1021,7 +1081,7 @@ function openViewModeMenu(e){
   e.stopPropagation();
   const menu = document.getElementById('pdfContextMenu');
   if(menu && menu.style.display === 'block'){
-    menu.style.display = 'none';
+    hideContextMenu();
     return;
   }
   // Menüyü TIKLANAN butonun altında konumlandır (sabit #viewModeBtn'e güvenme —
@@ -1520,14 +1580,20 @@ function initCardZoomPan(){
 
   const isGestureTarget = (target) =>
     !!target.closest('#readerCanvasWrap') && !target.closest('button,label,input,select,.reader-right,.reader-toolbar,.reader-bottom-bar');
+  const SCROLL_SPEED = 2;
 
   // ── Trackpad pinch (Chrome/Edge: ctrl/meta+wheel). Düz wheel'e HİÇ
-  // dokunmuyoruz — wrap zaten overflow:auto, tarayıcı native kaydırır.
+  // dokunmadan önce düz wheel'i daha hızlı kaydırma için elle uygularız.
   let wheelIdleTimer = null;
   wrap.addEventListener('wheel', (e) => {
     if(!document.getElementById('reader-overlay')?.classList.contains('open')) return;
     if(!isGestureTarget(e.target)) return;
-    if(!(e.ctrlKey || e.metaKey)) return; // düz wheel: native scroll'a bırak
+    if(!(e.ctrlKey || e.metaKey)){
+      e.preventDefault();
+      wrap.scrollLeft += e.deltaX * SCROLL_SPEED;
+      wrap.scrollTop += e.deltaY * SCROLL_SPEED;
+      return;
+    }
     e.preventDefault();
     if(!gz) beginZoomGesture(e.clientX, e.clientY);
     if(!gz) return; // wrap boş (henüz içerik yok)
@@ -1577,8 +1643,8 @@ function initCardZoomPan(){
   wrap.addEventListener('pointermove', (e) => {
     if(!isPanning) return;
     e.preventDefault();
-    wrap.scrollLeft = startScrollLeft - (e.clientX - startX);
-    wrap.scrollTop = startScrollTop - (e.clientY - startY);
+    wrap.scrollLeft = startScrollLeft - (e.clientX - startX) * SCROLL_SPEED;
+    wrap.scrollTop = startScrollTop - (e.clientY - startY) * SCROLL_SPEED;
   });
   const stopPan = (e) => {
     if(!isPanning) return;
@@ -1668,6 +1734,7 @@ function initLongPressDraw(){
 
   const MOVE_THRESHOLD = 8;   // px — jest "hareket etti" eşiği
   const MENU_HOLD = 1000;     // 1sn sabit basış → Görünüm Modu menüsü
+  const TOUCH_SCROLL_SPEED = 2;
   const FLICK_MAX_MS = 500;   // bu süreden hızlı + uzun kaydırma = flick
   const FLICK_MIN = 70;       // flick için min mesafe
   let s = null;
@@ -1676,13 +1743,34 @@ function initLongPressDraw(){
     if(e.touches.length !== 1){ if(s){ clearTimeout(s.menuTimer); s = null; } return; }
     const t = e.touches[0];
     if(t.touchType === 'stylus') return; // kalem → Fabric native çizim, HER ZAMAN, buraya hiç girmez
+    const onCanvas = !!e.target.closest('canvas');
+    const scrollable = wrap.scrollWidth > wrap.clientWidth + 1 || wrap.scrollHeight > wrap.clientHeight + 1;
+    const panEnabled = isTabletDevice() || appState.drawTool === 'select';
+    s = {
+      x0: t.clientX,
+      y0: t.clientY,
+      sl: wrap.scrollLeft,
+      st: wrap.scrollTop,
+      t0: Date.now(),
+      scrollable,
+      onCanvas,
+      panEnabled,
+      moved: false,
+      menuShown: false,
+      menuTimer: null
+    };
+    s.menuTimer = setTimeout(() => {
+      if(!s || s.menuShown || s.moved) return;
+      s.menuShown = true;
+      window.showContextMenu?.(s.x0, s.y0, { modal:true });
+      navigator.vibrate?.(15);
+    }, MENU_HOLD);
     // Tablette ARAÇ FARK ETMEKSİZİN, telefonda yalnız "Seç" aracında: parmak
     // HER ZAMAN pan'dir (GoodNotes/Notability tarzı: parmak gezinir, kalem
     // yazar). Diğer durumda (telefon + çizim aracı) tamamen Fabric'e bırak.
-    if(!isTabletDevice() && appState.drawTool !== 'select') return;
+    if(!panEnabled) return;
     // Canvas ÜZERİNDE mi başladı? Değilse (wrap'in boşluk/kenarı) native
     // scroll zaten çalışıyor, elle pan GEREKMİYOR — sadece TANIMA (menü/flick).
-    const onCanvas = !!e.target.closest('canvas');
     // KRİTİK: canvas'taki bu parmak dokunuşu, bir çizim aracı (Seç DIŞINDA
     // pen/tukenmez/marker/eraser/text) aktifken Fabric'e HİÇ ulaşmamalı —
     // aksi halde HEM biz pan ederiz HEM Fabric aynı dokunuşu çizim/silme
@@ -1694,14 +1782,6 @@ function initLongPressDraw(){
     // tetiklenmez; kendi iç "sürüklüyor" bayrağı (brush/silgi/seçim) hiç set
     // edilmediğinden sonraki touchmove/touchend'lar da Fabric için no-op olur.
     if(onCanvas && appState.drawTool !== 'select') e.stopPropagation();
-    const scrollable = wrap.scrollWidth > wrap.clientWidth + 1 || wrap.scrollHeight > wrap.clientHeight + 1;
-    s = { x0: t.clientX, y0: t.clientY, sl: wrap.scrollLeft, st: wrap.scrollTop, t0: Date.now(), scrollable, onCanvas, moved: false, menuShown: false, menuTimer: null };
-    s.menuTimer = setTimeout(() => {
-      if(!s || s.menuShown || s.moved) return;
-      s.menuShown = true;
-      window.showContextMenu?.(s.x0, s.y0);
-      navigator.vibrate?.(15);
-    }, MENU_HOLD);
   }, { capture: true, passive: true }); // CAPTURE: Fabric'e (target fazı) ulaşmadan ÖNCE karar verip gerekirse durdurmalıyız
 
   wrap.addEventListener('touchmove', e => {
@@ -1719,9 +1799,9 @@ function initLongPressDraw(){
     // Canvas üzerinde başladıysa (touch-action orada 'none', native pan
     // OLAMAZ) pan'i biz sürüyoruz. Canvas dışında native scroll zaten
     // çalışıyor, dokunmuyoruz.
-    if(s.moved && s.onCanvas){
-      wrap.scrollLeft = s.sl - (t.clientX - s.x0);
-      wrap.scrollTop = s.st - (t.clientY - s.y0);
+    if(s.moved && s.onCanvas && s.panEnabled){
+      wrap.scrollLeft = s.sl - (t.clientX - s.x0) * TOUCH_SCROLL_SPEED;
+      wrap.scrollTop = s.st - (t.clientY - s.y0) * TOUCH_SCROLL_SPEED;
     }
   }, { passive: true });
 
@@ -1803,6 +1883,7 @@ window.renderFallbackPage = renderFallbackPage;
 window.setViewMode = setViewMode;
 window.openViewModeMenu = openViewModeMenu;
 window.showContextMenu = showContextMenu;
+window.hideContextMenu = hideContextMenu;
 window.initPDFContextMenu = initPDFContextMenu;
 window.initTouchGestures = initTouchGestures;
 window.initLongPressDraw = initLongPressDraw;

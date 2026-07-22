@@ -50,6 +50,7 @@ export function publishCanli(){
     window._fsSetDoc(ref, { canli:{
       dersId: appState.aktifDers?.id || '',
       fasikulId: fas.id,
+      fasikulAd: fas.ad || fas.id,
       page: appState.currentPage || 1,
       altKonuId: appState.aktifAltKonu?.id || '',
       zoom,
@@ -130,7 +131,9 @@ export function subscribeCanli(uid){
   const ref = window._fsDoc(window._db,'kullanicilar',uid);
   _canliUnsub = window._fsOnSnapshot(ref, (snap)=>{
     if(!snap.exists() || snap.metadata.hasPendingWrites) return;
-    const d = snap.data()?.canli;
+    const docData = snap.data() || {};
+    if(appState.watchMode) _showWatchStatsPanel(docData.ad || docData.name || docData.email || 'Öğrenci', docData);
+    const d = docData.canli;
     if(!d || d.by === _liveDeviceId()) return;             // kendi yazdığımız
     if(d.ts && d.ts <= (appState._lastCanliTs||0)) return; // zaten uygulandı
     appState._lastCanliTs = d.ts || Date.now();
@@ -188,6 +191,42 @@ function _showWatchBanner(name){
   b.style.display = 'flex';
 }
 function _hideWatchBanner(){ const b=document.getElementById('watchLiveBanner'); if(b) b.style.display='none'; }
+function _showWatchStatsPanel(name, data={}){
+  let panel = document.getElementById('watchLiveStatsPanel');
+  if(!panel){
+    panel = document.createElement('div');
+    panel.id = 'watchLiveStatsPanel';
+    panel.className = 'watch-live-stats-panel';
+    document.body.appendChild(panel);
+  }
+  const stats = data.istatistik || {};
+  const total = Number(stats.toplam || 0);
+  const correct = Number(stats.dogru || 0);
+  const wrong = Number(stats.yanlis || 0);
+  const blank = Number(stats.bos || 0);
+  const accuracy = total ? Math.round((correct / total) * 100) : 0;
+  const net = correct - wrong / 4;
+  const weekly = data.haftalikCozulen ?? data.buHafta ?? total;
+  const last = data.canli?.fasikulAd || data.sonCalisma?.fasikulAd || data.lastFasikulAd || data.canli?.fasikulId || 'Canlı ekran';
+  panel.innerHTML = `
+    <div class="wls-head">
+      <span class="wlb-dot"></span>
+      <div><b>${_escName(name)||'Öğrenci'}</b><small>izleme modu</small></div>
+    </div>
+    <div class="wls-grid">
+      <div class="wls-card"><b>${total}</b><span>Toplam Çözülen</span></div>
+      <div class="wls-card"><b>${weekly}</b><span>Bu Hafta</span></div>
+      <div class="wls-card"><b>%${accuracy}</b><span>Başarı</span></div>
+      <div class="wls-card"><b>${Number.isFinite(net) ? net.toFixed(net % 1 ? 2 : 0) : '0'}</b><span>Net</span></div>
+    </div>
+    <div class="wls-foot">
+      <span>${_escName(last)}</span>
+      <span>${correct} doğru · ${wrong} yanlış · ${blank} boş</span>
+    </div>
+  `;
+  panel.style.display = 'block';
+}
+function _hideWatchStatsPanel(){ const p=document.getElementById('watchLiveStatsPanel'); if(p) p.style.display='none'; }
 
 export function watchStudentLive(studentUid, studentName){
   if(!studentUid){ window.showToast?.('Öğrenci seçilemedi','error'); return; }
@@ -202,6 +241,7 @@ export function watchStudentLive(studentUid, studentName){
   subscribeCanli(studentUid);
   subscribeRealtimeDrawings(studentUid);
   _showWatchBanner(studentName);
+  _showWatchStatsPanel(studentName, {});
   window.showToast?.(`🔴 ${studentName||'Öğrenci'} canlı izleniyor`,'success');
   // Öğrenci çevrimdışıysa / hiç yayın yoksa bilgilendir
   clearTimeout(appState._watchProbe);
@@ -219,6 +259,7 @@ export function stopWatchStudent(silent){
   unsubscribeCanli();
   unsubscribeRealtimeDrawings();
   _hideWatchBanner();
+  _hideWatchStatsPanel();
   if(wasWatching && !silent) window.showToast?.('Canlı izleme durduruldu','info');
 }
 
@@ -341,8 +382,11 @@ function subscribeUserProfile(uid){
   window._realtimeUnsubUserProfile = window._fsOnSnapshot(ref, (snap)=>{
     if(!snap.exists() || snap.metadata.hasPendingWrites || !appState.user) return;
     const data = snap.data() || {};
-    if(Array.isArray(data.hiddenFasikulIds) && !arraysSameOrderless(appState.user.hiddenFasikulIds, data.hiddenFasikulIds)){
-      appState.user.hiddenFasikulIds = data.hiddenFasikulIds;
+    const hiddenChanged = Array.isArray(data.hiddenFasikulIds) && !arraysSameOrderless(appState.user.hiddenFasikulIds, data.hiddenFasikulIds);
+    const visibleChanged = Array.isArray(data.visibleFasikulIds) && !arraysSameOrderless(appState.user.visibleFasikulIds || [], data.visibleFasikulIds);
+    if(hiddenChanged || visibleChanged){
+      if(Array.isArray(data.hiddenFasikulIds)) appState.user.hiddenFasikulIds = data.hiddenFasikulIds;
+      appState.user.visibleFasikulIds = Array.isArray(data.visibleFasikulIds) ? data.visibleFasikulIds : appState.user.visibleFasikulIds;
       refreshVisibleFasikulUi();
       window.showToast?.('Fasikül yetkileri güncellendi', 'success');
     }

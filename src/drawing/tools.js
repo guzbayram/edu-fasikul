@@ -18,6 +18,7 @@ function setTool(btn, tool){
     g.style.display = (tool==='eraser') ? 'inline-flex' : 'none';
   });
   applyTool(tool);
+  window.updateTrackpadDrawButtons?.();
 }
 
 function setEraserSize(btn, size){
@@ -180,8 +181,11 @@ function setColor(dot){
   });
 }
 
-document.getElementById('brushSize').addEventListener('input',e=>{
-  appState.brushSize = parseInt(e.target.value);
+function applyBrushSize(value){
+  appState.brushSize = parseInt(value, 10);
+  document.querySelectorAll('.size-slider').forEach(slider=>{
+    if(Number(slider.value) !== appState.brushSize) slider.value = String(appState.brushSize);
+  });
   const canvases = appState.viewMode === 'scroll'
     ? Object.values(appState.fabricCanvases)
     : (appState.fabricCanvas ? [appState.fabricCanvas] : []);
@@ -191,6 +195,11 @@ document.getElementById('brushSize').addEventListener('input',e=>{
       else fc.freeDrawingBrush.width=appState.brushSize;
     }
   });
+}
+
+document.querySelectorAll('.size-slider').forEach(slider=>{
+  slider.value = String(appState.brushSize || slider.value || 3);
+  slider.addEventListener('input', e=>applyBrushSize(e.target.value));
 });
 
 function undoDraw(){
