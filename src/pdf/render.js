@@ -75,7 +75,7 @@ async function loadPDFDocument(source, targetPage=1){
 appState.fabricCanvases = {};
 appState._pageObserver = null;
 appState._scrollingToPage = false;
-appState.viewMode = 'single'; // 'single' | 'scroll'
+appState.viewMode = 'scroll'; // 'single' | 'scroll'
 
 /**
  * Tüm sayfalar için placeholder div'ler oluşturur,
