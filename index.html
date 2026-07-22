@@ -486,7 +486,6 @@
         <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
         <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
         <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
-        <button class="tool-btn trackpad-draw-btn" onclick="toggleTrackpadDrawMode()" title="Trackpad tek parmak çizim">▣</button>
       </div>
       <div class="tool-group eraser-size-group" style="display:none">
         <button class="tool-btn eraser-size-btn" data-esize="8" onclick="setEraserSize(this,8)" title="Küçük silgi"><span style="font-size:9px;line-height:1">⬤</span></button>
@@ -590,7 +589,7 @@
         <div class="timer-display" id="timerDisplay">00:00</div>
         <span class="afk-indicator" id="afkIndicator" style="display:none" title="5 dk hareketsizlik — cevap işaretlediğinde devam eder">⏸ AFK</span>
         <button class="tsk-action-btn" onclick="finishTest()" title="Sonuçları Gör">📊 Bitir</button>
-        <button class="atb-cikis" onclick="closeReader()" title="Fasiküllere Dön">← Çık</button>
+        <button class="atb-cikis" onclick="closeReader()" title="Fasiküllere Dön">Çık</button>
       </div>
 
       <!-- Alt konu istatistikleri -->
@@ -623,12 +622,6 @@
           <span id="tpNet">Net: —</span>
         </div>
         <div class="tp-track"><div class="tp-fill" id="tpFill" style="width:0%"></div></div>
-        <div class="tp-nav">
-          <button class="tp-nav-btn tp-portrait-konu" onclick="openKonuList()" title="Konu Listesi">☰</button>
-          <button class="tp-nav-btn" onclick="prevQuestion()" title="Önceki soru">←</button>
-          <button class="tp-nav-btn" onclick="nextQuestion()" title="Sonraki soru">→</button>
-          <button class="rp-back-fasikul-btn" onclick="closeReader()" title="Fasiküllere Dön">← Çık</button>
-        </div>
       </div>
 
       <!-- Portrait çizim araçları satırı (portrait modda görünür) -->
@@ -638,7 +631,6 @@
         <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
         <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
         <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
-        <button class="tool-btn trackpad-draw-btn" onclick="toggleTrackpadDrawMode()" title="Trackpad tek parmak çizim">▣</button>
         <span class="eraser-size-group" style="display:none;gap:4px;align-items:center">
           <button class="tool-btn eraser-size-btn" data-esize="8" onclick="setEraserSize(this,8)" title="Küçük silgi"><span style="font-size:9px;line-height:1">⬤</span></button>
           <button class="tool-btn eraser-size-btn active" data-esize="22" onclick="setEraserSize(this,22)" title="Orta silgi"><span style="font-size:14px;line-height:1">⬤</span></button>
@@ -654,12 +646,10 @@
         <div class="color-dot" style="background:#db2777" data-color="#db2777" onclick="setColor(this)" title="Pembe"></div>
         <input type="range" class="size-slider rp-brush-size" min="1" max="20" value="3" title="Kalınlık">
         <span class="rp-tools-sep"></span>
-        <span class="rp-row-break rp-action-break" aria-hidden="true"></span>
         <button class="tool-btn rp-undo-btn" onclick="undoDraw()" title="Geri Al">↩️</button>
         <button class="tool-btn canli-roster-btn rp-live-btn" onclick="toggleCanliRoster()" title="Canlı — bu fasikülde olanları gör ve izle">📡<span class="crb-count"></span></button>
         <button class="tool-btn rp-redo-btn" onclick="redoDraw()" title="İleri Al">↪️</button>
         <span class="rp-tools-sep"></span>
-        <span class="rp-row-break rp-util-break" aria-hidden="true"></span>
         <button class="tool-btn rp-copy-btn" onclick="copySoruKart()" title="Soruyu kopyala — Gemini/GPT/Claude'a yapıştırıp çözüm sor">📋</button>
         <button class="tool-btn solution-card-btn" onclick="toggleCozumKart()" title="Çözüm Kartı / Soru Kartı">💡</button>
         <button class="tool-btn" onclick="openViewModeMenu(event)" title="Görünüm Modu">📄</button>
@@ -693,7 +683,6 @@
       <button class="tool-btn" data-tool="marker" onclick="setTool(this,'marker')" title="Fosforlu">🖍️</button>
       <button class="tool-btn" data-tool="text" onclick="setTool(this,'text')" title="Metin Kutusu">🔤</button>
       <button class="tool-btn" data-tool="eraser" onclick="setTool(this,'eraser')" title="Silgi">🗑️</button>
-      <button class="tool-btn trackpad-draw-btn" onclick="toggleTrackpadDrawMode()" title="Trackpad tek parmak çizim">▣</button>
     </div>
     <div class="sp-row sp-colors-row">
       <span class="color-dot" style="background:#1a1a2e" data-color="#1a1a2e" onclick="setColor(this)" title="Siyah"></span>

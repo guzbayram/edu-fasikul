@@ -18,7 +18,6 @@ function setTool(btn, tool){
     g.style.display = (tool==='eraser') ? 'inline-flex' : 'none';
   });
   applyTool(tool);
-  window.updateTrackpadDrawButtons?.();
 }
 
 function setEraserSize(btn, size){

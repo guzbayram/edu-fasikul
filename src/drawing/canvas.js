@@ -56,144 +56,6 @@ function localCanvasJSON(fc){
 }
 window._localCanvasJSON = localCanvasJSON;
 
-const TRACKPAD_DRAW_IDLE_MS = 65;
-const TRACKPAD_DRAW_GAP_MS = 55;
-const TRACKPAD_DRAW_MIN_DIST = 1.6;
-const TRACKPAD_DRAW_MAX_JOIN_DIST = 28;
-const TRACKPAD_DRAW_TOOLS = ['pen', 'tukenmez', 'marker'];
-
-function loadTrackpadDrawMode(){
-  try{ appState.trackpadDrawMode = localStorage.getItem('edu_trackpad_draw_mode') === '1'; }catch(e){}
-}
-loadTrackpadDrawMode();
-
-function updateTrackpadDrawButtons(){
-  document.querySelectorAll('.trackpad-draw-btn').forEach(btn=>{
-    btn.classList.toggle('active', !!appState.trackpadDrawMode);
-    btn.setAttribute('aria-pressed', appState.trackpadDrawMode ? 'true' : 'false');
-  });
-}
-
-function toggleTrackpadDrawMode(){
-  appState.trackpadDrawMode = !appState.trackpadDrawMode;
-  try{ localStorage.setItem('edu_trackpad_draw_mode', appState.trackpadDrawMode ? '1' : '0'); }catch(e){}
-  updateTrackpadDrawButtons();
-  const msg = appState.trackpadDrawMode
-    ? 'Trackpad tek parmak çizim açık'
-    : 'Trackpad tek parmak çizim kapalı';
-  window.showToast?.(msg, appState.trackpadDrawMode ? 'success' : 'info');
-}
-window.toggleTrackpadDrawMode = toggleTrackpadDrawMode;
-window.updateTrackpadDrawButtons = updateTrackpadDrawButtons;
-
-function isTrackpadDrawEnabledForCurrentTool(){
-  return !!appState.trackpadDrawMode && TRACKPAD_DRAW_TOOLS.includes(appState.drawTool);
-}
-
-function getTrackpadStrokeStyle(){
-  const baseWidth = Math.max(1, appState.brushSize || 3);
-  if(appState.drawTool === 'marker'){
-    return { color: `${appState.drawColor}66`, width: baseWidth * 4 };
-  }
-  if(appState.drawTool === 'tukenmez'){
-    return { color: appState.drawColor, width: Math.max(1, baseWidth * 0.6) };
-  }
-  return { color: appState.drawColor, width: baseWidth };
-}
-
-function activateCanvasForTrackpad(fc){
-  const pageNum = Number(fc?._pageNum || appState.currentPage || 1);
-  if(fc && appState.fabricCanvas !== fc) appState.fabricCanvas = fc;
-  if(pageNum && appState.currentPage !== pageNum){
-    saveDrawingForPage(appState.currentPage);
-    appState.currentPage = pageNum;
-    appState.fabricCanvas = fc;
-    applyTool(appState.drawTool);
-    window.updatePageIndicator?.();
-    const prev = document.getElementById('prevPageBtn');
-    const next = document.getElementById('nextPageBtn');
-    if(prev) prev.disabled = pageNum === 1;
-    if(next) next.disabled = pageNum === appState.totalPages;
-  }
-}
-
-function pointDistance(a, b){
-  return Math.hypot((a?.x || 0) - (b?.x || 0), (a?.y || 0) - (b?.y || 0));
-}
-
-function trackpadPointToPath(points){
-  if(!points?.length) return '';
-  return points.map((p, i)=>`${i ? 'L' : 'M'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');
-}
-
-function finishTrackpadStroke(fc){
-  const s = fc?._trackpadStroke;
-  if(!fc || !s) return;
-  clearTimeout(s.timer);
-  fc._trackpadStroke = null;
-  if(!isTrackpadDrawEnabledForCurrentTool() || s.points.length < 2) return;
-  const style = getTrackpadStrokeStyle();
-  const path = new fabric.Path(trackpadPointToPath(s.points), {
-    fill: '',
-    stroke: style.color,
-    strokeWidth: style.width,
-    strokeLineCap: 'round',
-    strokeLineJoin: 'round',
-    selectable: false,
-    evented: true
-  });
-  fc.add(path);
-  fc.requestRenderAll();
-  rememberCanvasDrawTap();
-}
-
-function bindTrackpadDrawMode(fc){
-  if(!fc?.upperCanvasEl || fc._trackpadDrawReady) return;
-  fc._trackpadDrawReady = true;
-  const move = e=>{
-    if(!isTrackpadDrawEnabledForCurrentTool()) return;
-    if(e.buttons !== 0 || e.ctrlKey || e.metaKey || e.altKey) return;
-    if(fc._loadingDrawing || fc._applyingRemoteDrawing) return;
-    const p = fc.getPointer(e, true);
-    if(!Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
-    if(p.x < 0 || p.y < 0 || p.x > fc.width || p.y > fc.height){
-      finishTrackpadStroke(fc);
-      return;
-    }
-    e.preventDefault();
-    activateCanvasForTrackpad(fc);
-    const now = Date.now();
-    let s = fc._trackpadStroke;
-    if(s && s.lastAt && now - s.lastAt > TRACKPAD_DRAW_GAP_MS){
-      finishTrackpadStroke(fc);
-      s = null;
-    }
-    if(!s){
-      s = fc._trackpadStroke = { points: [p], timer: null, lastAt: now };
-      rememberCanvasDrawTap();
-      s.timer = setTimeout(()=>finishTrackpadStroke(fc), TRACKPAD_DRAW_IDLE_MS);
-      return;
-    }
-    const last = s.points[s.points.length - 1];
-    const dist = pointDistance(last, p);
-    if(dist > TRACKPAD_DRAW_MAX_JOIN_DIST){
-      finishTrackpadStroke(fc);
-      fc._trackpadStroke = { points: [p], timer: setTimeout(()=>finishTrackpadStroke(fc), TRACKPAD_DRAW_IDLE_MS), lastAt: now };
-      rememberCanvasDrawTap();
-      return;
-    }
-    if(dist >= TRACKPAD_DRAW_MIN_DIST) s.points.push(p);
-    s.lastAt = now;
-    clearTimeout(s.timer);
-    s.timer = setTimeout(()=>finishTrackpadStroke(fc), TRACKPAD_DRAW_IDLE_MS);
-  };
-  const end = ()=>finishTrackpadStroke(fc);
-  fc.upperCanvasEl.addEventListener('mousemove', move, { passive: false });
-  fc.upperCanvasEl.addEventListener('mouseleave', end, { passive: true });
-  fc.upperCanvasEl.addEventListener('mousedown', end, { passive: true });
-  fc.upperCanvasEl.addEventListener('wheel', end, { passive: true });
-}
-
 // KÖK NEDEN (yatay çizim kayması): Fabric'in getPointer'ı, dokunma noktasını
 // `clientX + getScrollLeftTop(target)` (tüm üst elementlerin scroll toplamı, canvas-wrap
 // scrollTop'u dahil) - calcOffset offset'i ile hesaplıyor. Bizim canvas-wrap iç-scroll'u
@@ -302,7 +164,6 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   });
   patchGetPointer(fc);
   bindCanvasDrawTapMemory(fc);
-  bindTrackpadDrawMode(fc);
   liftFabricHitLayer(fc);
   fc._pageNum = pageNum;
   appState.fabricCanvases[pageNum] = fc;
@@ -469,7 +330,6 @@ function initFabricOnCanvas(canvasEl, w, h){
   });
   patchGetPointer(fc);
   bindCanvasDrawTapMemory(fc);
-  bindTrackpadDrawMode(fc);
   liftFabricHitLayer(fc);
   appState.fabricCanvas = fc;
 
@@ -584,5 +444,3 @@ window.debounceAutoSave = debounceAutoSave;
 window.saveDrawing = saveDrawing;
 window.isFabricTextEditing = isFabricTextEditing;
 window.flushActiveTextEditing = flushActiveTextEditing;
-updateTrackpadDrawButtons();
-document.addEventListener('DOMContentLoaded', updateTrackpadDrawButtons, { once: true });
