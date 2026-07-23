@@ -191,14 +191,34 @@ function _showWatchBanner(name){
   b.style.display = 'flex';
 }
 function _hideWatchBanner(){ const b=document.getElementById('watchLiveBanner'); if(b) b.style.display='none'; }
+function _placeWatchStatsPanel(panel){
+  const host = document.getElementById('rpSoruSection');
+  const after = document.getElementById('soruList');
+  if(host && after && panel.parentElement !== host){
+    after.insertAdjacentElement('afterend', panel);
+    panel.classList.add('in-reader-panel');
+  }else if(!host && panel.parentElement !== document.body){
+    document.body.appendChild(panel);
+    panel.classList.remove('in-reader-panel');
+  }
+}
+function toggleWatchStatsPanel(){
+  const panel = document.getElementById('watchLiveStatsPanel');
+  if(!panel) return;
+  panel.classList.toggle('collapsed');
+  const btn = panel.querySelector('.wls-toggle');
+  if(btn) btn.textContent = panel.classList.contains('collapsed') ? 'Aç' : 'Kapat';
+}
+window.toggleWatchStatsPanel = toggleWatchStatsPanel;
 function _showWatchStatsPanel(name, data={}){
   let panel = document.getElementById('watchLiveStatsPanel');
   if(!panel){
     panel = document.createElement('div');
     panel.id = 'watchLiveStatsPanel';
     panel.className = 'watch-live-stats-panel';
-    document.body.appendChild(panel);
   }
+  _placeWatchStatsPanel(panel);
+  const collapsed = panel.classList.contains('collapsed');
   const stats = data.istatistik || {};
   const total = Number(stats.toplam || 0);
   const correct = Number(stats.dogru || 0);
@@ -212,18 +232,22 @@ function _showWatchStatsPanel(name, data={}){
     <div class="wls-head">
       <span class="wlb-dot"></span>
       <div><b>${_escName(name)||'Öğrenci'}</b><small>izleme modu</small></div>
+      <button class="wls-toggle" onclick="toggleWatchStatsPanel()">${collapsed ? 'Aç' : 'Kapat'}</button>
     </div>
-    <div class="wls-grid">
-      <div class="wls-card"><b>${total}</b><span>Toplam Çözülen</span></div>
-      <div class="wls-card"><b>${weekly}</b><span>Bu Hafta</span></div>
-      <div class="wls-card"><b>%${accuracy}</b><span>Başarı</span></div>
-      <div class="wls-card"><b>${Number.isFinite(net) ? net.toFixed(net % 1 ? 2 : 0) : '0'}</b><span>Net</span></div>
-    </div>
-    <div class="wls-foot">
-      <span>${_escName(last)}</span>
-      <span>${correct} doğru · ${wrong} yanlış · ${blank} boş</span>
+    <div class="wls-body">
+      <div class="wls-grid">
+        <div class="wls-card"><b>${total}</b><span>Toplam Çözülen</span></div>
+        <div class="wls-card"><b>${weekly}</b><span>Bu Hafta</span></div>
+        <div class="wls-card"><b>%${accuracy}</b><span>Başarı</span></div>
+        <div class="wls-card"><b>${Number.isFinite(net) ? net.toFixed(net % 1 ? 2 : 0) : '0'}</b><span>Net</span></div>
+      </div>
+      <div class="wls-foot">
+        <span>${_escName(last)}</span>
+        <span>${correct} doğru · ${wrong} yanlış · ${blank} boş</span>
+      </div>
     </div>
   `;
+  panel.classList.toggle('collapsed', collapsed);
   panel.style.display = 'block';
 }
 function _hideWatchStatsPanel(){ const p=document.getElementById('watchLiveStatsPanel'); if(p) p.style.display='none'; }
