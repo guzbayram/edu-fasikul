@@ -20,6 +20,7 @@ let voiceReady = false;
 let lastHandRaised = new Set();
 let signalSeq = 0;
 let pendingGrant = null;
+let voicePlaybackBlocked = false;
 const peers = new Map();
 const remoteAudio = new Map();
 const pendingCandidates = new Map();
@@ -45,6 +46,28 @@ function showStatus(msg, type = 'info') {
 
 function closeVoiceGrantPrompt() {
   document.getElementById('voiceGrantPrompt')?.remove();
+}
+
+function closeVoicePlaybackPrompt() {
+  document.getElementById('voicePlaybackPrompt')?.remove();
+}
+
+function renderVoicePlaybackPrompt() {
+  if (!voicePlaybackBlocked || !remoteAudio.size) {
+    closeVoicePlaybackPrompt();
+    return;
+  }
+  let panel = document.getElementById('voicePlaybackPrompt');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'voicePlaybackPrompt';
+    panel.className = 'voice-playback-prompt';
+    document.body.appendChild(panel);
+  }
+  panel.innerHTML = `
+    <span>Karşı tarafın sesi hazır.</span>
+    <button onclick="playVoiceAudio()">Sesi Başlat</button>
+  `;
 }
 
 function renderVoiceGrantPrompt() {
@@ -83,6 +106,12 @@ function queueForVoice() {
     .sort((a, b) => (a.voice?.raisedAt || 0) - (b.voice?.raisedAt || 0));
 }
 
+function serializeSignalPayload(payload) {
+  if (!payload) return {};
+  if (typeof payload.toJSON === 'function') return payload.toJSON();
+  return payload;
+}
+
 function publishVoicePresence(extra = {}) {
   const user = me();
   const ref = memberRef(user?.uid);
@@ -117,7 +146,7 @@ async function sendSignal(to, type, payload = {}) {
     from: user.uid,
     fromName: user.name,
     type,
-    payload,
+    payload: serializeSignalPayload(payload),
     createdAt: Date.now()
   });
 }
@@ -193,7 +222,9 @@ export function voiceLeaveRoom() {
   voiceReady = false;
   voiceRoster = [];
   pendingGrant = null;
+  voicePlaybackBlocked = false;
   closeVoiceGrantPrompt();
+  closeVoicePlaybackPrompt();
   lastHandRaised.clear();
   peers.forEach((_, uid) => closePeer(uid));
   if (localStream) {
@@ -221,7 +252,10 @@ function createPeer(uid) {
   pc.onicecandidate = event => {
     if (event.candidate) sendSignal(uid, 'ice', event.candidate).catch(console.warn);
   };
-  pc.ontrack = event => attachRemoteAudio(uid, event.streams[0]);
+  pc.ontrack = event => {
+    attachRemoteAudio(uid, event.streams[0]);
+    showStatus('Karşı tarafın sesi bağlandı.', 'success');
+  };
   pc.onconnectionstatechange = renderVoiceUi;
   pc.oniceconnectionstatechange = renderVoiceUi;
   return pc;
@@ -295,13 +329,22 @@ function attachRemoteAudio(uid, stream) {
     audio = document.createElement('audio');
     audio.autoplay = true;
     audio.playsInline = true;
+    audio.muted = false;
+    audio.volume = 1;
     audio.dataset.voiceUid = uid;
     audio.style.display = 'none';
     document.body.appendChild(audio);
     remoteAudio.set(uid, audio);
   }
   audio.srcObject = stream;
-  audio.play?.().catch(() => showStatus('Sesi başlatmak için ekrana bir kez dokunman gerekebilir.', 'info'));
+  audio.play?.().then(() => {
+    voicePlaybackBlocked = false;
+    closeVoicePlaybackPrompt();
+  }).catch(() => {
+    voicePlaybackBlocked = true;
+    showStatus('Sesi başlatmak için Sesi Başlat düğmesine dokun.', 'info');
+    renderVoicePlaybackPrompt();
+  });
 }
 
 function closePeer(uid, refresh = true) {
@@ -312,6 +355,10 @@ function closePeer(uid, refresh = true) {
   const audio = remoteAudio.get(uid);
   if (audio) audio.remove();
   remoteAudio.delete(uid);
+  if (!remoteAudio.size) {
+    voicePlaybackBlocked = false;
+    closeVoicePlaybackPrompt();
+  }
   if (refresh) renderVoiceUi();
 }
 
@@ -403,6 +450,22 @@ export function leaveVoiceCall(uid) {
   else peers.forEach((_, peerUid) => closePeer(peerUid));
 }
 
+export async function playVoiceAudio() {
+  try {
+    await Promise.all(Array.from(remoteAudio.values()).map(audio => {
+      audio.muted = false;
+      audio.volume = 1;
+      return audio.play?.();
+    }));
+    voicePlaybackBlocked = false;
+    closeVoicePlaybackPrompt();
+  } catch (error) {
+    voicePlaybackBlocked = true;
+    renderVoicePlaybackPrompt();
+    showStatus('Tarayıcı sesi başlatamadı. Sayfaya bir kez dokunup tekrar dene.', 'error');
+  }
+}
+
 export function voiceSelfPanel() {
   const user = me();
   if (!user) return '';
@@ -449,6 +512,7 @@ export function voiceRosterControls(member, currentUser) {
 
 function renderVoiceUi() {
   renderVoiceGrantPrompt();
+  renderVoicePlaybackPrompt();
   window.renderCanliRoster?.();
 }
 
@@ -459,6 +523,7 @@ window.voiceRosterControls = voiceRosterControls;
 window.raiseHandForVoice = raiseHandForVoice;
 window.acceptVoiceGrant = acceptVoiceGrant;
 window.rejectVoiceGrant = rejectVoiceGrant;
+window.playVoiceAudio = playVoiceAudio;
 window.grantVoice = grantVoice;
 window.muteVoiceUser = muteVoiceUser;
 window.muteAllVoice = muteAllVoice;
