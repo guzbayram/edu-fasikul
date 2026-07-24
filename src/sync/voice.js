@@ -1,23 +1,27 @@
 import { appState } from '../state/appState.js';
 import { _getUserKey } from '../firebase/firestore.js';
+import { db, doc, setDoc, collection, onSnapshot, deleteDoc, query, where } from '../firebase/init.js';
 
-const DEFAULT_SIGNALING_URL = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-  ? 'http://localhost:3001'
-  : '';
-const SIGNALING_URL = window.EDU_VOICE_SIGNALING_URL || DEFAULT_SIGNALING_URL;
+// Ses verisi WebRTC ile doğrudan katılımcılar arasında akar. Firestore yalnızca
+// offer/answer/ICE ve el kaldırma gibi küçük, kısa ömürlü signaling verisini taşır.
 const ICE_SERVERS = [
   { urls: 'stun:stun.l.google.com:19302' },
   { urls: 'stun:stun1.l.google.com:19302' }
 ];
+const VOICE_HEARTBEAT_MS = 15000;
 
-let socket = null;
-let socketLoadPromise = null;
 let localStream = null;
 let roomId = '';
 let voiceRoster = [];
-let voiceQueue = [];
+let rosterUnsub = null;
+let signalUnsub = null;
+let heartbeatTimer = null;
+let voiceReady = false;
+let lastHandRaised = new Set();
+let signalSeq = 0;
 const peers = new Map();
 const remoteAudio = new Map();
+const pendingCandidates = new Map();
 
 function esc(s) {
   return String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
@@ -38,95 +42,133 @@ function showStatus(msg, type = 'info') {
   window.showToast?.(msg, type);
 }
 
-async function loadSocketClient() {
-  if (window.io) return;
-  if (!SIGNALING_URL) throw new Error('Signaling URL tanımlı değil.');
-  if (!socketLoadPromise) {
-    socketLoadPromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = `${SIGNALING_URL}/socket.io/socket.io.js`;
-      script.async = true;
-      script.onload = resolve;
-      script.onerror = () => reject(new Error('Socket.io client yüklenemedi.'));
-      document.head.appendChild(script);
-    });
-  }
-  await socketLoadPromise;
+function memberRef(uid = me()?.uid) {
+  return uid && roomId ? doc(db, 'canliOturum', roomId, 'uyeler', uid) : null;
 }
 
-async function ensureSocket() {
-  if (!SIGNALING_URL) throw new Error('Canlı ses için HTTPS destekli signaling sunucusu tanımlanmalı.');
-  await loadSocketClient();
-  if (socket?.connected) return socket;
-  socket = window.io(SIGNALING_URL, {
-    transports: ['websocket', 'polling'],
-    reconnection: true,
-    reconnectionAttempts: Infinity,
-    timeout: 8000
-  });
-
-  socket.on('connect', () => {
-    if (roomId) emitJoin(roomId);
-    renderVoiceUi();
-  });
-  socket.on('disconnect', () => {
-    renderVoiceUi();
-    showStatus('Ses bağlantısı koptu; yeniden bağlanıyor.', 'info');
-  });
-  socket.on('voice:roster', list => {
-    voiceRoster = Array.isArray(list) ? list : [];
-    renderVoiceUi();
-  });
-  socket.on('voice:queue', list => {
-    voiceQueue = Array.isArray(list) ? list : [];
-    renderVoiceUi();
-  });
-  socket.on('voice:hand-raised', ({ name }) => {
-    if (isTeacher()) {
-      showStatus(`✋ ${name || 'Öğrenci'} konuşmak istiyor`, 'info');
-      window.eduNotify?.('Öğrenci el kaldırdı', `${name || 'Öğrenci'} konuşmak istiyor`);
-    }
-  });
-  socket.on('voice:granted', async ({ from, name }) => {
-    showStatus(`${name || 'Öğretmen'} mikrofon izni verdi`, 'success');
-    await startCall(from, true);
-  });
-  socket.on('voice:grant-sent', async ({ to }) => {
-    await startCall(to, false);
-  });
-  socket.on('voice:signal', handleSignal);
-  socket.on('voice:set-muted', ({ muted }) => setLocalMuted(!!muted, true));
-  socket.on('voice:user-left', ({ uid }) => closePeer(uid));
-  return socket;
+function signalCollection() {
+  return roomId ? collection(db, 'canliOturum', roomId, 'sesSinyalleri') : null;
 }
 
-function emitJoin(nextRoomId) {
+function queueForVoice() {
+  return voiceRoster
+    .filter(item => item.voice?.handRaised)
+    .sort((a, b) => (a.voice?.raisedAt || 0) - (b.voice?.raisedAt || 0));
+}
+
+function publishVoicePresence(extra = {}) {
   const user = me();
-  if (!socket || !user || !nextRoomId) return;
-  socket.emit('voice:join', { roomId: nextRoomId, user });
+  const ref = memberRef(user?.uid);
+  if (!user || !ref) return Promise.resolve();
+  return setDoc(ref, {
+    uid: user.uid,
+    name: user.name,
+    role: user.role,
+    ts: Date.now(),
+    voice: {
+      online: true,
+      muted: localMuted(),
+      handRaised: false,
+      raisedAt: null,
+      ...extra
+    }
+  }, { merge: true }).catch(error => {
+    console.warn('Firebase ses durumu yazılamadı:', error);
+    voiceReady = false;
+    renderVoiceUi();
+    throw error;
+  });
+}
+
+async function sendSignal(to, type, payload = {}) {
+  const user = me();
+  const signals = signalCollection();
+  if (!user || !signals || !to) throw new Error('Canlı ses odası hazır değil.');
+  const id = `${to}_${user.uid}_${Date.now()}_${++signalSeq}`;
+  await setDoc(doc(signals, id), {
+    to,
+    from: user.uid,
+    fromName: user.name,
+    type,
+    payload,
+    createdAt: Date.now()
+  });
+}
+
+function subscribeVoiceRoom() {
+  const user = me();
+  if (!user || !roomId) return;
+  rosterUnsub?.();
+  signalUnsub?.();
+  const members = collection(db, 'canliOturum', roomId, 'uyeler');
+  rosterUnsub = onSnapshot(members, snap => {
+    const now = Date.now();
+    voiceRoster = snap.docs
+      .map(item => item.data())
+      .filter(item => item?.uid && now - (item.ts || 0) < 45000);
+    const raised = new Set(queueForVoice().map(item => item.uid));
+    raised.forEach(uid => {
+      if (!lastHandRaised.has(uid) && isTeacher() && uid !== user.uid) {
+        const member = voiceRoster.find(item => item.uid === uid);
+        showStatus(`✋ ${member?.name || 'Öğrenci'} konuşmak istiyor`, 'info');
+        window.eduNotify?.('Öğrenci el kaldırdı', `${member?.name || 'Öğrenci'} konuşmak istiyor`);
+      }
+    });
+    lastHandRaised = raised;
+    renderVoiceUi();
+  }, error => {
+    console.warn('Firebase ses katılımcıları dinlenemedi:', error);
+    voiceReady = false;
+    renderVoiceUi();
+  });
+
+  signalUnsub = onSnapshot(query(collection(db, 'canliOturum', roomId, 'sesSinyalleri'), where('to', '==', user.uid)), snap => {
+    snap.docChanges().forEach(change => {
+      if (change.type !== 'added') return;
+      const signal = change.doc.data();
+      if (signal?.to !== user.uid || signal.from === user.uid) return;
+      if (Date.now() - (signal.createdAt || 0) > 60000) {
+        deleteDoc(change.doc.ref).catch(() => {});
+        return;
+      }
+      handleSignal(signal).finally(() => deleteDoc(change.doc.ref).catch(() => {}));
+    });
+  }, error => {
+    console.warn('Firebase ses sinyalleri dinlenemedi:', error);
+    voiceReady = false;
+    renderVoiceUi();
+  });
 }
 
 export async function voiceJoinRoom(nextRoomId) {
   const user = me();
   if (!user || !nextRoomId) return;
+  if (roomId === String(nextRoomId) && voiceReady) return;
+  voiceLeaveRoom();
   roomId = String(nextRoomId);
   try {
-    await ensureSocket();
-    emitJoin(roomId);
-  } catch (err) {
-    console.warn('Ses signaling bağlantısı kurulamadı:', err);
-    renderVoiceUi();
+    await publishVoicePresence();
+    voiceReady = true;
+    subscribeVoiceRoom();
+    heartbeatTimer = setInterval(() => publishVoicePresence().catch(() => {}), VOICE_HEARTBEAT_MS);
+  } catch (error) {
+    console.warn('Firebase ses odası açılamadı:', error);
+    showStatus('Canlı ses için Firestore izni gerekli.', 'error');
   }
+  renderVoiceUi();
 }
 
 export function voiceLeaveRoom() {
-  if (socket?.connected) socket.emit('voice:leave');
+  rosterUnsub?.(); rosterUnsub = null;
+  signalUnsub?.(); signalUnsub = null;
+  clearInterval(heartbeatTimer); heartbeatTimer = null;
   roomId = '';
+  voiceReady = false;
   voiceRoster = [];
-  voiceQueue = [];
+  lastHandRaised.clear();
   peers.forEach((_, uid) => closePeer(uid));
   if (localStream) {
-    localStream.getTracks().forEach(t => t.stop());
+    localStream.getTracks().forEach(track => track.stop());
     localStream = null;
   }
   renderVoiceUi();
@@ -139,16 +181,16 @@ async function getLocalStream() {
     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
     video: false
   });
-  publishStatus();
+  publishVoicePresence().catch(() => {});
   return localStream;
 }
 
 function createPeer(uid) {
-  closePeer(uid);
+  closePeer(uid, false);
   const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
   peers.set(uid, pc);
   pc.onicecandidate = event => {
-    if (event.candidate) socket?.emit('voice:signal', { to: uid, type: 'ice', payload: event.candidate });
+    if (event.candidate) sendSignal(uid, 'ice', event.candidate).catch(console.warn);
   };
   pc.ontrack = event => attachRemoteAudio(uid, event.streams[0]);
   pc.onconnectionstatechange = renderVoiceUi;
@@ -158,20 +200,47 @@ function createPeer(uid) {
 
 async function startCall(uid, makeOffer) {
   if (!uid) return;
-  const s = await ensureSocket();
   const stream = await getLocalStream();
   const pc = createPeer(uid);
   stream.getTracks().forEach(track => pc.addTrack(track, stream));
   if (makeOffer) {
     const offer = await pc.createOffer({ offerToReceiveAudio: true });
     await pc.setLocalDescription(offer);
-    s.emit('voice:signal', { to: uid, type: 'offer', payload: offer });
+    await sendSignal(uid, 'offer', offer);
   }
   renderVoiceUi();
 }
 
-async function handleSignal({ from, type, payload }) {
+async function addCandidate(pc, uid, candidate) {
+  if (!pc.remoteDescription) {
+    const list = pendingCandidates.get(uid) || [];
+    list.push(candidate);
+    pendingCandidates.set(uid, list);
+    return;
+  }
+  await pc.addIceCandidate(new RTCIceCandidate(candidate));
+}
+
+async function flushCandidates(pc, uid) {
+  const list = pendingCandidates.get(uid) || [];
+  pendingCandidates.delete(uid);
+  for (const candidate of list) await pc.addIceCandidate(new RTCIceCandidate(candidate));
+}
+
+async function handleSignal({ from, fromName, type, payload }) {
   if (!from || !type) return;
+  if (type === 'grant') {
+    showStatus(`${fromName || 'Öğretmen'} mikrofon izni verdi`, 'success');
+    await getLocalStream();
+    setLocalMuted(false);
+    await publishVoicePresence({ handRaised: false, raisedAt: null });
+    await startCall(from, true);
+    return;
+  }
+  if (type === 'mute') {
+    setLocalMuted(!!payload?.muted, true);
+    return;
+  }
   const stream = await getLocalStream();
   const pc = peers.get(from) || createPeer(from);
   if (!pc.getSenders().some(sender => sender.track?.kind === 'audio')) {
@@ -179,13 +248,15 @@ async function handleSignal({ from, type, payload }) {
   }
   if (type === 'offer') {
     await pc.setRemoteDescription(new RTCSessionDescription(payload));
+    await flushCandidates(pc, from);
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
-    socket?.emit('voice:signal', { to: from, type: 'answer', payload: answer });
+    await sendSignal(from, 'answer', answer);
   } else if (type === 'answer') {
     await pc.setRemoteDescription(new RTCSessionDescription(payload));
+    await flushCandidates(pc, from);
   } else if (type === 'ice' && payload) {
-    await pc.addIceCandidate(new RTCIceCandidate(payload));
+    await addCandidate(pc, from, payload);
   }
   renderVoiceUi();
 }
@@ -202,22 +273,23 @@ function attachRemoteAudio(uid, stream) {
     remoteAudio.set(uid, audio);
   }
   audio.srcObject = stream;
-  audio.play?.().catch(() => showStatus('Ses başlatmak için ekrana bir kez dokunman gerekebilir.', 'info'));
+  audio.play?.().catch(() => showStatus('Sesi başlatmak için ekrana bir kez dokunman gerekebilir.', 'info'));
 }
 
-function closePeer(uid) {
+function closePeer(uid, refresh = true) {
   const pc = peers.get(uid);
   if (pc) pc.close();
   peers.delete(uid);
+  pendingCandidates.delete(uid);
   const audio = remoteAudio.get(uid);
   if (audio) audio.remove();
   remoteAudio.delete(uid);
-  renderVoiceUi();
+  if (refresh) renderVoiceUi();
 }
 
 function setLocalMuted(muted, remoteCommand = false) {
   localStream?.getAudioTracks().forEach(track => { track.enabled = !muted; });
-  publishStatus();
+  publishVoicePresence().catch(() => {});
   renderVoiceUi();
   if (remoteCommand) showStatus(muted ? 'Mikrofon öğretmen tarafından kapatıldı' : 'Mikrofon açıldı', 'info');
 }
@@ -227,13 +299,9 @@ function localMuted() {
   return track ? !track.enabled : false;
 }
 
-function publishStatus() {
-  socket?.emit('voice:status', { muted: localMuted(), speaking: false });
-}
-
 function connectionLabel(uid) {
   const pc = peers.get(uid);
-  if (!socket?.connected) return 'bağlantı kesildi';
+  if (!voiceReady) return 'bağlantı kesildi';
   if (!pc) return 'hazır';
   const state = pc.connectionState || pc.iceConnectionState;
   if (state === 'connected' || state === 'completed') return 'bağlı';
@@ -241,29 +309,44 @@ function connectionLabel(uid) {
   return state || 'bağlanıyor';
 }
 
-export function raiseHandForVoice() {
-  ensureSocket().then(() => {
-    socket.emit('voice:hand-raise');
+export async function raiseHandForVoice() {
+  if (!voiceReady) return showStatus('Canlı ses odası hazır değil.', 'error');
+  try {
+    await getLocalStream();
+    setLocalMuted(true);
+    await publishVoicePresence({ handRaised: true, raisedAt: Date.now() });
     showStatus('El kaldırıldı; öğretmen izin verince mikrofon açılacak.', 'success');
-  }).catch(err => showStatus(err.message || 'Ses bağlantısı kurulamadı', 'error'));
+  } catch (error) {
+    showStatus(error.message || 'El kaldırma kaydedilemedi. Firestore izinlerini kontrol et.', 'error');
+  }
 }
 
-export function grantVoice(uid) {
-  if (!isTeacher()) return;
-  ensureSocket().then(() => socket.emit('voice:grant', { to: uid }));
+export async function grantVoice(uid) {
+  if (!isTeacher() || !uid) return;
+  try {
+    await sendSignal(uid, 'grant');
+    await startCall(uid, false);
+  } catch (error) {
+    showStatus(error.message || 'Konuşma izni verilemedi', 'error');
+  }
 }
 
 export function muteVoiceUser(uid, muted = true) {
-  if (!isTeacher()) return;
-  socket?.emit('voice:mute-user', { uid, muted });
+  if (!isTeacher() || !uid) return;
+  sendSignal(uid, 'mute', { muted }).catch(error => showStatus(error.message || 'Mikrofon değiştirilemedi', 'error'));
 }
 
 export function muteAllVoice() {
   if (!isTeacher()) return;
-  socket?.emit('voice:mute-all');
+  voiceRoster.filter(item => item.role === 'ogrenci' && item.uid !== me()?.uid)
+    .forEach(item => muteVoiceUser(item.uid, true));
 }
 
 export function toggleLocalVoiceMute() {
+  if (!localStream) {
+    getLocalStream().then(() => setLocalMuted(false)).catch(error => showStatus(error.message || 'Mikrofon açılamadı', 'error'));
+    return;
+  }
   setLocalMuted(!localMuted());
 }
 
@@ -275,29 +358,30 @@ export function leaveVoiceCall(uid) {
 export function voiceSelfPanel() {
   const user = me();
   if (!user) return '';
-  const queued = voiceQueue.some(item => item.uid === user.uid);
+  const queue = queueForVoice();
+  const queued = queue.some(item => item.uid === user.uid);
   const muteText = localMuted() ? 'Mikrofonu Aç' : 'Mikrofonu Kapat';
-  const status = socket?.connected ? 'ses hazır' : 'ses kapalı';
+  const status = voiceReady ? 'ses hazır' : 'ses kapalı';
   if (isTeacher()) {
-    const waiting = voiceQueue.length;
     return `<div class="voice-self-panel">
-      <div><b>Sesli Konuşma</b><span>${esc(status)}${waiting ? ` · ${waiting} el` : ''}</span></div>
+      <div><b>Sesli Konuşma</b><span>${esc(status)}${queue.length ? ` · ${queue.length} el` : ''}</span></div>
       ${'Notification' in window && Notification.permission !== 'granted' ? '<button onclick="requestEduNotificationPermission()" title="El kaldırma bildirimlerini aç">Bildirim Aç</button>' : ''}
       <button onclick="muteAllVoice()" title="Tüm öğrencilerin mikrofonunu kapat">Toplu Sustur</button>
     </div>`;
   }
   return `<div class="voice-self-panel">
     <div><b>Sesli Konuşma</b><span>${queued ? 'sırada bekliyor' : esc(status)}</span></div>
-    <button onclick="raiseHandForVoice()" ${queued ? 'disabled' : ''}>${queued ? 'El Kaldırıldı' : '✋ El Kaldır'}</button>
+    <button onclick="raiseHandForVoice()" ${queued || !voiceReady ? 'disabled' : ''}>${queued ? 'El Kaldırıldı' : '✋ El Kaldır'}</button>
     <button onclick="toggleLocalVoiceMute()">${muteText}</button>
   </div>`;
 }
 
 export function voiceRosterControls(member, currentUser) {
   if (!member || !currentUser || member.uid === currentUser.uid) return '';
-  const isQueued = voiceQueue.some(item => item.uid === member.uid);
+  const queue = queueForVoice();
+  const isQueued = queue.some(item => item.uid === member.uid);
   const status = connectionLabel(member.uid);
-  const muted = !!voiceRoster.find(item => item.uid === member.uid)?.muted;
+  const muted = !!member.voice?.muted;
   if (!isTeacher()) return `<span class="voice-status">${esc(status)}</span>`;
   return `<div class="voice-controls">
     ${isQueued ? '<span class="voice-hand">✋</span>' : ''}

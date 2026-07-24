@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore, doc, setDoc, getDoc, collection, getDocs,
-  deleteDoc, updateDoc, onSnapshot
+  deleteDoc, updateDoc, onSnapshot, query, where
 } from 'firebase/firestore';
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
@@ -25,7 +25,7 @@ export const auth = getAuth(app);
 export const creatorAuth = getAuth(creatorApp);
 
 // Firestore API fonksiyonları
-export { doc, setDoc, getDoc, collection, getDocs, deleteDoc, updateDoc, onSnapshot };
+export { doc, setDoc, getDoc, collection, getDocs, deleteDoc, updateDoc, onSnapshot, query, where };
 
 // Auth API fonksiyonları
 export {
