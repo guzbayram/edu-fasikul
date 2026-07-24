@@ -43,6 +43,32 @@ function showStatus(msg, type = 'info') {
   window.showToast?.(msg, type);
 }
 
+function closeVoiceGrantPrompt() {
+  document.getElementById('voiceGrantPrompt')?.remove();
+}
+
+function renderVoiceGrantPrompt() {
+  if (isTeacher() || !pendingGrant) {
+    closeVoiceGrantPrompt();
+    return;
+  }
+  let panel = document.getElementById('voiceGrantPrompt');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'voiceGrantPrompt';
+    panel.className = 'voice-grant-prompt';
+    document.body.appendChild(panel);
+  }
+  panel.innerHTML = `
+    <div>
+      <b>Sesli konuşma isteği</b>
+      <span>${esc(pendingGrant.name)} seni konuşmaya çağırıyor.</span>
+    </div>
+    <button onclick="acceptVoiceGrant()">Kabul Et</button>
+    <button class="secondary" onclick="rejectVoiceGrant()">Reddet</button>
+  `;
+}
+
 function memberRef(uid = me()?.uid) {
   return uid && roomId ? doc(db, 'canliOturum', roomId, 'uyeler', uid) : null;
 }
@@ -167,6 +193,7 @@ export function voiceLeaveRoom() {
   voiceReady = false;
   voiceRoster = [];
   pendingGrant = null;
+  closeVoiceGrantPrompt();
   lastHandRaised.clear();
   peers.forEach((_, uid) => closePeer(uid));
   if (localStream) {
@@ -328,6 +355,7 @@ export async function acceptVoiceGrant() {
     setLocalMuted(false);
     await publishVoicePresence({ handRaised: false, raisedAt: null, callPending: false });
     pendingGrant = null;
+    closeVoiceGrantPrompt();
     await startCall(teacherUid, true);
   } catch (error) {
     showStatus(error.message || 'Mikrofon açılamadı', 'error');
@@ -336,6 +364,7 @@ export async function acceptVoiceGrant() {
 
 export async function rejectVoiceGrant() {
   pendingGrant = null;
+  closeVoiceGrantPrompt();
   await publishVoicePresence({ handRaised: false, raisedAt: null, callPending: false }).catch(() => {});
   renderVoiceUi();
 }
@@ -419,6 +448,7 @@ export function voiceRosterControls(member, currentUser) {
 }
 
 function renderVoiceUi() {
+  renderVoiceGrantPrompt();
   window.renderCanliRoster?.();
 }
 
