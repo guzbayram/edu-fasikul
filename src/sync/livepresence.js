@@ -342,9 +342,10 @@ function _renderRoster(){
     ${window.voiceSelfPanel?.() || ''}
     ${others.length ? others.map(m=>{
       const following = m.uid === _followUid;
-      return `<div class="crp-row ${following?'following':''}">
+      const handRaised = !!m.voice?.handRaised;
+      return `<div class="crp-row ${following?'following':''} ${handRaised?'hand-raised':''}">
         <span class="crp-dot"></span>
-        <span class="crp-name">${_esc(m.name)} <i title="${m.role==='ogretmen'?'Öğretmen':m.role==='admin'?'Yönetici':'Öğrenci'}">${_roleIcon(m.role)}</i></span>
+        <span class="crp-name">${handRaised ? '<b class="crp-hand" title="Konuşmak istiyor">✋</b>' : ''}${_esc(m.name)} <i title="${m.role==='ogretmen'?'Öğretmen':m.role==='admin'?'Yönetici':'Öğrenci'}">${_roleIcon(m.role)}</i></span>
         <span class="crp-page">s.${m.page||1}</span>
         <button class="crp-follow ${following?'on':''}" onclick="${following?'unfollowCanliMember()':`followCanliMember('${_escAttr(m.uid)}','${_escAttr(m.name)}')`}">${following?'⏹ Durdur':'▶ İzle'}</button>
         ${window.voiceRosterControls?.(m, me) || ''}
@@ -354,13 +355,16 @@ function _renderRoster(){
 }
 function _updateRosterButton(){
   const me = _me();
-  const n = _roster.filter(m => m.uid !== me?.uid).length;
+  const others = _roster.filter(m => m.uid !== me?.uid);
+  const n = others.length;
+  const handCount = others.filter(m => m.voice?.handRaised).length;
   // Üç yerleşimde de buton var (masaüstü toolbar, soru paneli, telefon paleti) → hepsini güncelle
   document.querySelectorAll('.canli-roster-btn').forEach(btn=>{
     btn.classList.toggle('has-live', n > 0);
+    btn.classList.toggle('has-hand', handCount > 0);
     btn.classList.toggle('following', !!_followUid);
     const cnt = btn.querySelector('.crb-count');
-    if(cnt) cnt.textContent = n > 0 ? String(n) : '';
+    if(cnt) cnt.textContent = handCount > 0 ? `✋${handCount}` : (n > 0 ? String(n) : '');
   });
 }
 export function toggleCanliRoster(){
