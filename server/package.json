@@ -1,0 +1,13 @@
+{
+  "name": "edu-fasikul-voice-signaling",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node signaling-server.js",
+    "dev": "node signaling-server.js"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  }
+}

@@ -28,6 +28,7 @@ import {
 } from './firebase/firestore.js';
 import { startRealtimeSync, stopRealtimeSync, toggleLiveSession, publishCanli, watchStudentLive, stopWatchStudent } from './sync/realtime.js';
 import { startCanliPresence, stopCanliPresence, publishCanliPresence, publishCanliPresenceDraw, toggleCanliRoster, followCanliMember, unfollowCanliMember, toggleSharedBoard, refreshSharedBoard } from './sync/livepresence.js';
+import './sync/voice.js';
 
 // ─── Faz 3 Modülleri ────────────────────────────────────
 import './pdf/storage.js';
@@ -44,6 +45,7 @@ import './ui/toast.js';
 import './ui/tooltip.js';
 import './ui/router.js';
 import './ui/viewportfix.js';
+import './ui/pwa.js';
 import './panels/dashboard.js';
 import './panels/hatalilar.js';
 import './panels/profil.js';

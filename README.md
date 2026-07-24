@@ -14,6 +14,26 @@ npm run dev      # http://localhost:5173
 npm run build    # dist/ klasörüne üret
 ```
 
+### Canlı Sesli Konuşma (WebRTC + Socket.io)
+
+Sesli konuşma için uygulama Firebase verisini kullanmaya devam eder; WebRTC offer/answer/ICE signaling ise ayrı bir Node.js Socket.io sunucusundan geçer.
+
+```bash
+cd server
+npm install
+npm run dev      # http://localhost:3001
+```
+
+Frontend localhost'ta otomatik `http://localhost:3001` adresine bağlanır. Canlı GitHub Pages gibi HTTPS ortamlarda signaling sunucusunu da HTTPS üzerinden yayınlayıp sayfadan önce şunu tanımlayın:
+
+```html
+<script>window.EDU_VOICE_SIGNALING_URL = 'https://ses-sunucunuz.example.com'</script>
+```
+
+WebRTC mikrofon erişimi HTTPS ister. Yerelde `localhost` güvenli kabul edilir. Google'ın ücretsiz STUN sunucusu kullanılır: `stun:stun.l.google.com:19302`. Okul ağı/NAT sorunlarında opsiyonel olarak coturn TURN sunucusu eklenmelidir.
+
+PWA notu: Service Worker `public/sw.js` üzerinden kaydedilir. Öğretmen el kaldırma bildirimleri açık sekmede/standalone PWA'da Notification API ile gösterilir. Gerçek arka plan Push API için ayrıca VAPID key, push subscription kaydı ve signaling/backend tarafında push gönderimi gerekir. iOS Safari arka planda sürekli mikrofonu ve WebSocket'i garanti etmez; sesli görüşme aktifken uygulama ön planda kalmalıdır.
+
 ---
 
 ## Mimari

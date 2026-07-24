@@ -44,6 +44,7 @@ export function startCanliPresence(){
   if(!me || !fas || !_ready() || !window._fsOnSnapshot || !window._fsCollection) return;
   _presFasikulId = fas.id;
   _writePresence();
+  window.voiceJoinRoom?.(fas.id);
   const col = window._fsCollection(window._db,'canliOturum',fas.id,'uyeler');
   _rosterUnsub = window._fsOnSnapshot(col, (snap)=>{
     const now = Date.now();
@@ -74,6 +75,7 @@ export function stopCanliPresence(silent){
   if(me && _presFasikulId && _ready() && window._fsDeleteDoc){
     window._fsDeleteDoc(_memberRef(_presFasikulId, me.uid)).catch(()=>{});
   }
+  window.voiceLeaveRoom?.();
   _presFasikulId = null;
   _roster = [];
   _hideRosterPanel();
@@ -337,6 +339,7 @@ function _renderRoster(){
   p.innerHTML = `
     <div class="crp-head"><b>Bu fasikülde canlı</b><span class="crp-n">${others.length}</span><button class="crp-x" onclick="toggleCanliRoster()" title="Kapat">✕</button></div>
     <button class="crp-board ${appState.sharedBoard?'on':''}" onclick="toggleSharedBoard()" title="Aynı sayfadaki herkes birlikte çizsin, herkes birbirinin kalemini görsün">🖊️ Ortak Tahta <b>${appState.sharedBoard?'AÇIK':'Kapalı'}</b></button>
+    ${window.voiceSelfPanel?.() || ''}
     ${others.length ? others.map(m=>{
       const following = m.uid === _followUid;
       return `<div class="crp-row ${following?'following':''}">
@@ -344,6 +347,7 @@ function _renderRoster(){
         <span class="crp-name">${_esc(m.name)} <i title="${m.role==='ogretmen'?'Öğretmen':m.role==='admin'?'Yönetici':'Öğrenci'}">${_roleIcon(m.role)}</i></span>
         <span class="crp-page">s.${m.page||1}</span>
         <button class="crp-follow ${following?'on':''}" onclick="${following?'unfollowCanliMember()':`followCanliMember('${_escAttr(m.uid)}','${_escAttr(m.name)}')`}">${following?'⏹ Durdur':'▶ İzle'}</button>
+        ${window.voiceRosterControls?.(m, me) || ''}
       </div>`;
     }).join('') : `<div class="crp-empty">Şu an bu fasikülde başka kimse yok.<br><small>Aynı fasikülü açan kişiler burada görünür.</small></div>`}
     ${me ? `<div class="crp-self">Sen: <b>${_esc(me.name)}</b> ${_roleIcon(me.role)}</div>` : ''}`;
@@ -365,4 +369,5 @@ export function toggleCanliRoster(){
   p.style.display = open ? 'none' : 'flex';
   if(!open) _renderRoster();
 }
+window.renderCanliRoster = _renderRoster;
 function _hideRosterPanel(){ const p = document.getElementById('canliRosterPanel'); if(p) p.style.display = 'none'; }

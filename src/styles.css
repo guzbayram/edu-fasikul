@@ -1011,6 +1011,21 @@ body.reader-locked .main-content{visibility:hidden!important}
 /* Canlı Ders butonu — aktifken yeşil + nabız */
 @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.5}}
 .live-session-btn.active{color:#16a34a;background:color-mix(in srgb,#16a34a 16%,transparent);box-shadow:0 0 0 2px color-mix(in srgb,#16a34a 45%,transparent);animation:livePulse 1.6s ease-in-out infinite}
+.voice-self-panel{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg-2);
+}
+.voice-self-panel div{display:flex;flex-direction:column;gap:2px;min-width:120px;flex:1}
+.voice-self-panel b{font-size:13px;color:var(--text-0)}
+.voice-self-panel span,.voice-status{font-size:11px;color:var(--text-muted);font-weight:700}
+.voice-self-panel button,.voice-controls button{
+  min-height:32px;border-radius:10px;padding:0 10px;
+  background:color-mix(in srgb,var(--mat) 14%,var(--bg-3));color:var(--mat);
+  font-size:12px;font-weight:800;border:1px solid color-mix(in srgb,var(--mat) 25%,var(--border));
+}
+.voice-self-panel button:disabled{opacity:.55}
+.voice-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;grid-column:1/-1}
+.voice-hand{width:22px;height:22px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#fff7ed;color:#f97316;font-size:13px}
 
 /* BOTTOM BAR */
 .reader-bottom-bar{
