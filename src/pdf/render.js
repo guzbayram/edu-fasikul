@@ -180,6 +180,9 @@ function throttleScrollHandler(){
   appState._scrollThrottle = setTimeout(()=>{
     appState._scrollThrottle = null;
     if(appState._scrollingToPage || Date.now() < (appState._zoomSettlingUntil || 0)) return;
+    if((appState.watchMode || appState._followingCanliMember) && !appState._liveSuppress && !appState._presSuppress){
+      appState._liveManualPauseUntil = Date.now() + 8000;
+    }
     updateCurrentPageFromScroll();
     // Sayfa DEĞİŞMESE bile (aynı sayfa içinde pan) canlı izleyenler için
     // yayınla — publishCanli() zaten kendi debounce/dedup'ına sahip (bkz.
@@ -1200,7 +1203,8 @@ function goToPage(n){
   appState.currentPage = Math.max(1,Math.min(n,maxPage));
   if(appState.viewMode === 'scroll'){
     // Scroll modunda: sayfa zaten render edilmiş, sadece scroll et
-    scrollToPage(appState.currentPage, 'smooth');
+    const behavior = (appState._liveSuppress || appState._presSuppress || appState.watchMode) ? 'auto' : 'smooth';
+    scrollToPage(appState.currentPage, behavior);
   } else {
     renderSinglePageMode(appState.currentPage);
   }

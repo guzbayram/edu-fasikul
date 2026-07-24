@@ -20,7 +20,9 @@ let _followUid = null;
 let _lastFollowSig = '';
 let _followApplyTimer = null;
 let _followApplySeq = 0;
-const FOLLOW_APPLY_DELAY_MS = 90;
+let _lastFollowApplyAt = 0;
+const FOLLOW_APPLY_DELAY_MS = 420;
+const FOLLOW_MIN_INTERVAL_MS = 650;
 const FOLLOW_DRAW_APPLY_DELAY_MS = 90;
 
 function _esc(s){ return String(s??'').replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
@@ -68,6 +70,7 @@ export function stopCanliPresence(silent){
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
   clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
   _followUid = null; _lastFollowSig = '';
+  appState._followingCanliMember = false;
   _followApplyTimer = null;
   _followApplySeq++;
   if(appState.sharedBoard){ appState.sharedBoard = false; _clearOverlay(); }
@@ -132,6 +135,7 @@ export function followCanliMember(uid, name){
   const me = _me();
   if(!uid || uid === me?.uid) return;
   _followUid = uid;
+  appState._followingCanliMember = true;
   _lastFollowSig = '';
   window.showToast?.(`🔴 ${name||'Katılımcı'} takip ediliyor`,'success');
   _renderRoster();
@@ -141,17 +145,26 @@ export function followCanliMember(uid, name){
 export function unfollowCanliMember(){
   if(!_followUid) return;
   _followUid = null; _lastFollowSig = '';
+  appState._followingCanliMember = false;
   _renderRoster();
   window.showToast?.('Takip durduruldu','info');
 }
 
 function scheduleApplyFollow(){
   const seq = ++_followApplySeq;
+  const pause = Math.max(0, Number(appState._liveManualPauseUntil || 0) - Date.now());
+  const wait = Math.max(pause || FOLLOW_APPLY_DELAY_MS, FOLLOW_MIN_INTERVAL_MS - (Date.now() - _lastFollowApplyAt));
   clearTimeout(_followApplyTimer);
-  _followApplyTimer = setTimeout(()=>_applyFollow(seq), FOLLOW_APPLY_DELAY_MS);
+  _followApplyTimer = setTimeout(()=>_applyFollow(seq), wait);
 }
 
 function _applyFollow(seq){
+  if(seq !== _followApplySeq) return;
+  if(Date.now() < Number(appState._liveManualPauseUntil || 0)){
+    scheduleApplyFollow();
+    return;
+  }
+  _lastFollowApplyAt = Date.now();
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
   const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${(m.draw||'').length}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}`;
@@ -181,7 +194,7 @@ function _applyFollow(seq){
       }
       _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh);
     } finally {
-      if(seq === _followApplySeq) setTimeout(()=>{ appState._presSuppress = false; }, 450);
+      if(seq === _followApplySeq) setTimeout(()=>{ appState._presSuppress = false; }, 900);
     }
   }, 320);
 }

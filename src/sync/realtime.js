@@ -13,8 +13,11 @@ let _lastPublishCanliSig = '';
 let _lastPublishCanliAt = 0;
 let _followTimer = null;
 let _followSeq = 0;
+let _lastFollowApplyAt = 0;
 const DRAWING_REMOTE_EDIT_GUARD_MS = 3500;
 const REMOTE_DRAWING_APPLY_DELAY_MS = 90;
+const FOLLOW_APPLY_DELAY_MS = 420;
+const FOLLOW_MIN_INTERVAL_MS = 650;
 
 function _liveDeviceId(){
   if(!appState._liveDeviceId)
@@ -69,8 +72,10 @@ let _openReaderFasikulId = null;
 function scheduleFollowCanli(d){
   _latestCanliData = d;
   const seq = ++_followSeq;
+  const pause = Math.max(0, Number(appState._liveManualPauseUntil || 0) - Date.now());
+  const wait = Math.max(pause || FOLLOW_APPLY_DELAY_MS, FOLLOW_MIN_INTERVAL_MS - (Date.now() - _lastFollowApplyAt));
   clearTimeout(_followTimer);
-  _followTimer = setTimeout(()=>_followCanli(seq), 90);
+  _followTimer = setTimeout(()=>_followCanli(seq), wait);
 }
 
 // KÖK NEDEN (bağlantı gecikmesinde admin PDF'i baştaki sayfalara "kayıyordu"):
@@ -88,6 +93,12 @@ function scheduleFollowCanli(d){
 // BAŞLATMAK yerine mevcut olanı bekliyoruz (art arda çakışan openReader
 // çağrıları hem gereksiz hem de kendi aralarında yarışıyordu).
 async function _followCanli(seq){
+  if(seq !== _followSeq) return;
+  if(Date.now() < Number(appState._liveManualPauseUntil || 0)){
+    scheduleFollowCanli(_latestCanliData);
+    return;
+  }
+  _lastFollowApplyAt = Date.now();
   appState._liveSuppress = true;
   try{
     let d = _latestCanliData;
@@ -122,7 +133,7 @@ async function _followCanli(seq){
       window.applyPageScrollFraction?.(d.page || appState.currentPage, d.fracX, d.fracY);
     }
   }catch(e){ console.warn('Canlı takip hatası:',e); }
-  finally{ setTimeout(()=>{ appState._liveSuppress = false; }, 500); }
+  finally{ setTimeout(()=>{ appState._liveSuppress = false; }, 900); }
 }
 
 export function subscribeCanli(uid){
@@ -279,6 +290,7 @@ export function stopWatchStudent(silent){
   const wasWatching = appState.watchMode;
   appState.watchMode = false;
   appState._watchStudentUid = null;
+  appState._liveManualPauseUntil = 0;
   clearTimeout(appState._watchProbe);
   unsubscribeCanli();
   unsubscribeRealtimeDrawings();
