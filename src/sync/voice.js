@@ -19,6 +19,7 @@ let heartbeatTimer = null;
 let voiceReady = false;
 let lastHandRaised = new Set();
 let signalSeq = 0;
+let pendingGrant = null;
 const peers = new Map();
 const remoteAudio = new Map();
 const pendingCandidates = new Map();
@@ -165,6 +166,7 @@ export function voiceLeaveRoom() {
   roomId = '';
   voiceReady = false;
   voiceRoster = [];
+  pendingGrant = null;
   lastHandRaised.clear();
   peers.forEach((_, uid) => closePeer(uid));
   if (localStream) {
@@ -231,10 +233,9 @@ async function handleSignal({ from, fromName, type, payload }) {
   if (!from || !type) return;
   if (type === 'grant') {
     showStatus(`${fromName || 'Öğretmen'} mikrofon izni verdi`, 'success');
-    await getLocalStream();
-    setLocalMuted(false);
-    await publishVoicePresence({ handRaised: false, raisedAt: null });
-    await startCall(from, true);
+    pendingGrant = { uid: from, name: fromName || 'Öğretmen' };
+    await publishVoicePresence({ handRaised: false, raisedAt: null, callPending: true });
+    renderVoiceUi();
     return;
   }
   if (type === 'mute') {
@@ -312,13 +313,31 @@ function connectionLabel(uid) {
 export async function raiseHandForVoice() {
   if (!voiceReady) return showStatus('Canlı ses odası hazır değil.', 'error');
   try {
-    await getLocalStream();
-    setLocalMuted(true);
     await publishVoicePresence({ handRaised: true, raisedAt: Date.now() });
     showStatus('El kaldırıldı; öğretmen izin verince mikrofon açılacak.', 'success');
   } catch (error) {
     showStatus(error.message || 'El kaldırma kaydedilemedi. Firestore izinlerini kontrol et.', 'error');
   }
+}
+
+export async function acceptVoiceGrant() {
+  if (!pendingGrant?.uid) return showStatus('Bekleyen sesli konuşma izni yok.', 'info');
+  try {
+    const teacherUid = pendingGrant.uid;
+    await getLocalStream();
+    setLocalMuted(false);
+    await publishVoicePresence({ handRaised: false, raisedAt: null, callPending: false });
+    pendingGrant = null;
+    await startCall(teacherUid, true);
+  } catch (error) {
+    showStatus(error.message || 'Mikrofon açılamadı', 'error');
+  }
+}
+
+export async function rejectVoiceGrant() {
+  pendingGrant = null;
+  await publishVoicePresence({ handRaised: false, raisedAt: null, callPending: false }).catch(() => {});
+  renderVoiceUi();
 }
 
 export async function grantVoice(uid) {
@@ -369,6 +388,13 @@ export function voiceSelfPanel() {
       <button onclick="muteAllVoice()" title="Tüm öğrencilerin mikrofonunu kapat">Toplu Sustur</button>
     </div>`;
   }
+  if (pendingGrant) {
+    return `<div class="voice-self-panel voice-call-pending">
+      <div><b>Sesli Konuşma</b><span>${esc(pendingGrant.name)} çağırıyor</span></div>
+      <button onclick="acceptVoiceGrant()" title="Mikrofon izni verip konuşmayı başlat">Kabul Et</button>
+      <button onclick="rejectVoiceGrant()" title="Sesli konuşmayı reddet">Reddet</button>
+    </div>`;
+  }
   return `<div class="voice-self-panel">
     <div><b>Sesli Konuşma</b><span>${queued ? 'sırada bekliyor' : esc(status)}</span></div>
     <button onclick="raiseHandForVoice()" ${queued || !voiceReady ? 'disabled' : ''}>${queued ? 'El Kaldırıldı' : '✋ El Kaldır'}</button>
@@ -401,6 +427,8 @@ window.voiceLeaveRoom = voiceLeaveRoom;
 window.voiceSelfPanel = voiceSelfPanel;
 window.voiceRosterControls = voiceRosterControls;
 window.raiseHandForVoice = raiseHandForVoice;
+window.acceptVoiceGrant = acceptVoiceGrant;
+window.rejectVoiceGrant = rejectVoiceGrant;
 window.grantVoice = grantVoice;
 window.muteVoiceUser = muteVoiceUser;
 window.muteAllVoice = muteAllVoice;

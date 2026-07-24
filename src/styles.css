@@ -1015,6 +1015,10 @@ body.reader-locked .main-content{visibility:hidden!important}
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg-2);
 }
+.voice-self-panel.voice-call-pending{
+  border-color:var(--green);
+  background:var(--green-dim);
+}
 .voice-self-panel div{display:flex;flex-direction:column;gap:2px;min-width:120px;flex:1}
 .voice-self-panel b{font-size:13px;color:var(--text-0)}
 .voice-self-panel span,.voice-status{font-size:11px;color:var(--text-muted);font-weight:700}
