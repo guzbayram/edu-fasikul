@@ -85,6 +85,7 @@ export function stopCanliPresence(silent){
 function _writePresence(){
   const me = _me();
   const fas = appState.aktifFasikul;
+  if(appState.watchMode || appState.reviewMode || appState._presSuppress || appState._liveSuppress) return;
   if(!me || !fas || fas.id !== _presFasikulId || !_ready()) return;
   // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
   // (kaydırma dahil) görsün — ekran boyutundan bağımsız kalması için MUTLAK
@@ -105,6 +106,7 @@ function _writePresence(){
 
 // Gezinmede çağrılır (throttle)
 export function publishCanliPresence(){
+  if(appState.watchMode || appState.reviewMode || appState._presSuppress || appState._liveSuppress) return;
   if(!_presFasikulId) return;
   clearTimeout(_pubTimer);
   _pubTimer = setTimeout(_writePresence, 180);
@@ -164,20 +166,23 @@ function _applyFollow(seq){
     }
     if(m.page && appState.currentPage !== m.page) window.goToPage?.(m.page);
   }catch(e){ console.warn('Takip uygula hatası:',e); }
-  finally{ setTimeout(()=>{ appState._presSuppress = false; }, 400); }
   // Sayfa/canvas oturunca ZOOM, SONRA pan, SONRA çizimi uygula — sırayla:
   // zoom kendi render+scroll-restore döngüsünü tetikler, pan/çizim ONDAN
   // ÖNCE uygulanırsa zoom'un kendi düzeltmesi tarafından ezilir.
   setTimeout(async ()=>{
-    if(seq !== _followApplySeq) return;
-    if(m.zoom && Math.abs(m.zoom - appState.zoom) >= 2){
-      try{ await window.setZoomAbsolute?.(m.zoom); }catch(e){}
+    try{
       if(seq !== _followApplySeq) return;
+      if(m.zoom && Math.abs(m.zoom - appState.zoom) >= 2){
+        try{ await window.setZoomAbsolute?.(m.zoom); }catch(e){}
+        if(seq !== _followApplySeq) return;
+      }
+      if(m.fracX != null && m.fracY != null){
+        window.applyPageScrollFraction?.(m.page || appState.currentPage, m.fracX, m.fracY);
+      }
+      _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh);
+    } finally {
+      if(seq === _followApplySeq) setTimeout(()=>{ appState._presSuppress = false; }, 450);
     }
-    if(m.fracX != null && m.fracY != null){
-      window.applyPageScrollFraction?.(m.page || appState.currentPage, m.fracX, m.fracY);
-    }
-    _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh);
   }, 320);
 }
 
