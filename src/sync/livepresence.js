@@ -40,9 +40,10 @@ function _memberRef(fasikulId, uid){ return window._fsDoc(window._db,'canliOturu
 function _roleIcon(r){ return r==='ogretmen'?'👨‍🏫':r==='admin'?'🔑':'🎓'; }
 
 export function startCanliPresence(){
-  stopCanliPresence(true);
-  const me = _me();
   const fas = appState.aktifFasikul;
+  const restartingSameRoom = !!(fas?.id && _presFasikulId === fas.id);
+  stopCanliPresence(true, { keepDoc: restartingSameRoom });
+  const me = _me();
   if(!me || !fas || !_ready() || !window._fsOnSnapshot || !window._fsCollection) return;
   _presFasikulId = fas.id;
   _writePresence();
@@ -65,7 +66,7 @@ export function startCanliPresence(){
   _updateRosterButton();
 }
 
-export function stopCanliPresence(silent){
+export function stopCanliPresence(silent, opts = {}){
   if(_rosterUnsub){ _rosterUnsub(); _rosterUnsub = null; }
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
   clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
@@ -75,7 +76,7 @@ export function stopCanliPresence(silent){
   _followApplySeq++;
   if(appState.sharedBoard){ appState.sharedBoard = false; _clearOverlay(); }
   const me = _me();
-  if(me && _presFasikulId && _ready() && window._fsDeleteDoc){
+  if(!opts.keepDoc && me && _presFasikulId && _ready() && window._fsDeleteDoc){
     window._fsDeleteDoc(_memberRef(_presFasikulId, me.uid)).catch(()=>{});
   }
   window.voiceLeaveRoom?.();
@@ -88,23 +89,27 @@ export function stopCanliPresence(silent){
 function _writePresence(){
   const me = _me();
   const fas = appState.aktifFasikul;
-  if(appState.watchMode || appState.reviewMode || appState._presSuppress || appState._liveSuppress) return;
+  if(appState.watchMode || appState.reviewMode) return;
   if(!me || !fas || fas.id !== _presFasikulId || !_ready()) return;
   // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
   // (kaydırma dahil) görsün — ekran boyutundan bağımsız kalması için MUTLAK
   // piksel değil ORAN (fracX/fracY, bkz. getCurrentPageScrollFraction).
-  const frac = window.getCurrentPageScrollFraction?.();
-  window._fsSetDoc(_memberRef(fas.id, me.uid), {
+  const suppressed = !!(appState._presSuppress || appState._liveSuppress);
+  const frac = suppressed ? null : window.getCurrentPageScrollFraction?.();
+  const payload = {
     uid: me.uid, name: me.name, role: me.role,
     dersId: appState.aktifDers?.id || '',
     fasikulId: fas.id,
     page: appState.currentPage || 1,
     altKonuId: appState.aktifAltKonu?.id || '',
-    zoom: appState.zoom || 100,
-    fracX: frac?.fracX ?? null,
-    fracY: frac?.fracY ?? null,
     ts: Date.now()
-  }, {merge:true}).catch(e=>console.warn('Canlı oturum yazma hatası:',e));
+  };
+  if(!suppressed){
+    payload.zoom = appState.zoom || 100;
+    payload.fracX = frac?.fracX ?? null;
+    payload.fracY = frac?.fracY ?? null;
+  }
+  window._fsSetDoc(_memberRef(fas.id, me.uid), payload, {merge:true}).catch(e=>console.warn('Canlı oturum yazma hatası:',e));
 }
 
 // Gezinmede çağrılır (throttle)

@@ -1005,6 +1005,7 @@ function initPDFContextMenu(){
   if(!wrap.dataset.ctxMenuReady){
     wrap.dataset.ctxMenuReady = '1';
     const isDrawingTool = ()=>['pen','tukenmez','marker','eraser','text'].includes(appState.drawTool);
+    const isReaderTouchTool = ()=>['select','pen','tukenmez','marker','eraser','text'].includes(appState.drawTool);
     const clearReaderSelection = ()=>{
       try{
         const sel = window.getSelection?.();
@@ -1014,7 +1015,12 @@ function initPDFContextMenu(){
     const suppressNativeReaderMenu = e=>{
       if(!e.target.closest?.('#readerCanvasWrap')) return;
       if(e.target.closest?.('button,input,textarea,select,.tool-btn,.color-dot,.size-slider')) return;
-      if(!isDrawingTool()) return;
+      if(e.type === 'selectstart') {
+        e.preventDefault();
+        clearReaderSelection();
+        return;
+      }
+      if(!isReaderTouchTool()) return;
       // KRİTİK: 'pointerdown'da preventDefault() çağırmak (fare/mouse için)
       // tarayıcının bu pointer'dan türettiği 'mousedown' olayını TAMAMEN
       // BASTIRIYOR — Fabric.js'in çizim/silme başlatma mantığı 'mouse:down'
@@ -1033,7 +1039,7 @@ function initPDFContextMenu(){
     });
     document.addEventListener('selectionchange', ()=>{
       if(!document.getElementById('reader-overlay')?.classList.contains('open')) return;
-      if(!isDrawingTool()) return;
+      if(!isReaderTouchTool()) return;
       const sel = window.getSelection?.();
       const node = sel?.anchorNode;
       const el = node?.nodeType === 1 ? node : node?.parentElement;

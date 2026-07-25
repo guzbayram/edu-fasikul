@@ -6403,3 +6403,37 @@ body.reader-locked .main-content{visibility:hidden!important}
     border-radius:999px!important;
   }
 }
+
+/* Mobile Safari/Chrome can create a native text-selection/callout layer while
+   the user is panning the PDF. In reader mode the page/canvas layers are an
+   interactive workspace, so native selection is disabled there while form
+   controls keep their normal text behavior. */
+#reader-overlay.open,
+#reader-overlay.open .reader-center,
+#reader-overlay.open .reader-canvas-wrap,
+#reader-overlay.open .reader-page-stage,
+#reader-overlay.open .pdf-page-wrap,
+#reader-overlay.open .pdf-page-wrap *,
+#reader-overlay.open canvas,
+#reader-overlay.open .canvas-container,
+#reader-overlay.open .upper-canvas,
+#reader-overlay.open .lower-canvas{
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+#reader-overlay.open img,
+#reader-overlay.open canvas{
+  -webkit-user-drag:none!important;
+  user-drag:none!important;
+}
+
+#reader-overlay.open input,
+#reader-overlay.open textarea,
+#reader-overlay.open select{
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  -webkit-touch-callout:default!important;
+}
