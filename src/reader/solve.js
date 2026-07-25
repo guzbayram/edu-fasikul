@@ -18,7 +18,8 @@ function fitCanvasToPalette(){
   const wrap = document.getElementById('readerCanvasWrap');
   const panel = document.getElementById('solvePalette');  // sabit kenar panel (yalnız tablet/masaüstü/dikey'de fixed)
   if(!wrap) return;
-  if(!ov?.classList.contains('solve-mode') || isPhoneLandscape()){
+  const landscape = window.matchMedia('(orientation:landscape)').matches;
+  if(!ov?.classList.contains('solve-mode') || landscape){
     ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k));
     return;
   }
@@ -57,31 +58,38 @@ function enterSolveMode(){
   setTimeout(reflowSolve, 60);
 }
 function exitSolveMode(){
-  // Cep telefonu YATAY modda sadece tam ekran var → çıkış reader'ı tamamen kapatır
-  if(isPhoneLandscape()){ window.closeReader?.(); return; }
-  document.getElementById('reader-overlay')?.classList.remove('solve-mode');
-  const wrap = document.getElementById('readerCanvasWrap');
-  if(wrap){ ['padding-left','padding-top','padding-right','padding-bottom'].forEach(k=>wrap.style.removeProperty(k)); }
-  setTimeout(()=>{ try{ window.dispatchEvent(new Event('resize')); }catch(_e){} }, 60);
+  // Eski reader paneline dönüş yok; X her cihazda okuyucudan çıkar.
+  window.closeReader?.();
 }
 
 // Cep telefonu yatay modu (kısa yükseklik) → tam ekran zorunlu
 function isPhoneLandscape(){
   return window.matchMedia('(orientation:landscape) and (max-height:500px)').matches;
 }
-// Yatayda reader açıksa otomatik tam ekran (solve) moduna geç
+function isPhonePortrait(){
+  return window.matchMedia('(orientation:portrait) and (max-width:700px)').matches;
+}
+function isPhoneSolveLayout(){
+  return isPhoneLandscape() || isPhonePortrait();
+}
+// Reader açıksa her cihazda Adsız 22 çözüm paneline otomatik geç
 function autoSolveForLandscape(){
   const ov = document.getElementById('reader-overlay');
   if(!ov || !ov.classList.contains('open')) return;
-  if(isPhoneLandscape() && !ov.classList.contains('solve-mode')) enterSolveMode();
+  if(!ov.classList.contains('solve-mode')) enterSolveMode();
 }
 window.autoSolveForLandscape = autoSolveForLandscape;
 
 window.addEventListener('resize', ()=>{
   autoSolveForLandscape();
-  if(document.getElementById('reader-overlay')?.classList.contains('solve-mode')) fitCanvasToPalette();
+  const ov = document.getElementById('reader-overlay');
+  if(ov?.classList.contains('solve-mode')) fitCanvasToPalette();
 });
-window.addEventListener('orientationchange', ()=>{ setTimeout(()=>{ autoSolveForLandscape(); reflowSolve(); }, 200); });
+window.addEventListener('orientationchange', ()=>{ setTimeout(()=>{
+  const ov = document.getElementById('reader-overlay');
+  autoSolveForLandscape();
+  if(ov?.classList.contains('solve-mode')) reflowSolve();
+}, 200); });
 function toggleSolveMode(){
   const ov = document.getElementById('reader-overlay');
   if(!ov) return;
@@ -95,12 +103,20 @@ function renderSolveAnswers(){
   const alt = appState.aktifAltKonu;
   const idx = appState.activeQuestionIdx;
   const s = (alt?.sorular || [])[idx];
+  const topicTitle = document.getElementById('spTopicTitle');
+  const topicPage = document.getElementById('spTopicPage');
+  if(topicTitle) topicTitle.textContent = alt?.ad || 'Konu';
+  if(topicPage) topicPage.textContent = s?.sayfa ? `s.${s.sayfa}` : '';
   const isKonu = window.isKonuKartSoru?.(s) || window.isKonuKartAltKonu?.(alt);
   if(!s || isKonu){ wrap.innerHTML = ''; return; }
   const state = appState.sorularState[s._uid || s.no];
   const answered = !!state?.answered;
   // Şıkların başına soru no
-  const noHtml = `<span class="sp-no">S.${s.no}</span>`;
+  const noHtml = `<span class="sp-no-wrap">
+    <button class="sp-q-nav sp-q-prev" onclick="goToSoru(${idx-1})" ${idx===0?'disabled':''} title="Önceki soru">◀</button>
+    <span class="sp-no">S.${s.no}</span>
+    <button class="sp-q-nav sp-q-next" onclick="goToSoru(${idx+1})" ${idx===(alt?.sorular?.length||0)-1?'disabled':''} title="Sonraki soru">▶</button>
+  </span>`;
   if(s.cevapTipi === 'acik-uclu'){
     const inputId = window.getOpenAnswerInputIdForQuestion?.(s, 'sp') || `sp-open-${String(s._uid||s.no).replace(/[^a-zA-Z0-9_-]/g,'_')}`;
     // "Kontrol Et" yok — yazmayı bırakınca (debounce) ya da Enter'a basınca

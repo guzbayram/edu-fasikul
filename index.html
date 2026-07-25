@@ -689,6 +689,25 @@
   <!-- SABİT KENAR PANEL (yatay: sol · dikey: üst). UX sırası: araçlar(üst,büyük) →
        renkler → geri/ileri → şıklar → yardımcılar(alt). ◀▶ soru kaldırıldı. -->
   <div class="solve-palette solve-fixed-panel" id="solvePalette">
+    <div class="sp-row sp-topic-row">
+      <button class="sp-konu-btn" onclick="openKonuList()" title="Konu Listesi">
+        <span class="kl-bars"><i></i><i></i><i></i></span>
+      </button>
+      <span class="sp-topic-title" id="spTopicTitle">Konu</span>
+      <span class="sp-topic-page" id="spTopicPage">Sayfa</span>
+    </div>
+    <div class="sp-row sp-status-row">
+      <span class="sp-timer" id="spTimer">00:00</span>
+      <button class="sp-finish-btn" onclick="finishTest()" title="Sonuçları Gör">📊 Bitir</button>
+      <span class="sp-net" id="spNetMini">Net: —</span>
+    </div>
+    <div class="sp-row sp-stats-row" id="spStatsMini">
+      <span class="sp-muted">Henüz soru çözülmedi</span>
+    </div>
+    <div class="sp-row sp-progress-row">
+      <span id="spProgressText">0 / 0 çözüldü</span>
+      <div class="sp-progress-track"><div class="sp-progress-fill" id="spProgressFill"></div></div>
+    </div>
     <!-- Gruplar (aralarında boş satır). UX: en çok kullanılan pan/kalem/silgi en üstte. -->
     <div class="sp-row sp-tools-row">
       <button class="tool-btn phone-pan-zoom-btn" data-tool="select" onclick="setTool(this,'select')" title="Pan / Zoom">🖐️</button>

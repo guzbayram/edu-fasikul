@@ -2098,6 +2098,8 @@ function stopTimer(){
 function updateTimer(){
   document.getElementById('timerDisplay').textContent=formatTime(appState.timerSec);
   document.getElementById('rpSure').textContent=formatTime(appState.timerSec);
+  const spTimer = document.getElementById('spTimer');
+  if(spTimer) spTimer.textContent = formatTime(appState.timerSec);
 }
 
 function formatTime(sec){
@@ -2147,6 +2149,33 @@ function updateTestProgress(){
   document.getElementById('rpNet').textContent=answered>0?net.toFixed(2):'—';
   const rpEl=document.getElementById('rpSoruSayisi');
   if(rpEl) rpEl.textContent=`${sorular.length} ${isKonuKartAltKonu(appState.aktifAltKonu)?'Kart':'Soru'}`;
+
+  const spProgressText = document.getElementById('spProgressText');
+  const spProgressFill = document.getElementById('spProgressFill');
+  const spNetMini = document.getElementById('spNetMini');
+  const spStatsMini = document.getElementById('spStatsMini');
+  const spTopicTitle = document.getElementById('spTopicTitle');
+  const spTopicPage = document.getElementById('spTopicPage');
+  if(spProgressText) spProgressText.textContent = `${answered} / ${sorular.length} çözüldü`;
+  if(spProgressFill) spProgressFill.style.width = `${pct}%`;
+  if(spNetMini) spNetMini.textContent = answered>0 ? `Net ${net.toFixed(1)}` : 'Net: —';
+  if(spTopicTitle) spTopicTitle.textContent = appState.aktifAltKonu?.ad || 'Konu';
+  if(spTopicPage){
+    const active = sorular[appState.activeQuestionIdx];
+    spTopicPage.textContent = active?.sayfa ? `s.${active.sayfa}` : '';
+  }
+  if(spStatsMini){
+    if(engaged > 0){
+      const pctStr = sorular.length>0 ? Math.round(correct/sorular.length*100) : 0;
+      spStatsMini.innerHTML = `
+        <span class="sp-chip sp-ok">✅ ${correct}</span>
+        <span class="sp-chip sp-bad">❌ ${wrong}</span>
+        <span class="sp-chip sp-empty">⬜ ${blank}</span>
+        <span class="sp-chip sp-pct">%${pctStr}</span>`;
+    } else {
+      spStatsMini.innerHTML = `<span class="sp-muted">Henüz soru çözülmedi</span>`;
+    }
+  }
 
   // Bağımsız istatistik gösterimi (Sıfırla butonu artık başlık satırında)
   const statsEl = document.getElementById('altKonuStatsDisplay');
