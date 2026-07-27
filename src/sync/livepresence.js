@@ -79,7 +79,7 @@ export function stopCanliPresence(silent, opts = {}){
   if(!opts.keepDoc && me && _presFasikulId && _ready() && window._fsDeleteDoc){
     window._fsDeleteDoc(_memberRef(_presFasikulId, me.uid)).catch(()=>{});
   }
-  window.voiceLeaveRoom?.();
+  if(!opts.keepDoc) window.voiceLeaveRoom?.();
   _presFasikulId = null;
   _roster = [];
   _hideRosterPanel();

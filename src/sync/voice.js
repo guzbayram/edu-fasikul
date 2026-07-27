@@ -9,6 +9,8 @@ const ICE_SERVERS = [
   { urls: 'stun:stun1.l.google.com:19302' }
 ];
 const VOICE_HEARTBEAT_MS = 15000;
+const PEER_DISCONNECT_RETRY_MS = 2500;
+const PEER_RESTART_COOLDOWN_MS = 3500;
 
 let localStream = null;
 let roomId = '';
@@ -21,9 +23,12 @@ let lastHandRaised = new Set();
 let signalSeq = 0;
 let pendingGrant = null;
 let voicePlaybackBlocked = false;
+let voiceState = { handRaised: false, raisedAt: null, callPending: false, callActive: false, muted: false };
 const peers = new Map();
 const remoteAudio = new Map();
 const pendingCandidates = new Map();
+const peerRecoveryTimers = new Map();
+const peerLastRestartAt = new Map();
 
 function esc(s) {
   return String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
@@ -116,6 +121,11 @@ function publishVoicePresence(extra = {}) {
   const user = me();
   const ref = memberRef(user?.uid);
   if (!user || !ref) return Promise.resolve();
+  voiceState = {
+    ...voiceState,
+    ...extra,
+    muted: Object.prototype.hasOwnProperty.call(extra, 'muted') ? !!extra.muted : localMuted()
+  };
   return setDoc(ref, {
     uid: user.uid,
     name: user.name,
@@ -123,10 +133,7 @@ function publishVoicePresence(extra = {}) {
     ts: Date.now(),
     voice: {
       online: true,
-      muted: localMuted(),
-      handRaised: false,
-      raisedAt: null,
-      ...extra
+      ...voiceState
     }
   }, { merge: true }).catch(error => {
     console.warn('Firebase ses durumu yazılamadı:', error);
@@ -223,6 +230,7 @@ export function voiceLeaveRoom() {
   voiceRoster = [];
   pendingGrant = null;
   voicePlaybackBlocked = false;
+  voiceState = { handRaised: false, raisedAt: null, callPending: false, callActive: false, muted: false };
   closeVoiceGrantPrompt();
   closeVoicePlaybackPrompt();
   lastHandRaised.clear();
@@ -241,6 +249,16 @@ async function getLocalStream() {
     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
     video: false
   });
+  localStream.getAudioTracks().forEach(track => {
+    track.enabled = !voiceState.muted;
+    track.onended = () => {
+      voiceState.callActive = false;
+      localStream = null;
+      showStatus('Mikrofon bağlantısı kapandı. Yeniden konuşmak için mikrofonu aç.', 'error');
+      publishVoicePresence({ callActive: false }).catch(() => {});
+      renderVoiceUi();
+    };
+  });
   publishVoicePresence().catch(() => {});
   return localStream;
 }
@@ -256,8 +274,15 @@ function createPeer(uid) {
     attachRemoteAudio(uid, event.streams[0]);
     showStatus('Karşı tarafın sesi bağlandı.', 'success');
   };
-  pc.onconnectionstatechange = renderVoiceUi;
-  pc.oniceconnectionstatechange = renderVoiceUi;
+  const onPeerState = () => {
+    schedulePeerRecovery(uid, pc.connectionState || pc.iceConnectionState);
+    renderVoiceUi();
+  };
+  pc.onconnectionstatechange = onPeerState;
+  pc.oniceconnectionstatechange = onPeerState;
+  pc.onicecandidateerror = event => {
+    console.warn('WebRTC ICE aday hatası:', event?.errorText || event?.errorCode || event);
+  };
   return pc;
 }
 
@@ -271,7 +296,72 @@ async function startCall(uid, makeOffer) {
     await pc.setLocalDescription(offer);
     await sendSignal(uid, 'offer', offer);
   }
+  await publishVoicePresence({ callActive: true, callPending: false });
   renderVoiceUi();
+}
+
+function clearPeerRecovery(uid) {
+  const timer = peerRecoveryTimers.get(uid);
+  if (timer) clearTimeout(timer);
+  peerRecoveryTimers.delete(uid);
+}
+
+function shouldInitiatePeerRecovery(uid) {
+  const user = me();
+  if (!user || !uid) return false;
+  return String(user.uid) < String(uid);
+}
+
+function schedulePeerRecovery(uid, state) {
+  if (!uid) return;
+  if (state === 'connected' || state === 'completed') {
+    clearPeerRecovery(uid);
+    publishVoicePresence({ callActive: true }).catch(() => {});
+    return;
+  }
+  if (state === 'closed') {
+    clearPeerRecovery(uid);
+    return;
+  }
+  if (state !== 'disconnected' && state !== 'failed') return;
+  if (peerRecoveryTimers.has(uid)) return;
+  const initiator = shouldInitiatePeerRecovery(uid);
+  const delay = state === 'failed' ? (initiator ? 300 : 4000) : (initiator ? PEER_DISCONNECT_RETRY_MS : 7000);
+  peerRecoveryTimers.set(uid, setTimeout(() => {
+    peerRecoveryTimers.delete(uid);
+    restartPeer(uid).catch(error => console.warn('Ses bağlantısı yeniden başlatılamadı:', error));
+  }, delay));
+}
+
+async function restartPeer(uid) {
+  const user = me();
+  if (!user || !uid || !roomId) return;
+  const pc = peers.get(uid);
+  if (!pc || pc.connectionState === 'connected' || pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') return;
+  const now = Date.now();
+  const last = peerLastRestartAt.get(uid) || 0;
+  if (now - last < PEER_RESTART_COOLDOWN_MS) {
+    schedulePeerRecovery(uid, 'disconnected');
+    return;
+  }
+  if (!shouldInitiatePeerRecovery(uid)) {
+    const stale = now - last > PEER_RESTART_COOLDOWN_MS * 2;
+    if (!stale) return;
+  }
+  if (pc.signalingState && pc.signalingState !== 'stable') {
+    schedulePeerRecovery(uid, 'disconnected');
+    return;
+  }
+  const stream = await getLocalStream();
+  if (!pc.getSenders().some(sender => sender.track?.kind === 'audio')) {
+    stream.getTracks().forEach(track => pc.addTrack(track, stream));
+  }
+  peerLastRestartAt.set(uid, now);
+  const offer = await pc.createOffer({ offerToReceiveAudio: true, iceRestart: true });
+  await pc.setLocalDescription(offer);
+  await sendSignal(uid, 'offer', offer);
+  await publishVoicePresence({ callActive: true, callPending: false });
+  showStatus('Ses bağlantısı yeniden deneniyor.', 'info');
 }
 
 async function addCandidate(pc, uid, candidate) {
@@ -281,21 +371,29 @@ async function addCandidate(pc, uid, candidate) {
     pendingCandidates.set(uid, list);
     return;
   }
-  await pc.addIceCandidate(new RTCIceCandidate(candidate));
+  try {
+    await pc.addIceCandidate(new RTCIceCandidate(candidate));
+  } catch (error) {
+    console.warn('WebRTC ICE adayı eklenemedi:', error);
+  }
 }
 
 async function flushCandidates(pc, uid) {
   const list = pendingCandidates.get(uid) || [];
   pendingCandidates.delete(uid);
-  for (const candidate of list) await pc.addIceCandidate(new RTCIceCandidate(candidate));
+  for (const candidate of list) await addCandidate(pc, uid, candidate);
 }
 
 async function handleSignal({ from, fromName, type, payload }) {
   if (!from || !type) return;
   if (type === 'grant') {
-    showStatus(`${fromName || 'Öğretmen'} mikrofon izni verdi`, 'success');
-    pendingGrant = { uid: from, name: fromName || 'Öğretmen' };
-    await publishVoicePresence({ handRaised: false, raisedAt: null, callPending: true });
+    showStatus(`${fromName || 'Karşı taraf'} ses görüşmesini kabul etti`, 'success');
+    pendingGrant = null;
+    closeVoiceGrantPrompt();
+    await getLocalStream();
+    setLocalMuted(false);
+    await publishVoicePresence({ handRaised: false, raisedAt: null, callPending: false });
+    await startCall(from, true);
     renderVoiceUi();
     return;
   }
@@ -304,19 +402,30 @@ async function handleSignal({ from, fromName, type, payload }) {
     return;
   }
   const stream = await getLocalStream();
-  const pc = peers.get(from) || createPeer(from);
+  let pc = peers.get(from) || createPeer(from);
   if (!pc.getSenders().some(sender => sender.track?.kind === 'audio')) {
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
   }
   if (type === 'offer') {
+    if (pc.signalingState && pc.signalingState !== 'stable') {
+      try {
+        await pc.setLocalDescription({ type: 'rollback' });
+      } catch (_e) {
+        closePeer(from, false);
+        pc = createPeer(from);
+        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+      }
+    }
     await pc.setRemoteDescription(new RTCSessionDescription(payload));
     await flushCandidates(pc, from);
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     await sendSignal(from, 'answer', answer);
+    await publishVoicePresence({ callActive: true, callPending: false });
   } else if (type === 'answer') {
     await pc.setRemoteDescription(new RTCSessionDescription(payload));
     await flushCandidates(pc, from);
+    await publishVoicePresence({ callActive: true, callPending: false });
   } else if (type === 'ice' && payload) {
     await addCandidate(pc, from, payload);
   }
@@ -348,6 +457,7 @@ function attachRemoteAudio(uid, stream) {
 }
 
 function closePeer(uid, refresh = true) {
+  clearPeerRecovery(uid);
   const pc = peers.get(uid);
   if (pc) pc.close();
   peers.delete(uid);
@@ -359,19 +469,21 @@ function closePeer(uid, refresh = true) {
     voicePlaybackBlocked = false;
     closeVoicePlaybackPrompt();
   }
+  if (!peers.size) publishVoicePresence({ callActive: false }).catch(() => {});
   if (refresh) renderVoiceUi();
 }
 
 function setLocalMuted(muted, remoteCommand = false) {
+  voiceState.muted = !!muted;
   localStream?.getAudioTracks().forEach(track => { track.enabled = !muted; });
-  publishVoicePresence().catch(() => {});
+  publishVoicePresence({ muted: !!muted }).catch(() => {});
   renderVoiceUi();
   if (remoteCommand) showStatus(muted ? 'Mikrofon öğretmen tarafından kapatıldı' : 'Mikrofon açıldı', 'info');
 }
 
 function localMuted() {
   const track = localStream?.getAudioTracks?.()[0];
-  return track ? !track.enabled : false;
+  return track ? !track.enabled : !!voiceState.muted;
 }
 
 function connectionLabel(uid) {
@@ -387,10 +499,12 @@ function connectionLabel(uid) {
 export async function raiseHandForVoice() {
   if (!voiceReady) return showStatus('Canlı ses odası hazır değil.', 'error');
   try {
-    await publishVoicePresence({ handRaised: true, raisedAt: Date.now() });
-    showStatus('El kaldırıldı; öğretmen izin verince mikrofon açılacak.', 'success');
+    await getLocalStream();
+    setLocalMuted(false);
+    await publishVoicePresence({ handRaised: true, raisedAt: Date.now(), callPending: true });
+    showStatus('Ses görüşmesi talebi gönderildi; karşı taraf kabul edince bağlantı kurulacak.', 'success');
   } catch (error) {
-    showStatus(error.message || 'El kaldırma kaydedilemedi. Firestore izinlerini kontrol et.', 'error');
+    showStatus(error.message || 'Ses talebi başlatılamadı. Mikrofon iznini kontrol et.', 'error');
   }
 }
 
@@ -421,8 +535,9 @@ export async function grantVoice(uid) {
   try {
     await sendSignal(uid, 'grant');
     await startCall(uid, false);
+    showStatus('Ses görüşmesi kabul edildi; bağlantı kuruluyor.', 'success');
   } catch (error) {
-    showStatus(error.message || 'Konuşma izni verilemedi', 'error');
+    showStatus(error.message || 'Ses görüşmesi kabul edilemedi', 'error');
   }
 }
 
@@ -489,7 +604,7 @@ export function voiceSelfPanel() {
   }
   return `<div class="voice-self-panel">
     <div><b>Sesli Konuşma</b><span>${queued ? 'sırada bekliyor' : esc(status)}</span></div>
-    <button onclick="raiseHandForVoice()" ${queued || !voiceReady ? 'disabled' : ''}>${queued ? 'El Kaldırıldı' : '✋ El Kaldır'}</button>
+    <button onclick="raiseHandForVoice()" ${queued || !voiceReady ? 'disabled' : ''}>${queued ? 'Talep Gönderildi' : '✋ Ses Talep Et'}</button>
     <button onclick="toggleLocalVoiceMute()">${muteText}</button>
   </div>`;
 }
@@ -501,10 +616,11 @@ export function voiceRosterControls(member, currentUser) {
   const status = connectionLabel(member.uid);
   const muted = !!member.voice?.muted;
   if (!isTeacher()) return `<span class="voice-status">${esc(status)}</span>`;
+  const acceptDisabled = isQueued ? '' : 'disabled';
   return `<div class="voice-controls">
     ${isQueued ? '<span class="voice-hand">✋</span>' : ''}
     <span class="voice-status">${esc(status)}</span>
-    <button onclick="grantVoice('${esc(member.uid)}')" title="Öğrenciye konuşma izni ver">Konuş</button>
+    <button onclick="grantVoice('${esc(member.uid)}')" ${acceptDisabled} title="Ses görüşmesi talebini kabul et">Kabul Et</button>
     <button onclick="muteVoiceUser('${esc(member.uid)}',${muted ? 'false' : 'true'})">${muted ? 'Aç' : 'Sustur'}</button>
     <button onclick="leaveVoiceCall('${esc(member.uid)}')" title="Ses bağlantısını kapat">Kapat</button>
   </div>`;
