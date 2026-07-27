@@ -61,7 +61,10 @@ export function startCanliPresence(){
     _renderRoster();
     if(_followUid) scheduleApplyFollow();
     if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
-  }, (err)=>console.warn('Canlı oturum dinleme hatası:',err));
+  }, (err)=>{
+    console.warn('Canlı oturum dinleme hatası:',err);
+    window.debugReport?.('presence.listen.failed', {error:err, fasikulId:fas.id});
+  });
   _heartbeatTimer = setInterval(_writePresence, HEARTBEAT_MS);
   _updateRosterButton();
 }
@@ -109,7 +112,10 @@ function _writePresence(){
     payload.fracX = frac?.fracX ?? null;
     payload.fracY = frac?.fracY ?? null;
   }
-  window._fsSetDoc(_memberRef(fas.id, me.uid), payload, {merge:true}).catch(e=>console.warn('Canlı oturum yazma hatası:',e));
+  window._fsSetDoc(_memberRef(fas.id, me.uid), payload, {merge:true}).catch(e=>{
+    console.warn('Canlı oturum yazma hatası:',e);
+    window.debugReport?.('presence.write.failed', {error:e, payload});
+  });
 }
 
 // Gezinmede çağrılır (throttle)
@@ -131,7 +137,7 @@ export function publishCanliPresenceDraw(key, json, w, h){
   _drawPubTimer = setTimeout(()=>{
     window._fsSetDoc(_memberRef(fas.id, me.uid),
       { drawKey:key, draw:json||'', dw:w||0, dh:h||0, ts:Date.now() }, {merge:true})
-      .catch(()=>{});
+      .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key}, 'warn'));
   }, 250);
 }
 
@@ -182,8 +188,25 @@ function _applyFollow(seq){
       (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(a=>{ if(a.id===m.altKonuId) ak=a; }));
       if(ak) window.selectAltKonu?.(ak, `altk-${ak.id}`);
     }
-    if(m.page && appState.currentPage !== m.page) window.goToPage?.(m.page);
-  }catch(e){ console.warn('Takip uygula hatası:',e); }
+    if(m.page && appState.currentPage !== m.page){
+      const targetPage = Number(m.page);
+      const currentPage = Number(appState.currentPage || 1);
+      if(Number.isFinite(targetPage) && Number.isFinite(currentPage) && targetPage < currentPage - 2){
+        window.debugReport?.('presence.page.rollback', {
+          fromPage: currentPage,
+          toPage: targetPage,
+          followedUid: _followUid,
+          member: m
+        });
+      } else {
+        window.debugLog?.('presence.page.follow', {fromPage: currentPage, toPage: targetPage, followedUid:_followUid}, 'info');
+      }
+      window.goToPage?.(m.page);
+    }
+  }catch(e){
+    console.warn('Takip uygula hatası:',e);
+    window.debugReport?.('presence.follow.failed', {error:e, member:m});
+  }
   // Sayfa/canvas oturunca ZOOM, SONRA pan, SONRA çizimi uygula — sırayla:
   // zoom kendi render+scroll-restore döngüsünü tetikler, pan/çizim ONDAN
   // ÖNCE uygulanırsa zoom'un kendi düzeltmesi tarafından ezilir.

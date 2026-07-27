@@ -1206,7 +1206,20 @@ function changePage(delta){
 
 function goToPage(n){
   const maxPage = appState.pdfTotalPages || appState.totalPages;
+  const previousPage = Number(appState.currentPage || 1);
   appState.currentPage = Math.max(1,Math.min(n,maxPage));
+  const nextPage = Number(appState.currentPage || 1);
+  if((appState.watchMode || appState._liveSuppress || appState._presSuppress) && nextPage < previousPage - 2){
+    window.debugReport?.('pdf.goto.rollback', {
+      fromPage: previousPage,
+      toPage: nextPage,
+      requestedPage: n,
+      viewMode: appState.viewMode,
+      liveSuppress: !!appState._liveSuppress,
+      presSuppress: !!appState._presSuppress,
+      watchMode: !!appState.watchMode
+    });
+  }
   if(appState.viewMode === 'scroll'){
     // Scroll modunda: sayfa zaten render edilmiş, sadece scroll et
     const behavior = (appState._liveSuppress || appState._presSuppress || appState.watchMode) ? 'auto' : 'smooth';
@@ -1467,6 +1480,7 @@ async function endZoomGesture(){
   try{
     await Promise.resolve(renderPages());
   }catch(e){
+    window.debugReport?.('pdf.zoom.render.failed', {error:e, liveZoom, renderedZoom, startZoom});
     wrap.style.overflow = '';
     wrap.classList.remove('zoom-settling');
     throw e;

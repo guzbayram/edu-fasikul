@@ -14,10 +14,13 @@ let _lastPublishCanliAt = 0;
 let _followTimer = null;
 let _followSeq = 0;
 let _lastFollowApplyAt = 0;
+let _followSourceId = '';
+let _followSourceSeenAt = 0;
 const DRAWING_REMOTE_EDIT_GUARD_MS = 3500;
 const REMOTE_DRAWING_APPLY_DELAY_MS = 90;
 const FOLLOW_APPLY_DELAY_MS = 420;
 const FOLLOW_MIN_INTERVAL_MS = 650;
+const FOLLOW_SOURCE_LOCK_MS = 12000;
 
 function _liveDeviceId(){
   if(!appState._liveDeviceId)
@@ -31,6 +34,7 @@ export function publishCanli(){
   window.refreshSharedBoard?.();     // gezinince ortak tahtayı yeni sayfaya uyarla
   // Yayın koşulu: elle açılan Canlı Ders VEYA öğrenci için otomatik yayın açık
   if((!appState.liveSession && !appState.autoPublishLive) || appState._liveSuppress) return;
+  if(document.hidden) return;
   const uid = _getUserKey();
   const fas = appState.aktifFasikul;
   if(!uid || !fas || !window._firestoreReady || !window._db) return;
@@ -47,21 +51,25 @@ export function publishCanli(){
   _lastPublishCanliSig = sig;
   _lastPublishCanliAt = now;
   clearTimeout(_publishTimer);
+  const canliPayload = {
+    dersId: appState.aktifDers?.id || '',
+    fasikulId: fas.id,
+    fasikulAd: fas.ad || fas.id,
+    page: appState.currentPage || 1,
+    altKonuId: appState.aktifAltKonu?.id || '',
+    zoom,
+    fracX: frac?.fracX ?? null,
+    fracY: frac?.fracY ?? null,
+    by: _liveDeviceId(),
+    ts: Date.now()
+  };
   _publishTimer = setTimeout(()=>{
     // Kullanıcı dokümanına yaz (cizimler/cozumler gibi kesinlikle izinli yol).
     const ref = window._fsDoc(window._db,'kullanicilar',uid);
-    window._fsSetDoc(ref, { canli:{
-      dersId: appState.aktifDers?.id || '',
-      fasikulId: fas.id,
-      fasikulAd: fas.ad || fas.id,
-      page: appState.currentPage || 1,
-      altKonuId: appState.aktifAltKonu?.id || '',
-      zoom,
-      fracX: frac?.fracX ?? null,
-      fracY: frac?.fracY ?? null,
-      by: _liveDeviceId(),
-      ts: Date.now()
-    }}, {merge:true}).catch(e=>console.warn('Canlı yayın hatası:',e));
+    window._fsSetDoc(ref, { canli:{ ...canliPayload, ts: Date.now() } }, {merge:true}).catch(e=>{
+      console.warn('Canlı yayın hatası:',e);
+      window.debugReport?.('live.publish.failed', {error:e, payload:canliPayload});
+    });
   }, 200);
 }
 
@@ -76,6 +84,36 @@ function scheduleFollowCanli(d){
   const wait = Math.max(pause || FOLLOW_APPLY_DELAY_MS, FOLLOW_MIN_INTERVAL_MS - (Date.now() - _lastFollowApplyAt));
   clearTimeout(_followTimer);
   _followTimer = setTimeout(()=>_followCanli(seq), wait);
+}
+
+function acceptCanliSource(d){
+  if(!d?.by) return true;
+  const now = Date.now();
+  if(!_followSourceId || _followSourceId === d.by){
+    _followSourceId = d.by;
+    _followSourceSeenAt = now;
+    return true;
+  }
+  // Aynı öğrenci hesabı tablet + telefon + bilgisayarda açık olabiliyor.
+  // İzleme sırasında kaynak cihazı kısa süre kilitlemezsek diğer eski sekme
+  // daha yeni ts ile sayfa 1/13 gibi eski konumu yazıp öğretmeni geri atlatır.
+  if(now - _followSourceSeenAt < FOLLOW_SOURCE_LOCK_MS){
+    window.debugLog?.('live.source.rejected', {
+      lockedSource: _followSourceId,
+      rejectedSource: d.by,
+      page: d.page,
+      ts: d.ts
+    }, 'warn');
+    return false;
+  }
+  window.debugLog?.('live.source.switched', {
+    previousSource: _followSourceId,
+    nextSource: d.by,
+    page: d.page
+  }, 'info');
+  _followSourceId = d.by;
+  _followSourceSeenAt = now;
+  return true;
 }
 
 // KÖK NEDEN (bağlantı gecikmesinde admin PDF'i baştaki sayfalara "kayıyordu"):
@@ -120,6 +158,18 @@ async function _followCanli(seq){
     }
     d = _latestCanliData || d;
     if(d.page && appState.currentPage !== d.page){
+      const targetPage = Number(d.page);
+      const currentPage = Number(appState.currentPage || 1);
+      if(Number.isFinite(targetPage) && Number.isFinite(currentPage) && targetPage < currentPage - 2){
+        window.debugReport?.('live.page.rollback', {
+          fromPage: currentPage,
+          toPage: targetPage,
+          incoming: d,
+          source: d.by
+        });
+      } else {
+        window.debugLog?.('live.page.follow', {fromPage: currentPage, toPage: targetPage, source: d.by}, 'info');
+      }
       window.goToPage?.(d.page);
     }
     // Sayfa oturduktan SONRA zoom, SONRA pan — zoom kendi render+scroll-
@@ -132,7 +182,10 @@ async function _followCanli(seq){
     if(d.fracX != null && d.fracY != null){
       window.applyPageScrollFraction?.(d.page || appState.currentPage, d.fracX, d.fracY);
     }
-  }catch(e){ console.warn('Canlı takip hatası:',e); }
+  }catch(e){
+    console.warn('Canlı takip hatası:',e);
+    window.debugReport?.('live.follow.failed', {error:e, incoming:_latestCanliData});
+  }
   finally{ setTimeout(()=>{ appState._liveSuppress = false; }, 900); }
 }
 
@@ -147,6 +200,7 @@ export function subscribeCanli(uid){
     const d = docData.canli;
     if(!d || d.by === _liveDeviceId()) return;             // kendi yazdığımız
     if(d.ts && d.ts <= (appState._lastCanliTs||0)) return; // zaten uygulandı
+    if(!acceptCanliSource(d)) return;                      // başka eski cihaz yayını
     appState._lastCanliTs = d.ts || Date.now();
     appState._watchGotData = true;   // izleme modu: en az bir veri geldi
     if(appState.liveSession || appState.watchMode) scheduleFollowCanli(d);
@@ -158,6 +212,8 @@ export function unsubscribeCanli(){
   _followTimer = null;
   _followSeq++;
   _latestCanliData = null;
+  _followSourceId = '';
+  _followSourceSeenAt = 0;
 }
 
 export function toggleLiveSession(){

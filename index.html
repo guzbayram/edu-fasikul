@@ -300,6 +300,13 @@
             <button class="pref-action pref-chip" onclick="exportData()">JSON İndir</button>
           </div>
           <div class="pref-row">
+            <span class="pref-label">Hata Günlüğü</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+              <button class="pref-action pref-chip" onclick="exportDebugLog()">İndir</button>
+              <button class="pref-action pref-chip" onclick="clearDebugLog()">Temizle</button>
+            </div>
+          </div>
+          <div class="pref-row">
             <span class="pref-label">Tüm verileri sıfırla</span>
             <button class="pref-action pref-chip" style="background:var(--red-dim);color:var(--red)" onclick="resetAllData()">🗑️ Sıfırla</button>
           </div>

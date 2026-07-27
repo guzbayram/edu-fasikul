@@ -137,6 +137,7 @@ function publishVoicePresence(extra = {}) {
     }
   }, { merge: true }).catch(error => {
     console.warn('Firebase ses durumu yazılamadı:', error);
+    window.debugReport?.('voice.presence.write.failed', {error, roomId});
     voiceReady = false;
     renderVoiceUi();
     throw error;
@@ -181,6 +182,7 @@ function subscribeVoiceRoom() {
     renderVoiceUi();
   }, error => {
     console.warn('Firebase ses katılımcıları dinlenemedi:', error);
+    window.debugReport?.('voice.roster.listen.failed', {error, roomId});
     voiceReady = false;
     renderVoiceUi();
   });
@@ -198,6 +200,7 @@ function subscribeVoiceRoom() {
     });
   }, error => {
     console.warn('Firebase ses sinyalleri dinlenemedi:', error);
+    window.debugReport?.('voice.signal.listen.failed', {error, roomId});
     voiceReady = false;
     renderVoiceUi();
   });
@@ -216,6 +219,7 @@ export async function voiceJoinRoom(nextRoomId) {
     heartbeatTimer = setInterval(() => publishVoicePresence().catch(() => {}), VOICE_HEARTBEAT_MS);
   } catch (error) {
     console.warn('Firebase ses odası açılamadı:', error);
+    window.debugReport?.('voice.room.join.failed', {error, roomId:nextRoomId});
     showStatus('Canlı ses için Firestore izni gerekli.', 'error');
   }
   renderVoiceUi();
@@ -254,6 +258,7 @@ async function getLocalStream() {
     track.onended = () => {
       voiceState.callActive = false;
       localStream = null;
+      window.debugReport?.('voice.local.track.ended', {roomId});
       showStatus('Mikrofon bağlantısı kapandı. Yeniden konuşmak için mikrofonu aç.', 'error');
       publishVoicePresence({ callActive: false }).catch(() => {});
       renderVoiceUi();
@@ -282,6 +287,7 @@ function createPeer(uid) {
   pc.oniceconnectionstatechange = onPeerState;
   pc.onicecandidateerror = event => {
     console.warn('WebRTC ICE aday hatası:', event?.errorText || event?.errorCode || event);
+    window.debugLog?.('voice.ice.candidate.error', {uid, errorText:event?.errorText, errorCode:event?.errorCode}, 'warn');
   };
   return pc;
 }
@@ -315,6 +321,7 @@ function shouldInitiatePeerRecovery(uid) {
 function schedulePeerRecovery(uid, state) {
   if (!uid) return;
   if (state === 'connected' || state === 'completed') {
+    window.debugLog?.('voice.peer.connected', {uid, state}, 'info');
     clearPeerRecovery(uid);
     publishVoicePresence({ callActive: true }).catch(() => {});
     return;
@@ -324,6 +331,7 @@ function schedulePeerRecovery(uid, state) {
     return;
   }
   if (state !== 'disconnected' && state !== 'failed') return;
+  window.debugReport?.('voice.peer.unstable', {uid, state}, {force: state === 'failed'});
   if (peerRecoveryTimers.has(uid)) return;
   const initiator = shouldInitiatePeerRecovery(uid);
   const delay = state === 'failed' ? (initiator ? 300 : 4000) : (initiator ? PEER_DISCONNECT_RETRY_MS : 7000);
@@ -357,6 +365,7 @@ async function restartPeer(uid) {
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
   }
   peerLastRestartAt.set(uid, now);
+  window.debugLog?.('voice.peer.restart', {uid}, 'warn');
   const offer = await pc.createOffer({ offerToReceiveAudio: true, iceRestart: true });
   await pc.setLocalDescription(offer);
   await sendSignal(uid, 'offer', offer);
@@ -375,6 +384,7 @@ async function addCandidate(pc, uid, candidate) {
     await pc.addIceCandidate(new RTCIceCandidate(candidate));
   } catch (error) {
     console.warn('WebRTC ICE adayı eklenemedi:', error);
+    window.debugLog?.('voice.ice.add.failed', {uid, error}, 'warn');
   }
 }
 
@@ -387,6 +397,7 @@ async function flushCandidates(pc, uid) {
 async function handleSignal({ from, fromName, type, payload }) {
   if (!from || !type) return;
   if (type === 'grant') {
+    window.debugLog?.('voice.signal.grant', {from, fromName}, 'info');
     showStatus(`${fromName || 'Karşı taraf'} ses görüşmesini kabul etti`, 'success');
     pendingGrant = null;
     closeVoiceGrantPrompt();
@@ -403,6 +414,7 @@ async function handleSignal({ from, fromName, type, payload }) {
   }
   const stream = await getLocalStream();
   let pc = peers.get(from) || createPeer(from);
+  window.debugLog?.('voice.signal.received', {from, type}, 'info');
   if (!pc.getSenders().some(sender => sender.track?.kind === 'audio')) {
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
   }
@@ -451,6 +463,7 @@ function attachRemoteAudio(uid, stream) {
     closeVoicePlaybackPrompt();
   }).catch(() => {
     voicePlaybackBlocked = true;
+    window.debugReport?.('voice.playback.blocked', {uid});
     showStatus('Sesi başlatmak için Sesi Başlat düğmesine dokun.', 'info');
     renderVoicePlaybackPrompt();
   });
