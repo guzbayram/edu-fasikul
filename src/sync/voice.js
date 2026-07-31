@@ -603,7 +603,8 @@ export function voiceSelfPanel() {
   const status = voiceReady ? 'ses hazır' : 'ses kapalı';
   if (isTeacher()) {
     return `<div class="voice-self-panel">
-      <div><b>Sesli Konuşma</b><span>${esc(status)}${queue.length ? ` · ${queue.length} el` : ''}</span></div>
+      <div><b>Sesli Konuşma</b><span>${queued ? 'talep gönderildi' : esc(status)}${queue.length ? ` · ${queue.length} el` : ''}</span></div>
+      <button onclick="raiseHandForVoice()" ${queued || !voiceReady ? 'disabled' : ''} title="Karşı taraftan sesli konuşma talep et">${queued ? 'Talep Gönderildi' : '✋ Ses Talep Et'}</button>
       ${'Notification' in window && Notification.permission !== 'granted' ? '<button onclick="requestEduNotificationPermission()" title="El kaldırma bildirimlerini aç">Bildirim Aç</button>' : ''}
       <button onclick="muteAllVoice()" title="Tüm öğrencilerin mikrofonunu kapat">Toplu Sustur</button>
     </div>`;

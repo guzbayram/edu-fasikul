@@ -6437,3 +6437,37 @@ body.reader-locked .main-content{visibility:hidden!important}
   user-select:text!important;
   -webkit-touch-callout:default!important;
 }
+
+/* Keep the solve statistics visible and centered on every compact reader
+   layout. Later mobile/tablet panel rules should not collapse this row. */
+#reader-overlay.solve-mode #solvePalette .sp-stats-row{
+  display:grid!important;
+  grid-template-columns:repeat(4,auto)!important;
+  align-items:center!important;
+  justify-content:center!important;
+  justify-items:center!important;
+  gap:8px!important;
+  width:100%!important;
+  min-height:28px!important;
+}
+
+#reader-overlay.solve-mode #solvePalette .sp-stats-row .sp-chip{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+@media (orientation:landscape) and (max-height:500px){
+  #reader-overlay.solve-mode #solvePalette .sp-stats-row{
+    gap:6px!important;
+    min-height:24px!important;
+  }
+  #reader-overlay.solve-mode #solvePalette .sp-stats-row .sp-chip{
+    min-height:22px!important;
+    height:22px!important;
+    padding:0 5px!important;
+    font-size:11px!important;
+  }
+}

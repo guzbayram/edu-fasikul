@@ -2174,16 +2174,12 @@ function updateTestProgress(){
     spTopicPage.textContent = active?.sayfa ? `s.${active.sayfa}` : '';
   }
   if(spStatsMini){
-    if(engaged > 0){
-      const pctStr = sorular.length>0 ? Math.round(correct/sorular.length*100) : 0;
-      spStatsMini.innerHTML = `
-        <span class="sp-chip sp-ok">✅ ${correct}</span>
-        <span class="sp-chip sp-bad">❌ ${wrong}</span>
-        <span class="sp-chip sp-empty">⬜ ${blank}</span>
-        <span class="sp-chip sp-pct">%${pctStr}</span>`;
-    } else {
-      spStatsMini.innerHTML = `<span class="sp-muted">Henüz soru çözülmedi</span>`;
-    }
+    const pctStr = sorular.length>0 ? Math.round(correct/sorular.length*100) : 0;
+    spStatsMini.innerHTML = `
+      <span class="sp-chip sp-ok">✅ ${correct}</span>
+      <span class="sp-chip sp-bad">❌ ${wrong}</span>
+      <span class="sp-chip sp-empty">⬜ ${blank}</span>
+      <span class="sp-chip sp-pct">%${pctStr}</span>`;
   }
 
   // Bağımsız istatistik gösterimi (Sıfırla butonu artık başlık satırında)

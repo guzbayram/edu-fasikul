@@ -9,8 +9,8 @@ import { _getUserKey } from '../firebase/firestore.js';
 // yansır. Kimsenin özel (kullanicilar/{uid}) dokümanı okunmaz.
 // ══════════════════════════════════════════════════════════
 
-const HEARTBEAT_MS = 5000;
-const ONLINE_WINDOW_MS = 20000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
+const HEARTBEAT_MS = 3000;
+const ONLINE_WINDOW_MS = 45000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
 let _presFasikulId = null;
 let _rosterUnsub = null;
 let _heartbeatTimer = null;
@@ -22,6 +22,7 @@ let _lastFollowSig = '';
 let _followApplyTimer = null;
 let _followApplySeq = 0;
 let _lastFollowApplyAt = 0;
+let _lastPresenceWriteAt = 0;
 const FOLLOW_APPLY_DELAY_MS = 420;
 const FOLLOW_MIN_INTERVAL_MS = 650;
 const FOLLOW_DRAW_APPLY_DELAY_MS = 90;
@@ -59,8 +60,7 @@ export function startCanliPresence(){
   }
   clearTimeout(_startRetryTimer);
   _presFasikulId = fas.id;
-  _writePresence();
-  setTimeout(_writePresence, 650);
+  _writePresence(true);
   window.voiceJoinRoom?.(fas.id);
   const col = window._fsCollection(window._db,'canliOturum',fas.id,'uyeler');
   _rosterUnsub = window._fsOnSnapshot(col, (snap)=>{
@@ -73,6 +73,7 @@ export function startCanliPresence(){
     });
     _roster = list;
     _renderRoster();
+    _writePresence();
     if(_followUid) scheduleApplyFollow();
     if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
   }, (err)=>{
@@ -80,6 +81,7 @@ export function startCanliPresence(){
     window.debugReport?.('presence.listen.failed', {error:err, fasikulId:fas.id});
   });
   _heartbeatTimer = setInterval(_writePresence, HEARTBEAT_MS);
+  [250, 750, 1500, 3000].forEach(ms=>setTimeout(()=>_writePresence(true), ms));
   _updateRosterButton();
 }
 
@@ -111,18 +113,21 @@ function schedulePresenceStartRetry(){
   }, 350);
 }
 
-function _writePresence(){
+function _writePresence(force = false){
   const me = _me();
   const fas = appState.aktifFasikul;
-  if(appState.watchMode || appState.reviewMode) return;
+  if(appState.reviewMode) return;
   // Gizli sekme/arka plandaki cihaz eski sayfa bilgisini yazarsa aktif
   // öğrencinin canlı konumunu UID dokümanında ezer ve izleyeni başa atlatır.
   if(document.hidden) return;
   if(!me || !fas || fas.id !== _presFasikulId || !_ready()) return;
+  const now = Date.now();
+  if(!force && now - _lastPresenceWriteAt < 1200) return;
+  _lastPresenceWriteAt = now;
   // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
   // (kaydırma dahil) görsün — ekran boyutundan bağımsız kalması için MUTLAK
   // piksel değil ORAN (fracX/fracY, bkz. getCurrentPageScrollFraction).
-  const suppressed = !!(appState._presSuppress || appState._liveSuppress);
+  const suppressed = !!(appState.watchMode || appState._presSuppress || appState._liveSuppress);
   const frac = suppressed ? null : window.getCurrentPageScrollFraction?.();
   const payload = {
     uid: me.uid, name: me.name, role: me.role,
@@ -130,7 +135,7 @@ function _writePresence(){
     fasikulId: fas.id,
     page: appState.currentPage || 1,
     altKonuId: appState.aktifAltKonu?.id || '',
-    ts: Date.now()
+    ts: now
   };
   if(!suppressed){
     payload.zoom = appState.zoom || 100;
@@ -261,7 +266,7 @@ function _applyFollow(seq){
 
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) return;
-  if(_presFasikulId) _writePresence();
+  if(_presFasikulId) _writePresence(true);
   if(_followUid) scheduleApplyFollow();
 });
 
