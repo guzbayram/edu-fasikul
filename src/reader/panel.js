@@ -48,6 +48,15 @@ function renderSoruList(sorular){
   document.getElementById('rpSoruSayisi').textContent = `${sorular.length} Soru`;
 }
 
+function getReaderSoruState(soru){
+  const key = soru?._uid || soru?.no;
+  if(key == null) return null;
+  if(appState.watchMode && appState.watchSorularState){
+    return appState.watchSorularState[key] || appState.watchSorularState[String(key)] || null;
+  }
+  return appState.sorularState[key] || null;
+}
+
 function escapeHtml(text){
   return String(text ?? '').replace(/[&<>"']/g, ch => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
@@ -101,7 +110,7 @@ function findNextOpenAnswerIdx(sorular, idx){
   for(let i = idx + 1; i < sorular.length; i++){
     const soru = sorular[i];
     if(soru?.cevapTipi !== 'acik-uclu') continue;
-    if(appState.sorularState[soru._uid||soru.no]?.answered) continue;
+    if(getReaderSoruState(soru)?.answered) continue;
     return i;
   }
   return -1;
@@ -253,7 +262,7 @@ function renderSoruStrip(sorular){
   strip.innerHTML = '';
   sorular.forEach((s, idx) => {
     const displayNo = getSoruDisplayNo(s);
-    const state = appState.sorularState[s._uid||s.no];
+    const state = getReaderSoruState(s);
     const dot = document.createElement('div');
     dot.className = 'strip-dot' +
       (idx === appState.activeQuestionIdx ? ' active' : '') +
@@ -285,7 +294,7 @@ function renderTekSoruKartEl(card, sorular, idx){
   const displayNo = getSoruDisplayNo(s);
   const displayPage = getSoruDisplayPage(s, idx);
 
-  const state = appState.sorularState[s._uid||s.no];
+  const state = getReaderSoruState(s);
   const answered = !!state?.answered;
   const isStarred = !!state?.starred;
   const badgeClass = s.zorluk==='kolay'?'badge-easy':s.zorluk==='zor'?'badge-hard':'badge-mid';
@@ -789,7 +798,7 @@ function buildKonuDropdown(){
     // Tek altKonu'lu test → doğrudan tıklanır item (başlık tekrarı olmasın)
     if(altKonular.length === 1){
       const ak = altKonular[0];
-      const solved = (ak.sorular||[]).filter(s=>appState.sorularState[s._uid||s.no]?.answered).length;
+      const solved = (ak.sorular||[]).filter(s=>getReaderSoruState(s)?.answered).length;
       const total = ak.sorular?.length || 0;
       const isActive = ak === appState.aktifAltKonu || ak.id === appState.aktifAltKonu?.id;
       const item = document.createElement('div');
@@ -805,7 +814,7 @@ function buildKonuDropdown(){
     header.textContent = konu.ad;
     menu.appendChild(header);
     altKonular.forEach(ak => {
-      const solved = (ak.sorular||[]).filter(s=>appState.sorularState[s._uid||s.no]?.answered).length;
+      const solved = (ak.sorular||[]).filter(s=>getReaderSoruState(s)?.answered).length;
       const total = ak.sorular?.length || 0;
       const isActive = ak === appState.aktifAltKonu || ak.id === appState.aktifAltKonu?.id;
       const item = document.createElement('div');
@@ -2039,7 +2048,7 @@ function goToSoruPage(){
 function refreshAltKonuChip(){
   const alt = appState.aktifAltKonu;
   if(!alt?.sorular?.length) return;
-  const solved = alt.sorular.filter(s=>appState.sorularState[s._uid||s.no]?.answered).length;
+  const solved = alt.sorular.filter(s=>getReaderSoruState(s)?.answered).length;
   const itemEl = document.querySelector('.alt-konu-item.active .akn-chip');
   if(itemEl) itemEl.textContent=`${solved}/${alt.sorular.length}`;
 }
@@ -2056,7 +2065,7 @@ function setActiveQuestion(idx){
   const card=document.getElementById(`soru-card-${s.no}`);
   if(card){
     card.classList.add('active-q');
-    if(!appState.sorularState[s._uid||s.no]?.answered) card.classList.add('expanded');
+    if(!getReaderSoruState(s)?.answered) card.classList.add('expanded');
     card.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
   if(s.sayfa) goToPage(s.sayfa);
@@ -2125,7 +2134,7 @@ function computeTestStats(sorular){
   const total=sorular.length;
   let correct=0, wrong=0, skipped=0;
   sorular.forEach(s=>{
-    const st=appState.sorularState[s._uid||s.no];
+    const st=getReaderSoruState(s);
     if(!st?.answered) return;
     if(st.skipped) skipped++;
     else if(st.correct) correct++;

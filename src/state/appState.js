@@ -24,6 +24,7 @@ export const appState = {
   timer2minLast: 0,
   altKonuStats: {},
   sorularState: {},
+  watchSorularState: {},
   videoWatched: {},
   liveSession: false,
   autoPublishLive: false,   // öğrenci: konumunu öğretmenin izlemesi için sürekli otomatik yayınlar

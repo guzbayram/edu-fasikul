@@ -330,6 +330,7 @@ export function watchStudentLive(studentUid, studentName){
   appState._watchGotData = false;
   appState._lastCanliTs = 0;   // yeni öğrencinin ilk konumu uygulanabilsin
   subscribeCanli(studentUid);
+  subscribeWatchSolutions(studentUid);
   subscribeRealtimeDrawings(studentUid);
   _showWatchBanner(studentName);
   _showWatchStatsPanel(studentName, {});
@@ -349,10 +350,75 @@ export function stopWatchStudent(silent){
   appState._liveManualPauseUntil = 0;
   clearTimeout(appState._watchProbe);
   unsubscribeCanli();
+  unsubscribeWatchSolutions();
   unsubscribeRealtimeDrawings();
   _hideWatchBanner();
   _hideWatchStatsPanel();
   if(wasWatching && !silent) window.showToast?.('Canlı izleme durduruldu','info');
+}
+
+function restoreSolutionStateFromDoc(data, soruKey){
+  return {
+    answered:true,
+    selected:data.ogrenciCevap??null,
+    correct:data.dogru===true,
+    skipped:data.atladi===true,
+    correct_answer:data.dogruCevap||'',
+    timeSec:data.sureSaniye||0,
+    fasikulId:data.fasikulId||'',
+    fasikulAd:data.fasikulAd||'',
+    konu:data.konu||'',
+    altKonu:data.altKonu||'',
+    zorluk:data.zorluk||'',
+    tarih:data.tarih||'',
+    _synced:true,
+    _watch:true,
+    soruKey
+  };
+}
+
+function subscribeWatchSolutions(uid){
+  unsubscribeWatchSolutions();
+  appState.watchSorularState = {};
+  if(!appState.watchMode || !window._fsOnSnapshot || !window._db || !uid) return;
+  const cozumlerRef = window._fsCollection(window._db,'kullanicilar',uid,'cozumler');
+  window._watchUnsubCozumler = window._fsOnSnapshot(cozumlerRef, (snapshot)=>{
+    let changed = false;
+    snapshot.docChanges().forEach(change=>{
+      const data = change.doc.data();
+      const soruKey = data.soruKey || decodeURIComponent(change.doc.id);
+      if(!soruKey) return;
+      if(change.type === 'removed'){
+        delete appState.watchSorularState[soruKey];
+        if(data.fasikulId) delete appState.watchSorularState[`${data.fasikulId}__${soruKey}`];
+        changed = true;
+        return;
+      }
+      if(change.doc.metadata.hasPendingWrites) return;
+      const restored = restoreSolutionStateFromDoc(data, soruKey);
+      appState.watchSorularState[soruKey] = restored;
+      if(data.fasikulId) appState.watchSorularState[`${data.fasikulId}__${soruKey}`] = restored;
+      changed = true;
+    });
+    if(changed){
+      window.updateTestProgress?.();
+      if(appState.aktifAltKonu?.sorular){
+        window.renderSoruStrip?.(appState.aktifAltKonu.sorular);
+        window.renderSolveAnswers?.();
+      }
+    }
+  }, (err)=>{
+    console.warn('İzleme cevapları dinleme hatası:', err);
+    window.debugReport?.('watch.solutions.listen.failed', {error:err, uid});
+  });
+}
+
+function unsubscribeWatchSolutions(){
+  if(window._watchUnsubCozumler){
+    window._watchUnsubCozumler();
+    window._watchUnsubCozumler = null;
+  }
+  appState.watchSorularState = {};
 }
 
 function subscribeRealtimeDrawings(uid){
