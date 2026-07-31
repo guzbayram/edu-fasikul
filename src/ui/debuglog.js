@@ -10,6 +10,7 @@ const REPORT_COOLDOWN_MS = 8000;
 let events = loadEvents();
 let lastReportAt = 0;
 let reportSeq = 0;
+let remoteDisabledUntil = 0;
 
 function loadEvents(){
   try{
@@ -96,6 +97,10 @@ async function sendReport(reason, details={}, options={}){
   const now = Date.now();
   if(!options.force && now - lastReportAt < REPORT_COOLDOWN_MS) return false;
   lastReportAt = now;
+  if(!options.force && now < remoteDisabledUntil){
+    pushEvent('warn', 'debug.report.skipped', {reason, until:remoteDisabledUntil});
+    return false;
+  }
   const uid = _getUserKey();
   if(!uid || !window._firestoreReady) return false;
   const id = `${now}_${++reportSeq}`;
@@ -120,6 +125,9 @@ async function sendReport(reason, details={}, options={}){
     return true;
   }catch(error){
     pushEvent('warn', 'debug.report.failed', {reason, error});
+    if(String(error?.message || '').toLowerCase().includes('permission')){
+      remoteDisabledUntil = Date.now() + 5 * 60 * 1000;
+    }
     return false;
   }
 }

@@ -132,6 +132,7 @@ function acceptCanliSource(d){
 // çağrıları hem gereksiz hem de kendi aralarında yarışıyordu).
 async function _followCanli(seq){
   if(seq !== _followSeq) return;
+  if(document.hidden) return;
   if(Date.now() < Number(appState._liveManualPauseUntil || 0)){
     scheduleFollowCanli(_latestCanliData);
     return;
@@ -188,6 +189,11 @@ async function _followCanli(seq){
   }
   finally{ setTimeout(()=>{ appState._liveSuppress = false; }, 900); }
 }
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) return;
+  if(_latestCanliData && (appState.liveSession || appState.watchMode)) scheduleFollowCanli(_latestCanliData);
+});
 
 export function subscribeCanli(uid){
   unsubscribeCanli();

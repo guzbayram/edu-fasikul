@@ -12,6 +12,7 @@ import { appState } from '../state/appState.js';
 // kalır — pageWrap/displayW/H hiç değişmez — hafif bulanıklaşabilir ama
 // ÇÖKME riski olmaz) bırakılır.
 const MAX_CANVAS_DIM = 4096;
+const SCROLL_RENDER_RETAIN_PAGES = (navigator.maxTouchPoints || 0) > 0 ? 2 : 3;
 
 async function loadPDFFile(file, targetPage=1){
   const arrayBuffer = await file.arrayBuffer();
@@ -189,6 +190,7 @@ function throttleScrollHandler(){
     // realtime.js _publishTimer + sig karşılaştırması), burada koşulsuz
     // çağırmak Firestore'u spamlamaz.
     window.publishCanli?.();
+    scheduleRenderedPageCleanup();
   }, 80);
 }
 
@@ -210,6 +212,50 @@ function updateCurrentPageFromScroll(){
     document.getElementById('nextPageBtn').disabled = appState.currentPage === appState.totalPages;
     syncNavToPage(closest);
   }
+}
+
+function scheduleRenderedPageCleanup(){
+  clearTimeout(appState._renderedPageCleanupTimer);
+  appState._renderedPageCleanupTimer = setTimeout(cleanupFarRenderedPages, 350);
+}
+
+function shouldKeepRenderedPage(pageNum, pageWrap = null){
+  if(pageWrap){
+    const wrap = document.getElementById('readerCanvasWrap');
+    if(wrap){
+      const root = wrap.getBoundingClientRect();
+      const rect = pageWrap.getBoundingClientRect();
+      const margin = Math.max(root.height * 1.2, 900);
+      if(rect.bottom >= root.top - margin && rect.top <= root.bottom + margin) return true;
+    }
+  }
+  const current = Number(appState.currentPage || 1);
+  return Math.abs(Number(pageNum) - current) <= SCROLL_RENDER_RETAIN_PAGES;
+}
+
+function cleanupFarRenderedPages(){
+  if(appState.viewMode !== 'scroll') return;
+  document.querySelectorAll('#readerCanvasWrap [data-page-num][data-rendered="1"]').forEach(pageWrap=>{
+    const pageNum = Number(pageWrap.dataset.pageNum);
+    if(!Number.isFinite(pageNum) || shouldKeepRenderedPage(pageNum, pageWrap)) return;
+    unloadRenderedPage(pageWrap, pageNum);
+  });
+}
+
+function unloadRenderedPage(pageWrap, pageNum){
+  try{ window.saveDrawingForPage?.(pageNum); }catch(_e){}
+  const fc = appState.fabricCanvases?.[pageNum];
+  if(fc){
+    try{ fc.dispose(); }catch(_e){}
+    delete appState.fabricCanvases[pageNum];
+    if(appState.fabricCanvas === fc) appState.fabricCanvas = null;
+  }
+  pageWrap.querySelectorAll('canvas,.canvas-container,.pdf-page-mock').forEach(el=>{
+    try{ el.remove(); }catch(_e){}
+  });
+  pageWrap.dataset.rendered = '';
+  delete pageWrap.dataset.rendered;
+  pageWrap.style.background = 'var(--bg-2)';
 }
 
 /**
@@ -575,7 +621,15 @@ function mergeNearbyUnderlineMasks(masks){
 async function renderSinglePDFPage(pageNum, pageWrap){
   if(!appState.pdfDoc) return;
   try{
+    if(!shouldKeepRenderedPage(pageNum, pageWrap)){
+      delete pageWrap.dataset.rendered;
+      return;
+    }
     const page = await appState.pdfDoc.getPage(pageNum);
+    if(!shouldKeepRenderedPage(pageNum, pageWrap)){
+      delete pageWrap.dataset.rendered;
+      return;
+    }
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const readerWrap = document.getElementById('readerCanvasWrap');
     const baseScale = getReaderFitScale(page, readerWrap, getStableRenderZoom(readerWrap));

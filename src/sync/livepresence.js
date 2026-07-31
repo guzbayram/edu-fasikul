@@ -115,6 +115,9 @@ function _writePresence(){
   const me = _me();
   const fas = appState.aktifFasikul;
   if(appState.watchMode || appState.reviewMode) return;
+  // Gizli sekme/arka plandaki cihaz eski sayfa bilgisini yazarsa aktif
+  // öğrencinin canlı konumunu UID dokümanında ezer ve izleyeni başa atlatır.
+  if(document.hidden) return;
   if(!me || !fas || fas.id !== _presFasikulId || !_ready()) return;
   // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
   // (kaydırma dahil) görsün — ekran boyutundan bağımsız kalması için MUTLAK
@@ -194,6 +197,11 @@ function scheduleApplyFollow(){
 
 function _applyFollow(seq){
   if(seq !== _followApplySeq) return;
+  if(document.hidden){
+    // Arka plandaki izleyici ağır PDF render tetiklemesin; sekme görünür
+    // olunca en güncel presence tekrar uygulanacak.
+    return;
+  }
   if(Date.now() < Number(appState._liveManualPauseUntil || 0)){
     scheduleApplyFollow();
     return;
@@ -250,6 +258,12 @@ function _applyFollow(seq){
     }
   }, 320);
 }
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) return;
+  if(_presFasikulId) _writePresence();
+  if(_followUid) scheduleApplyFollow();
+});
 
 function _renderFollowDraw(json, drawKey, dw, dh, attempt = 0){
   if(!json || !drawKey) return;
