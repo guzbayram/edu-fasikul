@@ -9,11 +9,12 @@ import { _getUserKey } from '../firebase/firestore.js';
 // yansır. Kimsenin özel (kullanicilar/{uid}) dokümanı okunmaz.
 // ══════════════════════════════════════════════════════════
 
-const HEARTBEAT_MS = 15000;
-const ONLINE_WINDOW_MS = 45000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
+const HEARTBEAT_MS = 5000;
+const ONLINE_WINDOW_MS = 20000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
 let _presFasikulId = null;
 let _rosterUnsub = null;
 let _heartbeatTimer = null;
+let _startRetryTimer = null;
 let _pubTimer = null, _drawPubTimer = null;
 let _roster = [];
 let _followUid = null;
@@ -24,6 +25,8 @@ let _lastFollowApplyAt = 0;
 const FOLLOW_APPLY_DELAY_MS = 420;
 const FOLLOW_MIN_INTERVAL_MS = 650;
 const FOLLOW_DRAW_APPLY_DELAY_MS = 90;
+const FOLLOW_DRAW_RETRY_MS = 180;
+const FOLLOW_DRAW_MAX_RETRY = 12;
 
 function _esc(s){ return String(s??'').replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
 function _escAttr(s){ return _esc(s).replace(/'/g,"\\'"); }
@@ -38,15 +41,26 @@ function _me(){
 function _ready(){ return !!(window._firestoreReady && window._db && window._fsDoc && window._fsSetDoc); }
 function _memberRef(fasikulId, uid){ return window._fsDoc(window._db,'canliOturum',fasikulId,'uyeler',uid); }
 function _roleIcon(r){ return r==='ogretmen'?'👨‍🏫':r==='admin'?'🔑':'🎓'; }
+function _hashDraw(json){
+  const s = String(json || '');
+  let h = 0;
+  for(let i=0;i<s.length;i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return `${s.length}:${h >>> 0}`;
+}
 
 export function startCanliPresence(){
   const fas = appState.aktifFasikul;
   const restartingSameRoom = !!(fas?.id && _presFasikulId === fas.id);
   stopCanliPresence(true, { keepDoc: restartingSameRoom });
   const me = _me();
-  if(!me || !fas || !_ready() || !window._fsOnSnapshot || !window._fsCollection) return;
+  if(!me || !fas || !_ready() || !window._fsOnSnapshot || !window._fsCollection){
+    schedulePresenceStartRetry();
+    return;
+  }
+  clearTimeout(_startRetryTimer);
   _presFasikulId = fas.id;
   _writePresence();
+  setTimeout(_writePresence, 650);
   window.voiceJoinRoom?.(fas.id);
   const col = window._fsCollection(window._db,'canliOturum',fas.id,'uyeler');
   _rosterUnsub = window._fsOnSnapshot(col, (snap)=>{
@@ -70,6 +84,7 @@ export function startCanliPresence(){
 }
 
 export function stopCanliPresence(silent, opts = {}){
+  clearTimeout(_startRetryTimer); _startRetryTimer = null;
   if(_rosterUnsub){ _rosterUnsub(); _rosterUnsub = null; }
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
   clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
@@ -87,6 +102,13 @@ export function stopCanliPresence(silent, opts = {}){
   _roster = [];
   _hideRosterPanel();
   _updateRosterButton();
+}
+
+function schedulePresenceStartRetry(){
+  clearTimeout(_startRetryTimer);
+  _startRetryTimer = setTimeout(()=>{
+    if(appState.aktifFasikul && !appState.reviewMode) startCanliPresence();
+  }, 350);
 }
 
 function _writePresence(){
@@ -123,7 +145,7 @@ export function publishCanliPresence(){
   if(appState.watchMode || appState.reviewMode || appState._presSuppress || appState._liveSuppress) return;
   if(!_presFasikulId) return;
   clearTimeout(_pubTimer);
-  _pubTimer = setTimeout(_writePresence, 180);
+  _pubTimer = setTimeout(_writePresence, 80);
 }
 
 // Çizim değişince: mevcut sayfanın çizimini kendi dokümanına koy → takipçiler görsün
@@ -135,8 +157,9 @@ export function publishCanliPresenceDraw(key, json, w, h){
   if(key !== currentKey) return;
   clearTimeout(_drawPubTimer);
   _drawPubTimer = setTimeout(()=>{
+    const now = Date.now();
     window._fsSetDoc(_memberRef(fas.id, me.uid),
-      { drawKey:key, draw:json||'', dw:w||0, dh:h||0, ts:Date.now() }, {merge:true})
+      { drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now }, {merge:true})
       .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key}, 'warn'));
   }, 250);
 }
@@ -178,7 +201,8 @@ function _applyFollow(seq){
   _lastFollowApplyAt = Date.now();
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
-  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${(m.draw||'').length}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}`;
+  const drawSig = m.drawSig || _hashDraw(m.draw);
+  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${m.drawTs||''}|${drawSig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}`;
   if(sig === _lastFollowSig) return;              // değişmedi → tekrar uygulama
   _lastFollowSig = sig;
   appState._presSuppress = true;
@@ -220,18 +244,25 @@ function _applyFollow(seq){
       if(m.fracX != null && m.fracY != null){
         window.applyPageScrollFraction?.(m.page || appState.currentPage, m.fracX, m.fracY);
       }
-      _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh);
+      _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh, 0);
     } finally {
       if(seq === _followApplySeq) setTimeout(()=>{ appState._presSuppress = false; }, 900);
     }
   }, 320);
 }
 
-function _renderFollowDraw(json, drawKey, dw, dh){
+function _renderFollowDraw(json, drawKey, dw, dh, attempt = 0){
   if(!json || !drawKey) return;
   const fas = appState.aktifFasikul;
   const currentKey = fas ? `drawing_${fas.id}_p${appState.currentPage}` : null;
-  if(currentKey !== drawKey) return;             // takip edilen başka sayfada
+  if(currentKey !== drawKey){
+    if(attempt < FOLLOW_DRAW_MAX_RETRY){
+      setTimeout(()=>_renderFollowDraw(json, drawKey, dw, dh, attempt + 1), FOLLOW_DRAW_RETRY_MS);
+    } else {
+      window.debugReport?.('presence.follow.draw.key_mismatch', {currentKey, drawKey, page:appState.currentPage});
+    }
+    return;
+  }
   // Takip edilenin canvas boyutunu kaydet ki applyDrawingScale doğru ölçeklesin
   if(dw && dh) appState.drawingDims[drawKey] = { w:dw, h:dh };
   const fc = appState.fabricCanvases?.[appState.currentPage] || appState.fabricCanvas;
@@ -239,7 +270,9 @@ function _renderFollowDraw(json, drawKey, dw, dh){
     setTimeout(()=>{
       const fc2 = appState.fabricCanvases?.[appState.currentPage] || appState.fabricCanvas;
       if(fc2) _queueFollowJSON(fc2, json, drawKey);
-    }, 1200);
+      else if(attempt < FOLLOW_DRAW_MAX_RETRY) _renderFollowDraw(json, drawKey, dw, dh, attempt + 1);
+      else window.debugReport?.('presence.follow.draw.canvas_missing', {drawKey, page:appState.currentPage});
+    }, FOLLOW_DRAW_RETRY_MS);
     return;
   }
   _queueFollowJSON(fc, json, drawKey);
@@ -275,6 +308,7 @@ function _loadFollowJSON(fc, json, drawKey){
     fc._followDrawingLoading = false;
     fc._applyingRemoteDrawing = false;
     console.warn('Takip çizimi yüklenemedi:',e);
+    window.debugReport?.('presence.follow.draw.load_failed', {error:e, drawKey});
     if(fc._queuedFollowDrawing) setTimeout(()=>_drainFollowJSON(fc), 0);
   }
 }
@@ -417,7 +451,11 @@ export function toggleCanliRoster(){
   const p = _ensurePanel();
   const open = p.style.display === 'flex';
   p.style.display = open ? 'none' : 'flex';
-  if(!open) _renderRoster();
+  if(!open){
+    _writePresence();
+    setTimeout(_writePresence, 500);
+    _renderRoster();
+  }
 }
 window.renderCanliRoster = _renderRoster;
 function _hideRosterPanel(){ const p = document.getElementById('canliRosterPanel'); if(p) p.style.display = 'none'; }

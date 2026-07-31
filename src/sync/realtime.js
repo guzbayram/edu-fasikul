@@ -367,7 +367,6 @@ function subscribeRealtimeDrawings(uid){
       const key = data.key;
       if(!key || !data.json) return;
       if(data.by && data.by === appState._cloudDeviceId) return;
-      if(appState.drawings[key] === data.json) return;
       const remoteUpdatedAt = Number(data.updatedAtMs || Date.parse(data.updatedAt || '')) || 0;
       const localEditAt = Number(appState.drawingLocalEditAt?.[key] || 0);
       const lastRemoteAt = Number(appState.drawingRemoteUpdatedAt?.[key] || 0);
@@ -376,6 +375,14 @@ function subscribeRealtimeDrawings(uid){
       const currentPage = appState.currentPage;
       const currentKey = aktifId ? `drawing_${aktifId}_p${currentPage}` : null;
       const isCurrentCanvas = currentKey === key;
+      if(appState.drawings[key] === data.json){
+        if(isCurrentCanvas){
+          const fc = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
+          const localJson = fc && window._localCanvasJSON ? window._localCanvasJSON(fc) : '';
+          if(fc && localJson !== data.json) queueRealtimeDrawing(fc, key, data);
+        }
+        return;
+      }
       const localIsNewer = localEditAt && remoteUpdatedAt && remoteUpdatedAt < localEditAt;
       const localIsActive = isCurrentCanvas && Date.now() - (appState._lastCanvasDrawTapAt || 0) < DRAWING_REMOTE_EDIT_GUARD_MS;
       if(localIsNewer || localIsActive){
@@ -437,6 +444,7 @@ function loadRealtimeDrawing(fc, key, data){
     fc._remoteDrawingLoading = false;
     fc._applyingRemoteDrawing = false;
     console.warn('Canlı çizim yüklenemedi:', e);
+    window.debugReport?.('live.draw.load_failed', {error:e, key});
     if(fc._queuedRealtimeDrawing) setTimeout(()=>drainRealtimeDrawingQueue(fc), 0);
   }
 }
