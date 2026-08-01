@@ -55,10 +55,14 @@ function applyTool(tool){
     clearToolHandlers(fc);
     switch(tool){
       case 'select':
-        fc.isDrawingMode=false; fc.selection=true;
+        fc.isDrawingMode=false;
+        // El/pan modunda mobil sürüklemede Fabric'in mavi çoklu seçim kutusu açılmasın.
+        fc.selection=false;
         fc.skipTargetFind=false;
         fc.defaultCursor='default'; fc.hoverCursor='move';
         setObjectsInteractive(fc, true);
+        fc.discardActiveObject?.();
+        fc.requestRenderAll?.();
         break;
       case 'pen':
         fc.isDrawingMode=true;

@@ -1,5 +1,11 @@
 import { appState } from '../state/appState.js';
 
+function isPhoneReaderViewport(){
+  if(!window.matchMedia) return false;
+  return window.matchMedia('(orientation:portrait) and (max-width:700px)').matches ||
+    window.matchMedia('(orientation:landscape) and (max-height:500px)').matches;
+}
+
 function markLastWorked(altKonu=null){
   const fas = appState.aktifFasikul;
   if(!fas) return;
@@ -60,11 +66,11 @@ async function openReader(dersId, fasikulId){
   appState.currentPage = 1;
   appState.undoStack = [];
   appState.redoStack = [];
-  // Her fasikül açılışında varsayılan araç: ✏️ Kalem — Gez/pan artık ayrı bir
-  // araç değil (2 parmakla her zaman kaydır/zumla, hangi araç seçili olursa
-  // olsun), bu yüzden açılışta doğrudan yazmaya hazır olsun.
-  appState.drawTool = 'pen';
-  document.querySelectorAll('.tool-btn[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool==='pen'));
+  // Telefonda ilk dokunuş çoğunlukla sayfayı konumlandırmak için yapılıyor;
+  // bu yüzden telefon açılışında pan/el, tablet ve bilgisayarda kalem hazır gelsin.
+  const defaultTool = isPhoneReaderViewport() ? 'select' : 'pen';
+  appState.drawTool = defaultTool;
+  document.querySelectorAll('.tool-btn[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool===defaultTool));
   // PDF state reset
   appState.pdfDoc = null;
   appState.pdfDocFasikulId = null;
