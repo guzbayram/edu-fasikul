@@ -49,26 +49,47 @@ function _hashDraw(json){
   return `${s.length}:${h >>> 0}`;
 }
 
+function _slugRoomPart(value){
+  return String(value || '')
+    .normalize('NFC')
+    .toLocaleLowerCase('tr-TR')
+    .replace(/[\/\\#?\[\].]/g, '-')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 120);
+}
+
+function _roomIdForFasikul(fas){
+  if(!fas) return '';
+  const stableSource = fas.jsonFile || fas.pdfFile || fas.id || fas.ad || '';
+  return `fas-${_slugRoomPart(stableSource) || _slugRoomPart(fas.id) || 'unknown'}`;
+}
+
 function _pageFromDrawingKey(fasikulId, key){
   const prefix = `drawing_${fasikulId}_p`;
   if(!key || !String(key).startsWith(prefix)) return 0;
   return Number(String(key).slice(prefix.length)) || 0;
 }
+function _pageFromAnyDrawingKey(key){
+  return Number(String(key || '').match(/_p(\d+)$/)?.[1] || 0);
+}
 
 export function startCanliPresence(){
   const fas = appState.aktifFasikul;
-  const restartingSameRoom = !!(fas?.id && _presFasikulId === fas.id);
+  const roomId = _roomIdForFasikul(fas);
+  const restartingSameRoom = !!(roomId && _presFasikulId === roomId);
   stopCanliPresence(true, { keepDoc: restartingSameRoom });
   const me = _me();
-  if(!me || !fas || !_ready() || !window._fsOnSnapshot || !window._fsCollection){
+  if(!me || !fas || !roomId || !_ready() || !window._fsOnSnapshot || !window._fsCollection){
     schedulePresenceStartRetry();
     return;
   }
   clearTimeout(_startRetryTimer);
-  _presFasikulId = fas.id;
+  _presFasikulId = roomId;
   _writePresence(true);
-  window.voiceJoinRoom?.(fas.id);
-  const col = window._fsCollection(window._db,'canliOturum',fas.id,'uyeler');
+  window.voiceJoinRoom?.(roomId);
+  const col = window._fsCollection(window._db,'canliOturum',roomId,'uyeler');
   _rosterUnsub = window._fsOnSnapshot(col, (snap)=>{
     const now = Date.now();
     const list = [];
@@ -84,7 +105,7 @@ export function startCanliPresence(){
     if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
   }, (err)=>{
     console.warn('Canlı oturum dinleme hatası:',err);
-    window.debugReport?.('presence.listen.failed', {error:err, fasikulId:fas.id});
+    window.debugReport?.('presence.listen.failed', {error:err, fasikulId:fas.id, roomId});
   });
   _heartbeatTimer = setInterval(_writePresence, HEARTBEAT_MS);
   [250, 750, 1500, 3000].forEach(ms=>setTimeout(()=>_writePresence(true), ms));
@@ -126,7 +147,8 @@ function _writePresence(force = false){
   // Gizli sekme/arka plandaki cihaz eski sayfa bilgisini yazarsa aktif
   // öğrencinin canlı konumunu UID dokümanında ezer ve izleyeni başa atlatır.
   if(document.hidden) return;
-  if(!me || !fas || fas.id !== _presFasikulId || !_ready()) return;
+  const roomId = _roomIdForFasikul(fas);
+  if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready()) return;
   const now = Date.now();
   if(!force && now - _lastPresenceWriteAt < 1200) return;
   _lastPresenceWriteAt = now;
@@ -139,6 +161,9 @@ function _writePresence(force = false){
     uid: me.uid, name: me.name, role: me.role,
     dersId: appState.aktifDers?.id || '',
     fasikulId: fas.id,
+    roomId,
+    jsonFile: fas.jsonFile || '',
+    pdfFile: fas.pdfFile || '',
     page: appState.currentPage || 1,
     altKonuId: appState.aktifAltKonu?.id || '',
     ts: now
@@ -152,7 +177,7 @@ function _writePresence(force = false){
     payload.fracTop = frac?.fracTop ?? null;
     payload.fracBottom = frac?.fracBottom ?? null;
   }
-  window._fsSetDoc(_memberRef(fas.id, me.uid), payload, {merge:true}).catch(e=>{
+  window._fsSetDoc(_memberRef(roomId, me.uid), payload, {merge:true}).catch(e=>{
     console.warn('Canlı oturum yazma hatası:',e);
     window.debugReport?.('presence.write.failed', {error:e, payload});
   });
@@ -170,8 +195,9 @@ export function publishCanliPresence(){
 export function publishCanliPresenceDraw(key, json, w, h){
   const me = _me();
   const fas = appState.aktifFasikul;
-  if(!me || !fas || fas.id !== _presFasikulId || !_ready() || !key) return;
-  const drawPage = _pageFromDrawingKey(fas.id, key);
+  const roomId = _roomIdForFasikul(fas);
+  if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready() || !key) return;
+  const drawPage = _pageFromDrawingKey(fas.id, key) || _pageFromAnyDrawingKey(key);
   if(!drawPage) return;
   const currentKey = `drawing_${fas.id}_p${appState.currentPage||1}`;
   const localEditAt = Number(appState.drawingLocalEditAt?.[key] || 0);
@@ -180,7 +206,7 @@ export function publishCanliPresenceDraw(key, json, w, h){
   clearTimeout(_drawPubTimer);
   _drawPubTimer = setTimeout(()=>{
     const now = Date.now();
-    window._fsSetDoc(_memberRef(fas.id, me.uid),
+    window._fsSetDoc(_memberRef(roomId, me.uid),
       { page:drawPage, drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now }, {merge:true})
       .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key}, 'warn'));
   }, 50);
@@ -293,7 +319,10 @@ function _renderFollowDraw(json, drawKey, dw, dh, attempt = 0){
   if(!json || !drawKey) return;
   const fas = appState.aktifFasikul;
   const currentKey = fas ? `drawing_${fas.id}_p${appState.currentPage}` : null;
-  if(currentKey !== drawKey){
+  const remotePage = _pageFromAnyDrawingKey(drawKey);
+  const sameVisiblePage = !!(remotePage && remotePage === Number(appState.currentPage || 1));
+  const targetKey = currentKey && sameVisiblePage ? currentKey : drawKey;
+  if(currentKey !== drawKey && !sameVisiblePage){
     if(attempt < FOLLOW_DRAW_MAX_RETRY){
       setTimeout(()=>_renderFollowDraw(json, drawKey, dw, dh, attempt + 1), FOLLOW_DRAW_RETRY_MS);
     } else {
@@ -302,18 +331,18 @@ function _renderFollowDraw(json, drawKey, dw, dh, attempt = 0){
     return;
   }
   // Takip edilenin canvas boyutunu kaydet ki applyDrawingScale doğru ölçeklesin
-  if(dw && dh) appState.drawingDims[drawKey] = { w:dw, h:dh };
+  if(dw && dh) appState.drawingDims[targetKey] = { w:dw, h:dh };
   const fc = appState.fabricCanvases?.[appState.currentPage] || appState.fabricCanvas;
   if(!fc){
     setTimeout(()=>{
       const fc2 = appState.fabricCanvases?.[appState.currentPage] || appState.fabricCanvas;
-      if(fc2) _queueFollowJSON(fc2, json, drawKey);
+      if(fc2) _queueFollowJSON(fc2, json, targetKey);
       else if(attempt < FOLLOW_DRAW_MAX_RETRY) _renderFollowDraw(json, drawKey, dw, dh, attempt + 1);
       else window.debugReport?.('presence.follow.draw.canvas_missing', {drawKey, page:appState.currentPage});
     }, FOLLOW_DRAW_RETRY_MS);
     return;
   }
-  _queueFollowJSON(fc, json, drawKey);
+  _queueFollowJSON(fc, json, targetKey);
 }
 function _queueFollowJSON(fc, json, drawKey){
   if(!fc || !json || !drawKey) return;
