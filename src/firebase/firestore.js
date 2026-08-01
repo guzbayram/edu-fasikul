@@ -337,7 +337,7 @@ function _persistYeniCozumler(uid){
   });
 }
 
-export function persistDrawingCloud(key,json,w,h){
+export function persistDrawingCloud(key,json,w,h,opts={}){
   if(appState.reviewMode) return;   // öğrenci inceleme modunda öğretmenin kendi hesabına yazma
   const uid=_getUserKey();
   if(!uid || !json || !window._firestoreReady) return;
@@ -352,9 +352,12 @@ export function persistDrawingCloud(key,json,w,h){
     updatedAtMs:now
   };
   if(w) payload.w=w; if(h) payload.h=h;
+  const pageNum = Number(opts.pageNum || String(key).match(/_p(\d+)$/)?.[1] || 0);
+  if(pageNum) payload.pageNum = pageNum;
+  if(opts.live !== false) payload.liveEventAtMs = now;
   window._fsSetDoc(ref,payload,{merge:true})
     .catch(e=>console.warn('Çizim buluta kaydedilemedi:',e));
-  window.publishCanliPresenceDraw?.(key, json, w, h);   // canlı takipçilere yansı
+  if(opts.live !== false) window.publishCanliPresenceDraw?.(key, json, w, h);   // canlı takipçilere yansı
 }
 
 export function deleteDrawingCloud(key){

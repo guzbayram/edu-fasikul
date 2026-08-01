@@ -49,6 +49,12 @@ function _hashDraw(json){
   return `${s.length}:${h >>> 0}`;
 }
 
+function _pageFromDrawingKey(fasikulId, key){
+  const prefix = `drawing_${fasikulId}_p`;
+  if(!key || !String(key).startsWith(prefix)) return 0;
+  return Number(String(key).slice(prefix.length)) || 0;
+}
+
 export function startCanliPresence(){
   const fas = appState.aktifFasikul;
   const restartingSameRoom = !!(fas?.id && _presFasikulId === fas.id);
@@ -141,6 +147,8 @@ function _writePresence(force = false){
     payload.zoom = appState.zoom || 100;
     payload.fracX = frac?.fracX ?? null;
     payload.fracY = frac?.fracY ?? null;
+    payload.fracLeft = frac?.fracLeft ?? null;
+    payload.fracRight = frac?.fracRight ?? null;
     payload.fracTop = frac?.fracTop ?? null;
     payload.fracBottom = frac?.fracBottom ?? null;
   }
@@ -163,13 +171,17 @@ export function publishCanliPresenceDraw(key, json, w, h){
   const me = _me();
   const fas = appState.aktifFasikul;
   if(!me || !fas || fas.id !== _presFasikulId || !_ready() || !key) return;
+  const drawPage = _pageFromDrawingKey(fas.id, key);
+  if(!drawPage) return;
   const currentKey = `drawing_${fas.id}_p${appState.currentPage||1}`;
-  if(key !== currentKey) return;
+  const localEditAt = Number(appState.drawingLocalEditAt?.[key] || 0);
+  const recentLocalEdit = localEditAt && Date.now() - localEditAt < 5000;
+  if(key !== currentKey && !recentLocalEdit) return;
   clearTimeout(_drawPubTimer);
   _drawPubTimer = setTimeout(()=>{
     const now = Date.now();
     window._fsSetDoc(_memberRef(fas.id, me.uid),
-      { drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now }, {merge:true})
+      { page:drawPage, drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now }, {merge:true})
       .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key}, 'warn'));
   }, 50);
 }
@@ -217,7 +229,7 @@ function _applyFollow(seq){
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
   const drawSig = m.drawSig || _hashDraw(m.draw);
-  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${m.drawTs||''}|${drawSig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}`;
+  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${m.drawTs||''}|${drawSig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracLeft ?? ''}|${m.fracRight ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}`;
   if(sig === _lastFollowSig) return;              // değişmedi → tekrar uygulama
   _lastFollowSig = sig;
   appState._presSuppress = true;
@@ -258,6 +270,8 @@ function _applyFollow(seq){
       }
       if(m.fracX != null && m.fracY != null){
         window.applyPageScrollFraction?.(m.page || appState.currentPage, m.fracX, m.fracY, {
+          fracLeft: m.fracLeft,
+          fracRight: m.fracRight,
           fracTop: m.fracTop,
           fracBottom: m.fracBottom
         });

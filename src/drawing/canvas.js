@@ -248,7 +248,7 @@ function saveDrawingForPage(pageNum){
   const json=localCanvasJSON(fc);
   appState.drawings[key] = json;
   appState.drawingDims[key] = { w: fc.width, h: fc.height };
-  persistDrawingCloud(key, json, fc.width, fc.height);
+  persistDrawingCloud(key, json, fc.width, fc.height, { live:true, pageNum });
 }
 
 function stabilizeTextSelection(target){
@@ -404,7 +404,7 @@ function saveDrawing(){
       const json=localCanvasJSON(fc);
       appState.drawings[key] = json;
       appState.drawingDims[key] = { w: fc.width, h: fc.height };
-      persistDrawingCloud(key, json, fc.width, fc.height);
+      persistDrawingCloud(key, json, fc.width, fc.height, { live:false, pageNum:Number(pn) });
     });
   } else {
     const fc = appState.fabricCanvas;
@@ -413,7 +413,7 @@ function saveDrawing(){
     const json=localCanvasJSON(fc);
     appState.drawings[key] = json;
     appState.drawingDims[key] = { w: fc.width, h: fc.height };
-    persistDrawingCloud(key, json, fc.width, fc.height);
+    persistDrawingCloud(key, json, fc.width, fc.height, { live:true, pageNum:appState.currentPage });
   }
   const ind = document.getElementById('readerToolbar').querySelector('[title="Kaydet (Ctrl+S)"]');
   if(ind) { ind.style.color='var(--green)'; setTimeout(()=>ind.style.color='',800); }

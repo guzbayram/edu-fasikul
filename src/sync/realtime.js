@@ -45,9 +45,11 @@ export function publishCanli(){
   const zoom = Math.round(appState.zoom || 100);
   const fracX = frac ? frac.fracX.toFixed(3) : '';
   const fracY = frac ? frac.fracY.toFixed(3) : '';
+  const fracLeft = frac?.fracLeft != null ? frac.fracLeft.toFixed(3) : '';
+  const fracRight = frac?.fracRight != null ? frac.fracRight.toFixed(3) : '';
   const fracTop = frac?.fracTop != null ? frac.fracTop.toFixed(3) : '';
   const fracBottom = frac?.fracBottom != null ? frac.fracBottom.toFixed(3) : '';
-  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}|${zoom}|${fracX}|${fracY}|${fracTop}|${fracBottom}`;
+  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}|${zoom}|${fracX}|${fracY}|${fracLeft}|${fracRight}|${fracTop}|${fracBottom}`;
   const now = Date.now();
   if(sig === _lastPublishCanliSig && now - _lastPublishCanliAt < 700) return;
   _lastPublishCanliSig = sig;
@@ -62,6 +64,8 @@ export function publishCanli(){
     zoom,
     fracX: frac?.fracX ?? null,
     fracY: frac?.fracY ?? null,
+    fracLeft: frac?.fracLeft ?? null,
+    fracRight: frac?.fracRight ?? null,
     fracTop: frac?.fracTop ?? null,
     fracBottom: frac?.fracBottom ?? null,
     by: _liveDeviceId(),
@@ -186,6 +190,8 @@ async function _followCanli(seq){
     d = _latestCanliData || d;
     if(d.fracX != null && d.fracY != null){
       window.applyPageScrollFraction?.(d.page || appState.currentPage, d.fracX, d.fracY, {
+        fracLeft: d.fracLeft,
+        fracRight: d.fracRight,
         fracTop: d.fracTop,
         fracBottom: d.fracBottom
       });
@@ -454,6 +460,8 @@ function subscribeRealtimeDrawings(uid){
       const currentPage = appState.currentPage;
       const currentKey = aktifId ? `drawing_${aktifId}_p${currentPage}` : null;
       const isCurrentCanvas = currentKey === key;
+      const dataPage = Number(data.pageNum || String(key).match(/_p(\d+)$/)?.[1] || 0);
+      const isLiveDrawingEvent = Number(data.liveEventAtMs || 0) > 0;
       if(appState.drawings[key] === data.json){
         if(isCurrentCanvas){
           const fc = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
@@ -470,6 +478,16 @@ function subscribeRealtimeDrawings(uid){
       }
       appState.drawings[key] = data.json;
       if(data.w && data.h) appState.drawingDims[key] = {w:data.w, h:data.h};
+      if(!isCurrentCanvas && isLiveDrawingEvent && data.fasikulId === aktifId && dataPage){
+        window.debugLog?.('live.draw.follow_page', {fromPage:currentPage, toPage:dataPage, key}, 'info');
+        window.goToPage?.(dataPage);
+        setTimeout(()=>{
+          const fc2 = appState.fabricCanvases?.[dataPage] || appState.fabricCanvas;
+          if(fc2 && appState.drawings[key]) queueRealtimeDrawing(fc2, key, data);
+        }, 180);
+        if(remoteUpdatedAt) appState.drawingRemoteUpdatedAt[key] = remoteUpdatedAt;
+        return;
+      }
       if(currentKey === key){
         const fc = appState.fabricCanvases?.[currentPage] || appState.fabricCanvas;
         if(fc){

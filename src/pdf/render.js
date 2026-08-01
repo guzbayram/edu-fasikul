@@ -1397,6 +1397,8 @@ function getCurrentPageScrollFraction(){
     pageNum: Number(pageEl.dataset.pageNum),
     fracX: (cx - pr.left) / pr.width,
     fracY: (cy - pr.top) / pr.height,
+    fracLeft: clamp01((r.left - pr.left) / pr.width),
+    fracRight: clamp01((r.right - pr.left) / pr.width),
     fracTop: clamp01((r.top - pr.top) / pr.height),
     fracBottom: clamp01((r.bottom - pr.top) / pr.height),
   };
@@ -1404,10 +1406,10 @@ function getCurrentPageScrollFraction(){
 window.getCurrentPageScrollFraction = getCurrentPageScrollFraction;
 
 // Takip edilenin fracX/fracY'sini KENDİ ekranımızda aynı sayfa-göreli noktayı
-// uygular (zoom zaten ayrıca uygulanmış olmalı). Yeni canlı takipte dikeyde
-// görünür alanın üst kenarını baz alıyoruz; farklı cihaz yüksekliklerinde
-// öğrencinin gördüğü satırların admin tarafında üst/alt kenardan kırpılmasını
-// bu önler. Eski payload'lar için merkez hizalama korunur.
+// uygular (zoom zaten ayrıca uygulanmış olmalı). Yeni canlı takipte görünür
+// alanın sol + üst kenarını baz alıyoruz; farklı cihaz/panel boyutlarında
+// öğrencinin gördüğü bölümün kenarlardan kırpılmasını bu önler. Eski payload'lar
+// için merkez hizalama korunur.
 function applyPageScrollFraction(pageNum, fracX, fracY, opts = {}){
   const wrap = document.getElementById('readerCanvasWrap');
   const inner = getPagesInner(wrap);
@@ -1417,10 +1419,13 @@ function applyPageScrollFraction(pageNum, fracX, fracY, opts = {}){
   const pr = pageEl.getBoundingClientRect();
   if(!pr.width || !pr.height) return;
   const wr = wrap.getBoundingClientRect();
-  const targetX = pr.left + fracX * pr.width;
+  const useLeftAnchor = opts && opts.fracLeft != null && Number.isFinite(Number(opts.fracLeft));
+  const targetX = pr.left + (useLeftAnchor ? Number(opts.fracLeft) : fracX) * pr.width;
   const useTopAnchor = opts && opts.fracTop != null && Number.isFinite(Number(opts.fracTop));
   const targetY = pr.top + (useTopAnchor ? Number(opts.fracTop) : fracY) * pr.height;
-  wrap.scrollLeft += targetX - (wr.left + wr.width / 2);
+  wrap.scrollLeft += useLeftAnchor
+    ? targetX - (wr.left + 8)
+    : targetX - (wr.left + wr.width / 2);
   wrap.scrollTop += useTopAnchor
     ? targetY - (wr.top + 8)
     : targetY - (wr.top + wr.height / 2);
