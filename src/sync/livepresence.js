@@ -25,9 +25,12 @@ let _followApplyTimer = null;
 let _followApplySeq = 0;
 let _lastFollowApplyAt = 0;
 let _lastPresenceWriteAt = 0;
+let _followSourceId = '';
+let _followSourceSeenAt = 0;
 const FOLLOW_APPLY_DELAY_MS = 220;
 const FOLLOW_MIN_INTERVAL_MS = 320;
 const PRESENCE_MIN_WRITE_INTERVAL_MS = 350;
+const FOLLOW_SOURCE_LOCK_MS = 12000;
 const FOLLOW_DRAW_APPLY_DELAY_MS = 25;
 const FOLLOW_DRAW_RETRY_MS = 90;
 const FOLLOW_DRAW_MAX_RETRY = 12;
@@ -41,6 +44,11 @@ function _me(){
   const uid = _getUserKey();
   if(!uid) return null;
   return { uid, name: u.name || u.email || 'Kullanıcı', role: u.role || 'ogrenci' };
+}
+function _presenceDeviceId(){
+  if(!appState._liveDeviceId)
+    appState._liveDeviceId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  return appState._liveDeviceId;
 }
 function _ready(){ return !!(window._firestoreReady && window._db && window._fsDoc && window._fsSetDoc); }
 function _memberRef(fasikulId, uid){ return window._fsDoc(window._db,'canliOturum',fasikulId,'uyeler',uid); }
@@ -123,6 +131,8 @@ export function stopCanliPresence(silent, opts = {}){
   _detachPresenceScrollBridge();
   clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
   _followUid = null; _lastFollowSig = '';
+  _followSourceId = '';
+  _followSourceSeenAt = 0;
   appState._followingCanliMember = false;
   _followApplyTimer = null;
   _followApplySeq++;
@@ -184,6 +194,7 @@ function _writePresence(force = false){
   const frac = suppressed ? null : window.getCurrentPageScrollFraction?.();
   const payload = {
     uid: me.uid, name: me.name, role: me.role,
+    by: _presenceDeviceId(),
     dersId: appState.aktifDers?.id || '',
     fasikulId: fas.id,
     roomId,
@@ -244,6 +255,8 @@ export function followCanliMember(uid, name){
   _followUid = uid;
   appState._followingCanliMember = true;
   _lastFollowSig = '';
+  _followSourceId = '';
+  _followSourceSeenAt = 0;
   window.showToast?.(`🔴 ${name||'Katılımcı'} takip ediliyor`,'success');
   _renderRoster();
   scheduleApplyFollow();
@@ -252,6 +265,8 @@ export function followCanliMember(uid, name){
 export function unfollowCanliMember(){
   if(!_followUid) return;
   _followUid = null; _lastFollowSig = '';
+  _followSourceId = '';
+  _followSourceSeenAt = 0;
   appState._followingCanliMember = false;
   _renderRoster();
   window.showToast?.('Takip durduruldu','info');
@@ -263,6 +278,36 @@ function scheduleApplyFollow(){
   const wait = Math.max(pause || FOLLOW_APPLY_DELAY_MS, FOLLOW_MIN_INTERVAL_MS - (Date.now() - _lastFollowApplyAt));
   clearTimeout(_followApplyTimer);
   _followApplyTimer = setTimeout(()=>_applyFollow(seq), wait);
+}
+
+function acceptPresenceSource(m){
+  if(!m?.by) return true;
+  const now = Date.now();
+  if(!_followSourceId || _followSourceId === m.by){
+    _followSourceId = m.by;
+    _followSourceSeenAt = now;
+    return true;
+  }
+  // Aynı öğrenci hesabı birden fazla cihazda açık olunca arka plandaki eski
+  // cihaz page=1/eski sayfa yazarak admin ekranını başa atlatabiliyor. Takip
+  // başladıktan sonra kısa süre kaynak cihazı kilitleyip bu bayat yazımları yok say.
+  if(now - _followSourceSeenAt < FOLLOW_SOURCE_LOCK_MS){
+    window.debugLog?.('presence.source.rejected', {
+      lockedSource: _followSourceId,
+      rejectedSource: m.by,
+      page: m.page,
+      ts: m.ts
+    }, 'warn');
+    return false;
+  }
+  window.debugLog?.('presence.source.switched', {
+    previousSource: _followSourceId,
+    nextSource: m.by,
+    page: m.page
+  }, 'info');
+  _followSourceId = m.by;
+  _followSourceSeenAt = now;
+  return true;
 }
 
 function _applyFollow(seq){
@@ -279,6 +324,7 @@ function _applyFollow(seq){
   _lastFollowApplyAt = Date.now();
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
+  if(!acceptPresenceSource(m)) return;
   const drawSig = m.drawSig || _hashDraw(m.draw);
   const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${m.drawTs||''}|${drawSig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracLeft ?? ''}|${m.fracRight ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}`;
   if(sig === _lastFollowSig) return;              // değişmedi → tekrar uygulama
