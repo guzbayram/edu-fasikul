@@ -214,9 +214,9 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   fc.on('mouse:down', rememberCanvasDrawTap);
 
   // Otomatik kayıt
-  const debounceSave = ()=>{
+  const debounceSave = (delay=160)=>{
     if(appState._saveTimeout) clearTimeout(appState._saveTimeout);
-    appState._saveTimeout = setTimeout(()=>saveDrawingForPage(pageNum), 160);
+    appState._saveTimeout = setTimeout(()=>saveDrawingForPage(pageNum), delay);
   };
   const localCanvasChanged = ()=>{
     if(fc._loadingDrawing || fc._applyingRemoteDrawing) return;
@@ -228,7 +228,8 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   fc.on('object:removed', localCanvasChanged);
   fc.on('text:changed', opt=>{
     stabilizeTextSelection(opt?.target);
-    debounceSave();
+    markLocalDrawingEdit(pageNum);
+    debounceSave(80);
   });
   fc.on('text:editing:exited', opt=>{
     const target = opt?.target;
@@ -372,7 +373,8 @@ function initFabricOnCanvas(canvasEl, w, h){
   fc.on('object:removed', localCanvasChanged);
   fc.on('text:changed', opt=>{
     stabilizeTextSelection(opt?.target);
-    debounceAutoSave();
+    markLocalDrawingEdit(appState.currentPage);
+    debounceAutoSave(80);
   });
   fc.on('text:editing:exited', opt=>{
     const target = opt?.target;
@@ -390,9 +392,9 @@ function initFabricOnCanvas(canvasEl, w, h){
   applyTool(appState.drawTool);
 }
 
-function debounceAutoSave(){
+function debounceAutoSave(delay=160){
   if(appState._saveTimeout) clearTimeout(appState._saveTimeout);
-  appState._saveTimeout = setTimeout(saveDrawing, 160);
+  appState._saveTimeout = setTimeout(saveDrawing, delay);
 }
 
 function saveDrawing(){
