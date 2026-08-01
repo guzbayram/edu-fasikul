@@ -16,10 +16,10 @@ let _followSeq = 0;
 let _lastFollowApplyAt = 0;
 let _followSourceId = '';
 let _followSourceSeenAt = 0;
-const DRAWING_REMOTE_EDIT_GUARD_MS = 3500;
-const REMOTE_DRAWING_APPLY_DELAY_MS = 90;
-const FOLLOW_APPLY_DELAY_MS = 420;
-const FOLLOW_MIN_INTERVAL_MS = 650;
+const DRAWING_REMOTE_EDIT_GUARD_MS = 2200;
+const REMOTE_DRAWING_APPLY_DELAY_MS = 25;
+const FOLLOW_APPLY_DELAY_MS = 220;
+const FOLLOW_MIN_INTERVAL_MS = 320;
 const FOLLOW_SOURCE_LOCK_MS = 12000;
 
 function _liveDeviceId(){
@@ -45,9 +45,11 @@ export function publishCanli(){
   const zoom = Math.round(appState.zoom || 100);
   const fracX = frac ? frac.fracX.toFixed(3) : '';
   const fracY = frac ? frac.fracY.toFixed(3) : '';
-  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}|${zoom}|${fracX}|${fracY}`;
+  const fracTop = frac?.fracTop != null ? frac.fracTop.toFixed(3) : '';
+  const fracBottom = frac?.fracBottom != null ? frac.fracBottom.toFixed(3) : '';
+  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}|${zoom}|${fracX}|${fracY}|${fracTop}|${fracBottom}`;
   const now = Date.now();
-  if(sig === _lastPublishCanliSig && now - _lastPublishCanliAt < 1500) return;
+  if(sig === _lastPublishCanliSig && now - _lastPublishCanliAt < 700) return;
   _lastPublishCanliSig = sig;
   _lastPublishCanliAt = now;
   clearTimeout(_publishTimer);
@@ -60,6 +62,8 @@ export function publishCanli(){
     zoom,
     fracX: frac?.fracX ?? null,
     fracY: frac?.fracY ?? null,
+    fracTop: frac?.fracTop ?? null,
+    fracBottom: frac?.fracBottom ?? null,
     by: _liveDeviceId(),
     ts: Date.now()
   };
@@ -70,7 +74,7 @@ export function publishCanli(){
       console.warn('Canlı yayın hatası:',e);
       window.debugReport?.('live.publish.failed', {error:e, payload:canliPayload});
     });
-  }, 200);
+  }, 80);
 }
 
 let _latestCanliData = null;
@@ -181,7 +185,10 @@ async function _followCanli(seq){
     }
     d = _latestCanliData || d;
     if(d.fracX != null && d.fracY != null){
-      window.applyPageScrollFraction?.(d.page || appState.currentPage, d.fracX, d.fracY);
+      window.applyPageScrollFraction?.(d.page || appState.currentPage, d.fracX, d.fracY, {
+        fracTop: d.fracTop,
+        fracBottom: d.fracBottom
+      });
     }
   }catch(e){
     console.warn('Canlı takip hatası:',e);

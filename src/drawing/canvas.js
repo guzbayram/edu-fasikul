@@ -216,7 +216,7 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   // Otomatik kayıt
   const debounceSave = ()=>{
     if(appState._saveTimeout) clearTimeout(appState._saveTimeout);
-    appState._saveTimeout = setTimeout(()=>saveDrawingForPage(pageNum), 800);
+    appState._saveTimeout = setTimeout(()=>saveDrawingForPage(pageNum), 160);
   };
   const localCanvasChanged = ()=>{
     if(fc._loadingDrawing || fc._applyingRemoteDrawing) return;
@@ -361,7 +361,7 @@ function initFabricOnCanvas(canvasEl, w, h){
     }catch(e){ fc._loadingDrawing = false; }
   } else { window.refreshSharedBoard?.(); }
 
-  // Otomatik kayıt (800ms debounce)
+  // Otomatik kayıt (canlı izleme için kısa debounce)
   const localCanvasChanged = ()=>{
     if(fc._loadingDrawing || fc._applyingRemoteDrawing) return;
     markLocalDrawingEdit(appState.currentPage);
@@ -392,7 +392,7 @@ function initFabricOnCanvas(canvasEl, w, h){
 
 function debounceAutoSave(){
   if(appState._saveTimeout) clearTimeout(appState._saveTimeout);
-  appState._saveTimeout = setTimeout(saveDrawing, 800);
+  appState._saveTimeout = setTimeout(saveDrawing, 160);
 }
 
 function saveDrawing(){

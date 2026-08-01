@@ -23,10 +23,10 @@ let _followApplyTimer = null;
 let _followApplySeq = 0;
 let _lastFollowApplyAt = 0;
 let _lastPresenceWriteAt = 0;
-const FOLLOW_APPLY_DELAY_MS = 420;
-const FOLLOW_MIN_INTERVAL_MS = 650;
-const FOLLOW_DRAW_APPLY_DELAY_MS = 90;
-const FOLLOW_DRAW_RETRY_MS = 180;
+const FOLLOW_APPLY_DELAY_MS = 220;
+const FOLLOW_MIN_INTERVAL_MS = 320;
+const FOLLOW_DRAW_APPLY_DELAY_MS = 25;
+const FOLLOW_DRAW_RETRY_MS = 90;
 const FOLLOW_DRAW_MAX_RETRY = 12;
 
 function _esc(s){ return String(s??'').replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
@@ -141,6 +141,8 @@ function _writePresence(force = false){
     payload.zoom = appState.zoom || 100;
     payload.fracX = frac?.fracX ?? null;
     payload.fracY = frac?.fracY ?? null;
+    payload.fracTop = frac?.fracTop ?? null;
+    payload.fracBottom = frac?.fracBottom ?? null;
   }
   window._fsSetDoc(_memberRef(fas.id, me.uid), payload, {merge:true}).catch(e=>{
     console.warn('Canlı oturum yazma hatası:',e);
@@ -169,7 +171,7 @@ export function publishCanliPresenceDraw(key, json, w, h){
     window._fsSetDoc(_memberRef(fas.id, me.uid),
       { drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now }, {merge:true})
       .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key}, 'warn'));
-  }, 250);
+  }, 50);
 }
 
 // ── Takip ──────────────────────────────────────────────
@@ -215,7 +217,7 @@ function _applyFollow(seq){
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
   const drawSig = m.drawSig || _hashDraw(m.draw);
-  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${m.drawTs||''}|${drawSig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}`;
+  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${m.drawTs||''}|${drawSig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}`;
   if(sig === _lastFollowSig) return;              // değişmedi → tekrar uygulama
   _lastFollowSig = sig;
   appState._presSuppress = true;
@@ -255,13 +257,16 @@ function _applyFollow(seq){
         if(seq !== _followApplySeq) return;
       }
       if(m.fracX != null && m.fracY != null){
-        window.applyPageScrollFraction?.(m.page || appState.currentPage, m.fracX, m.fracY);
+        window.applyPageScrollFraction?.(m.page || appState.currentPage, m.fracX, m.fracY, {
+          fracTop: m.fracTop,
+          fracBottom: m.fracBottom
+        });
       }
       _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh, 0);
     } finally {
       if(seq === _followApplySeq) setTimeout(()=>{ appState._presSuppress = false; }, 900);
     }
-  }, 320);
+  }, 120);
 }
 
 document.addEventListener('visibilitychange', ()=>{
