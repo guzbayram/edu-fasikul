@@ -16,6 +16,8 @@ let _rosterUnsub = null;
 let _heartbeatTimer = null;
 let _startRetryTimer = null;
 let _pubTimer = null, _drawPubTimer = null;
+let _presenceScrollWrap = null;
+let _presenceScrollHandler = null;
 let _roster = [];
 let _followUid = null;
 let _lastFollowSig = '';
@@ -25,6 +27,7 @@ let _lastFollowApplyAt = 0;
 let _lastPresenceWriteAt = 0;
 const FOLLOW_APPLY_DELAY_MS = 220;
 const FOLLOW_MIN_INTERVAL_MS = 320;
+const PRESENCE_MIN_WRITE_INTERVAL_MS = 350;
 const FOLLOW_DRAW_APPLY_DELAY_MS = 25;
 const FOLLOW_DRAW_RETRY_MS = 90;
 const FOLLOW_DRAW_MAX_RETRY = 12;
@@ -109,6 +112,7 @@ export function startCanliPresence(){
   });
   _heartbeatTimer = setInterval(_writePresence, HEARTBEAT_MS);
   [250, 750, 1500, 3000].forEach(ms=>setTimeout(()=>_writePresence(true), ms));
+  _attachPresenceScrollBridge();
   _updateRosterButton();
 }
 
@@ -116,6 +120,7 @@ export function stopCanliPresence(silent, opts = {}){
   clearTimeout(_startRetryTimer); _startRetryTimer = null;
   if(_rosterUnsub){ _rosterUnsub(); _rosterUnsub = null; }
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
+  _detachPresenceScrollBridge();
   clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
   _followUid = null; _lastFollowSig = '';
   appState._followingCanliMember = false;
@@ -140,6 +145,26 @@ function schedulePresenceStartRetry(){
   }, 350);
 }
 
+function _attachPresenceScrollBridge(){
+  _detachPresenceScrollBridge();
+  const wrap = document.getElementById('readerCanvasWrap');
+  if(!wrap) return;
+  _presenceScrollWrap = wrap;
+  _presenceScrollHandler = ()=>{
+    if(appState.watchMode || appState.reviewMode || appState._presSuppress || appState._liveSuppress) return;
+    publishCanliPresence();
+  };
+  wrap.addEventListener('scroll', _presenceScrollHandler, { passive:true });
+}
+
+function _detachPresenceScrollBridge(){
+  if(_presenceScrollWrap && _presenceScrollHandler){
+    _presenceScrollWrap.removeEventListener('scroll', _presenceScrollHandler);
+  }
+  _presenceScrollWrap = null;
+  _presenceScrollHandler = null;
+}
+
 function _writePresence(force = false){
   const me = _me();
   const fas = appState.aktifFasikul;
@@ -150,7 +175,7 @@ function _writePresence(force = false){
   const roomId = _roomIdForFasikul(fas);
   if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready()) return;
   const now = Date.now();
-  if(!force && now - _lastPresenceWriteAt < 1200) return;
+  if(!force && now - _lastPresenceWriteAt < PRESENCE_MIN_WRITE_INTERVAL_MS) return;
   _lastPresenceWriteAt = now;
   // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
   // (kaydırma dahil) görsün — ekran boyutundan bağımsız kalması için MUTLAK

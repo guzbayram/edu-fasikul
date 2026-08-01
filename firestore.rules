@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /kullanicilar/{uid} {
+      allow read, write: if true;
+
+      match /cozumler/{docId} {
+        allow read, write: if true;
+      }
+
+      match /cizimler/{docId} {
+        allow read, write: if true;
+      }
+
+      match /gorevler/{docId} {
+        allow read, write: if true;
+      }
+
+      match /hatalilar/{docId} {
+        allow read, write: if true;
+      }
+
+      match /debugLogs/{logId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+
+    match /ogrenciler/{uid} {
+      allow read, write: if true;
+
+      match /cozumGecmisi/{docId} {
+        allow read, write: if true;
+      }
+    }
+
+    match /canliOturum/{fasikulId} {
+      match /uyeler/{uid} {
+        allow read, write: if request.auth != null;
+      }
+
+      match /sesSinyalleri/{signalId} {
+        allow read, create, update, delete: if request.auth != null;
+      }
+    }
+  }
+}

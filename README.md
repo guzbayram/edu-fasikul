@@ -20,6 +20,8 @@ Ses akışı WebRTC ile katılımcılar arasında doğrudan gider. Offer/answer/
 
 Uygulama `canliOturum/{fasikulId}/uyeler` katılımcı belgesini ve `canliOturum/{fasikulId}/sesSinyalleri` kısa ömürlü signaling belgelerini kullanır. Firestore kurallarında giriş yapmış kullanıcıların bu iki yol için okuma/yazma/silme izni olmalıdır. Mevcut canlı oturum kuralınız varsa yalnızca `sesSinyalleri` alt koleksiyonunu ekleyin.
 
+Güncel Firestore kural örneği `firestore.rules` dosyasındadır. Canlı izleme hata günlüğü için `kullanicilar/{uid}/debugLogs`, hatalı sorular senkronu için `kullanicilar/{uid}/hatalilar` alt koleksiyonları da izinli olmalıdır.
+
 WebRTC mikrofon erişimi HTTPS ister. GitHub Pages adresiniz HTTPS olduğu için uygundur; yerelde `localhost` da güvenli kabul edilir. Google'ın ücretsiz STUN sunucusu kullanılır: `stun:stun.l.google.com:19302`. Okul ağı/NAT sorunlarında opsiyonel olarak coturn TURN sunucusu eklenmelidir.
 
 PWA notu: Service Worker `public/sw.js` üzerinden kaydedilir. Öğretmen el kaldırma bildirimleri açık sekmede/standalone PWA'da Notification API ile gösterilir. Gerçek arka plan Push API için ayrıca VAPID key, push subscription kaydı ve güvenilir bir Cloud Function/backend tarafında push gönderimi gerekir. iOS Safari arka planda sürekli mikrofonu garanti etmez; sesli görüşme aktifken uygulama ön planda kalmalıdır.

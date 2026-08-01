@@ -190,6 +190,7 @@ function throttleScrollHandler(){
     // realtime.js _publishTimer + sig karşılaştırması), burada koşulsuz
     // çağırmak Firestore'u spamlamaz.
     window.publishCanli?.();
+    window.publishCanliPresence?.();
     scheduleRenderedPageCleanup();
   }, 80);
 }
