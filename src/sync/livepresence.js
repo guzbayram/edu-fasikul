@@ -179,14 +179,32 @@ function _writePresence(force = false){
   const me = _me();
   const fas = appState.aktifFasikul;
   if(appState.reviewMode) return;
-  // Gizli sekme/arka plandaki cihaz eski sayfa bilgisini yazarsa aktif
-  // öğrencinin canlı konumunu UID dokümanında ezer ve izleyeni başa atlatır.
-  if(document.hidden) return;
   const roomId = _roomIdForFasikul(fas);
   if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready()) return;
   const now = Date.now();
   if(!force && now - _lastPresenceWriteAt < PRESENCE_MIN_WRITE_INTERVAL_MS) return;
   _lastPresenceWriteAt = now;
+  if(document.hidden){
+    // Gizli sekme/arka plandaki cihaz eski sayfa bilgisini yazarsa aktif
+    // öğrencinin canlı konumunu UID dokümanında ezer. Ama tamamen susarsa
+    // anten rozeti kişiyi çevrimdışı sanır. Bu yüzden sadece heartbeat yaz.
+    const hiddenPayload = {
+      uid: me.uid, name: me.name, role: me.role,
+      by: _presenceDeviceId(),
+      dersId: appState.aktifDers?.id || '',
+      fasikulId: fas.id,
+      roomId,
+      jsonFile: fas.jsonFile || '',
+      pdfFile: fas.pdfFile || '',
+      ts: now,
+      hidden: true
+    };
+    window._fsSetDoc(_memberRef(roomId, me.uid), hiddenPayload, {merge:true}).catch(e=>{
+      console.warn('Canlı oturum heartbeat hatası:',e);
+      window.debugReport?.('presence.heartbeat.failed', {error:e, payload:hiddenPayload});
+    });
+    return;
+  }
   // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
   // (kaydırma dahil) görsün — ekran boyutundan bağımsız kalması için MUTLAK
   // piksel değil ORAN (fracX/fracY, bkz. getCurrentPageScrollFraction).
@@ -202,7 +220,8 @@ function _writePresence(force = false){
     pdfFile: fas.pdfFile || '',
     page: appState.currentPage || 1,
     altKonuId: appState.aktifAltKonu?.id || '',
-    ts: now
+    ts: now,
+    hidden: false
   };
   if(!suppressed){
     payload.zoom = appState.zoom || 100;
@@ -581,8 +600,17 @@ function _updateRosterButton(){
     btn.classList.toggle('has-live', n > 0);
     btn.classList.toggle('has-hand', handCount > 0);
     btn.classList.toggle('following', !!_followUid);
-    const cnt = btn.querySelector('.crb-count');
-    if(cnt) cnt.textContent = handCount > 0 ? `✋${handCount}` : (n > 0 ? String(n) : '');
+    let cnt = btn.querySelector('.crb-count');
+    if(!cnt){
+      cnt = document.createElement('span');
+      cnt.className = 'crb-count';
+      btn.appendChild(cnt);
+    }
+    const label = handCount > 0 ? `✋${handCount}` : (n > 0 ? String(n) : '');
+    cnt.textContent = label;
+    cnt.hidden = !label;
+    btn.setAttribute('aria-label', n > 0 ? `Bu fasikülde ${n} kişi canlı` : 'Canlı katılımcılar');
+    btn.title = n > 0 ? `Bu fasikülde ${n} kişi canlı` : 'Canlı katılımcılar';
   });
 }
 export function toggleCanliRoster(){
