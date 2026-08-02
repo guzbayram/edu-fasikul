@@ -113,14 +113,24 @@ function _pageFromAnyDrawingKey(key){
 export function startCanliPresence(){
   const fas = appState.aktifFasikul;
   const roomId = _roomIdForFasikul(fas);
-  const restartingSameRoom = !!(roomId && _presFasikulId === roomId);
-  stopCanliPresence(true, { keepDoc: restartingSameRoom });
   const me = _me();
   if(!me || !fas || !roomId || !_ready() || !window._fsOnSnapshot || !window._fsCollection){
+    if(_presFasikulId && roomId && _presFasikulId !== roomId){
+      stopCanliPresence(true);
+    }
     schedulePresenceStartRetry();
     return;
   }
   clearTimeout(_startRetryTimer);
+  if(_presFasikulId === roomId && _rosterUnsub){
+    window.debugLog?.('presence.room.keepalive', {roomId}, 'info');
+    _writePresence(true);
+    window.voiceJoinRoom?.(roomId);
+    _updateRosterButton();
+    return;
+  }
+  const restartingSameRoom = !!(roomId && _presFasikulId === roomId);
+  stopCanliPresence(true, { keepDoc: restartingSameRoom });
   _presFasikulId = roomId;
   window.debugLog?.('presence.room.started', {
     roomId,
@@ -622,11 +632,16 @@ function _renderRoster(){
     ${others.length ? others.map(m=>{
       const following = m.uid === _followUid;
       const handRaised = !!m.voice?.handRaised;
+      const displayName = m.name || m.email || m.uid || 'Katılımcı';
       return `<div class="crp-row ${following?'following':''} ${handRaised?'hand-raised':''}">
-        <span class="crp-dot"></span>
-        <span class="crp-name">${handRaised ? '<b class="crp-hand" title="Konuşmak istiyor">✋</b>' : ''}${_esc(m.name)} <i title="${m.role==='ogretmen'?'Öğretmen':m.role==='admin'?'Yönetici':'Öğrenci'}">${_roleIcon(m.role)}</i></span>
-        <span class="crp-page">s.${m.page||1}</span>
-        <button class="crp-follow ${following?'on':''}" onclick="${following?'unfollowCanliMember()':`followCanliMember('${_escAttr(m.uid)}','${_escAttr(m.name)}')`}">${following?'⏹ Durdur':'▶ İzle'}</button>
+        <div class="crp-person">
+          <span class="crp-dot"></span>
+          <span class="crp-name">${handRaised ? '<b class="crp-hand" title="Konuşmak istiyor">✋</b>' : ''}${_esc(displayName)} <i title="${m.role==='ogretmen'?'Öğretmen':m.role==='admin'?'Yönetici':'Öğrenci'}">${_roleIcon(m.role)}</i></span>
+          <span class="crp-page">s.${m.page||1}</span>
+        </div>
+        <div class="crp-actions">
+          <button class="crp-follow ${following?'on':''}" onclick="${following?'unfollowCanliMember()':`followCanliMember('${_escAttr(m.uid)}','${_escAttr(displayName)}')`}">${following?'⏹ Durdur':'▶ İzle'}</button>
+        </div>
         ${window.voiceRosterControls?.(m, me) || ''}
       </div>`;
     }).join('') : `<div class="crp-empty">Şu an bu fasikülde başka kimse yok.<br><small>Aynı fasikülü açan kişiler burada görünür.</small></div>`}

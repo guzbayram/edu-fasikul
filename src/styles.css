@@ -1503,9 +1503,11 @@ body.reader-locked .main-content{visibility:hidden!important}
 .canli-roster-panel .crp-head b{flex:1}
 .canli-roster-panel .crp-n{min-width:20px;text-align:center;padding:1px 7px;border-radius:99px;background:var(--green-dim);color:var(--green);font-size:11px;font-weight:800}
 .canli-roster-panel .crp-x{border:none;background:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:2px 4px}
-.canli-roster-panel .crp-row{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-3)}
+.canli-roster-panel .crp-row{display:grid;grid-template-columns:1fr;gap:8px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-3)}
 .canli-roster-panel .crp-row.following{border-color:var(--red);background:var(--red-dim)}
 .canli-roster-panel .crp-row.hand-raised{border-color:var(--red);background:var(--red-dim)}
+.canli-roster-panel .crp-person{display:flex;align-items:center;gap:8px;min-width:0}
+.canli-roster-panel .crp-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .canli-roster-panel .crp-dot{width:8px;height:8px;border-radius:99px;background:var(--green);flex:none;animation:wlbPulse 1.4s infinite}
 .canli-roster-panel .crp-name{flex:1;min-width:0;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .canli-roster-panel .crp-hand{display:inline-flex;margin-right:4px;color:var(--red)}
