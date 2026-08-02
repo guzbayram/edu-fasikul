@@ -12,7 +12,9 @@ import { _getUserKey } from '../firebase/firestore.js';
 const HEARTBEAT_MS = 3000;
 const ONLINE_WINDOW_MS = 90000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
 let _presFasikulId = null;
-let _rosterUnsub = null;
+let _presRoomIds = [];
+let _rosterUnsubs = [];
+let _rosterByRoom = new Map();
 let _heartbeatTimer = null;
 let _startRetryTimer = null;
 let _pubTimer = null, _drawPubTimer = null;
@@ -100,6 +102,31 @@ function _roomIdForFasikul(fas){
   if(!fas) return '';
   return `fas-${_canonicalRoomPart(fas)}`;
 }
+function _roomIdsForFasikul(fas){
+  if(!fas) return [];
+  const primary = _roomIdForFasikul(fas);
+  const aliases = [fas?.id, fas?.jsonFile, fas?.pdfFile, fas?.ad]
+    .map(_slugRoomPart)
+    .filter(Boolean)
+    .map(part=>`fas-${part}`);
+  // Eski canlı oturum sürümleri farklı cihazlarda id/pdf/json/ad türevlerini
+  // oda anahtarı yapmış olabilir. Aynı fasikül farklı odalara düşmesin diye
+  // yeni anahtarı ve bilinen eski türevleri birlikte dinleyip tek listede
+  // birleştiriyoruz.
+  return [...new Set([primary, ...aliases].filter(Boolean))].slice(0, 8);
+}
+
+function _mergeRosterRooms(){
+  const byUid = new Map();
+  _rosterByRoom.forEach(list=>{
+    (list||[]).forEach(m=>{
+      if(!m?.uid) return;
+      const prev = byUid.get(m.uid);
+      if(!prev || Number(m.ts||0) > Number(prev.ts||0)) byUid.set(m.uid, m);
+    });
+  });
+  _roster = [...byUid.values()].sort((a,b)=>(b.ts||0)-(a.ts||0));
+}
 
 function _pageFromDrawingKey(fasikulId, key){
   const prefix = `drawing_${fasikulId}_p`;
@@ -113,6 +140,9 @@ function _pageFromAnyDrawingKey(key){
 export function startCanliPresence(){
   const fas = appState.aktifFasikul;
   const roomId = _roomIdForFasikul(fas);
+  const roomIds = _roomIdsForFasikul(fas);
+  const roomSig = roomIds.join('|');
+  const currentRoomSig = _presRoomIds.join('|');
   const me = _me();
   if(!me || !fas || !roomId || !_ready() || !window._fsOnSnapshot || !window._fsCollection){
     if(_presFasikulId && roomId && _presFasikulId !== roomId){
@@ -122,8 +152,8 @@ export function startCanliPresence(){
     return;
   }
   clearTimeout(_startRetryTimer);
-  if(_presFasikulId === roomId && _rosterUnsub){
-    window.debugLog?.('presence.room.keepalive', {roomId}, 'info');
+  if(_presFasikulId === roomId && currentRoomSig === roomSig && _rosterUnsubs.length){
+    window.debugLog?.('presence.room.keepalive', {roomId, roomIds}, 'info');
     _writePresence(true);
     window.voiceJoinRoom?.(roomId);
     _updateRosterButton();
@@ -132,8 +162,11 @@ export function startCanliPresence(){
   const restartingSameRoom = !!(roomId && _presFasikulId === roomId);
   stopCanliPresence(true, { keepDoc: restartingSameRoom });
   _presFasikulId = roomId;
+  _presRoomIds = roomIds;
+  _rosterByRoom = new Map();
   window.debugLog?.('presence.room.started', {
     roomId,
+    roomIds,
     fasikulId: fas.id,
     fasikulAd: fas.ad,
     jsonFile: fas.jsonFile || '',
@@ -141,33 +174,37 @@ export function startCanliPresence(){
   }, 'info');
   _writePresence(true);
   window.voiceJoinRoom?.(roomId);
-  const col = window._fsCollection(window._db,'canliOturum',roomId,'uyeler');
-  _rosterUnsub = window._fsOnSnapshot(col, (snap)=>{
-    const now = Date.now();
-    const list = [];
-    snap.forEach(d=>{
-      const m = d.data(); if(!m || !m.uid) return;
-      if((now - (m.ts||0)) > ONLINE_WINDOW_MS) return;
-      list.push(m);
+  _rosterUnsubs = roomIds.map(activeRoomId=>{
+    const col = window._fsCollection(window._db,'canliOturum',activeRoomId,'uyeler');
+    return window._fsOnSnapshot(col, (snap)=>{
+      const now = Date.now();
+      const list = [];
+      snap.forEach(d=>{
+        const m = d.data(); if(!m || !m.uid) return;
+        if((now - (m.ts||0)) > ONLINE_WINDOW_MS) return;
+        list.push({...m, _roomId:activeRoomId});
+      });
+      _rosterByRoom.set(activeRoomId, list);
+      _mergeRosterRooms();
+      const rosterSig = `${roomIds.join('|')}|${_roster.map(m=>`${m.uid}:${m.ts}:${m.hidden?'h':'v'}:${m._roomId||''}`).sort().join(',')}`;
+      if(rosterSig !== _lastRosterLogSig){
+        _lastRosterLogSig = rosterSig;
+        window.debugLog?.('presence.roster.updated', {
+          roomId,
+          roomIds,
+          total:_roster.length,
+          others:_roster.filter(m => m.uid !== _me()?.uid).length,
+          members:_roster.map(m=>({uid:m.uid, name:m.name, role:m.role, hidden:!!m.hidden, roomId:m._roomId, ageMs:Date.now()-(m.ts||0)}))
+        }, 'info');
+      }
+      _renderRoster();
+      _writePresence();
+      if(_followUid) scheduleApplyFollow();
+      if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
+    }, (err)=>{
+      console.warn('Canlı oturum dinleme hatası:',err);
+      window.debugReport?.('presence.listen.failed', {error:err, fasikulId:fas.id, roomId:activeRoomId});
     });
-    _roster = list;
-    const rosterSig = `${roomId}|${list.map(m=>`${m.uid}:${m.ts}:${m.hidden?'h':'v'}`).sort().join(',')}`;
-    if(rosterSig !== _lastRosterLogSig){
-      _lastRosterLogSig = rosterSig;
-      window.debugLog?.('presence.roster.updated', {
-        roomId,
-        total:list.length,
-        others:list.filter(m => m.uid !== _me()?.uid).length,
-        members:list.map(m=>({uid:m.uid, name:m.name, role:m.role, hidden:!!m.hidden, ageMs:Date.now()-(m.ts||0)}))
-      }, 'info');
-    }
-    _renderRoster();
-    _writePresence();
-    if(_followUid) scheduleApplyFollow();
-    if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
-  }, (err)=>{
-    console.warn('Canlı oturum dinleme hatası:',err);
-    window.debugReport?.('presence.listen.failed', {error:err, fasikulId:fas.id, roomId});
   });
   _heartbeatTimer = setInterval(_writePresence, HEARTBEAT_MS);
   [250, 750, 1500, 3000].forEach(ms=>setTimeout(()=>_writePresence(true), ms));
@@ -177,7 +214,8 @@ export function startCanliPresence(){
 
 export function stopCanliPresence(silent, opts = {}){
   clearTimeout(_startRetryTimer); _startRetryTimer = null;
-  if(_rosterUnsub){ _rosterUnsub(); _rosterUnsub = null; }
+  _rosterUnsubs.forEach(unsub=>{ try{ unsub?.(); }catch(e){} });
+  _rosterUnsubs = [];
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
   _detachPresenceScrollBridge();
   clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
@@ -191,10 +229,13 @@ export function stopCanliPresence(silent, opts = {}){
   if(appState.sharedBoard){ appState.sharedBoard = false; _clearOverlay(); }
   const me = _me();
   if(!opts.keepDoc && me && _presFasikulId && _ready() && window._fsDeleteDoc){
-    window._fsDeleteDoc(_memberRef(_presFasikulId, me.uid)).catch(()=>{});
+    const rooms = _presRoomIds.length ? _presRoomIds : [_presFasikulId];
+    rooms.forEach(roomId=>window._fsDeleteDoc(_memberRef(roomId, me.uid)).catch(()=>{}));
   }
   if(!opts.keepDoc) window.voiceLeaveRoom?.();
   _presFasikulId = null;
+  _presRoomIds = [];
+  _rosterByRoom = new Map();
   _roster = [];
   _hideRosterPanel();
   _updateRosterButton();
@@ -233,6 +274,7 @@ function _writePresence(force = false){
   if(appState.reviewMode) return;
   const roomId = _roomIdForFasikul(fas);
   if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready()) return;
+  const rooms = _presRoomIds.length ? _presRoomIds : [roomId];
   const now = Date.now();
   if(!force && now - _lastPresenceWriteAt < PRESENCE_MIN_WRITE_INTERVAL_MS) return;
   _lastPresenceWriteAt = now;
@@ -251,10 +293,10 @@ function _writePresence(force = false){
       ts: now,
       hidden: true
     };
-    window._fsSetDoc(_memberRef(roomId, me.uid), hiddenPayload, {merge:true}).catch(e=>{
+    rooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid), {...hiddenPayload, roomId:activeRoomId, primaryRoomId:roomId}, {merge:true}).catch(e=>{
       console.warn('Canlı oturum heartbeat hatası:',e);
-      window.debugReport?.('presence.heartbeat.failed', {error:e, payload:hiddenPayload});
-    });
+      window.debugReport?.('presence.heartbeat.failed', {error:e, payload:hiddenPayload, roomId:activeRoomId});
+    }));
     return;
   }
   // Zoom + sayfa-göreli pan konumu da taşınır ki takip eden AYNI görünümü
@@ -284,10 +326,10 @@ function _writePresence(force = false){
     payload.fracTop = frac?.fracTop ?? null;
     payload.fracBottom = frac?.fracBottom ?? null;
   }
-  window._fsSetDoc(_memberRef(roomId, me.uid), payload, {merge:true}).catch(e=>{
+  rooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid), {...payload, roomId:activeRoomId, primaryRoomId:roomId}, {merge:true}).catch(e=>{
     console.warn('Canlı oturum yazma hatası:',e);
-    window.debugReport?.('presence.write.failed', {error:e, payload});
-  });
+    window.debugReport?.('presence.write.failed', {error:e, payload, roomId:activeRoomId});
+  }));
 }
 
 // Gezinmede çağrılır (throttle)
@@ -304,6 +346,7 @@ export function publishCanliPresenceDraw(key, json, w, h){
   const fas = appState.aktifFasikul;
   const roomId = _roomIdForFasikul(fas);
   if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready() || !key) return;
+  const rooms = _presRoomIds.length ? _presRoomIds : [roomId];
   const drawPage = _pageFromDrawingKey(fas.id, key) || _pageFromAnyDrawingKey(key);
   if(!drawPage) return;
   const currentKey = `drawing_${fas.id}_p${appState.currentPage||1}`;
@@ -313,9 +356,9 @@ export function publishCanliPresenceDraw(key, json, w, h){
   clearTimeout(_drawPubTimer);
   _drawPubTimer = setTimeout(()=>{
     const now = Date.now();
-    window._fsSetDoc(_memberRef(roomId, me.uid),
-      { page:drawPage, drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now }, {merge:true})
-      .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key}, 'warn'));
+    rooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid),
+      { page:drawPage, drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now, roomId:activeRoomId, primaryRoomId:roomId }, {merge:true})
+      .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key, roomId:activeRoomId}, 'warn')));
   }, 50);
 }
 
@@ -647,6 +690,45 @@ function _renderRoster(){
     }).join('') : `<div class="crp-empty">Şu an bu fasikülde başka kimse yok.<br><small>Aynı fasikülü açan kişiler burada görünür.</small></div>`}
     ${me ? `<div class="crp-self">Sen: <b>${_esc(me.name)}</b> ${_roleIcon(me.role)}</div>` : ''}`;
 }
+
+async function _refreshRosterFromServer(){
+  const fas = appState.aktifFasikul;
+  const me = _me();
+  const roomIds = _presRoomIds.length ? _presRoomIds : _roomIdsForFasikul(fas);
+  if(!fas || !me || !roomIds.length || !_ready() || !window._fsGetDocs || !window._fsCollection) return false;
+  _writePresence(true);
+  const now = Date.now();
+  const nextByRoom = new Map();
+  try{
+    const reads = roomIds.map(async roomId=>{
+      const snap = await window._fsGetDocs(window._fsCollection(window._db,'canliOturum',roomId,'uyeler'));
+      const list = [];
+      snap.forEach(d=>{
+        const m = d.data(); if(!m || !m.uid) return;
+        if((now - (m.ts||0)) > ONLINE_WINDOW_MS) return;
+        list.push({...m, _roomId:roomId});
+      });
+      nextByRoom.set(roomId, list);
+    });
+    await Promise.all(reads);
+    _rosterByRoom = nextByRoom;
+    _mergeRosterRooms();
+    window.debugLog?.('presence.roster.manual_refresh', {
+      roomIds,
+      total:_roster.length,
+      others:_roster.filter(m => m.uid !== me.uid).length,
+      members:_roster.map(m=>({uid:m.uid, name:m.name, role:m.role, roomId:m._roomId, ageMs:Date.now()-(m.ts||0)}))
+    }, 'info');
+    _renderRoster();
+    if(_followUid) scheduleApplyFollow();
+    return true;
+  }catch(e){
+    console.warn('Canlı katılımcılar sunucudan yenilenemedi:', e);
+    window.debugReport?.('presence.roster.manual_refresh_failed', {error:e, roomIds});
+    return false;
+  }
+}
+
 function _updateRosterButton(){
   const me = _me();
   const others = _roster.filter(m => m.uid !== me?.uid);
@@ -670,13 +752,18 @@ function _updateRosterButton(){
     btn.title = n > 0 ? `Bu fasikülde ${n} kişi canlı` : 'Canlı katılımcılar';
   });
 }
-export function toggleCanliRoster(){
+export async function toggleCanliRoster(){
   const p = _ensurePanel();
   const open = p.style.display === 'flex';
   p.style.display = open ? 'none' : 'flex';
   if(!open){
-    _writePresence();
-    setTimeout(_writePresence, 500);
+    startCanliPresence();
+    _writePresence(true);
+    p.innerHTML = `
+      <div class="crp-head"><b>Bu fasikülde canlı</b><span class="crp-n">…</span><button class="crp-x" onclick="toggleCanliRoster()" title="Kapat">✕</button></div>
+      <div class="crp-empty">Sunucudan kontrol ediliyor...</div>`;
+    await _refreshRosterFromServer();
+    setTimeout(()=>_refreshRosterFromServer(), 600);
     _renderRoster();
   }
 }

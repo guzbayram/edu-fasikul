@@ -473,6 +473,9 @@ export function loadPersistedData(){
 export async function loadFromFirestore(){
   const key = _getUserKey();
   if(!key || !window._firestoreReady) return;
+  appState.cloudProfileLoading = true;
+  appState.cloudProfileLoadError = false;
+  if(appState.user?.email !== 'misafir@demo.com') appState.requireCloudManifest = true;
   try{
     let docRef = _userDocRef(key);
     const snap = await window._fsGetDoc(docRef);
@@ -615,5 +618,13 @@ export async function loadFromFirestore(){
     if(shouldPersistAfterLoad || Object.values(appState.sorularState||{}).some(s=>s&&s.answered&&!s._synced)) persistData();
     window.showToast?.('Veriler buluttan yüklendi ☁️','success');
     window.startRealtimeSync?.(key);
-  }catch(e){ console.warn('Firestore yükleme hatası:',e); }
+  }catch(e){
+    appState.cloudProfileLoadError = true;
+    console.warn('Firestore yükleme hatası:',e);
+  } finally {
+    appState.cloudProfileLoading = false;
+    appState.cloudProfileLoaded = true;
+    window.renderDerslerGrid?.();
+    window.updateDashboard?.();
+  }
 }

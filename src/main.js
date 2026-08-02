@@ -719,6 +719,25 @@ function dersHasVisibleFasikul(ders){
 let draggedDersId = null;
 function renderDerslerGrid(){
   const grid = document.getElementById('derslerGrid');
+  if(!grid) return;
+  const isCloudUser = appState.user && appState.user.email !== 'misafir@demo.com';
+  const needsCloudManifest = isCloudUser && appState.requireCloudManifest && appState.manifestSource !== 'cloud';
+  if(needsCloudManifest){
+    const title = appState.cloudProfileLoadError || appState.cloudProfileLoaded
+      ? 'Ders listesi buluttan alınamadı.'
+      : 'Dersler buluttan yükleniyor...';
+    const detail = appState.cloudProfileLoadError || appState.cloudProfileLoaded
+      ? 'Eski cihaz/veri kalıntıları gösterilmedi. Lütfen bağlantıyı yenileyin veya Firebase manifest kaydını kontrol edin.'
+      : 'Güncel ders, alt ders ve fasikül ağacı Firestore üzerinden alınıyor.';
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-2);color:var(--text-muted);text-align:center">
+        <strong style="display:block;color:var(--text);margin-bottom:6px">${title}</strong>
+        <span>${detail}</span>
+      </div>`;
+    const sayac = document.getElementById('derslerSayac');
+    if(sayac) sayac.textContent = appState.cloudProfileLoading ? 'yükleniyor' : '0 ders aktif';
+    return;
+  }
   grid.innerHTML = '';
   const stats = getDashboardStats();
   const canSeeEmptyDers = appState.user?.role === 'admin';

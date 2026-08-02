@@ -765,6 +765,10 @@ export function enterApp(name){
 }
 
 function prepareDashboardForCloudLoad(){
+  appState.cloudProfileLoading = true;
+  appState.cloudProfileLoaded = false;
+  appState.cloudProfileLoadError = false;
+  appState.requireCloudManifest = true;
   const grid = document.getElementById('derslerGrid');
   if(grid){
     grid.innerHTML = `
