@@ -10,7 +10,7 @@ import { _getUserKey } from '../firebase/firestore.js';
 // ══════════════════════════════════════════════════════════
 
 const HEARTBEAT_MS = 3000;
-const ONLINE_WINDOW_MS = 45000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
+const ONLINE_WINDOW_MS = 90000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
 let _presFasikulId = null;
 let _rosterUnsub = null;
 let _heartbeatTimer = null;
@@ -27,6 +27,7 @@ let _lastFollowApplyAt = 0;
 let _lastPresenceWriteAt = 0;
 let _followSourceId = '';
 let _followSourceSeenAt = 0;
+let _lastRosterLogSig = '';
 const FOLLOW_APPLY_DELAY_MS = 220;
 const FOLLOW_MIN_INTERVAL_MS = 320;
 const PRESENCE_MIN_WRITE_INTERVAL_MS = 350;
@@ -71,18 +72,25 @@ function _slugRoomPart(value){
     .slice(0, 120);
 }
 
+function _asciiRoomPart(value){
+  return _slugRoomPart(value)
+    .replace(/ı/g, 'i')
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c');
+}
+
 function _canonicalRoomPart(fas){
   const candidates = [fas?.id, fas?.jsonFile, fas?.pdfFile, fas?.ad]
     .map(_slugRoomPart)
     .filter(Boolean);
+  const ascii = candidates.map(_asciiRoomPart).join('|');
   // Aynı fasikül bazı cihazlarda katalog adıyla, bazı cihazlarda JSON içindeki
   // özgün PDF adıyla gelebiliyor. Oda anahtarı bunlardan türetilirse admin ve
   // öğrenci aynı görünen fasikülde farklı canlı odalara düşer.
-  if(candidates.some(v =>
-    v === 'yaricap-tyt-problemler' ||
-    v.includes('6-5-yaricap-tyt-problemler-fasikulu') ||
-    v.includes('tyt-problemler-fasikulu-yaricap')
-  )){
+  if(ascii.includes('yaricap') && ascii.includes('tyt') && ascii.includes('problem')){
     return 'yaricap-tyt-problemler';
   }
   return candidates[0] || 'unknown';
@@ -114,6 +122,13 @@ export function startCanliPresence(){
   }
   clearTimeout(_startRetryTimer);
   _presFasikulId = roomId;
+  window.debugLog?.('presence.room.started', {
+    roomId,
+    fasikulId: fas.id,
+    fasikulAd: fas.ad,
+    jsonFile: fas.jsonFile || '',
+    pdfFile: fas.pdfFile || ''
+  }, 'info');
   _writePresence(true);
   window.voiceJoinRoom?.(roomId);
   const col = window._fsCollection(window._db,'canliOturum',roomId,'uyeler');
@@ -126,6 +141,16 @@ export function startCanliPresence(){
       list.push(m);
     });
     _roster = list;
+    const rosterSig = `${roomId}|${list.map(m=>`${m.uid}:${m.ts}:${m.hidden?'h':'v'}`).sort().join(',')}`;
+    if(rosterSig !== _lastRosterLogSig){
+      _lastRosterLogSig = rosterSig;
+      window.debugLog?.('presence.roster.updated', {
+        roomId,
+        total:list.length,
+        others:list.filter(m => m.uid !== _me()?.uid).length,
+        members:list.map(m=>({uid:m.uid, name:m.name, role:m.role, hidden:!!m.hidden, ageMs:Date.now()-(m.ts||0)}))
+      }, 'info');
+    }
     _renderRoster();
     _writePresence();
     if(_followUid) scheduleApplyFollow();
@@ -149,6 +174,7 @@ export function stopCanliPresence(silent, opts = {}){
   _followUid = null; _lastFollowSig = '';
   _followSourceId = '';
   _followSourceSeenAt = 0;
+  _lastRosterLogSig = '';
   appState._followingCanliMember = false;
   _followApplyTimer = null;
   _followApplySeq++;
