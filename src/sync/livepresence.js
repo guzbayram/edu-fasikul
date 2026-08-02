@@ -71,10 +71,26 @@ function _slugRoomPart(value){
     .slice(0, 120);
 }
 
+function _canonicalRoomPart(fas){
+  const candidates = [fas?.id, fas?.jsonFile, fas?.pdfFile, fas?.ad]
+    .map(_slugRoomPart)
+    .filter(Boolean);
+  // Aynı fasikül bazı cihazlarda katalog adıyla, bazı cihazlarda JSON içindeki
+  // özgün PDF adıyla gelebiliyor. Oda anahtarı bunlardan türetilirse admin ve
+  // öğrenci aynı görünen fasikülde farklı canlı odalara düşer.
+  if(candidates.some(v =>
+    v === 'yaricap-tyt-problemler' ||
+    v.includes('6-5-yaricap-tyt-problemler-fasikulu') ||
+    v.includes('tyt-problemler-fasikulu-yaricap')
+  )){
+    return 'yaricap-tyt-problemler';
+  }
+  return candidates[0] || 'unknown';
+}
+
 function _roomIdForFasikul(fas){
   if(!fas) return '';
-  const stableSource = fas.jsonFile || fas.pdfFile || fas.id || fas.ad || '';
-  return `fas-${_slugRoomPart(stableSource) || _slugRoomPart(fas.id) || 'unknown'}`;
+  return `fas-${_canonicalRoomPart(fas)}`;
 }
 
 function _pageFromDrawingKey(fasikulId, key){
