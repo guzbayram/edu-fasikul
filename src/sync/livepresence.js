@@ -11,6 +11,7 @@ import { _getUserKey } from '../firebase/firestore.js';
 
 const HEARTBEAT_MS = 3000;
 const ONLINE_WINDOW_MS = 90000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
+const GLOBAL_ROOM_ID = '__global__';
 let _presFasikulId = null;
 let _presRoomIds = [];
 let _rosterUnsubs = [];
@@ -116,6 +117,17 @@ function _roomIdsForFasikul(fas){
   return [...new Set([primary, ...aliases].filter(Boolean))].slice(0, 8);
 }
 
+function _listenRoomIdsFor(roomIds){
+  return [...new Set([...(roomIds || []), GLOBAL_ROOM_ID].filter(Boolean))];
+}
+
+function _memberMatchesRoom(m, roomId){
+  if(!m || !roomId) return false;
+  if(m.primaryRoomId === roomId || m.canonicalRoomId === roomId) return true;
+  if(Array.isArray(m.roomIds) && m.roomIds.includes(roomId)) return true;
+  return m.roomId === roomId;
+}
+
 function _mergeRosterRooms(){
   const byUid = new Map();
   _rosterByRoom.forEach(list=>{
@@ -174,7 +186,8 @@ export function startCanliPresence(){
   }, 'info');
   _writePresence(true);
   window.voiceJoinRoom?.(roomId);
-  _rosterUnsubs = roomIds.map(activeRoomId=>{
+  const listenRoomIds = _listenRoomIdsFor(roomIds);
+  _rosterUnsubs = listenRoomIds.map(activeRoomId=>{
     const col = window._fsCollection(window._db,'canliOturum',activeRoomId,'uyeler');
     return window._fsOnSnapshot(col, (snap)=>{
       const now = Date.now();
@@ -182,16 +195,17 @@ export function startCanliPresence(){
       snap.forEach(d=>{
         const m = d.data(); if(!m || !m.uid) return;
         if((now - (m.ts||0)) > ONLINE_WINDOW_MS) return;
+        if(activeRoomId === GLOBAL_ROOM_ID && !_memberMatchesRoom(m, roomId)) return;
         list.push({...m, _roomId:activeRoomId});
       });
       _rosterByRoom.set(activeRoomId, list);
       _mergeRosterRooms();
-      const rosterSig = `${roomIds.join('|')}|${_roster.map(m=>`${m.uid}:${m.ts}:${m.hidden?'h':'v'}:${m._roomId||''}`).sort().join(',')}`;
+      const rosterSig = `${listenRoomIds.join('|')}|${_roster.map(m=>`${m.uid}:${m.ts}:${m.hidden?'h':'v'}:${m._roomId||''}`).sort().join(',')}`;
       if(rosterSig !== _lastRosterLogSig){
         _lastRosterLogSig = rosterSig;
         window.debugLog?.('presence.roster.updated', {
           roomId,
-          roomIds,
+          roomIds: listenRoomIds,
           total:_roster.length,
           others:_roster.filter(m => m.uid !== _me()?.uid).length,
           members:_roster.map(m=>({uid:m.uid, name:m.name, role:m.role, hidden:!!m.hidden, roomId:m._roomId, ageMs:Date.now()-(m.ts||0)}))
@@ -230,7 +244,7 @@ export function stopCanliPresence(silent, opts = {}){
   const me = _me();
   if(!opts.keepDoc && me && _presFasikulId && _ready() && window._fsDeleteDoc){
     const rooms = _presRoomIds.length ? _presRoomIds : [_presFasikulId];
-    rooms.forEach(roomId=>window._fsDeleteDoc(_memberRef(roomId, me.uid)).catch(()=>{}));
+    _listenRoomIdsFor(rooms).forEach(roomId=>window._fsDeleteDoc(_memberRef(roomId, me.uid)).catch(()=>{}));
   }
   if(!opts.keepDoc) window.voiceLeaveRoom?.();
   _presFasikulId = null;
@@ -275,6 +289,7 @@ function _writePresence(force = false){
   const roomId = _roomIdForFasikul(fas);
   if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready()) return;
   const rooms = _presRoomIds.length ? _presRoomIds : [roomId];
+  const writeRooms = _listenRoomIdsFor(rooms);
   const now = Date.now();
   if(!force && now - _lastPresenceWriteAt < PRESENCE_MIN_WRITE_INTERVAL_MS) return;
   _lastPresenceWriteAt = now;
@@ -288,12 +303,14 @@ function _writePresence(force = false){
       dersId: appState.aktifDers?.id || '',
       fasikulId: fas.id,
       roomId,
+      canonicalRoomId: roomId,
+      roomIds: rooms,
       jsonFile: fas.jsonFile || '',
       pdfFile: fas.pdfFile || '',
       ts: now,
       hidden: true
     };
-    rooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid), {...hiddenPayload, roomId:activeRoomId, primaryRoomId:roomId}, {merge:true}).catch(e=>{
+    writeRooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid), {...hiddenPayload, roomId:activeRoomId, primaryRoomId:roomId}, {merge:true}).catch(e=>{
       console.warn('Canlı oturum heartbeat hatası:',e);
       window.debugReport?.('presence.heartbeat.failed', {error:e, payload:hiddenPayload, roomId:activeRoomId});
     }));
@@ -310,6 +327,8 @@ function _writePresence(force = false){
     dersId: appState.aktifDers?.id || '',
     fasikulId: fas.id,
     roomId,
+    canonicalRoomId: roomId,
+    roomIds: rooms,
     jsonFile: fas.jsonFile || '',
     pdfFile: fas.pdfFile || '',
     page: appState.currentPage || 1,
@@ -326,7 +345,7 @@ function _writePresence(force = false){
     payload.fracTop = frac?.fracTop ?? null;
     payload.fracBottom = frac?.fracBottom ?? null;
   }
-  rooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid), {...payload, roomId:activeRoomId, primaryRoomId:roomId}, {merge:true}).catch(e=>{
+  writeRooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid), {...payload, roomId:activeRoomId, primaryRoomId:roomId}, {merge:true}).catch(e=>{
     console.warn('Canlı oturum yazma hatası:',e);
     window.debugReport?.('presence.write.failed', {error:e, payload, roomId:activeRoomId});
   }));
@@ -347,6 +366,7 @@ export function publishCanliPresenceDraw(key, json, w, h){
   const roomId = _roomIdForFasikul(fas);
   if(!me || !fas || !roomId || roomId !== _presFasikulId || !_ready() || !key) return;
   const rooms = _presRoomIds.length ? _presRoomIds : [roomId];
+  const writeRooms = _listenRoomIdsFor(rooms);
   const drawPage = _pageFromDrawingKey(fas.id, key) || _pageFromAnyDrawingKey(key);
   if(!drawPage) return;
   const currentKey = `drawing_${fas.id}_p${appState.currentPage||1}`;
@@ -356,8 +376,8 @@ export function publishCanliPresenceDraw(key, json, w, h){
   clearTimeout(_drawPubTimer);
   _drawPubTimer = setTimeout(()=>{
     const now = Date.now();
-    rooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid),
-      { page:drawPage, drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now, roomId:activeRoomId, primaryRoomId:roomId }, {merge:true})
+    writeRooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid),
+      { page:drawPage, drawKey:key, draw:json||'', drawTs:now, drawSig:_hashDraw(json), dw:w||0, dh:h||0, ts:now, roomId:activeRoomId, primaryRoomId:roomId, canonicalRoomId:roomId, roomIds:rooms }, {merge:true})
       .catch(e=>window.debugLog?.('presence.draw.write.failed', {error:e, key, roomId:activeRoomId}, 'warn')));
   }, 50);
 }
@@ -669,7 +689,7 @@ function _renderRoster(){
   const others = _roster.filter(m => m.uid !== me?.uid)
                         .sort((a,b)=>(b.ts||0)-(a.ts||0));
   p.innerHTML = `
-    <div class="crp-head"><b>Bu fasikülde canlı</b><span class="crp-n">${others.length}</span><button class="crp-x" onclick="toggleCanliRoster()" title="Kapat">✕</button></div>
+    <div class="crp-head"><b>Bu fasikülde canlı</b><span class="crp-n">${others.length}</span><button class="crp-x" onclick="closeCanliRoster()" title="Kapat">✕</button></div>
     <button class="crp-board ${appState.sharedBoard?'on':''}" onclick="toggleSharedBoard()" title="Aynı sayfadaki herkes birlikte çizsin, herkes birbirinin kalemini görsün">🖊️ Ortak Tahta <b>${appState.sharedBoard?'AÇIK':'Kapalı'}</b></button>
     ${window.voiceSelfPanel?.() || ''}
     ${others.length ? others.map(m=>{
@@ -695,17 +715,20 @@ async function _refreshRosterFromServer(){
   const fas = appState.aktifFasikul;
   const me = _me();
   const roomIds = _presRoomIds.length ? _presRoomIds : _roomIdsForFasikul(fas);
-  if(!fas || !me || !roomIds.length || !_ready() || !window._fsGetDocs || !window._fsCollection) return false;
+  const primaryRoomId = _roomIdForFasikul(fas);
+  const readRoomIds = _listenRoomIdsFor(roomIds);
+  if(!fas || !me || !readRoomIds.length || !_ready() || !window._fsGetDocs || !window._fsCollection) return false;
   _writePresence(true);
   const now = Date.now();
   const nextByRoom = new Map();
   try{
-    const reads = roomIds.map(async roomId=>{
+    const reads = readRoomIds.map(async roomId=>{
       const snap = await window._fsGetDocs(window._fsCollection(window._db,'canliOturum',roomId,'uyeler'));
       const list = [];
       snap.forEach(d=>{
         const m = d.data(); if(!m || !m.uid) return;
         if((now - (m.ts||0)) > ONLINE_WINDOW_MS) return;
+        if(roomId === GLOBAL_ROOM_ID && !_memberMatchesRoom(m, primaryRoomId)) return;
         list.push({...m, _roomId:roomId});
       });
       nextByRoom.set(roomId, list);
@@ -714,7 +737,7 @@ async function _refreshRosterFromServer(){
     _rosterByRoom = nextByRoom;
     _mergeRosterRooms();
     window.debugLog?.('presence.roster.manual_refresh', {
-      roomIds,
+      roomIds: readRoomIds,
       total:_roster.length,
       others:_roster.filter(m => m.uid !== me.uid).length,
       members:_roster.map(m=>({uid:m.uid, name:m.name, role:m.role, roomId:m._roomId, ageMs:Date.now()-(m.ts||0)}))
@@ -724,7 +747,7 @@ async function _refreshRosterFromServer(){
     return true;
   }catch(e){
     console.warn('Canlı katılımcılar sunucudan yenilenemedi:', e);
-    window.debugReport?.('presence.roster.manual_refresh_failed', {error:e, roomIds});
+    window.debugReport?.('presence.roster.manual_refresh_failed', {error:e, roomIds:readRoomIds});
     return false;
   }
 }
@@ -755,17 +778,20 @@ function _updateRosterButton(){
 export async function toggleCanliRoster(){
   const p = _ensurePanel();
   const open = p.style.display === 'flex';
-  p.style.display = open ? 'none' : 'flex';
+  p.style.display = 'flex';
+  startCanliPresence();
+  _writePresence(true);
   if(!open){
-    startCanliPresence();
-    _writePresence(true);
     p.innerHTML = `
-      <div class="crp-head"><b>Bu fasikülde canlı</b><span class="crp-n">…</span><button class="crp-x" onclick="toggleCanliRoster()" title="Kapat">✕</button></div>
+      <div class="crp-head"><b>Bu fasikülde canlı</b><span class="crp-n">…</span><button class="crp-x" onclick="closeCanliRoster()" title="Kapat">✕</button></div>
       <div class="crp-empty">Sunucudan kontrol ediliyor...</div>`;
-    await _refreshRosterFromServer();
-    setTimeout(()=>_refreshRosterFromServer(), 600);
-    _renderRoster();
   }
+  await _refreshRosterFromServer();
+  setTimeout(()=>_refreshRosterFromServer(), 600);
+  _renderRoster();
 }
 window.renderCanliRoster = _renderRoster;
 function _hideRosterPanel(){ const p = document.getElementById('canliRosterPanel'); if(p) p.style.display = 'none'; }
+export function closeCanliRoster(){ _hideRosterPanel(); }
+window.toggleCanliRoster = toggleCanliRoster;
+window.closeCanliRoster = closeCanliRoster;
