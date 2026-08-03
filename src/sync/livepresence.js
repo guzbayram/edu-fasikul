@@ -402,8 +402,14 @@ export function unfollowCanliMember(){
 
 function scheduleApplyFollow(){
   const seq = ++_followApplySeq;
-  const pause = Math.max(0, Number(appState._liveManualPauseUntil || 0) - Date.now());
-  const wait = Math.max(pause || FOLLOW_APPLY_DELAY_MS, FOLLOW_MIN_INTERVAL_MS - (Date.now() - _lastFollowApplyAt));
+  // KRİTİK: İzle artık tam gerçek-zamanlı ayna (bkz. _applyFollow'daki not) —
+  // _liveManualPauseUntil'e BURADA da bakılıyordu (eskiden kalma), bu da
+  // admin'in kendi ekranında programatik olarak tetiklenen bir scroll olayı
+  // (ör. zoom yerleşirken) bu duraklatmayı yeniden kilitlediğinde İzle'nin
+  // sonraki güncellemelerini 8 saniyeye kadar (art arda yeniden kilitlenirse
+  // süresiz) DONDURMASINA yol açıyordu. watchMode (realtime.js) kendi ayrı
+  // duraklatmasını zaten kendi dosyasında uyguluyor, burada gerek yok.
+  const wait = Math.max(FOLLOW_APPLY_DELAY_MS, FOLLOW_MIN_INTERVAL_MS - (Date.now() - _lastFollowApplyAt));
   clearTimeout(_followApplyTimer);
   _followApplyTimer = setTimeout(()=>_applyFollow(seq), wait);
 }
