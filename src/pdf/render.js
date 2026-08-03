@@ -1310,6 +1310,20 @@ function goToPage(n){
   document.getElementById('nextPageBtn').disabled = appState.currentPage===appState.totalPages;
   window.syncNavToPage?.(appState.currentPage);
   window.publishCanli?.();
+  // Sayfa değişince, o sayfada ÖNCEDEN kayıtlı bir çizim varsa (yeni bir
+  // kalem hareketi olmasa bile) İzle edenlere hemen yansısın — aksi halde
+  // yalnızca o an YENİ çizilen bir şey İzleyen tarafta görünüyordu,
+  // öğrencinin o sayfada zaten var olan eski çalışması hiç yansımıyordu.
+  // _presSuppress: bu goToPage çağrısı BİZİM birini takip etmemizden
+  // (goToPage(m.page)) geliyorsa kendi çizimimizi yanlışlıkla yayınlamayalım.
+  if(!appState._presSuppress && appState.aktifFasikul){
+    const key = `drawing_${appState.aktifFasikul.id}_p${appState.currentPage}`;
+    const existing = appState.drawings[key];
+    if(existing){
+      const dims = appState.drawingDims[key] || {};
+      window.publishCanliPresenceDraw?.(key, existing, dims.w||0, dims.h||0);
+    }
+  }
 }
 
 function scrollToPage(pageNum, behavior){
