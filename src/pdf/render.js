@@ -1497,6 +1497,7 @@ window.applyPageScrollFraction = applyPageScrollFraction;
 function isZoomGestureLive(){ return !!gz; }
 
 function beginZoomGesture(focalX, focalY){
+  try{const a=JSON.parse(localStorage.getItem('__zd')||'[]');a.push({t:'beginZG.enter',gzWasNull:!gz});localStorage.setItem('__zd',JSON.stringify(a));}catch(_e){}
   if(gz) return;
   const wrap = document.getElementById('readerCanvasWrap');
   const inner = getPagesInner(wrap);
@@ -1701,6 +1702,7 @@ function previewZoomTo(targetZoom, focalX, focalY){
 window.previewZoomTo = previewZoomTo;
 
 function changeZoom(delta){
+  try{const a=JSON.parse(localStorage.getItem('__zd')||'[]');a.push({t:'changeZoom.enter',delta,curZoom:appState.zoom,gzWasSet:!!gz});localStorage.setItem('__zd',JSON.stringify(a));}catch(_e){}
   const wrap = document.getElementById('readerCanvasWrap');
   if(!wrap) return;
   const rect = wrap.getBoundingClientRect();
