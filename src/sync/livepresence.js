@@ -9,9 +9,8 @@ import { _getUserKey } from '../firebase/firestore.js';
 // yansır. Kimsenin özel (kullanicilar/{uid}) dokümanı okunmaz.
 // ══════════════════════════════════════════════════════════
 
-const HEARTBEAT_MS = 3000;
+const HEARTBEAT_MS = 25000;
 const ONLINE_WINDOW_MS = 90000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
-const GLOBAL_ROOM_ID = 'global-legacy';
 let _presFasikulId = null;
 let _presRoomIds = [];
 let _rosterUnsubs = [];
@@ -33,7 +32,7 @@ let _followSourceSeenAt = 0;
 let _lastRosterLogSig = '';
 const FOLLOW_APPLY_DELAY_MS = 220;
 const FOLLOW_MIN_INTERVAL_MS = 320;
-const PRESENCE_MIN_WRITE_INTERVAL_MS = 350;
+const PRESENCE_MIN_WRITE_INTERVAL_MS = 900;
 const FOLLOW_SOURCE_LOCK_MS = 12000;
 const FOLLOW_DRAW_APPLY_DELAY_MS = 25;
 const FOLLOW_DRAW_RETRY_MS = 90;
@@ -113,19 +112,14 @@ function _roomIdsForFasikul(fas){
   // Eski canlı oturum sürümleri farklı cihazlarda id/pdf/json/ad türevlerini
   // oda anahtarı yapmış olabilir. Aynı fasikül farklı odalara düşmesin diye
   // yeni anahtarı ve bilinen eski türevleri birlikte dinleyip tek listede
-  // birleştiriyoruz.
-  return [...new Set([primary, ...aliases].filter(Boolean))].slice(0, 8);
+  // birleştiriyoruz. Kota maliyetini sınırlamak için en fazla 3 oda (asıl +
+  // en olası 2 türev) tutulur — heartbeat her oda için ayrı yazma/dinleme
+  // demek olduğundan sayı arttıkça günlük Firestore kotası hızla tükenir.
+  return [...new Set([primary, ...aliases].filter(Boolean))].slice(0, 3);
 }
 
 function _listenRoomIdsFor(roomIds){
-  return [...new Set([...(roomIds || []), GLOBAL_ROOM_ID].filter(Boolean))];
-}
-
-function _memberMatchesRoom(m, roomId){
-  if(!m || !roomId) return false;
-  if(m.primaryRoomId === roomId || m.canonicalRoomId === roomId) return true;
-  if(Array.isArray(m.roomIds) && m.roomIds.includes(roomId)) return true;
-  return m.roomId === roomId;
+  return [...new Set((roomIds || []).filter(Boolean))];
 }
 
 function _mergeRosterRooms(){
@@ -195,7 +189,6 @@ export function startCanliPresence(){
       snap.forEach(d=>{
         const m = d.data(); if(!m || !m.uid) return;
         if((now - (m.ts||0)) > ONLINE_WINDOW_MS) return;
-        if(activeRoomId === GLOBAL_ROOM_ID && !_memberMatchesRoom(m, roomId)) return;
         list.push({...m, _roomId:activeRoomId});
       });
       _rosterByRoom.set(activeRoomId, list);
@@ -714,7 +707,6 @@ async function _refreshRosterFromServer(){
   const fas = appState.aktifFasikul;
   const me = _me();
   const roomIds = _presRoomIds.length ? _presRoomIds : _roomIdsForFasikul(fas);
-  const primaryRoomId = _roomIdForFasikul(fas);
   const readRoomIds = _listenRoomIdsFor(roomIds);
   if(!fas || !me || !readRoomIds.length || !_ready() || !window._fsGetDocs || !window._fsCollection) return false;
   _writePresence(true);
@@ -727,7 +719,6 @@ async function _refreshRosterFromServer(){
       snap.forEach(d=>{
         const m = d.data(); if(!m || !m.uid) return;
         if((now - (m.ts||0)) > ONLINE_WINDOW_MS) return;
-        if(roomId === GLOBAL_ROOM_ID && !_memberMatchesRoom(m, primaryRoomId)) return;
         list.push({...m, _roomId:roomId});
       });
       nextByRoom.set(roomId, list);
