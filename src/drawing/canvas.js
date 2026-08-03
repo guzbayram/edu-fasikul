@@ -179,8 +179,12 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
   // Aktif sayfaysa ana canvas olarak işaretle
   if(pageNum === appState.currentPage){
     appState.fabricCanvas = fc;
-    if(!appState.reviewMode) applyTool(appState.drawTool);
   }
+  // Sayfa aktif olsun olmasın, tuval HEMEN aktif araca göre ayarlanmalı —
+  // aksi halde Fabric'in ham varsayılanında (selection:true) kalır ve
+  // parmakla dokununca (özellikle panlarken henüz çizilmemiş komşu sayfaya
+  // girince) istenmeyen mavi seçim kutusu açılır.
+  if(!appState.reviewMode) applyTool(appState.drawTool);
 
   // Kayıtlı çizim varsa yükle
   const key = drawingKeyForPage(pageNum);
