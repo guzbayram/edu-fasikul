@@ -202,6 +202,17 @@ function throttleScrollHandler(){
     if((appState.watchMode || appState._followingCanliMember) && !appState._liveSuppress && !appState._presSuppress){
       appState._liveManualPauseUntil = Date.now() + 8000;
     }
+    // KRİTİK: İzle uygularken (_presSuppress/_liveSuppress) applyPageScrollFraction
+    // wrap.scrollTop/Left'i DOĞRUDAN değiştiriyor — scrollToPage'in aksine
+    // appState._scrollingToPage bayrağını KULLANMIYOR. Bu programatik scroll
+    // native bir 'scroll' olayı doğurur; updateCurrentPageFromScroll bunu
+    // "en yakın sayfa merkezi" ile BAĞIMSIZ yeniden hesaplayıp, takip edilenden
+    // az önce goToPage ile açıkça set edilmiş sayfa numarasını (ör. hedef sayfa
+    // sınırında, viewport merkezi hâlâ bir önceki sayfaya daha yakınsa) YANLIŞLIKLA
+    // geri eski sayfaya döndürebiliyordu (izlerken admin rozeti 1 sayfa geride
+    // kalıyordu). İzle/watchMode kaynaklı bu scroll'da kendi sayfa tespitimizi
+    // atlayıp takip edilenin sayfasına güveniyoruz.
+    if(appState._presSuppress || appState._liveSuppress) return;
     updateCurrentPageFromScroll();
     // Sayfa DEĞİŞMESE bile (aynı sayfa içinde pan) canlı izleyenler için
     // yayınla — publishCanli() zaten kendi debounce/dedup'ına sahip (bkz.
