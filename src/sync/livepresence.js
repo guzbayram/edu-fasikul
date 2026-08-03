@@ -11,7 +11,7 @@ import { _getUserKey } from '../firebase/firestore.js';
 
 const HEARTBEAT_MS = 3000;
 const ONLINE_WINDOW_MS = 90000;   // ts bu süre içinde tazelenmezse "çevrimdışı"
-const GLOBAL_ROOM_ID = '__global__';
+const GLOBAL_ROOM_ID = 'global-legacy';
 let _presFasikulId = null;
 let _presRoomIds = [];
 let _rosterUnsubs = [];
@@ -212,7 +212,6 @@ export function startCanliPresence(){
         }, 'info');
       }
       _renderRoster();
-      _writePresence();
       if(_followUid) scheduleApplyFollow();
       if(appState.sharedBoard) refreshSharedBoard();   // biri çizince ortak tahtayı tazele
     }, (err)=>{
