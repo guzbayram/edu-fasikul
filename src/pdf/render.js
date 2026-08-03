@@ -83,7 +83,19 @@ appState.viewMode = 'scroll'; // 'single' | 'scroll'
  * IntersectionObserver ile görünür sayfaları render eder.
  */
 
+// Rotasyon/resize sırasında birbirini üst üste tetikleyen birden fazla
+// dinleyici (main.js resize, solve.js orientationchange, viewportfix.js
+// resize+visualViewport polling) renderAllPages()'i art arda çağırabilir.
+// Korumasız bırakılırsa her çağrı kendi 634 sayfalık placeholder setini
+// wrap'e EKLER (öncekini temizlemeden — temizleme yalnız fonksiyon
+// BAŞINDA, kendi await'inden ÖNCE olur), bu da yinelenen id'ler ve
+// çakışan IntersectionObserver'lar üretip scrollToPage'in yanlış/eski
+// bir sayfa-wrap'ine gitmesine (ör. başa dönme) yol açar. renderSinglePageMode
+// zaten aynı sınıf hatayı _pageRenderGen ile çözüyor — aynı deseni burada
+// da uyguluyoruz: yalnızca EN SON çağrı kendi placeholder'larını kurar.
+let _allPagesRenderGen = 0;
 async function renderAllPages(){
+  const myGen = ++_allPagesRenderGen;
   window.flushActiveTextEditing?.();
   const wrap = document.getElementById('readerCanvasWrap');
   wrap.innerHTML = '';
@@ -113,6 +125,11 @@ async function renderAllPages(){
       console.warn('PDF placeholder boyutu hesaplanamadı, varsayılan kullanılıyor:', e);
     }
   }
+  // Bekleme sırasında daha yeni bir renderAllPages() çağrısı başladıysa
+  // (ör. rotasyon sırasında art arda tetiklenen resize/orientationchange),
+  // bu bayat çağrı kendi placeholder setini EKLEMEDEN sessizce çıkar —
+  // aksi halde iki set yinelenen id'li sayfa-wrap oluşur.
+  if(myGen !== _allPagesRenderGen) return false;
 
   // KALICI tek içerik sarmalayıcısı — zoom/pan motoru (yukarıda,
   // beginZoomGesture) jest boyunca SADECE bunun transform'unu değiştirir;
@@ -174,6 +191,7 @@ async function renderAllPages(){
   wrap.onscroll = throttleScrollHandler;
 
   updatePageIndicator();
+  return true;
 }
 
 function throttleScrollHandler(){
@@ -823,7 +841,12 @@ function renderPages(){
   const preserveScroll = !!appState._preserveScrollAfterRender;
   appState._preserveScrollAfterRender = false;
   if(appState.viewMode === 'scroll'){
-    return renderAllPages().then(()=>{
+    return renderAllPages().then((completed)=>{
+      // completed===false: daha yeni bir renderAllPages() bu çağrıyı
+      // geçersiz kıldı — DOM zaten o çağrı tarafından kurulacak/kuruldu,
+      // burada devam edip (zoom/pan/scroll) bayat duruma göre ayarlama
+      // yapmayalım (ör. rotasyon sırasında sayfanın başa dönmesi).
+      if(completed === false) return;
       appState._renderedZoom = appState.zoom;
       initCardZoomPan();
       initTouchGestures();
