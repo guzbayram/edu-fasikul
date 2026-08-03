@@ -165,7 +165,7 @@ async function openReader(dersId, fasikulId){
   // PDF'i önce profil sayfasında bir kez bağlanan klasörden otomatik aç.
   // Klasörde bulunamazsa eski kayıtlı PDF yedeğine bakılır; en son manuel yükleme alanı görünür.
   try{
-    const openedFromFolder = await ensureReaderPdfLoaded(1);
+    const openedFromFolder = await ensureReaderPdfLoaded(appState.currentPage);
     if(!openedFromFolder){
       const saved = await getPDFFromDB(dersId, fasikulId);
       if(saved && saved.blob){
