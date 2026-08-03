@@ -1426,7 +1426,16 @@ function getCurrentPageScrollFraction(){
   if(!wrap || !inner) return null;
   const r = wrap.getBoundingClientRect();
   const cx = r.left + r.width/2, cy = r.top + r.height/2;
-  const pageEl = locatePageAt(inner, cx, cy);
+  // KRİTİK: appState.currentPage'i (updateCurrentPageFromScroll'ın "sayfa
+  // merkezine en yakın" algoritmasıyla seçtiği sayfa) temel al — locatePageAt'in
+  // BAĞIMSIZ hit-test'i (viewport merkezi hangi sayfanın kutusu İÇİNDE) sayfa
+  // sınırlarında FARKLI bir sayfa seçebiliyordu. Bu durumda presence payload'ında
+  // page=54 gönderilirken fracX/fracY/fracTop.. aslında page 53'ün kutusuna göre
+  // ölçülmüş oluyordu — takip eden taraf bu oranı 54'ün kutusuna uygulayınca
+  // sayfanın BAŞI yerine ORTASINA düşüyordu. page ile frac* HER ZAMAN aynı
+  // sayfaya ait olmalı, bu yüzden burada da appState.currentPage kullanılır.
+  let pageEl = inner.querySelector(`[data-page-num="${appState.currentPage}"]`);
+  if(!pageEl) pageEl = locatePageAt(inner, cx, cy);
   if(!pageEl) return null;
   const pr = pageEl.getBoundingClientRect();
   if(!pr.width || !pr.height) return null;
