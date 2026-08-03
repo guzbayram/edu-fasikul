@@ -1976,6 +1976,7 @@ window.initPanelTapFix = initPanelTapFix;
 document.addEventListener('DOMContentLoaded', ()=>{
   initPanelTapFix('readerRight');
   initPanelTapFix('solvePalette');
+  initPanelTapFix('rpZoomBar');
 });
 
 
