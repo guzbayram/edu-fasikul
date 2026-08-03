@@ -23,6 +23,7 @@ let _presenceScrollHandler = null;
 let _roster = [];
 let _followUid = null;
 let _lastFollowSig = '';
+let _lastFollowDrawSig = '';
 let _followApplyTimer = null;
 let _followApplySeq = 0;
 let _lastFollowApplyAt = 0;
@@ -225,7 +226,7 @@ export function stopCanliPresence(silent, opts = {}){
   if(_heartbeatTimer){ clearInterval(_heartbeatTimer); _heartbeatTimer = null; }
   _detachPresenceScrollBridge();
   clearTimeout(_pubTimer); clearTimeout(_drawPubTimer); clearTimeout(_sbTimer); clearTimeout(_followApplyTimer);
-  _followUid = null; _lastFollowSig = '';
+  _followUid = null; _lastFollowSig = ''; _lastFollowDrawSig = '';
   _followSourceId = '';
   _followSourceSeenAt = 0;
   _lastRosterLogSig = '';
@@ -381,6 +382,7 @@ export function followCanliMember(uid, name){
   _followUid = uid;
   appState._followingCanliMember = true;
   _lastFollowSig = '';
+  _lastFollowDrawSig = '';
   _followSourceId = '';
   _followSourceSeenAt = 0;
   window.showToast?.(`🔴 ${name||'Katılımcı'} takip ediliyor`,'success');
@@ -390,7 +392,7 @@ export function followCanliMember(uid, name){
 
 export function unfollowCanliMember(){
   if(!_followUid) return;
-  _followUid = null; _lastFollowSig = '';
+  _followUid = null; _lastFollowSig = ''; _lastFollowDrawSig = '';
   _followSourceId = '';
   _followSourceSeenAt = 0;
   appState._followingCanliMember = false;
@@ -443,16 +445,25 @@ function _applyFollow(seq){
     // olunca en güncel presence tekrar uygulanacak.
     return;
   }
-  if(Date.now() < Number(appState._liveManualPauseUntil || 0)){
-    scheduleApplyFollow();
-    return;
-  }
   _lastFollowApplyAt = Date.now();
   const m = _roster.find(x=>x.uid === _followUid);
   if(!m) return;                                  // takip edilen çevrimdışı
   if(!acceptPresenceSource(m)) return;
+
+  // "İzle" tam gerçek-zamanlı ayna olmalı — admin kendi ekranına dokunmuş
+  // olsa bile takip edilenin sayfa/zoom/pan/çizim durumu HER ZAMAN aynen
+  // uygulanır (eskiden burada admin'in kendi kaydırmasından sonra 8sn'lik
+  // bir bekleme vardı, kullanıcı isteğiyle kaldırıldı — bkz. throttleScrollHandler
+  // içindeki _liveManualPauseUntil ataması artık yalnızca ayrı "watchMode"
+  // (realtime.js) tarafından okunuyor, İzle bunu bilerek yok sayıyor).
   const drawSig = m.drawSig || _hashDraw(m.draw);
-  const sig = `${m.page}|${m.altKonuId}|${m.drawKey||''}|${m.drawTs||''}|${drawSig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracLeft ?? ''}|${m.fracRight ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}`;
+  const drawKeySig = `${m.drawKey||''}|${m.drawTs||''}|${drawSig}`;
+  if(drawKeySig !== _lastFollowDrawSig){
+    _lastFollowDrawSig = drawKeySig;
+    _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh, 0);
+  }
+
+  const sig = `${m.page}|${m.altKonuId}|${drawKeySig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracLeft ?? ''}|${m.fracRight ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}`;
   if(sig === _lastFollowSig) return;              // değişmedi → tekrar uygulama
   _lastFollowSig = sig;
   appState._presSuppress = true;
@@ -499,7 +510,6 @@ function _applyFollow(seq){
           fracBottom: m.fracBottom
         });
       }
-      _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh, 0);
     } finally {
       if(seq === _followApplySeq) setTimeout(()=>{ appState._presSuppress = false; }, 900);
     }
