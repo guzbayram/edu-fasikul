@@ -1601,7 +1601,7 @@ async function endZoomGesture(){
   const targetContentY = originY * ratio;
 
   const myGen = ++_zoomSettleGen;
-  (window.__zd=window.__zd||[]).push({t:'start', pageAnchor, myGen, liveZoom, renderedZoom});
+  try{const _zdArr=JSON.parse(localStorage.getItem('__zd')||'[]');_zdArr.push({t:'start', pageAnchor, myGen, liveZoom, renderedZoom});localStorage.setItem('__zd',JSON.stringify(_zdArr));}catch(_e){}
   appState._preserveScrollAfterRender = true;
   wrap.classList.add('zoom-settling');
   try{
@@ -1612,7 +1612,7 @@ async function endZoomGesture(){
     wrap.classList.remove('zoom-settling');
     throw e;
   }
-  (window.__zd=window.__zd||[]).push({t:'afterRenderPages', myGen, _zoomSettleGen, aborted: myGen !== _zoomSettleGen});
+  try{const _zdArr=JSON.parse(localStorage.getItem('__zd')||'[]');_zdArr.push({t:'afterRenderPages', myGen, _zoomSettleGen, aborted: myGen !== _zoomSettleGen});localStorage.setItem('__zd',JSON.stringify(_zdArr));}catch(_e){}
   if(myGen !== _zoomSettleGen) return result; // yeni bir jest bu render'ı geçersiz kıldı
 
   // renderPages() wrap'i baştan kurdu — taze inner scrollLeft/Top==0 konumunda
@@ -1623,7 +1623,7 @@ async function endZoomGesture(){
   const freshInner = getPagesInner(wrap);
   const freshRect = freshInner.getBoundingClientRect();
   const freshPageEl = pageAnchor ? freshInner.querySelector(`[data-page-num="${pageAnchor.pageNum}"]`) : null;
-  (window.__zd=window.__zd||[]).push({t:'freshPageEl', pageAnchor, hasFreshPageEl: !!freshPageEl, w: freshPageEl?.offsetWidth, h: freshPageEl?.offsetHeight, rendered: freshPageEl?.dataset?.rendered});
+  try{const _zdArr=JSON.parse(localStorage.getItem('__zd')||'[]');_zdArr.push({t:'freshPageEl', pageAnchor, hasFreshPageEl: !!freshPageEl, w: freshPageEl?.offsetWidth, h: freshPageEl?.offsetHeight, rendered: freshPageEl?.dataset?.rendered});localStorage.setItem('__zd',JSON.stringify(_zdArr));}catch(_e){}
   // Sürekli modda renderAllPages() TÜM sayfalar için önce genel tahminli bir
   // YER TUTUCU boyut kurar; gerçek/PDF'e-özgü boyut yalnızca IntersectionObserver
   // sayfayı görününce (asenkron, gecikmeli) geliyor. Anchor sayfası TAM O
@@ -1647,7 +1647,7 @@ async function endZoomGesture(){
       if(appState.pdfDoc) await renderSinglePDFPage(Number(pageAnchor.pageNum), freshPageEl);
       else renderSingleFallbackPage(Number(pageAnchor.pageNum), freshPageEl);
     }catch(e){ console.warn('Anchor sayfası zorla render edilemedi:', e); }
-    (window.__zd=window.__zd||[]).push({t:'afterForceRender', myGen, _zoomSettleGen, aborted: myGen !== _zoomSettleGen, w: freshPageEl?.offsetWidth, h: freshPageEl?.offsetHeight});
+    try{const _zdArr=JSON.parse(localStorage.getItem('__zd')||'[]');_zdArr.push({t:'afterForceRender', myGen, _zoomSettleGen, aborted: myGen !== _zoomSettleGen, w: freshPageEl?.offsetWidth, h: freshPageEl?.offsetHeight});localStorage.setItem('__zd',JSON.stringify(_zdArr));}catch(_e){}
     if(myGen !== _zoomSettleGen) return result; // bu bekleme sırasında yeni bir jest başladı
   }
   // Tek sayfa modunda (bkz. beginZoomGesture'daki not — stage boyutu zoom%'e
@@ -1677,11 +1677,11 @@ async function endZoomGesture(){
     if(appState.viewMode === 'scroll' || pr.height > wrap.clientHeight){
       wrap.scrollTop = Math.max(0, pr.top + pageAnchor.fracY * pr.height - focalY);
     }
-    (window.__zd=window.__zd||[]).push({t:'branchPageEl', prTop: pr.top, prHeight: pr.height, fracY: pageAnchor.fracY, focalY, resultScrollTop: wrap.scrollTop});
+    try{const _zdArr=JSON.parse(localStorage.getItem('__zd')||'[]');_zdArr.push({t:'branchPageEl', prTop: pr.top, prHeight: pr.height, fracY: pageAnchor.fracY, focalY, resultScrollTop: wrap.scrollTop});localStorage.setItem('__zd',JSON.stringify(_zdArr));}catch(_e){}
   } else {
     wrap.scrollLeft = Math.max(0, freshRect.left + targetContentX - focalX);
     wrap.scrollTop = Math.max(0, freshRect.top + targetContentY - focalY);
-    (window.__zd=window.__zd||[]).push({t:'branchRatioFallback', freshRectTop: freshRect.top, targetContentY, focalY, resultScrollTop: wrap.scrollTop});
+    try{const _zdArr=JSON.parse(localStorage.getItem('__zd')||'[]');_zdArr.push({t:'branchRatioFallback', freshRectTop: freshRect.top, targetContentY, focalY, resultScrollTop: wrap.scrollTop});localStorage.setItem('__zd',JSON.stringify(_zdArr));}catch(_e){}
   }
   wrap.style.overflow = '';
   wrap.classList.remove('zoom-settling');
