@@ -1659,6 +1659,19 @@ async function endZoomGesture(){
   if(!freshPageEl && appState.currentPage && anchorPageNum !== appState.currentPage){
     freshPageEl = freshInner.querySelector(`[data-page-num="${appState.currentPage}"]`);
   }
+  // GEÇİCİ TEŞHİS (yalnız yerel debugLog — Firestore'a YAZMAZ, kotayı etkilemez):
+  // "sayfa X'te olmasına rağmen zoom sonrası kapağa dönme" hatasını canlıda
+  // yakalamak için — kök neden bulununca kaldırılacak.
+  window.debugLog?.('pdf.zoom.settle.diag', {
+    currentPage: appState.currentPage,
+    pageAnchorPageNum: pageAnchor?.pageNum ?? null,
+    anchorPageNum,
+    freshPageElFound: !!freshPageEl,
+    freshPageElW: freshPageEl?.offsetWidth || 0,
+    freshPageElH: freshPageEl?.offsetHeight || 0,
+    viewMode: appState.viewMode,
+    liveZoom, renderedZoom, startZoom
+  }, 'info');
   // Sürekli modda renderAllPages() TÜM sayfalar için önce genel tahminli bir
   // YER TUTUCU boyut kurar; gerçek/PDF'e-özgü boyut yalnızca IntersectionObserver
   // sayfayı görününce (asenkron, gecikmeli) geliyor. Anchor sayfası TAM O

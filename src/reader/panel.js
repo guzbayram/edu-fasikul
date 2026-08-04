@@ -2204,10 +2204,18 @@ function updateTestProgress(){
 
   // Canlı izleyenler (İzle/Canlı İzle) sadece sayfa kaydırınca güncelleniyordu —
   // bir soru cevaplamak sayfayı değiştirmeyebilir, bu yüzden istatistik satırı
-  // izleyen tarafta hep 0 kalıyordu. Cevap her değiştiğinde de yayınla.
-  window.publishCanliPresence?.();
-  window.publishCanli?.();
+  // izleyen tarafta hep 0 kalıyordu. Cevap her değiştiğinde de yayınla — AMA
+  // updateTestProgress() gezinme sırasında da (istatistik DEĞİŞMEDEN) sık sık
+  // çağrılıyor; Firestore kotasını gereksiz zorlamamak için yalnızca gerçekten
+  // değiştiyse yayınla (aksi halde her navigasyonda gereksiz yazma/okuma olurdu).
+  const _statsSig = JSON.stringify(getCurrentTestStatsSnapshot());
+  if(_statsSig !== _lastPublishedStatsSig){
+    _lastPublishedStatsSig = _statsSig;
+    window.publishCanliPresence?.();
+    window.publishCanli?.();
+  }
 }
+let _lastPublishedStatsSig = '';
 
 // Canlı izleme yayınına eklenecek küçük anlık istatistik özeti — izleyen
 // taraf bunu kendi (boş) yerel state'inden hesaplamak yerine doğrudan uygular
