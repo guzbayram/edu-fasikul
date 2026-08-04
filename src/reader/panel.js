@@ -2201,7 +2201,59 @@ function updateTestProgress(){
       if(resetBtn) resetBtn.style.display = 'none';
     }
   }
+
+  // Canlı izleyenler (İzle/Canlı İzle) sadece sayfa kaydırınca güncelleniyordu —
+  // bir soru cevaplamak sayfayı değiştirmeyebilir, bu yüzden istatistik satırı
+  // izleyen tarafta hep 0 kalıyordu. Cevap her değiştiğinde de yayınla.
+  window.publishCanliPresence?.();
+  window.publishCanli?.();
 }
+
+// Canlı izleme yayınına eklenecek küçük anlık istatistik özeti — izleyen
+// taraf bunu kendi (boş) yerel state'inden hesaplamak yerine doğrudan uygular
+// (bkz. applyFollowedTestStats).
+function getCurrentTestStatsSnapshot(){
+  const sorular = appState.aktifAltKonu?.sorular || [];
+  if(!sorular.length) return null;
+  const {correct, wrong, blank, answered, total, net} = computeTestStats(sorular);
+  return {correct, wrong, blank, answered, total, net: Number(net.toFixed(2))};
+}
+window.getCurrentTestStatsSnapshot = getCurrentTestStatsSnapshot;
+
+// İzlenen kullanıcının anlık istatistiklerini (ayrı bir hesaplama YAPMADAN)
+// doğrudan izleyenin ekranındaki aynı DOM alanlarına yazar.
+function applyFollowedTestStats(stats){
+  const total = stats?.total || 0;
+  const pctAnswered = total > 0 ? Math.round((stats.answered || 0) / total * 100) : 0;
+  const pctCorrect = total > 0 ? Math.round((stats.correct || 0) / total * 100) : 0;
+  const progText = `${stats?.answered || 0} / ${total} çözüldü`;
+  const netText = stats && stats.answered > 0 ? `Net: ${stats.net.toFixed(2)}` : 'Net: —';
+
+  const tpProgress = document.getElementById('tpProgress');
+  if(tpProgress) tpProgress.textContent = progText;
+  const tpFill = document.getElementById('tpFill');
+  if(tpFill) tpFill.style.width = `${pctAnswered}%`;
+  const tpNet = document.getElementById('tpNet');
+  if(tpNet) tpNet.textContent = netText;
+  const rpNet = document.getElementById('rpNet');
+  if(rpNet) rpNet.textContent = stats && stats.answered > 0 ? stats.net.toFixed(2) : '—';
+
+  const spProgressText = document.getElementById('spProgressText');
+  if(spProgressText) spProgressText.textContent = progText;
+  const spProgressFill = document.getElementById('spProgressFill');
+  if(spProgressFill) spProgressFill.style.width = `${pctAnswered}%`;
+  const spNetMini = document.getElementById('spNetMini');
+  if(spNetMini) spNetMini.textContent = stats && stats.answered > 0 ? `Net ${stats.net.toFixed(1)}` : 'Net: —';
+  const spStatsMini = document.getElementById('spStatsMini');
+  if(spStatsMini){
+    spStatsMini.innerHTML = `
+      <span class="sp-chip sp-ok">✅ ${stats?.correct || 0}</span>
+      <span class="sp-chip sp-bad">❌ ${stats?.wrong || 0}</span>
+      <span class="sp-chip sp-empty">⬜ ${stats?.blank ?? total}</span>
+      <span class="sp-chip sp-pct">%${pctCorrect}</span>`;
+  }
+}
+window.applyFollowedTestStats = applyFollowedTestStats;
 
 function finishTest(){
   const sorular=appState.aktifAltKonu?.sorular||[];

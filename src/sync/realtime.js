@@ -16,6 +16,7 @@ let _followSeq = 0;
 let _lastFollowApplyAt = 0;
 let _followSourceId = '';
 let _followSourceSeenAt = 0;
+let _lastFollowStatsSig = '';
 const DRAWING_REMOTE_EDIT_GUARD_MS = 2200;
 const REMOTE_DRAWING_APPLY_DELAY_MS = 25;
 const FOLLOW_APPLY_DELAY_MS = 220;
@@ -49,7 +50,10 @@ export function publishCanli(){
   const fracRight = frac?.fracRight != null ? frac.fracRight.toFixed(3) : '';
   const fracTop = frac?.fracTop != null ? frac.fracTop.toFixed(3) : '';
   const fracBottom = frac?.fracBottom != null ? frac.fracBottom.toFixed(3) : '';
-  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}|${zoom}|${fracX}|${fracY}|${fracLeft}|${fracRight}|${fracTop}|${fracBottom}`;
+  const docFracY = frac?.docFracY != null ? frac.docFracY.toFixed(3) : '';
+  const testStats = window.getCurrentTestStatsSnapshot?.() ?? null;
+  const statsSigPart = testStats ? `${testStats.correct}.${testStats.wrong}.${testStats.answered}.${testStats.total}` : '';
+  const sig = `${appState.aktifDers?.id || ''}|${fas.id}|${appState.currentPage || 1}|${appState.aktifAltKonu?.id || ''}|${zoom}|${fracX}|${fracY}|${fracLeft}|${fracRight}|${fracTop}|${fracBottom}|${docFracY}|${statsSigPart}`;
   const now = Date.now();
   if(sig === _lastPublishCanliSig && now - _lastPublishCanliAt < 700) return;
   _lastPublishCanliSig = sig;
@@ -68,6 +72,8 @@ export function publishCanli(){
     fracRight: frac?.fracRight ?? null,
     fracTop: frac?.fracTop ?? null,
     fracBottom: frac?.fracBottom ?? null,
+    docFracY: frac?.docFracY ?? null,
+    testStats,
     by: _liveDeviceId(),
     ts: Date.now()
   };
@@ -150,6 +156,13 @@ async function _followCanli(seq){
   try{
     let d = _latestCanliData;
     if(!d) return;
+    // İstatistik satırı sayfa/zoom'dan bağımsız değişebilir, kendi dedup'ıyla
+    // ayrıca uygulanır (bkz. livepresence.js'deki aynı yaklaşım).
+    const statsSig = JSON.stringify(d.testStats || null);
+    if(statsSig !== _lastFollowStatsSig){
+      _lastFollowStatsSig = statsSig;
+      window.applyFollowedTestStats?.(d.testStats || null);
+    }
     if(d.fasikulId && appState.aktifFasikul?.id !== d.fasikulId){
       if(_openReaderPromise && _openReaderFasikulId === d.fasikulId){
         await _openReaderPromise;
@@ -193,7 +206,8 @@ async function _followCanli(seq){
         fracLeft: d.fracLeft,
         fracRight: d.fracRight,
         fracTop: d.fracTop,
-        fracBottom: d.fracBottom
+        fracBottom: d.fracBottom,
+        docFracY: d.docFracY
       });
     }
   }catch(e){
@@ -373,6 +387,8 @@ export function stopWatchStudent(silent){
   unsubscribeRealtimeDrawings();
   _hideWatchBanner();
   _hideWatchStatsPanel();
+  _lastFollowStatsSig = '';
+  window.updateTestProgress?.();
   if(wasWatching && !silent) window.showToast?.('Canlı izleme durduruldu','info');
 }
 

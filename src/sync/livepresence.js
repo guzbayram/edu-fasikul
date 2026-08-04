@@ -24,6 +24,7 @@ let _roster = [];
 let _followUid = null;
 let _lastFollowSig = '';
 let _lastFollowDrawSig = '';
+let _lastFollowStatsSig = '';
 let _followApplyTimer = null;
 let _followApplySeq = 0;
 let _lastFollowApplyAt = 0;
@@ -337,6 +338,8 @@ function _writePresence(force = false){
     payload.fracRight = frac?.fracRight ?? null;
     payload.fracTop = frac?.fracTop ?? null;
     payload.fracBottom = frac?.fracBottom ?? null;
+    payload.docFracY = frac?.docFracY ?? null;
+    payload.testStats = window.getCurrentTestStatsSnapshot?.() ?? null;
   }
   writeRooms.forEach(activeRoomId=>window._fsSetDoc(_memberRef(activeRoomId, me.uid), {...payload, roomId:activeRoomId, primaryRoomId:roomId}, {merge:true}).catch(e=>{
     console.warn('Canlı oturum yazma hatası:',e);
@@ -383,6 +386,7 @@ export function followCanliMember(uid, name){
   appState._followingCanliMember = true;
   _lastFollowSig = '';
   _lastFollowDrawSig = '';
+  _lastFollowStatsSig = '';
   _followSourceId = '';
   _followSourceSeenAt = 0;
   window.showToast?.(`🔴 ${name||'Katılımcı'} takip ediliyor`,'success');
@@ -392,12 +396,14 @@ export function followCanliMember(uid, name){
 
 export function unfollowCanliMember(){
   if(!_followUid) return;
-  _followUid = null; _lastFollowSig = ''; _lastFollowDrawSig = '';
+  _followUid = null; _lastFollowSig = ''; _lastFollowDrawSig = ''; _lastFollowStatsSig = '';
   _followSourceId = '';
   _followSourceSeenAt = 0;
   appState._followingCanliMember = false;
   _renderRoster();
   window.showToast?.('Takip durduruldu','info');
+  // İzlenenin istatistik satırı ekranda asılı kalmasın — kendi (gerçek) durumumuza dön.
+  window.updateTestProgress?.();
 }
 
 function scheduleApplyFollow(){
@@ -456,6 +462,15 @@ function _applyFollow(seq){
   if(!m) return;                                  // takip edilen çevrimdışı
   if(!acceptPresenceSource(m)) return;
 
+  // İstatistik satırı (✅/❌/⬜/%) sayfa/zoom'dan BAĞIMSIZ değişebilir (soru
+  // cevaplamak sayfayı kaydırmaz) — bu yüzden aşağıdaki sayfa/zoom/çizim sig
+  // dedup'ından ETKİLENMEDEN, her uygulamada ayrıca ve kendi dedup'ıyla uygulanır.
+  const statsSig = JSON.stringify(m.testStats || null);
+  if(statsSig !== _lastFollowStatsSig){
+    _lastFollowStatsSig = statsSig;
+    window.applyFollowedTestStats?.(m.testStats || null);
+  }
+
   // "İzle" tam gerçek-zamanlı ayna olmalı — admin kendi ekranına dokunmuş
   // olsa bile takip edilenin sayfa/zoom/pan/çizim durumu HER ZAMAN aynen
   // uygulanır (eskiden burada admin'in kendi kaydırmasından sonra 8sn'lik
@@ -469,7 +484,7 @@ function _applyFollow(seq){
     _renderFollowDraw(m.draw, m.drawKey, m.dw, m.dh, 0);
   }
 
-  const sig = `${m.page}|${m.altKonuId}|${drawKeySig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracLeft ?? ''}|${m.fracRight ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}`;
+  const sig = `${m.page}|${m.altKonuId}|${drawKeySig}|${m.zoom||''}|${m.fracX ?? ''}|${m.fracY ?? ''}|${m.fracLeft ?? ''}|${m.fracRight ?? ''}|${m.fracTop ?? ''}|${m.fracBottom ?? ''}|${m.docFracY ?? ''}`;
   if(sig === _lastFollowSig) return;              // değişmedi → tekrar uygulama
   _lastFollowSig = sig;
   appState._presSuppress = true;
@@ -513,7 +528,8 @@ function _applyFollow(seq){
           fracLeft: m.fracLeft,
           fracRight: m.fracRight,
           fracTop: m.fracTop,
-          fracBottom: m.fracBottom
+          fracBottom: m.fracBottom,
+          docFracY: m.docFracY
         });
       }
     } finally {
@@ -795,6 +811,11 @@ export async function toggleCanliRoster(){
   await _refreshRosterFromServer();
   setTimeout(()=>_refreshRosterFromServer(), 600);
   _renderRoster();
+  // Anten butonuna basmak, aktif bir takip varsa izleyenin PDF alanını
+  // izlenenin GÜNCEL konumuyla anında eşitlesin — sekme bir süre arka planda
+  // kalıp _applyFollow'un (document.hidden nedeniyle) atladığı güncellemeleri
+  // beklemeden, kullanıcı panel açar açmaz manuel bir "şimdi eşitle" olsun.
+  if(_followUid) scheduleApplyFollow();
 }
 window.renderCanliRoster = _renderRoster;
 function _hideRosterPanel(){ const p = document.getElementById('canliRosterPanel'); if(p) p.style.display = 'none'; }

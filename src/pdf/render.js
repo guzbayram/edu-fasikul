@@ -1451,6 +1451,16 @@ function getCurrentPageScrollFraction(){
   const pr = pageEl.getBoundingClientRect();
   if(!pr.width || !pr.height) return null;
   const clamp01 = v => Math.max(0, Math.min(1, v));
+  // KRİTİK: Düşük zoom'da (ör. %25) bir sayfanın ekrandaki yüksekliği wrap'ten
+  // (viewport) KÜÇÜK olabiliyor — aynı anda 2-3 sayfa birden görünür. Bu
+  // durumda yukarıdaki fracTop/fracBottom TEK sayfaya göre [0,1]'e kırpılırken
+  // "ekranda tam olarak hangi alt-bölge görünüyordu" bilgisi kayboluyor: her
+  // zaman fracTop=0/fracBottom=1 çıkıyor, izleyen taraf da hep "sayfanın tepesi
+  // = ekranın tepesi"ne kilitleniyor (bkz. applyPageScrollFraction). Yedek:
+  // belgenin TAMAMINA göre mutlak kaydırma oranı — bu durumda sayfa-göreli
+  // orandan daha güvenilir, çünkü iki taraf da (zoom önce uygulandığından)
+  // aynı belge/zoom'da olur.
+  const scrollableH = Math.max(1, wrap.scrollHeight - wrap.clientHeight);
   return {
     pageNum: Number(pageEl.dataset.pageNum),
     fracX: (cx - pr.left) / pr.width,
@@ -1459,6 +1469,7 @@ function getCurrentPageScrollFraction(){
     fracRight: clamp01((r.right - pr.left) / pr.width),
     fracTop: clamp01((r.top - pr.top) / pr.height),
     fracBottom: clamp01((r.bottom - pr.top) / pr.height),
+    docFracY: clamp01(wrap.scrollTop / scrollableH),
   };
 }
 window.getCurrentPageScrollFraction = getCurrentPageScrollFraction;
@@ -1479,11 +1490,24 @@ function applyPageScrollFraction(pageNum, fracX, fracY, opts = {}){
   const wr = wrap.getBoundingClientRect();
   const useLeftAnchor = opts && opts.fracLeft != null && Number.isFinite(Number(opts.fracLeft));
   const targetX = pr.left + (useLeftAnchor ? Number(opts.fracLeft) : fracX) * pr.width;
-  const useTopAnchor = opts && opts.fracTop != null && Number.isFinite(Number(opts.fracTop));
-  const targetY = pr.top + (useTopAnchor ? Number(opts.fracTop) : fracY) * pr.height;
   wrap.scrollLeft += useLeftAnchor
     ? targetX - (wr.left + 8)
     : targetX - (wr.left + wr.width / 2);
+  // KRİTİK: Sayfa yüksekliği wrap'ten (viewport) küçükse fracTop/fracBottom
+  // gönderen tarafta [0,1]'e kırpılmış, yani BİLGİ KAYBETMİŞ olabilir (bkz.
+  // getCurrentPageScrollFraction). Bu durumda sayfa-göreli değil, gönderenin
+  // docFracY'sini (tüm belgeye göre mutlak kaydırma oranı) doğrudan uygula —
+  // aksi halde her seferinde "sayfanın tepesi = ekranın tepesi"ne kilitlenip
+  // izleyen taraf, izlenenin GERÇEKTE gördüğü kesitten farklı bir kesit
+  // gösterir.
+  const docFracY = opts && opts.docFracY != null ? Number(opts.docFracY) : null;
+  if(pr.height < wr.height && Number.isFinite(docFracY)){
+    const scrollableH = Math.max(1, wrap.scrollHeight - wrap.clientHeight);
+    wrap.scrollTop = docFracY * scrollableH;
+    return;
+  }
+  const useTopAnchor = opts && opts.fracTop != null && Number.isFinite(Number(opts.fracTop));
+  const targetY = pr.top + (useTopAnchor ? Number(opts.fracTop) : fracY) * pr.height;
   wrap.scrollTop += useTopAnchor
     ? targetY - (wr.top + 8)
     : targetY - (wr.top + wr.height / 2);
