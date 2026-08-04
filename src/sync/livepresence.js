@@ -489,10 +489,19 @@ function _applyFollow(seq){
   _lastFollowSig = sig;
   appState._presSuppress = true;
   try{
-    if(m.altKonuId && appState.aktifAltKonu?.id !== m.altKonuId){
-      let ak=null;
-      (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(a=>{ if(a.id===m.altKonuId) ak=a; }));
-      if(ak) window.selectAltKonu?.(ak, `altk-${ak.id}`);
+    if(m.altKonuId){
+      if(appState.aktifAltKonu?.id !== m.altKonuId){
+        let ak=null;
+        (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(a=>{ if(a.id===m.altKonuId) ak=a; }));
+        if(ak) window.selectAltKonu?.(ak, `altk-${ak.id}`);
+      }
+    } else if(appState.aktifAltKonu){
+      // İzlenen konu anlatım/soru-dışı bir sayfada (aktif testi yok) ama
+      // izleyenin sol paneli hâlâ ÖNCEKİ (kendi) test durumunu gösteriyor —
+      // aşağıdaki goToPage KENDİ tarama/temizleme mantığını (syncNavToPage)
+      // _presSuppress nedeniyle tetiklemez (bkz. throttleScrollHandler),
+      // bu yüzden burada doğrudan çağrılır.
+      window.syncNavToPage?.(m.page || appState.currentPage);
     }
     if(m.page && appState.currentPage !== m.page){
       const targetPage = Number(m.page);

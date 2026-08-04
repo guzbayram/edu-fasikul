@@ -173,10 +173,16 @@ async function _followCanli(seq){
       }
       d = _latestCanliData || d;   // beklerken daha yeni bir konum gelmiş olabilir
     }
-    if(d.altKonuId && appState.aktifAltKonu?.id !== d.altKonuId){
-      let foundAk = null;
-      (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(ak=>{ if(ak.id===d.altKonuId) foundAk=ak; }));
-      if(foundAk) window.selectAltKonu?.(foundAk, `altk-${foundAk.id}`);
+    if(d.altKonuId){
+      if(appState.aktifAltKonu?.id !== d.altKonuId){
+        let foundAk = null;
+        (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(ak=>{ if(ak.id===d.altKonuId) foundAk=ak; }));
+        if(foundAk) window.selectAltKonu?.(foundAk, `altk-${foundAk.id}`);
+      }
+    } else if(appState.aktifAltKonu){
+      // İzlenen konu anlatım/soru-dışı bir sayfada — sol panel ÖNCEKİ test
+      // durumunda asılı kalmasın (bkz. livepresence.js'deki aynı düzeltme).
+      window.syncNavToPage?.(d.page || appState.currentPage);
     }
     d = _latestCanliData || d;
     if(d.page && appState.currentPage !== d.page){

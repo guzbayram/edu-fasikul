@@ -368,6 +368,12 @@ function renderQuestionlessTopicPage(owner, pageNum, text){
   }
   window.renderSoruStrip?.([]);
   window.updateTestProgress?.();
+  // KRİTİK: Mobil kompakt palet (S.<n> ◀▶ ve A–E cevap düğmeleri, #spAnswers)
+  // yalnızca renderTekSoruKart üzerinden güncelleniyordu — bu "soru yok"
+  // yolunda o hiç çağrılmadığından palet ÖNCEKİ sorunun (S.7 vb.) durumunda
+  // asılı kalıyordu. renderSolveAnswers zaten aktifAltKonu=null'da paleti
+  // temizliyor, sadece burada da çağrılması eksikti.
+  window.renderSolveAnswers?.();
 }
 
 function getActiveOwnerForExactPage(pageNum){
