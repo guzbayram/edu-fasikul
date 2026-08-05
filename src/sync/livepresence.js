@@ -711,6 +711,7 @@ function _ensurePanel(){
     p.id = 'canliRosterPanel';
     p.className = 'canli-roster-panel';
     document.body.appendChild(p);
+    window.initPanelTapFix?.('canliRosterPanel');
   }
   return p;
 }

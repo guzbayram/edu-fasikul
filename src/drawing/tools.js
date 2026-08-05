@@ -1,4 +1,4 @@
-import { appState } from '../state/appState.js';
+import { appState, pushUndoSnapshot } from '../state/appState.js';
 
 const DRAW_TAP_TOOL_LOCK_MS = 450;
 
@@ -153,7 +153,7 @@ function applyTool(tool){
           _erasing = false;
           if(_eraseChanged){
             saveDrawingForPage(Number(fc._pageNum || appState.currentPage));
-            appState.undoStack.push(window._localCanvasJSON?.(fc) ?? JSON.stringify(fc));
+            pushUndoSnapshot(window._localCanvasJSON?.(fc) ?? JSON.stringify(fc));
             appState.redoStack = [];
             _eraseChanged = false;
             // Silme bitince otomatik kaleme dön (tekrar kalem seçmeye gerek kalmasın)
@@ -223,7 +223,7 @@ function redoDraw(){
   if(!fc || !appState.redoStack.length) return;
   const next = appState.redoStack.pop();
   fc.loadFromJSON(next,()=>{ fc.renderAll(); window.refreshSharedBoard?.(); });
-  appState.undoStack.push(next);
+  pushUndoSnapshot(next);
 }
 
 function clearPage(){
@@ -240,7 +240,7 @@ function clearPage(){
   window.markLocalDrawingEdit?.(pageNum);
   delete appState.drawings[key];
   deleteDrawingCloud(key);
-  appState.undoStack.push(fc ? (window._localCanvasJSON?.(fc) ?? JSON.stringify(fc)) : '{}');
+  pushUndoSnapshot(fc ? (window._localCanvasJSON?.(fc) ?? JSON.stringify(fc)) : '{}');
   appState.redoStack = [];
   showToast('Sayfa temizlendi','info');
 }

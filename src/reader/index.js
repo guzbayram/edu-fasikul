@@ -71,7 +71,8 @@ async function openReader(dersId, fasikulId){
   const defaultTool = isPhoneReaderViewport() ? 'select' : 'pen';
   appState.drawTool = defaultTool;
   document.querySelectorAll('.tool-btn[data-tool]').forEach(b=>b.classList.toggle('active', b.dataset.tool===defaultTool));
-  // PDF state reset
+  // PDF state reset — eski belge worker/font/stream önbelleğini serbest bıraksın
+  if(appState.pdfDoc){ try{ appState.pdfDoc.destroy(); }catch(e){} }
   appState.pdfDoc = null;
   appState.pdfDocFasikulId = null;
   document.getElementById('pdfUploadZone').style.display = '';
@@ -318,6 +319,7 @@ function closeReader(){
   window.scrollTo(0, appState._savedScrollY || 0);
   appState.aktifFasikul = null;
   appState.aktifAltKonu = null;
+  if(appState.pdfDoc){ try{ appState.pdfDoc.destroy(); }catch(e){} }
   appState.pdfDoc = null;
   appState.pdfDocFasikulId = null;
   // Tüm fabric canvas'ları temizle

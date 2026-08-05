@@ -1,4 +1,4 @@
-import { appState } from '../state/appState.js';
+import { appState, pushUndoSnapshot } from '../state/appState.js';
 
 // Fabric.js 5.5.2 hatası: Canvas.prototype._onTouchStart HER touchstart'ta
 // koşulsuz e.preventDefault() çağırıyor — allowTouchScrolling:true olsa BİLE
@@ -243,7 +243,7 @@ function initFabricForPage(canvasEl, w, h, pageNum, opts={}){
     }
     saveDrawingForPage(pageNum);
   });
-  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(localCanvasJSON(fc)); appState.redoStack=[]; } });
+  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ pushUndoSnapshot(localCanvasJSON(fc)); appState.redoStack=[]; } });
 }
 
 function saveDrawingForPage(pageNum){
@@ -390,7 +390,7 @@ function initFabricOnCanvas(canvasEl, w, h){
   });
 
   // Undo stack
-  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ appState.undoStack.push(localCanvasJSON(fc)); appState.redoStack=[]; } });
+  fc.on('object:added', ()=>{ if(!fc._loadingDrawing && !fc._applyingRemoteDrawing){ pushUndoSnapshot(localCanvasJSON(fc)); appState.redoStack=[]; } });
   fc.on('mouse:down', rememberCanvasDrawTap);
 
   applyTool(appState.drawTool);

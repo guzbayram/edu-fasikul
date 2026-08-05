@@ -1,3 +1,15 @@
+// Geri al/ileri al yığınları her nesne eklendiğinde o anki TÜM sayfanın
+// JSON serileştirmesini tutuyor (delta değil) ve hiç sınırı yoktu — uzun bir
+// çözüm oturumunda (çok sayfa, çok vuruş) sınırsız büyüyüp Safari'de "Önemli
+// ölçüde bellek kullandığı için yeniden yüklendi" çökmesine yol açıyordu.
+// Derinlik zaten pratikte birkaç adımın ötesine geçmiyor; 40 ile sınırlamak
+// kullanıcı deneyimini etkilemeden belleği sabit tutar.
+const MAX_UNDO_STACK = 40;
+export function pushUndoSnapshot(json){
+  appState.undoStack.push(json);
+  if(appState.undoStack.length > MAX_UNDO_STACK) appState.undoStack.shift();
+}
+
 export const appState = {
   user: null,
   theme: 'light',
