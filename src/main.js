@@ -48,6 +48,7 @@ import './ui/router.js';
 import './ui/viewportfix.js';
 import './ui/pwa.js';
 import './panels/dashboard.js';
+import './panels/calismaRaporu.js';
 import './panels/hatalilar.js';
 import './panels/profil.js';
 import './panels/admin.js';
@@ -1201,6 +1202,27 @@ function updateDashboard(){
     bg.innerHTML=badges.map(b=>`<div class="badge-item${b.earned?' earned':' locked'}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div></div>`).join('');
   }
 }
+
+// Üst çubuktaki 📊 Rapor butonu: öğrenci kendi geçmişini, admin/öğretmen ise
+// "Öğrenci Takibi" panelinden en son seçtiği öğrencinin geçmişini açar
+// (window._lastManagedStudentUid/_lastManagedStudentRecords auth.js'de tutulur).
+function openMyCalismaRaporu(){
+  const role = appState.user?.role;
+  if(role === 'admin' || role === 'ogretmen'){
+    const uid = window._lastManagedStudentUid;
+    if(!uid){
+      showToast('Önce "Öğrenci Takibi" bölümünden bir öğrenci seçin.','info');
+      showPanel('admin', document.getElementById('navAdminBtn'));
+      return;
+    }
+    const student = (window._managedStudents||[]).find(s=>s.id===uid);
+    openCalismaRaporu(window._lastManagedStudentRecords||[], {name: student?.name || student?.email || 'Öğrenci'});
+    return;
+  }
+  const stats = getDashboardStats();
+  openCalismaRaporu(stats.records||[], {name: appState.user?.name || appState.user?.email || 'Ben'});
+}
+window.openMyCalismaRaporu = openMyCalismaRaporu;
 
 // ══════════════════════════════
 // FASİKÜL İLERLEME HESAPLAMA

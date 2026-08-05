@@ -106,7 +106,7 @@
     <div class="top-bar">
       <div class="top-bar-title" id="topBarTitle">Anasayfa</div>
       <div class="top-bar-actions">
-        <button class="icon-btn" id="appFullscreenBtn" onclick="toggleAppFullscreen()" title="Tam Ekran">⛶</button>
+        <button class="icon-btn" onclick="openMyCalismaRaporu()" title="Çalışma Raporu">📊</button>
         <button class="icon-btn" title="Arama (yakında)">🔍</button>
         <button class="icon-btn" title="Bildirimler">🔔</button>
         <div class="avatar-btn" onclick="showPanel('profil',null)" id="avatarBtn">🎓</div>
@@ -881,6 +881,11 @@
       <button class="modal-btn mb-primary" onclick="closeModal('kbModal')" style="width:100%">Tamam</button>
     </div>
   </div>
+</div>
+
+<!-- ═══════ ÇALIŞMA VE PERFORMANS RAPORU ═══════ -->
+<div class="modal-overlay" id="calismaRaporModal" onclick="event.target===this&&closeModal('calismaRaporModal')">
+  <div class="modal-box rapor-box" id="calismaRaporBox"></div>
 </div>
 
 <!-- Toast -->

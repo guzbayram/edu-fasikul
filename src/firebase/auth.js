@@ -1020,6 +1020,10 @@ export async function selectManagedStudent(uid){
     }
     const summary = computeRecordsSummary(records);
     const fasikulGroups = groupRecordsByFasikul(records);
+    // Üst çubuktaki 📊 Rapor butonu bu öğrenciyi hedefleyebilsin diye son
+    // seçilen öğrenci ve kayıtları global olarak da tutulur (main.js openMyCalismaRaporu).
+    window._lastManagedStudentUid = uid;
+    window._lastManagedStudentRecords = records;
     try{
       const gorevSnap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'gorevler'));
       gorevSnap.forEach(d=>{
@@ -1083,6 +1087,7 @@ export async function selectManagedStudent(uid){
           return `<div><b>${esc(name)}</b><span>${k.total} çözüm · %${acc}</span></div>`;
         }).join('') || '<div style="color:var(--text-muted)">Henüz çözüm kaydı yok.</div>'}
       </div>
+      <button class="managed-rapor-btn" onclick="openCalismaRaporu(window._lastManagedStudentRecords||[], {name:'${escName}'})">📊 Detaylı Çalışma Raporunu Aç</button>
       <details class="managed-fold assignment-fold">
         <summary><span>🗓️ Görev Ata</span><b>Formu aç</b></summary>
         <div class="assignment-form">

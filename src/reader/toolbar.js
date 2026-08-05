@@ -57,11 +57,6 @@ function syncFullscreenButtons(){
     readerBtn.textContent = isFullscreen ? '⊡' : '⛶';
     readerBtn.title = isFullscreen ? 'Tam Ekrandan Çık (Esc)' : 'Tam Ekran (F11)';
   }
-  const appBtn = document.getElementById('appFullscreenBtn');
-  if(appBtn){
-    appBtn.textContent = isFullscreen ? '⊡' : '⛶';
-    appBtn.title = isFullscreen ? 'Tam Ekrandan Çık' : 'Tam Ekran';
-  }
 }
 
 document.addEventListener('fullscreenchange', ()=>{
