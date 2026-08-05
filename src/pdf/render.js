@@ -328,12 +328,16 @@ const CEVAP_MASK_CONFIG = {
   'mof-10-matematik-4': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   'mof-10-matematik-5': { rect: { x: 0.038, y: 0.902, w: 0.924, h: 0.044 }, herSayfa: false },
   // Yarıçap TYT Problemler: cevap daireleri birçok sayfanın sağ-altında; her sayfada kapat.
+  // Öğrenme Kanıtları 1-16 bölümlerinin her birinin bitiş sayfasında da aynı
+  // konumda (sağ-alt) cevap dairesi şeridi var — 45/47 (Ö.K.1-2) ile aynı rect,
+  // tek/çift sayfa farketmeksizin (93,95,97,99,190,192 dahil piksel piksel
+  // görsel doğrulandı) sağda çıkıyor.
   'yaricap-tyt-problemler': {
     rects: [
       { x: 0.54, y: 0.897, w: 0.42, h: 0.037 },
     ],
     yalnizCevapSayfasi: true,
-    cevapSayfalari: [45, 47],
+    cevapSayfalari: [45, 47, 93, 95, 97, 99, 109, 111, 125, 159, 161, 163, 177, 179, 190, 192],
   },
   'yaricap-10-matematik-2': {
     sayfaRectleri: {
