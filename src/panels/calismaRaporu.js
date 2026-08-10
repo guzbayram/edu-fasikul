@@ -174,13 +174,24 @@ function _rpRowsTable(rows, tarihSutunu){
     </tbody></table>`;
 }
 
+// Yıl/Ay/Hafta başlıkları tek satırlık özet gösterir (kompakt); Gün ve
+// Fasikül seviyeleri asıl detay katmanı olduğundan tam kutu-grid kalır.
+function _rpCompactStatsLine(t){
+  const net = _rpNet(t.dogru, t.yanlis);
+  return `${t.soru} soru · <b class="rp-dogru">${t.dogru} D</b> / <b class="rp-yanlis">${t.yanlis} Y</b> · <span class="rp-bos">${t.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b>`;
+}
+
 function _rpAcc(level, headerHtml, bodyHtml, toplam, open){
-  return `<div class="rapor-acc${open ? '' : ' rapor-collapsed'}">
+  const compact = level === 'year' || level === 'month' || level === 'week';
+  return `<div class="rapor-acc rapor-lvl-${level}${open ? '' : ' rapor-collapsed'}">
     <div class="rapor-acc-header rapor-h-${level}" onclick="raporToggleAcc(this)">
-      ${headerHtml}
-      <span class="rapor-toggle-icon">▾</span>
+      <div class="rapor-acc-title-row">
+        ${headerHtml}
+        <span class="rapor-toggle-icon">▾</span>
+      </div>
+      ${compact ? `<div class="rapor-acc-stats-line">${_rpCompactStatsLine(toplam)}</div>` : ''}
     </div>
-    ${_rpSummaryGrid(toplam)}
+    ${compact ? '' : _rpSummaryGrid(toplam)}
     <div class="rapor-content-body">${bodyHtml}</div>
   </div>`;
 }
