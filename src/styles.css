@@ -1599,18 +1599,29 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-toggle-icon{flex:none;font-size:12px;color:var(--text-muted);transition:transform .18s}
 .rapor-collapsed .rapor-toggle-icon{transform:rotate(-90deg)}
 .rapor-collapsed .rapor-summary-grid,.rapor-collapsed .rapor-content-body{display:none!important}
-/* Seviye tonları: yıl en koyu → gün en açık, hepsi --mat'ten türetilir.
-   Girinti kutunun kendisinde (margin-left) — iç içe geçmiş her seviye
-   kendi ebeveyninin gövdesi içinde 3ch daha sağa kayar, böylece kim
-   kimin içinde olduğu metin girintisi yerine kutu içinde kutu olarak görünür. */
+/* Seviye tonları: yıl en koyu → gün en açık, hepsi --mat'ten türetilir. */
 .rapor-h-year{background:color-mix(in srgb,var(--mat) 30%,var(--bg-2))}
 .rapor-h-month{background:color-mix(in srgb,var(--mat) 20%,var(--bg-2))}
 .rapor-h-week{background:color-mix(in srgb,var(--mat) 12%,var(--bg-2))}
 .rapor-h-day{background:var(--bg-3)}
 .rapor-h-fasikul{background:var(--mat-dim);border-left:4px solid var(--mat)}
-.rapor-lvl-month{margin-left:3ch}
-.rapor-lvl-week{margin-left:3ch}
-.rapor-lvl-day{margin-left:3ch}
+
+/* Zaman Hiyerarşisi: girintili iç içe akordeon yerine tek seviye gösteren
+   sürükle-tıkla (drill-down) liste — yıl seçilince sadece o yılın ayları,
+   ay seçilince sadece o ayın haftaları, hafta seçilince sadece o haftanın
+   günleri ekranda kalır; "← Geri" ile bir üst seviyeye dönülür. */
+.rapor-nav-crumbs{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.rapor-nav-back{flex:none;padding:7px 14px;border:1px solid var(--border-strong);border-radius:99px;background:var(--bg-3);color:var(--text-0);font-size:12px;font-weight:700;cursor:pointer}
+.rapor-nav-back:hover{background:var(--bg-4,var(--bg-3))}
+.rapor-nav-path{font-size:12px;color:var(--text-muted);font-weight:600}
+.rapor-nav-list{display:flex;flex-direction:column;gap:8px}
+.rapor-nav-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;cursor:pointer}
+.rapor-nav-item:hover{border-color:var(--border-strong)}
+.rapor-nav-item .rapor-acc-title-row{margin-bottom:3px}
+.rapor-nav-chevron{flex:none;font-size:16px;font-weight:800;color:var(--text-muted)}
+.rapor-nav-day{border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:10px}
+.rapor-nav-day:last-child{margin-bottom:0}
+.rapor-nav-day .rapor-acc-stats-line{margin-bottom:8px}
 
 .rapor-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 14px;padding:10px;background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-sm)}
 .rapor-summary-box{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xs,8px);padding:7px 8px;text-align:center}
@@ -1620,14 +1631,20 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rp-yanlis{color:var(--red)}
 .rp-bos{color:var(--text-muted)}
 
-.rapor-content-body{background:var(--bg-1);overflow-x:auto;padding:8px}
+.rapor-content-body{background:var(--bg-1);padding:8px}
 .rapor-content-body>.rapor-acc:last-child{margin-bottom:0}
-.rapor-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.rapor-table th{padding:8px 12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);text-align:left;background:var(--bg-2);border-bottom:1px solid var(--border);white-space:nowrap}
-.rapor-table td{padding:9px 12px;border-top:1px solid var(--border);color:var(--text-1);white-space:nowrap}
-.rapor-table tr:hover td{background:var(--bg-2)}
-.rapor-table td.tc{text-align:center;font-weight:700;color:var(--text-0)}
-.rapor-tag{display:inline-block;padding:3px 9px;border-radius:6px;background:var(--mat-dim);color:var(--mat);font-weight:700;font-size:11px;white-space:nowrap}
+
+/* Satır kartları — geniş tablo yerine, hiçbir genişlikte yatay scroll
+   gerektirmeyen iki satırlık (etiket+konu / istatistik) dikey kart. */
+.rapor-satir-list{display:flex;flex-direction:column;gap:6px}
+.rapor-satir-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px}
+.rapor-satir-top{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 8px;margin-bottom:3px}
+.rapor-satir-konu{font-size:12.5px;font-weight:700;color:var(--text-0);word-break:break-word}
+.rapor-satir-konu .ok{color:var(--text-muted);font-weight:400;margin:0 1px}
+.rapor-satir-stats{font-size:11px;color:var(--text-muted);font-weight:600;line-height:1.5}
+.rapor-satir-stats b{font-weight:800}
+.rapor-tag{display:inline-block;flex:none;padding:3px 9px;border-radius:6px;background:var(--mat-dim);color:var(--mat);font-weight:700;font-size:11px;white-space:nowrap}
+.rapor-tag-tarih{background:var(--bg-3);color:var(--text-1)}
 .rapor-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-weight:800;font-size:11px}
 .rapor-badge.success{background:var(--green-dim);color:var(--green)}
 .rapor-badge.warning{background:var(--yellow-dim);color:var(--yellow)}
@@ -1636,7 +1653,6 @@ body.reader-locked .main-content{visibility:hidden!important}
 @media (max-width:760px){
   .rapor-box{width:100vw;height:100vh;max-width:none;border-radius:0}
   .rapor-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .rapor-lvl-month,.rapor-lvl-week,.rapor-lvl-day{margin-left:1.5ch}
 }
 .assignment-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;padding:12px;background:var(--bg-1)}
 .assignment-form input,.assignment-form select{width:100%;height:44px;min-height:44px;padding:0 12px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-0);font-size:13px;line-height:44px}

@@ -38,6 +38,17 @@ function _rpDayLabel(dateKey){
 function _rpShortDate(d){
   return d.toLocaleDateString('tr-TR',{day:'2-digit',month:'long'});
 }
+// Hafta etiketi: aynı ay içindeyse "03-09 Ağustos 2026", ay değişiyorsa
+// "29 Temmuz - 04 Ağustos 2026" — hafta numarası/parantez yok, sade tarih aralığı.
+function _rpWeekRangeLabel(monday, sunday){
+  const gun = d => d.toLocaleDateString('tr-TR',{day:'2-digit'});
+  const yil = sunday.getFullYear();
+  if(monday.getMonth() === sunday.getMonth()){
+    const ay = sunday.toLocaleDateString('tr-TR',{month:'long'});
+    return `${gun(monday)}-${gun(sunday)} ${ay} ${yil}`;
+  }
+  return `${_rpShortDate(monday)} - ${_rpShortDate(sunday)} ${yil}`;
+}
 
 // records → gün bazlı gruplar (her günde fasikül+anaKonu+altKonu/test satırları)
 function _rpBuildGunler(records){
@@ -89,7 +100,7 @@ function buildRaporAgaci(records){
     const yil = yillar.get(yilKey);
     if(!yil.aylar.has(ayKey)) yil.aylar.set(ayKey, {key:ayKey, label:d.toLocaleDateString('tr-TR',{month:'long',year:'numeric'}), ts:d.getFullYear()*100+d.getMonth(), haftalar:new Map(), toplam:{soru:0,dogru:0,yanlis:0,bos:0}});
     const ay = yil.aylar.get(ayKey);
-    if(!ay.haftalar.has(haftaKey)) ay.haftalar.set(haftaKey, {key:haftaKey, label:`${week}. Hafta (${_rpShortDate(monday)} – ${_rpShortDate(sunday)} ${sunday.getFullYear()})`, ts:monday.getTime(), gunler:[], toplam:{soru:0,dogru:0,yanlis:0,bos:0}});
+    if(!ay.haftalar.has(haftaKey)) ay.haftalar.set(haftaKey, {key:haftaKey, label:_rpWeekRangeLabel(monday, sunday), ts:monday.getTime(), gunler:[], toplam:{soru:0,dogru:0,yanlis:0,bos:0}});
     const hafta = ay.haftalar.get(haftaKey);
     hafta.gunler.push(g);
     _rpMergeToplam(yil.toplam, g.toplam);
@@ -148,71 +159,116 @@ function _rpSummaryGrid(t){
   </div>`;
 }
 
-function _rpRowsTable(rows, tarihSutunu){
-  return `<table class="rapor-table"><thead><tr>
-      ${tarihSutunu ? '<th>Tarih</th>' : '<th>Fasikül</th>'}
-      <th>Ana Konu</th><th>Alt Konu / Test</th>
-      <th class="tc">Soru</th><th class="tc">Doğru</th><th class="tc">Yanlış</th><th class="tc">Boş</th><th class="tc">Net</th><th class="tc">Başarı</th>
-    </tr></thead><tbody>
-      ${rows.map(s=>{
-        const net = _rpNet(s.dogru, s.yanlis), basari = _rpBasari(s.dogru, s.yanlis);
-        const ilkSutun = tarihSutunu
-          ? _rpEsc(new Date(s.tarih+'T00:00:00').toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'numeric'}))
-          : `<span class="rapor-tag">${_rpEsc(s.fasikulAd)}</span>`;
-        return `<tr>
-          <td>${ilkSutun}</td>
-          <td>${_rpEsc(s.konu)}</td>
-          <td>${_rpEsc(s.altKonu)}</td>
-          <td class="tc">${s.soru}</td>
-          <td class="tc rp-dogru">${s.dogru}</td>
-          <td class="tc rp-yanlis">${s.yanlis}</td>
-          <td class="tc rp-bos">${s.bos}</td>
-          <td class="tc"><b>${_rpFmtNet(net)}</b></td>
-          <td class="tc">${_rpBadge(basari)}</td>
-        </tr>`;
-      }).join('') || `<tr><td colspan="9" class="rapor-empty-row">Kayıt yok.</td></tr>`}
-    </tbody></table>`;
+// Geniş tablo yerine dikey kartlar — modal genişliği ne olursa olsun
+// yatay scroll gerekmeden tüm veri (fasikül/tarih, konu, soru/doğru/
+// yanlış/boş/net/başarı) okunabilsin diye iki satıra bölünmüş kart.
+function _rpRowsCards(rows, tarihSutunu){
+  if(!rows.length) return '<div class="rapor-empty-row">Kayıt yok.</div>';
+  return `<div class="rapor-satir-list">${rows.map(s=>{
+    const net = _rpNet(s.dogru, s.yanlis), basari = _rpBasari(s.dogru, s.yanlis);
+    const ustEtiket = tarihSutunu
+      ? `<span class="rapor-tag rapor-tag-tarih">${_rpEsc(new Date(s.tarih+'T00:00:00').toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'numeric'}))}</span>`
+      : `<span class="rapor-tag">${_rpEsc(s.fasikulAd)}</span>`;
+    return `<div class="rapor-satir-card">
+      <div class="rapor-satir-top">
+        ${ustEtiket}
+        <span class="rapor-satir-konu">${_rpEsc(s.konu)} <span class="ok">›</span> ${_rpEsc(s.altKonu)}</span>
+      </div>
+      <div class="rapor-satir-stats">
+        ${s.soru} soru · <b class="rp-dogru">${s.dogru} D</b> / <b class="rp-yanlis">${s.yanlis} Y</b> · <span class="rp-bos">${s.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
 }
 
-// Yıl/Ay/Hafta başlıkları tek satırlık özet gösterir (kompakt); Gün ve
-// Fasikül seviyeleri asıl detay katmanı olduğundan tam kutu-grid kalır.
+// Yıl/Ay/Hafta/Gün başlıkları tek satırlık kompakt özet gösterir; yalnızca
+// Fasikül Bazlı Özet görünümündeki fasikül kartları tam kutu-grid kullanır.
 function _rpCompactStatsLine(t){
   const net = _rpNet(t.dogru, t.yanlis);
   return `${t.soru} soru · <b class="rp-dogru">${t.dogru} D</b> / <b class="rp-yanlis">${t.yanlis} Y</b> · <span class="rp-bos">${t.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b>`;
 }
 
-function _rpAcc(level, headerHtml, bodyHtml, toplam, open){
-  const compact = level === 'year' || level === 'month' || level === 'week';
+function _rpAcc(level, headerHtml, bodyHtml, toplam, open, statsPrefix){
+  const compact = level !== 'fasikul';
+  const stats = statsPrefix ? `${statsPrefix} · ${_rpCompactStatsLine(toplam)}` : _rpCompactStatsLine(toplam);
   return `<div class="rapor-acc rapor-lvl-${level}${open ? '' : ' rapor-collapsed'}">
     <div class="rapor-acc-header rapor-h-${level}" onclick="raporToggleAcc(this)">
       <div class="rapor-acc-title-row">
         ${headerHtml}
         <span class="rapor-toggle-icon">▾</span>
       </div>
-      ${compact ? `<div class="rapor-acc-stats-line">${_rpCompactStatsLine(toplam)}</div>` : ''}
+      ${compact ? `<div class="rapor-acc-stats-line">${stats}</div>` : ''}
     </div>
     ${compact ? '' : _rpSummaryGrid(toplam)}
     <div class="rapor-content-body">${bodyHtml}</div>
   </div>`;
 }
 
-function renderRaporHiyerarsi(agac){
+// Zaman Hiyerarşisi artık iç içe/girintili akordeon değil, tek seferde tek
+// seviye gösteren bir sürükle-tıkla (drill-down) liste: Yıl seçilince sadece
+// o yılın ayları, ay seçilince sadece o ayın haftaları, hafta seçilince
+// sadece o haftanın günleri ekranda kalır; "← Geri" ile bir üst seviyeye
+// dönülür. Navigasyon durumu _rpState.nav'da tutulur.
+function _rpNavItem(level, icon, label, toplam, onclick){
+  return `<div class="rapor-nav-item rapor-h-${level}" onclick="${onclick}">
+    <div class="rapor-acc-title-row"><span>${icon} ${_rpEsc(label)}</span><span class="rapor-nav-chevron">›</span></div>
+    <div class="rapor-acc-stats-line">${_rpCompactStatsLine(toplam)}</div>
+  </div>`;
+}
+
+function renderRaporNav(agac){
   if(!agac.length) return '<div class="rapor-empty">Henüz kayıtlı çalışma yok.</div>';
-  return agac.map((yil,yi)=>_rpAcc('year', `<span>📅 ${_rpEsc(yil.label)}</span>`,
-    yil.aylar.map((ay,ai)=>_rpAcc('month', `<span>🗓️ ${_rpEsc(ay.label)}</span>`,
-      ay.haftalar.map((hafta,hi)=>_rpAcc('week', `<span>📊 ${_rpEsc(hafta.label)}</span>`,
-        hafta.gunler.map((gun,gi)=>_rpAcc('day', `<span>📌 ${_rpEsc(_rpDayLabel(gun.gunKey))} — ${gun.satirlar.length} konu/test</span>`,
-          _rpRowsTable(gun.satirlar, false), gun.toplam, gi===0 && hi===0 && ai===0 && yi===0
-        )).join(''), hafta.toplam, hi===0 && ai===0 && yi===0
-      )).join(''), ay.toplam, ai===0 && yi===0
-    )).join(''), yil.toplam, yi===0
-  )).join('');
+  const nav = _rpState.nav;
+  const yil = nav.yil ? agac.find(y=>y.key===nav.yil) : null;
+  const ay = yil && nav.ay ? yil.aylar.find(a=>a.key===nav.ay) : null;
+  const hafta = ay && nav.hafta ? ay.haftalar.find(h=>h.key===nav.hafta) : null;
+
+  // Demo aç/kapa gibi veri değişimlerinde eski yol artık yoksa en başa dön.
+  let level = nav.level;
+  if(level !== 'year' && !yil) level = 'year';
+  else if(level === 'week' && !ay) level = 'month';
+  else if(level === 'day' && !hafta) level = 'week';
+
+  const crumbs = [yil, ay, hafta].filter(Boolean).map(n=>n.label);
+  const backBtn = level !== 'year' ? `<button class="rapor-nav-back" onclick="raporNavBack()">← Geri</button>` : '';
+  const crumbEl = crumbs.length ? `<span class="rapor-nav-path">${crumbs.map(_rpEsc).join(' › ')}</span>` : '';
+  const crumbBar = (backBtn || crumbEl) ? `<div class="rapor-nav-crumbs">${backBtn}${crumbEl}</div>` : '';
+
+  let listHtml;
+  if(level === 'year'){
+    listHtml = agac.map(y=>_rpNavItem('year','📅',y.label,y.toplam,`raporNavGoto('month','${y.key}')`)).join('');
+  } else if(level === 'month'){
+    listHtml = yil.aylar.map(a=>_rpNavItem('month','🗓️',a.label,a.toplam,`raporNavGoto('week','${yil.key}','${a.key}')`)).join('');
+  } else if(level === 'week'){
+    listHtml = ay.haftalar.map(h=>_rpNavItem('week','📊',h.label,h.toplam,`raporNavGoto('day','${yil.key}','${ay.key}','${h.key}')`)).join('');
+  } else {
+    listHtml = hafta.gunler.map(g=>`<div class="rapor-nav-day rapor-h-day">
+      <div class="rapor-acc-title-row"><span>📌 ${_rpEsc(_rpDayLabel(g.gunKey))}</span></div>
+      <div class="rapor-acc-stats-line">${g.satirlar.length} konu/test · ${_rpCompactStatsLine(g.toplam)}</div>
+      ${_rpRowsCards(g.satirlar, false)}
+    </div>`).join('');
+  }
+
+  return `<div class="rapor-nav">${crumbBar}<div class="rapor-nav-list">${listHtml}</div></div>`;
+}
+
+function raporNavGoto(level, yilKey, ayKey, haftaKey){
+  _rpState.nav = { level, yil: yilKey || null, ay: ayKey || null, hafta: haftaKey || null };
+  _rpRenderBox();
+}
+
+function raporNavBack(){
+  const nav = _rpState.nav;
+  if(nav.level === 'day') _rpState.nav = { level:'week', yil:nav.yil, ay:nav.ay, hafta:null };
+  else if(nav.level === 'week') _rpState.nav = { level:'month', yil:nav.yil, ay:null, hafta:null };
+  else if(nav.level === 'month') _rpState.nav = { level:'year', yil:null, ay:null, hafta:null };
+  _rpRenderBox();
 }
 
 function renderRaporFasikulOzet(fasikuller){
   if(!fasikuller.length) return '<div class="rapor-empty">Henüz kayıtlı çalışma yok.</div>';
   return fasikuller.map((f,i)=>_rpAcc('fasikul', `<span>📘 ${_rpEsc(f.fasikulAd)}</span>`,
-    _rpRowsTable(f.satirlar, true), f.toplam, i===0
+    _rpRowsCards(f.satirlar, true), f.toplam, i===0
   )).join('');
 }
 
@@ -272,7 +328,7 @@ function _rpGenerateDemoData(){
   return records;
 }
 
-const _rpState = { real: [], meta: {}, demoOn: false, view: 'hiyerarsi' };
+const _rpState = { real: [], meta: {}, demoOn: false, view: 'hiyerarsi', nav: { level:'year', yil:null, ay:null, hafta:null } };
 
 function _rpActiveRecords(){
   return _rpState.demoOn ? _rpGenerateDemoData() : _rpState.real;
@@ -306,7 +362,7 @@ function _rpRenderBox(){
       <button class="rapor-tab-btn${v==='fasikul'?' active':''}" data-view="fasikul" onclick="raporSwitchView('fasikul')">📘 Fasikül Bazlı Özet</button>
     </div>
     <div class="rapor-body">
-      <div class="rapor-view${v==='hiyerarsi'?' active':''}" data-view="hiyerarsi">${renderRaporHiyerarsi(agac)}</div>
+      <div class="rapor-view${v==='hiyerarsi'?' active':''}" data-view="hiyerarsi">${renderRaporNav(agac)}</div>
       <div class="rapor-view${v==='fasikul'?' active':''}" data-view="fasikul">${renderRaporFasikulOzet(fasOzet)}</div>
     </div>`;
 }
@@ -318,12 +374,14 @@ function openCalismaRaporu(records, meta={}){
   _rpState.meta = meta || {};
   _rpState.demoOn = false;
   _rpState.view = 'hiyerarsi';
+  _rpState.nav = { level:'year', yil:null, ay:null, hafta:null };
   modal.classList.add('open');
   _rpRenderBox();
 }
 
 function raporToggleDemo(){
   _rpState.demoOn = !_rpState.demoOn;
+  _rpState.nav = { level:'year', yil:null, ay:null, hafta:null };
   _rpRenderBox();
 }
 
@@ -341,3 +399,5 @@ window.openCalismaRaporu = openCalismaRaporu;
 window.raporToggleDemo = raporToggleDemo;
 window.raporSwitchView = raporSwitchView;
 window.raporToggleAcc = raporToggleAcc;
+window.raporNavGoto = raporNavGoto;
+window.raporNavBack = raporNavBack;
