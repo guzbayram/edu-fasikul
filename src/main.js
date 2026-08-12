@@ -1204,15 +1204,20 @@ function updateDashboard(){
 }
 
 // Üst çubuktaki 📊 Rapor butonu: öğrenci kendi geçmişini, admin/öğretmen ise
-// "Öğrenci Takibi" panelinden en son seçtiği öğrencinin geçmişini açar
-// (window._lastManagedStudentUid/_lastManagedStudentRecords auth.js'de tutulur).
-function openMyCalismaRaporu(){
+// en son seçtiği (ya da hiç seçilmediyse otomatik ilk) öğrencinin geçmişini
+// AÇAR — "Öğrenci Takibi" panelini ziyaret etmeye gerek kalmadan: panel hiç
+// açılmadıysa listeyi #adminUserList'e (görünmez, panel-admin arka planda
+// hazır) sessizce yükleyip window._lastManagedStudentUid'i dolduran
+// loadKullaniciList()'i burada tetikleriz (bkz. firebase/auth.js).
+async function openMyCalismaRaporu(){
   const role = appState.user?.role;
   if(role === 'admin' || role === 'ogretmen'){
+    if(!window._lastManagedStudentUid){
+      try{ await window.loadKullaniciList?.(); }catch(e){ console.warn('Öğrenci listesi yüklenemedi:', e); }
+    }
     const uid = window._lastManagedStudentUid;
     if(!uid){
-      showToast('Önce "Öğrenci Takibi" bölümünden bir öğrenci seçin.','info');
-      showPanel('admin', document.getElementById('navAdminBtn'));
+      showToast('Görüntülenecek öğrenci bulunamadı.','info');
       return;
     }
     const student = (window._managedStudents||[]).find(s=>s.id===uid);

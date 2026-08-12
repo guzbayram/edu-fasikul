@@ -1646,11 +1646,13 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-satir-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px}
 .rapor-satir-card.tiklanabilir{cursor:pointer}
 .rapor-satir-card.tiklanabilir:hover{border-color:var(--mat);background:var(--mat-dim)}
-.rapor-satir-top{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-bottom:3px}
-.rapor-satir-konu{flex:1;font-size:12.5px;font-weight:700;color:var(--text-0);word-break:break-word}
+.rapor-satir-top{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px}
+/* Konu/test adı HER ZAMAN tek satır — uzunsa ortadan kesik (...) gösterilir,
+   tam metin title tooltip'inde durur; kart zaten tıklanınca testi açıyor. */
+.rapor-satir-konu{display:block;width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:700;color:var(--text-0);margin-bottom:4px}
 .rapor-satir-konu .ok{color:var(--text-muted);font-weight:400;margin:0 1px}
 .rapor-satir-ac{flex:none;font-size:13px;opacity:.7}
-.rapor-satir-stats{display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;font-size:11px;color:var(--text-muted);font-weight:600;line-height:1.5}
+.rapor-satir-stats{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:3px 4px;font-size:11px;color:var(--text-muted);font-weight:600;line-height:1.5;text-align:center}
 .rapor-satir-stats b{font-weight:800}
 .rapor-tag{display:inline-block;flex:none;padding:3px 9px;border-radius:6px;background:var(--mat-dim);color:var(--mat);font-weight:700;font-size:11px;white-space:nowrap}
 .rapor-tag-tarih{background:var(--bg-3);color:var(--text-1)}

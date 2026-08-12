@@ -206,12 +206,13 @@ function _rpRowsCards(rows, tarihSutunu){
       : '';
     const toplamSoru = _rpTotalSoru(s.fasikulId, s.altKonu);
     const soruEtiket = toplamSoru ? `${toplamSoru} T / ${s.soru} Ç` : `${s.soru} soru`;
+    const konuTam = `${s.konu} › ${s.altKonu}`;
     return `<div class="rapor-satir-card${acilabilir ? ' tiklanabilir' : ''}"${onclick}>
       <div class="rapor-satir-top">
         ${ustEtiket}
-        <span class="rapor-satir-konu">${_rpEsc(s.konu)} <span class="ok">›</span> ${_rpEsc(s.altKonu)}</span>
         ${acilabilir ? '<span class="rapor-satir-ac" title="Fasikülde bu testi aç">📄</span>' : ''}
       </div>
+      <div class="rapor-satir-konu" title="${_rpEsc(konuTam)}">${_rpEsc(s.konu)} <span class="ok">›</span> ${_rpEsc(s.altKonu)}</div>
       <div class="rapor-satir-stats">
         ${soruEtiket} · <b class="rp-dogru">${s.dogru} D</b> / <b class="rp-yanlis">${s.yanlis} Y</b> · <span class="rp-bos">${s.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}
       </div>
