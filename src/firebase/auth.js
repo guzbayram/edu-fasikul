@@ -1087,7 +1087,7 @@ export async function selectManagedStudent(uid){
           return `<div><b>${esc(name)}</b><span>${k.total} çözüm · %${acc}</span></div>`;
         }).join('') || '<div style="color:var(--text-muted)">Henüz çözüm kaydı yok.</div>'}
       </div>
-      <button class="managed-rapor-btn" onclick="openCalismaRaporu(window._lastManagedStudentRecords||[], {name:'${escName}'})">📊 Detaylı Çalışma Raporunu Aç</button>
+      <button class="managed-rapor-btn" onclick="openCalismaRaporu(window._lastManagedStudentRecords||[], {name:'${escName}', studentUid:'${esc(uid)}'})">📊 Detaylı Çalışma Raporunu Aç</button>
       <details class="managed-fold assignment-fold">
         <summary><span>🗓️ Görev Ata</span><b>Formu aç</b></summary>
         <div class="assignment-form">
@@ -1194,6 +1194,9 @@ export function closeStudentFasikulReview(){
   if(banner) banner.style.display = 'none';
   window.closeReader?.();
   window.startRealtimeSync?.(appState.user?.uid);
+  // İnceleme "📊 Çalışma ve Performans Raporu" içindeki bir kartla açıldıysa
+  // (bkz. raporOpenSatir), kaldığı yere geri döner; başka yerden açıldıysa no-op.
+  window.raporReopenAfterReview?.();
 }
 
 // Aktif alt konu içinde yalnız yanlış cevaplanmış sorular arasında gezin (review modu).

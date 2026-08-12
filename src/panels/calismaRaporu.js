@@ -6,9 +6,18 @@
 // Kaynak veri appState.sorularState (kendi) veya Firestore
 // kullanicilar/{uid}/cozumler (yönetilen öğrenci) — alan adları farklı
 // olduğundan (correct/skipped vs dogru/atladi) ikisini de kabul eder.
+import { appState } from '../state/appState.js';
 
 function _rpEsc(t){
   return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+// onclick="fn('...')" içine gömülen değerler için: önce HTML-özel
+// karakterler (attribute güvenliği), sonra \ ve ' JS string-escape edilir
+// (HTML-entity DEĞİL — aksi halde tarayıcı decode edince JS string'i kırar).
+function _rpJsStr(t){
+  return String(t ?? '')
+    .replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 }
 function _rpDogruMu(r){ return r.correct === true || r.dogru === true; }
 function _rpBosMu(r){ return !!(r.skipped || r.atladi); }
@@ -66,6 +75,7 @@ function _rpBuildGunler(records){
     const satirKey = `${r.fasikulId || r.fasikulAd || ''}|${r.konu || ''}|${r.altKonu || ''}`;
     if(!gun.satirlar.has(satirKey)) gun.satirlar.set(satirKey, {
       fasikulAd: r.fasikulAd || r.fasikulId || 'Fasikül',
+      fasikulId: r.fasikulId || '', dersId: r.dersId || '',
       konu: r.konu || '—', altKonu: r.altKonu || '—',
       soru:0, dogru:0, yanlis:0, bos:0, ilkTs: tarih.getTime()
     });
@@ -129,12 +139,14 @@ function buildRaporFasikulOzet(records){
     const fasKey = r.fasikulId || r.fasikulAd || 'fasikul';
     if(!fasikuller.has(fasKey)) fasikuller.set(fasKey, {
       fasikulAd: r.fasikulAd || r.fasikulId || 'Fasikül',
+      fasikulId: r.fasikulId || '', dersId: r.dersId || '',
       satirlar: new Map(), toplam:{soru:0,dogru:0,yanlis:0,bos:0}, sonTs:0
     });
     const fas = fasikuller.get(fasKey);
     const satirKey = `${gunKey}|${r.konu||''}|${r.altKonu||''}`;
     if(!fas.satirlar.has(satirKey)) fas.satirlar.set(satirKey, {
       tarih: gunKey, ts: tarih.getTime(), konu: r.konu || '—', altKonu: r.altKonu || '—',
+      fasikulId: r.fasikulId || '', dersId: r.dersId || '',
       soru:0, dogru:0, yanlis:0, bos:0
     });
     const s = fas.satirlar.get(satirKey);
@@ -159,9 +171,28 @@ function _rpSummaryGrid(t){
   </div>`;
 }
 
+// Bir testin (altKonu) MANIFEST'teki gerçek toplam soru sayısı — kayıt
+// sayısı (öğrencinin o güne kadar çözdüğü) ile karıştırılmasın diye
+// "N T / M Ç" (Toplam/Çözülen) biçiminde göstermek için. Bulunamazsa null.
+function _rpTotalSoru(fasikulId, altKonuAd){
+  if(!fasikulId || !altKonuAd) return null;
+  for(const ders of (window.MANIFEST?.dersler || [])){
+    const fas = ders.fasikuller?.find(f => f.id === fasikulId);
+    if(!fas) continue;
+    for(const konu of (fas.konular || [])){
+      const alt = (konu.altKonular || []).find(a => a.ad === altKonuAd);
+      if(alt) return Array.isArray(alt.sorular) ? alt.sorular.length : null;
+    }
+    return null;
+  }
+  return null;
+}
+
 // Geniş tablo yerine dikey kartlar — modal genişliği ne olursa olsun
 // yatay scroll gerekmeden tüm veri (fasikül/tarih, konu, soru/doğru/
 // yanlış/boş/net/başarı) okunabilsin diye iki satıra bölünmüş kart.
+// Fasikül id'si bilinen satırlar tıklanabilir: ilgili fasikülü o testin
+// başladığı sayfada açar (öğretmen için — çözümü/çizimi PDF üzerinde görsün).
 function _rpRowsCards(rows, tarihSutunu){
   if(!rows.length) return '<div class="rapor-empty-row">Kayıt yok.</div>';
   return `<div class="rapor-satir-list">${rows.map(s=>{
@@ -169,13 +200,20 @@ function _rpRowsCards(rows, tarihSutunu){
     const ustEtiket = tarihSutunu
       ? `<span class="rapor-tag rapor-tag-tarih">${_rpEsc(new Date(s.tarih+'T00:00:00').toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'numeric'}))}</span>`
       : `<span class="rapor-tag">${_rpEsc(s.fasikulAd)}</span>`;
-    return `<div class="rapor-satir-card">
+    const acilabilir = !!s.fasikulId;
+    const onclick = acilabilir
+      ? ` onclick="raporOpenSatir('${_rpJsStr(s.dersId)}','${_rpJsStr(s.fasikulId)}','${_rpJsStr(s.konu)}','${_rpJsStr(s.altKonu)}')"`
+      : '';
+    const toplamSoru = _rpTotalSoru(s.fasikulId, s.altKonu);
+    const soruEtiket = toplamSoru ? `${toplamSoru} T / ${s.soru} Ç` : `${s.soru} soru`;
+    return `<div class="rapor-satir-card${acilabilir ? ' tiklanabilir' : ''}"${onclick}>
       <div class="rapor-satir-top">
         ${ustEtiket}
         <span class="rapor-satir-konu">${_rpEsc(s.konu)} <span class="ok">›</span> ${_rpEsc(s.altKonu)}</span>
+        ${acilabilir ? '<span class="rapor-satir-ac" title="Fasikülde bu testi aç">📄</span>' : ''}
       </div>
       <div class="rapor-satir-stats">
-        ${s.soru} soru · <b class="rp-dogru">${s.dogru} D</b> / <b class="rp-yanlis">${s.yanlis} Y</b> · <span class="rp-bos">${s.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}
+        ${soruEtiket} · <b class="rp-dogru">${s.dogru} D</b> / <b class="rp-yanlis">${s.yanlis} Y</b> · <span class="rp-bos">${s.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}
       </div>
     </div>`;
   }).join('')}</div>`;
@@ -263,6 +301,35 @@ function raporNavBack(){
   else if(nav.level === 'week') _rpState.nav = { level:'month', yil:nav.yil, ay:null, hafta:null };
   else if(nav.level === 'month') _rpState.nav = { level:'year', yil:null, ay:null, hafta:null };
   _rpRenderBox();
+}
+
+// Bir konu/test kartına tıklanınca: fasikülü aç (yönetilen öğrenci raporuysa
+// öğretmenin salt-okunur inceleme modunda, kendi raporuysa normal okuyucuda)
+// ve o testin başladığı sayfaya git — öğretmen çözümü/çizimi PDF'te görsün.
+async function raporOpenSatir(dersId, fasikulId, konuAd, altKonuAd){
+  if(!fasikulId){ window.showToast?.('Bu satır için fasikül bilgisi yok.', 'error'); return; }
+  window.closeModal?.('calismaRaporModal');
+  const studentUid = _rpState.meta.studentUid;
+  try{
+    if(studentUid){
+      // İnceleme "✕ İncelemeyi Kapat" ile bitince aynı rapor durumuna
+      // (aynı yıl/ay/hafta/gün konumuna) geri dönebilelim diye anlık durumu sakla.
+      window._raporReturnAfterReview = { records: _rpState.real, meta: _rpState.meta, nav: {..._rpState.nav} };
+      await window.openStudentFasikulReview?.(studentUid, _rpState.meta.name || 'Öğrenci', dersId, fasikulId);
+    } else {
+      await window.openReader?.(dersId, fasikulId);
+    }
+  }catch(e){
+    console.warn('Rapor: fasikül açılamadı:', e);
+    window.showToast?.('Fasikül açılamadı.', 'error');
+    return;
+  }
+  const fas = appState.aktifFasikul;
+  if(!fas){ return; } // açılış reddedildi (yetki/hata) — openReader zaten kendi toast'ını gösterdi
+  const allAlts = (fas.konular || []).flatMap(k => k.altKonular || []);
+  const hedef = allAlts.find(ak => ak.ad === altKonuAd);
+  if(hedef) window.selectAltKonu?.(hedef, `altk-${hedef.id}`);
+  else window.showToast?.('Bu testin sayfası bulunamadı, fasikül başından açıldı.', 'info');
 }
 
 function renderRaporFasikulOzet(fasikuller){
@@ -395,9 +462,28 @@ function raporToggleAcc(headerEl){
   headerEl.parentElement.classList.toggle('rapor-collapsed');
 }
 
+// closeStudentFasikulReview() ("✕ İncelemeyi Kapat") her çalıştığında çağrılır;
+// inceleme rapordan açılmadıysa (bayrak yoksa) sessizce hiçbir şey yapmaz.
+function raporReopenAfterReview(){
+  const saved = window._raporReturnAfterReview;
+  if(!saved) return;
+  window._raporReturnAfterReview = null;
+  const modal = document.getElementById('calismaRaporModal');
+  if(!modal) return;
+  _rpState.real = saved.records;
+  _rpState.meta = saved.meta;
+  _rpState.demoOn = false;
+  _rpState.view = 'hiyerarsi';
+  _rpState.nav = saved.nav;
+  modal.classList.add('open');
+  _rpRenderBox();
+}
+
 window.openCalismaRaporu = openCalismaRaporu;
 window.raporToggleDemo = raporToggleDemo;
 window.raporSwitchView = raporSwitchView;
 window.raporToggleAcc = raporToggleAcc;
 window.raporNavGoto = raporNavGoto;
 window.raporNavBack = raporNavBack;
+window.raporOpenSatir = raporOpenSatir;
+window.raporReopenAfterReview = raporReopenAfterReview;

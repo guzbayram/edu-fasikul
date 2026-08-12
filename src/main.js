@@ -1216,7 +1216,7 @@ function openMyCalismaRaporu(){
       return;
     }
     const student = (window._managedStudents||[]).find(s=>s.id===uid);
-    openCalismaRaporu(window._lastManagedStudentRecords||[], {name: student?.name || student?.email || 'Öğrenci'});
+    openCalismaRaporu(window._lastManagedStudentRecords||[], {name: student?.name || student?.email || 'Öğrenci', studentUid: uid});
     return;
   }
   const stats = getDashboardStats();

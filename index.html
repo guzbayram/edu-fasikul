@@ -475,20 +475,25 @@
 <!-- READER OVERLAY -->
 <div id="reader-overlay">
 
-  <!-- İnceleme Modu banner'ı (öğretmen/admin bir öğrencinin geçmiş çözümlerini incelerken) -->
-  <div id="reviewBanner" class="review-banner" style="display:none">
-    <span class="rb-icon">🔒</span>
-    <div class="rb-text">
-      <b id="reviewBannerName">Öğrenci</b>
-      <span>Salt okunur inceleme — canlı değil</span>
-    </div>
-    <button class="rb-btn" onclick="reviewJumpToWrong(-1)" title="Önceki yanlış soru">◀ Yanlış</button>
-    <button class="rb-btn" onclick="reviewJumpToWrong(1)" title="Sonraki yanlış soru">Yanlış ▶</button>
-    <button class="rb-btn rb-close" onclick="closeStudentFasikulReview()">✕ İncelemeyi Kapat</button>
-  </div>
-
   <!-- Center -->
   <div class="reader-center" id="readerCenter">
+    <!-- İnceleme Modu banner'ı (öğretmen/admin bir öğrencinin geçmiş çözümlerini
+         incelerken) — KASITLI OLARAK reader-center'ın İÇİNDE, normal akışta ilk
+         çocuk: solve modunda sol kenardaki sabit araç paleti (#solvePalette)
+         reader-center'ın DIŞINDaki bir kardeş, bu yüzden banner reader-center'ın
+         genişliğiyle (= palet hariç PDF alanı) otomatik sınırlı kalır, konu
+         listesi/araçların üzerine taşmaz. position:fixed DEĞİL — normal flex
+         akışıyla toolbar'ı aşağı iter, sabit margin-top hack'ine gerek kalmaz. -->
+    <div id="reviewBanner" class="review-banner" style="display:none">
+      <span class="rb-icon">🔒</span>
+      <div class="rb-text">
+        <b id="reviewBannerName">Öğrenci</b>
+        <span>Salt okunur inceleme — canlı değil</span>
+      </div>
+      <button class="rb-btn" onclick="reviewJumpToWrong(-1)" title="Önceki yanlış soru">◀ Yanlış</button>
+      <button class="rb-btn" onclick="reviewJumpToWrong(1)" title="Sonraki yanlış soru">Yanlış ▶</button>
+      <button class="rb-btn rb-close" onclick="closeStudentFasikulReview()">✕ İncelemeyi Kapat</button>
+    </div>
     <!-- Top Toolbar -->
     <div class="reader-toolbar" id="readerToolbar">
       <!-- Nav group -->

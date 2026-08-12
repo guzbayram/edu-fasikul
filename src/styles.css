@@ -1537,8 +1537,15 @@ body.reader-locked .main-content{visibility:hidden!important}
 .fasikul-review-row .frr-main span{font-size:11px;color:var(--text-muted)}
 .fasikul-review-row .frr-stats{flex:none;font-size:11px;font-weight:700;color:var(--text-1);white-space:nowrap}
 
-/* İnceleme Modu (öğretmen/admin bir öğrencinin geçmiş çözümünü PDF üzerinde inceliyor) */
-.review-banner{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--yellow-dim);border-bottom:2px solid var(--yellow);color:var(--text-0);font-size:13px}
+/* İnceleme Modu (öğretmen/admin bir öğrencinin geçmiş çözümünü PDF üzerinde
+   inceliyor). KASITLI OLARAK position:fixed DEĞİL — artık .reader-center'ın
+   (id=readerCenter) normal akışta İLK ÇOCUĞU (bkz. index.html): solve modunda
+   sol kenardaki sabit araç paleti (#solvePalette) reader-center'ın DIŞINDA bir
+   kardeş olduğundan, banner reader-center'ın genişliğiyle (palet hariç PDF
+   alanı) otomatik sınırlı kalır — palet genişliğini ayrıca hesaplamaya/
+   senkronize tutmaya gerek yok. Normal akış olduğu için toolbar'ı da kendiliğinden
+   aşağı iter, sabit piksel margin-top hack'i gerekmez. */
+.review-banner{flex:none;display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--yellow-dim);border-bottom:2px solid var(--yellow);color:var(--text-0);font-size:13px}
 .review-banner .rb-icon{font-size:16px}
 .review-banner .rb-text{display:flex;flex-direction:column;line-height:1.25;min-width:0;flex:1}
 .review-banner .rb-text b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1546,7 +1553,6 @@ body.reader-locked .main-content{visibility:hidden!important}
 .review-banner .rb-btn{flex:none;padding:6px 12px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--bg-2);color:var(--text-0);font-size:12px;font-weight:700;cursor:pointer}
 .review-banner .rb-btn:hover{background:var(--bg-3)}
 .review-banner .rb-btn.rb-close{border-color:var(--red);color:var(--red)}
-#reader-overlay.review-mode .reader-center{margin-top:38px}
 #reader-overlay.review-mode .tsk-cevap-btn,
 #reader-overlay.review-mode .reader-tool-palette .tool-btn,
 #reader-overlay.review-mode .reader-color-palette,
@@ -1638,10 +1644,13 @@ body.reader-locked .main-content{visibility:hidden!important}
    gerektirmeyen iki satırlık (etiket+konu / istatistik) dikey kart. */
 .rapor-satir-list{display:flex;flex-direction:column;gap:6px}
 .rapor-satir-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px}
-.rapor-satir-top{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 8px;margin-bottom:3px}
-.rapor-satir-konu{font-size:12.5px;font-weight:700;color:var(--text-0);word-break:break-word}
+.rapor-satir-card.tiklanabilir{cursor:pointer}
+.rapor-satir-card.tiklanabilir:hover{border-color:var(--mat);background:var(--mat-dim)}
+.rapor-satir-top{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-bottom:3px}
+.rapor-satir-konu{flex:1;font-size:12.5px;font-weight:700;color:var(--text-0);word-break:break-word}
 .rapor-satir-konu .ok{color:var(--text-muted);font-weight:400;margin:0 1px}
-.rapor-satir-stats{font-size:11px;color:var(--text-muted);font-weight:600;line-height:1.5}
+.rapor-satir-ac{flex:none;font-size:13px;opacity:.7}
+.rapor-satir-stats{display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;font-size:11px;color:var(--text-muted);font-weight:600;line-height:1.5}
 .rapor-satir-stats b{font-weight:800}
 .rapor-tag{display:inline-block;flex:none;padding:3px 9px;border-radius:6px;background:var(--mat-dim);color:var(--mat);font-weight:700;font-size:11px;white-space:nowrap}
 .rapor-tag-tarih{background:var(--bg-3);color:var(--text-1)}
