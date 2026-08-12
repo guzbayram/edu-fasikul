@@ -59,6 +59,14 @@ function _rpWeekRangeLabel(monday, sunday){
   return `${_rpShortDate(monday)} - ${_rpShortDate(sunday)} ${yil}`;
 }
 
+// tarih alanı new Date().toISOString() ile (UTC an) kaydediliyor. toISOString()
+// ile geri dilimlemek UTC takvim gününü verir — TR (UTC+3) yerel saatle 00:00-02:59
+// arası kaydedilen çözümler yanlışlıkla BİR ÖNCEKİ güne düşer. Rapor kullanıcının
+// yerel takvim gününü göstermeli, bu yüzden getFullYear/Month/Date (yerel) kullan.
+function _rpLocalDayKey(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 // records → gün bazlı gruplar (her günde fasikül+anaKonu+altKonu/test satırları)
 function _rpBuildGunler(records){
   const gunler = {};
@@ -66,7 +74,7 @@ function _rpBuildGunler(records){
     if(!r || !r.tarih) return;
     const tarih = new Date(r.tarih);
     if(Number.isNaN(tarih.getTime())) return;
-    const gunKey = tarih.toISOString().slice(0,10);
+    const gunKey = _rpLocalDayKey(tarih);
     if(!gunler[gunKey]) gunler[gunKey] = {
       gunKey, ts: new Date(gunKey+'T00:00:00').getTime(),
       satirlar: new Map(), toplam: {soru:0, dogru:0, yanlis:0, bos:0}
@@ -135,7 +143,7 @@ function buildRaporFasikulOzet(records){
     if(!r || !r.tarih) return;
     const tarih = new Date(r.tarih);
     if(Number.isNaN(tarih.getTime())) return;
-    const gunKey = tarih.toISOString().slice(0,10);
+    const gunKey = _rpLocalDayKey(tarih);
     const fasKey = r.fasikulId || r.fasikulAd || 'fasikul';
     if(!fasikuller.has(fasKey)) fasikuller.set(fasKey, {
       fasikulAd: r.fasikulAd || r.fasikulId || 'Fasikül',
