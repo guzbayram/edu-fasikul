@@ -1766,7 +1766,16 @@ async function ensureReaderPdfLoaded(targetPage=1){
       ? await loadPDFFile(pdfSource.file, targetPage)
       : await loadPDFUrl(pdfSource.url, targetPage);
   }catch(e){
-    showToast('PDF açılamadı. Dosyayı kontrol edin.','error');
+    console.error('PDF açma hatası:', e);
+    // Önbellekten okunan Blob bozuk/okunamaz çıktıysa (ör. Safari'nin depolama
+    // baskısı altında IndexedDB Blob arka-uç dosyasını sessizce tahliye etmesi)
+    // bozuk kaydı hemen sil — aksi halde bu fasikülün HER testi/günü aynı bozuk
+    // kayıtla tekrar tekrar, sessizce başarısız olur ve kullanıcı her seferinde
+    // "neden yine yüklemem gerekiyor" ile karşılaşır.
+    if(pdfSource.type === 'file' && appState.aktifDers){
+      deletePDFFromDB(appState.aktifDers.id, fas.id).catch(()=>{});
+    }
+    showToast('Bu cihazdaki PDF kaydı bozulmuş görünüyor, önbellekten temizlendi. Lütfen PDF\'i bir kez daha yükleyin.','error');
     return false;
   }
 }

@@ -39,7 +39,10 @@ async function handlePDFUpload(input){
   }
   await window.loadPDFFile?.(file);
   if(appState.aktifDers && appState.aktifFasikul){
-    savePDFToDB(appState.aktifDers.id, appState.aktifFasikul.id, file).catch(()=>{});
+    // Yazmayı bekle — kullanıcı yüklemenin hemen ardından incelemeyi kapatıp
+    // başka bir teste geçerse (rapor akışı), kayıt commit olmadan önbellek
+    // okuması boş dönebilir ve tekrar yükleme istenebilir.
+    await savePDFToDB(appState.aktifDers.id, appState.aktifFasikul.id, file).catch(()=>{});
     // Hash'i arka planda hesapla ve buluta kaydet
     calcPDFHash(file).then(hash => {
       if(hash && appState.aktifFasikul){
