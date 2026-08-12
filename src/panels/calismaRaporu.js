@@ -84,18 +84,22 @@ function _rpBuildGunler(records){
     if(!gun.satirlar.has(satirKey)) gun.satirlar.set(satirKey, {
       fasikulAd: r.fasikulAd || r.fasikulId || 'Fasikül',
       fasikulId: r.fasikulId || '', dersId: r.dersId || '',
-      konu: r.konu || '—', altKonu: r.altKonu || '—',
-      soru:0, dogru:0, yanlis:0, bos:0, ilkTs: tarih.getTime()
+      konu: r.konu || '—', altKonu: r.altKonu || '—', tarih: gunKey,
+      soru:0, dogru:0, yanlis:0, bos:0, ilkTs: tarih.getTime(), kayitlar: []
     });
     const s = gun.satirlar.get(satirKey);
     s.soru++; gun.toplam.soru++;
-    if(_rpBosMu(r)){ s.bos++; gun.toplam.bos++; }
-    else if(_rpDogruMu(r)){ s.dogru++; gun.toplam.dogru++; }
+    const dogruMu = _rpDogruMu(r), bosMu = _rpBosMu(r);
+    if(bosMu){ s.bos++; gun.toplam.bos++; }
+    else if(dogruMu){ s.dogru++; gun.toplam.dogru++; }
     else { s.yanlis++; gun.toplam.yanlis++; }
+    s.kayitlar.push({ts: tarih.getTime(), dogru: dogruMu, bos: bosMu});
     if(tarih.getTime() < s.ilkTs) s.ilkTs = tarih.getTime();
   });
   return Object.values(gunler).sort((a,b)=>b.ts-a.ts).map(g=>({
-    ...g, satirlar: [...g.satirlar.values()].sort((a,b)=>a.ilkTs-b.ilkTs)
+    ...g, satirlar: [...g.satirlar.values()]
+      .map(s=>({...s, kayitlar: s.kayitlar.slice().sort((a,b)=>a.ts-b.ts)}))
+      .sort((a,b)=>a.ilkTs-b.ilkTs)
   }));
 }
 
@@ -154,19 +158,48 @@ function buildRaporFasikulOzet(records){
     const satirKey = `${gunKey}|${r.konu||''}|${r.altKonu||''}`;
     if(!fas.satirlar.has(satirKey)) fas.satirlar.set(satirKey, {
       tarih: gunKey, ts: tarih.getTime(), konu: r.konu || '—', altKonu: r.altKonu || '—',
+      fasikulAd: r.fasikulAd || r.fasikulId || 'Fasikül',
       fasikulId: r.fasikulId || '', dersId: r.dersId || '',
-      soru:0, dogru:0, yanlis:0, bos:0
+      soru:0, dogru:0, yanlis:0, bos:0, kayitlar: []
     });
     const s = fas.satirlar.get(satirKey);
     s.soru++; fas.toplam.soru++;
-    if(_rpBosMu(r)){ s.bos++; fas.toplam.bos++; }
-    else if(_rpDogruMu(r)){ s.dogru++; fas.toplam.dogru++; }
+    const dogruMu = _rpDogruMu(r), bosMu = _rpBosMu(r);
+    if(bosMu){ s.bos++; fas.toplam.bos++; }
+    else if(dogruMu){ s.dogru++; fas.toplam.dogru++; }
     else { s.yanlis++; fas.toplam.yanlis++; }
+    s.kayitlar.push({ts: tarih.getTime(), dogru: dogruMu, bos: bosMu});
     if(tarih.getTime() > fas.sonTs) fas.sonTs = tarih.getTime();
   });
   return [...fasikuller.values()].sort((a,b)=>b.sonTs-a.sonTs).map(f=>({
-    ...f, satirlar: [...f.satirlar.values()].sort((a,b)=>b.ts-a.ts)
+    ...f, satirlar: [...f.satirlar.values()]
+      .map(s=>({...s, kayitlar: s.kayitlar.slice().sort((a,b)=>a.ts-b.ts)}))
+      .sort((a,b)=>b.ts-a.ts)
   }));
+}
+
+// Aynı test (fasikül+konu+altKonu), gösterilen günün DIŞINDA başka hangi
+// günlerde de çözülmüş — bir günün kartı testin sadece bir kısmını gösteriyor
+// olabilir (öğrenci aynı teste birden fazla günde devam etmiş olabilir).
+function _rpOtherGunlerForTest(fasikulId, konu, altKonu, excludeGunKey){
+  const gunler = new Map();
+  _rpActiveRecords().forEach(r=>{
+    if(!r || !r.tarih) return;
+    if((r.fasikulId || '') !== (fasikulId || '')) return;
+    if((r.konu || '') !== (konu || '')) return;
+    if((r.altKonu || '') !== (altKonu || '')) return;
+    const tarih = new Date(r.tarih);
+    if(Number.isNaN(tarih.getTime())) return;
+    const gunKey = _rpLocalDayKey(tarih);
+    if(gunKey === excludeGunKey) return;
+    if(!gunler.has(gunKey)) gunler.set(gunKey, {gunKey, soru:0, dogru:0, yanlis:0, bos:0});
+    const g = gunler.get(gunKey);
+    g.soru++;
+    if(_rpBosMu(r)) g.bos++;
+    else if(_rpDogruMu(r)) g.dogru++;
+    else g.yanlis++;
+  });
+  return [...gunler.values()].sort((a,b)=>b.gunKey.localeCompare(a.gunKey));
 }
 
 function _rpSummaryGrid(t){
@@ -215,14 +248,27 @@ function _rpRowsCards(rows, tarihSutunu){
     const toplamSoru = _rpTotalSoru(s.fasikulId, s.altKonu);
     const soruEtiket = toplamSoru ? `${toplamSoru} T / ${s.soru} Ç` : `${s.soru} soru`;
     const konuTam = `${s.konu} › ${s.altKonu}`;
+
+    const digerGunSayisi = s.fasikulId ? _rpOtherGunlerForTest(s.fasikulId, s.konu, s.altKonu, s.tarih).length : 0;
+    const cokGunluEtiket = digerGunSayisi
+      ? ` · <span class="rapor-satir-cokgun" title="Bu test, gösterilen günün dışında ${digerGunSayisi} farklı günde daha çözülmüş">📆 +${digerGunSayisi} gün</span>` : '';
+
+    const detayIdx = _rpDetailStore.push({
+      fasikulAd: s.fasikulAd, fasikulId: s.fasikulId, dersId: s.dersId,
+      konu: s.konu, altKonu: s.altKonu, tarih: s.tarih, kayitlar: s.kayitlar || []
+    }) - 1;
+
     return `<div class="rapor-satir-card${acilabilir ? ' tiklanabilir' : ''}"${onclick}>
       <div class="rapor-satir-top">
         ${ustEtiket}
-        ${acilabilir ? '<span class="rapor-satir-ac" title="Fasikülde bu testi aç">📄</span>' : ''}
+        <span class="rapor-satir-icons">
+          <span class="rapor-satir-saat" title="Bu testin cevaplanma saatlerini gör" onclick="event.stopPropagation();raporGosterZamanDamgalari(${detayIdx})">🕐</span>
+          ${acilabilir ? '<span class="rapor-satir-ac" title="Fasikülde bu testi aç">📄</span>' : ''}
+        </span>
       </div>
       <div class="rapor-satir-konu" title="${_rpEsc(konuTam)}">${_rpEsc(s.konu)} <span class="ok">›</span> ${_rpEsc(s.altKonu)}</div>
       <div class="rapor-satir-stats">
-        ${soruEtiket} · <b class="rp-dogru">${s.dogru} D</b> / <b class="rp-yanlis">${s.yanlis} Y</b> · <span class="rp-bos">${s.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}
+        ${soruEtiket} · <b class="rp-dogru">${s.dogru} D</b> / <b class="rp-yanlis">${s.yanlis} Y</b> · <span class="rp-bos">${s.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}${cokGunluEtiket}
       </div>
     </div>`;
   }).join('')}</div>`;
@@ -405,6 +451,10 @@ function _rpGenerateDemoData(){
 }
 
 const _rpState = { real: [], meta: {}, demoOn: false, view: 'hiyerarsi', nav: { level:'year', yil:null, ay:null, hafta:null } };
+// Her _rpRenderBox() çağrısında sıfırlanır; kart üzerindeki "🕐" butonları
+// buradaki dizinlerine (onclick="raporGosterZamanDamgalari(N)") referans verir —
+// tam satır verisini (kayıtlar dahi) onclick string'ine gömmek yerine burada tutulur.
+let _rpDetailStore = [];
 
 function _rpActiveRecords(){
   return _rpState.demoOn ? _rpGenerateDemoData() : _rpState.real;
@@ -413,6 +463,7 @@ function _rpActiveRecords(){
 function _rpRenderBox(){
   const box = document.getElementById('calismaRaporBox');
   if(!box) return;
+  _rpDetailStore = [];
   const list = _rpActiveRecords();
   if(!list.length && !_rpState.demoOn){
     window.showToast?.('Bu kişi için henüz çözüm kaydı yok.', 'info');
@@ -429,7 +480,7 @@ function _rpRenderBox(){
       </div>
       <div class="rapor-head-actions">
         <button class="rapor-demo-btn${_rpState.demoOn ? ' on' : ''}" onclick="raporToggleDemo()" title="Örnek/demo veri ile önizle">🧪 Demo${_rpState.demoOn ? ' Açık' : ''}</button>
-        <button class="rapor-close-btn" onclick="closeModal('calismaRaporModal')" title="Kapat">✕</button>
+        <button class="rapor-close-btn" onclick="closeModal('calismaRaporModal');closeModal('raporTestDetayModal')" title="Kapat">✕</button>
       </div>
     </div>
     ${_rpState.demoOn ? '<div class="rapor-demo-banner">🧪 Demo verileri gösteriliyor — bunlar gerçek çalışma kaydı değildir. Kapatınca gerçek veriler geri gelir.</div>' : ''}
@@ -471,6 +522,40 @@ function raporToggleAcc(headerEl){
   headerEl.parentElement.classList.toggle('rapor-collapsed');
 }
 
+// Bir test kartının "🕐" butonu: o testin gösterilen gündeki her sorusunun
+// cevaplanma saatini + (varsa) testin başka günlerde çözülmüş kısımlarını gösterir.
+function raporGosterZamanDamgalari(idx){
+  const row = _rpDetailStore[idx];
+  const modal = document.getElementById('raporTestDetayModal');
+  const box = document.getElementById('raporTestDetayBox');
+  if(!row || !modal || !box) return;
+
+  const digerGunler = row.fasikulId ? _rpOtherGunlerForTest(row.fasikulId, row.konu, row.altKonu, row.tarih) : [];
+  const digerHtml = digerGunler.length ? `<div class="rapor-digerler">
+      <div class="rapor-digerler-baslik">📆 Bu test başka günlerde de çözülmüş:</div>
+      ${digerGunler.map(g=>`<div class="rapor-digerler-satir">${_rpEsc(_rpDayLabel(g.gunKey))} — ${g.soru} soru (<b class="rp-dogru">${g.dogru} D</b> / <b class="rp-yanlis">${g.yanlis} Y</b>${g.bos ? ` / ${g.bos} boş` : ''})</div>`).join('')}
+    </div>` : '';
+
+  const kayitlar = row.kayitlar || [];
+  const kayitHtml = kayitlar.length ? kayitlar.map((k,i)=>{
+    const saat = new Date(k.ts).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const durum = k.bos ? '⬜ Boş' : (k.dogru ? '✅ Doğru' : '❌ Yanlış');
+    return `<div class="rapor-zaman-satir"><span class="rapor-zaman-no">${i+1}.</span><span class="rapor-zaman-saat">${saat}</span><span class="rapor-zaman-durum">${durum}</span></div>`;
+  }).join('') : '<div class="rapor-empty-row">Zaman kaydı yok.</div>';
+
+  box.innerHTML = `
+    <div class="rapor-head">
+      <div class="rapor-head-text">
+        <h3>🕐 ${_rpEsc(row.konu)} <span class="ok">›</span> ${_rpEsc(row.altKonu)}</h3>
+        <p class="rapor-sub">${_rpEsc(row.fasikulAd || '')} · ${_rpEsc(_rpDayLabel(row.tarih))}</p>
+      </div>
+      <button class="rapor-close-btn" onclick="closeModal('raporTestDetayModal')" title="Kapat">✕</button>
+    </div>
+    ${digerHtml}
+    <div class="rapor-zaman-list">${kayitHtml}</div>`;
+  modal.classList.add('open');
+}
+
 // closeStudentFasikulReview() ("✕ İncelemeyi Kapat") her çalıştığında çağrılır;
 // inceleme rapordan açılmadıysa (bayrak yoksa) sessizce hiçbir şey yapmaz.
 function raporReopenAfterReview(){
@@ -496,3 +581,4 @@ window.raporNavGoto = raporNavGoto;
 window.raporNavBack = raporNavBack;
 window.raporOpenSatir = raporOpenSatir;
 window.raporReopenAfterReview = raporReopenAfterReview;
+window.raporGosterZamanDamgalari = raporGosterZamanDamgalari;
