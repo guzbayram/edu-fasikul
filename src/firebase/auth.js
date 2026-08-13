@@ -367,10 +367,13 @@ function renderFasikulVisibilityControls(user){
       <div class="fasikul-access-grid">
         ${rows.map(row=>{
           const isHidden = hidden.has(row.id);
-          return `<button class="fasikul-access-btn ${isHidden?'hidden':''}" data-user="${user.id}" data-fasikul="${row.id}" onclick="event.stopPropagation();toggleUserFasikulVisibility('${user.id}','${row.id}',${!isHidden})">
-            <span>${esc(row.label)}</span>
-            <b>${isHidden?'Göster':'Gizle'}</b>
-          </button>`;
+          return `<div class="fasikul-access-row">
+            <button class="fasikul-access-btn ${isHidden?'hidden':''}" data-user="${user.id}" data-fasikul="${row.id}" onclick="event.stopPropagation();toggleUserFasikulVisibility('${user.id}','${row.id}',${!isHidden})">
+              <span>${esc(row.label)}</span>
+              <b>${isHidden?'Göster':'Gizle'}</b>
+            </button>
+            <button class="fasikul-access-reset" title="Bu öğrencinin bu fasiküldeki cevap/çizim kayıtlarını sıfırla" onclick="event.stopPropagation();resetStudentFasikulData('${user.id}','${row.id}')">🗑️</button>
+          </div>`;
         }).join('')}
       </div>
       <div class="fasikul-access-actions">
@@ -1731,6 +1734,35 @@ export async function toggleUserFasikulVisibility(uid, fasikulId, hide){
   }catch(e){
     console.warn('Fasikül görünürlüğü güncellenemedi:', e);
     window.showToast?.('Fasikül yetkisi güncellenemedi', 'error');
+  }
+}
+
+// Bir öğrencinin BELİRLİ bir fasiküle ait tüm cevap (cozumler), çizim
+// (cizimler) ve hatalı-soru (hatalilar) kayıtlarını Firestore'dan siler —
+// "yeni atanan fasikülde eski/yanlış çalışma verisi kalmış" durumunu
+// düzeltmek için. Koleksiyonların dokümanları soruKey/çizim-key ile
+// adlandırıldığından (fasikulId değil), her koleksiyonun tamamı çekilip
+// fasikulId alanına göre client-side filtrelenir.
+export async function resetStudentFasikulData(uid, fasikulId){
+  if(!canManageUsers() || !uid || !fasikulId) return;
+  const label = manifestFasikulOptions().find(r=>r.id===fasikulId)?.label || fasikulId;
+  if(!confirm(`"${label}" fasikülü için bu öğrencinin TÜM cevapları, PDF üzerindeki çizim/notları ve hatalı soru kayıtları silinecek.\n\nBu işlem GERİ ALINAMAZ. Devam edilsin mi?`)) return;
+  try{
+    window.showToast?.('Fasikül verisi temizleniyor…', 'info');
+    const [cozumSnap, cizimSnap, hataliSnap] = await Promise.all([
+      window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cozumler')),
+      window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cizimler')),
+      window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'hatalilar'))
+    ]);
+    const deletes = [];
+    [cozumSnap, cizimSnap, hataliSnap].forEach(snap=>{
+      snap.forEach(d=>{ if(d.data()?.fasikulId === fasikulId) deletes.push(window._fsDeleteDoc(d.ref)); });
+    });
+    await Promise.all(deletes);
+    window.showToast?.(`"${label}" için ${deletes.length} kayıt silindi.`, 'success');
+  }catch(e){
+    console.warn('Fasikül verisi temizlenemedi:', e);
+    window.showToast?.('Fasikül verisi temizlenemedi.', 'error');
   }
 }
 

@@ -16,7 +16,7 @@ import {
   refreshEditAssignmentTopicOptions,
   refreshPlanFasikulOptions, refreshPlanTopicOptions, prefillStudyPlanSlot, openStudyPlanModal, closeStudyPlanModal, shiftStudyPlanWeek, changeStudyPlanWeek,
   createStudyPlanSlot, clearStudyPlanSlot, dragStudyPlanSlot, dropStudyPlanSlot, startResizeStudyPlanSlot, approveStudyPlanChanges, loadMyStudyPlan,
-  toggleTeacherAssignField, toggleUserFasikulVisibility, applyUserFasikulVisibility,
+  toggleTeacherAssignField, toggleUserFasikulVisibility, applyUserFasikulVisibility, resetStudentFasikulData,
   ADMIN_EMAIL
 } from './firebase/auth.js';
 import {
@@ -2566,6 +2566,7 @@ window.loadMyStudyPlan = loadMyStudyPlan;
 window.toggleTeacherAssignField = toggleTeacherAssignField;
 window.toggleUserFasikulVisibility = toggleUserFasikulVisibility;
 window.applyUserFasikulVisibility = applyUserFasikulVisibility;
+window.resetStudentFasikulData = resetStudentFasikulData;
 window.selectEduDir = selectEduDir;
 window.handleBulkPdfImport = handleBulkPdfImport;
 window.updateEduDirUI = updateEduDirUI;

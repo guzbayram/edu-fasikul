@@ -1998,6 +1998,14 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
 .fasikul-access-btn b{color:var(--green);font-size:11px;flex-shrink:0}
 .fasikul-access-btn.hidden{border-color:rgba(239,68,68,.28);background:var(--red-dim)}
 .fasikul-access-btn.hidden b{color:var(--red)}
+.fasikul-access-row{display:flex;gap:4px;min-width:0}
+.fasikul-access-row .fasikul-access-btn{flex:1;min-width:0}
+.fasikul-access-reset{
+  flex:none;width:30px;height:auto;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--bg-3);
+  color:var(--text-1);font-size:13px;cursor:pointer
+}
+.fasikul-access-reset:hover{background:var(--red-dim);border-color:var(--red);color:var(--red)}
 .fasikul-access-actions{
   display:flex;
   flex-wrap:wrap;
