@@ -342,11 +342,13 @@ function renderRaporNav(agac){
   } else if(level === 'week'){
     listHtml = ay.haftalar.map(h=>_rpNavItem('week','📊',h.label,h.toplam,`raporNavGoto('day','${yil.key}','${ay.key}','${h.key}')`)).join('');
   } else {
-    listHtml = hafta.gunler.map(g=>`<div class="rapor-nav-day rapor-h-day">
-      <div class="rapor-acc-title-row"><span>📌 ${_rpEsc(_rpDayLabel(g.gunKey))}</span></div>
-      <div class="rapor-acc-stats-line">${g.satirlar.length} konu/test · ${_rpCompactStatsLine(g.toplam)}</div>
-      ${_rpRowsCards(g.satirlar, false)}
-    </div>`).join('');
+    // Günler varsayılan olarak KAPALI gelir — kullanıcı istediği günü
+    // başlığına tıklayıp açar (bir haftanın tüm günlerini birden açık
+    // göstermek, çok test çözülen haftalarda listeyi çok uzatıyordu).
+    listHtml = hafta.gunler.map(g=>{
+      const statsHtml = `${g.satirlar.length} konu/test · ${_rpCompactStatsLine(g.toplam)}`;
+      return _rpAcc('day', `<span>📌 ${_rpEsc(_rpDayLabel(g.gunKey))}</span>`, _rpRowsCards(g.satirlar, false), statsHtml, false);
+    }).join('');
   }
 
   return `<div class="rapor-nav">${crumbBar}<div class="rapor-nav-list">${listHtml}</div></div>`;

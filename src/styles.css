@@ -1636,9 +1636,6 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-nav-item:hover{border-color:var(--border-strong)}
 .rapor-nav-item .rapor-acc-title-row{margin-bottom:3px}
 .rapor-nav-chevron{flex:none;font-size:16px;font-weight:800;color:var(--text-muted)}
-.rapor-nav-day{border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:10px}
-.rapor-nav-day:last-child{margin-bottom:0}
-.rapor-nav-day .rapor-acc-stats-line{margin-bottom:8px}
 
 .rp-dogru{color:var(--green)}
 .rp-yanlis{color:var(--red)}
