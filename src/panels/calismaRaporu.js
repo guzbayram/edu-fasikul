@@ -488,7 +488,7 @@ function _rpRenderBox(){
     <div class="rapor-head">
       <div class="rapor-head-text">
         <h2>📊 Çalışma ve Performans Raporu</h2>
-        <p class="rapor-sub">${_rpEsc(meta.name || '')}${meta.altBaslik ? ' · ' + _rpEsc(meta.altBaslik) : ''}</p>
+        <p class="rapor-sub rapor-sub-name">${_rpEsc(meta.name || '')}${meta.altBaslik ? ' · ' + _rpEsc(meta.altBaslik) : ''}</p>
       </div>
       <div class="rapor-head-actions">
         <button class="rapor-demo-btn${_rpState.demoOn ? ' on' : ''}" onclick="raporToggleDemo()" title="Örnek/demo veri ile önizle">🧪 Demo${_rpState.demoOn ? ' Açık' : ''}</button>
