@@ -233,6 +233,18 @@ function visibleFasikulOptionsForStudent(student){
   return manifestFasikulOptions().filter(f=>!hidden.has(f.id));
 }
 
+// visibleFasikulOptionsForStudent ile AYNI öncelik kuralını (visibleFasikulIds
+// varsa allowlist esas alınır, yoksa hiddenFasikulIds denylist'e düşülür)
+// kullanarak "şu an gizli" id listesini üretir. Fasikül Yetkileri panelindeki
+// hem EKRANA ÇİZİLEN düğme durumu hem de düzenleme TASLAĞININ başlangıç
+// değeri bu TEK fonksiyondan türemeli — ikisi farklı alana (biri allowlist'e
+// öncelik veren bu kural, diğeri doğrudan hiddenFasikulIds) bakarsa, taslak
+// ekranda görüneni yansıtmaz ve "Onayla" ekrandakinin tersini kaydeder.
+function hiddenFasikulIdsForStudent(student, rows){
+  const visibleIds = new Set(visibleFasikulOptionsForStudent(student).map(f=>f.id));
+  return rows.filter(row=>!visibleIds.has(row.id)).map(row=>row.id);
+}
+
 function manifestDersOptions(){
   return (window.MANIFEST?.dersler || []).map(ders=>({id: ders.id, ad: ders.ad}));
 }
@@ -347,13 +359,7 @@ function renderFasikulVisibilityControls(user){
   if(!canManageUsers() || user.role === 'admin') return '';
   const staged = window._pendingFasikulVisibility?.[user.id];
   const rows = manifestFasikulOptions();
-  const visible = Array.isArray(user.visibleFasikulIds) ? new Set(user.visibleFasikulIds) : null;
-  const hidden = new Set(Array.isArray(staged)
-    ? staged
-    : visible
-      ? rows.filter(row=>!visible.has(row.id)).map(row=>row.id)
-      : (Array.isArray(user.hiddenFasikulIds) ? user.hiddenFasikulIds : [])
-  );
+  const hidden = new Set(Array.isArray(staged) ? staged : hiddenFasikulIdsForStudent(user, rows));
   if(!rows.length) return '';
   return `
     <details class="fasikul-access-panel">
@@ -1703,7 +1709,13 @@ export async function toggleUserFasikulVisibility(uid, fasikulId, hide){
     const docRef = window._fsDoc(window._db,'kullanicilar',uid);
     const snap = await window._fsGetDoc(docRef);
     const data = snap.exists() ? snap.data() : {};
-    const current = window._pendingFasikulVisibility?.[uid] || data.hiddenFasikulIds || [];
+    const rows = manifestFasikulOptions();
+    // ÖNEMLİ: data.hiddenFasikulIds DEĞİL, ekranda gösterilenle (render­
+    // FasikulVisibilityControls) AYNI türetilen fonksiyon kullanılmalı —
+    // aksi halde visibleFasikulIds (allowlist) doluyken hiddenFasikulIds
+    // hâlâ [] olabilir; o zaman taslak "hiçbir şey gizli değil" sanıp
+    // Onayla'da mevcut allowlist'i sessizce "hepsi görünür" ile eziyordu.
+    const current = window._pendingFasikulVisibility?.[uid] ?? hiddenFasikulIdsForStudent(data, rows);
     const hidden = new Set(Array.isArray(current) ? current : []);
     if(hide) hidden.add(fasikulId);
     else hidden.delete(fasikulId);

@@ -34,10 +34,19 @@ async function openReader(dersId, fasikulId){
     showToast('Misafir hesabında yalnızca demo fasikül kullanılabilir','info');
     return;
   }
-  const hidden = new Set(Array.isArray(appState.user?.hiddenFasikulIds) ? appState.user.hiddenFasikulIds : []);
-  if(appState.user?.role !== 'admin' && hidden.has(fasikulId)){
-    showToast('Bu fasikül hesabınız için gizlenmiş.','info');
-    return;
+  // dashboard.js'deki visibleFasikullerFor() ile AYNI öncelik kuralı: admin
+  // visibleFasikulIds (allowlist) atadıysa SADECE o fasiküller açılabilir —
+  // sadece hiddenFasikulIds (denylist) kontrolü, allowlist boşken (yeni
+  // öğrenci vb.) listede hiç görünmeyen bir fasikülün doğrudan (rapor/link
+  // ile) yine de açılabilmesine izin veriyordu.
+  if(appState.user?.role !== 'admin'){
+    const explicitVisible = Array.isArray(appState.user?.visibleFasikulIds) ? new Set(appState.user.visibleFasikulIds) : null;
+    const hidden = new Set(Array.isArray(appState.user?.hiddenFasikulIds) ? appState.user.hiddenFasikulIds : []);
+    const allowed = explicitVisible ? explicitVisible.has(fasikulId) : !hidden.has(fasikulId);
+    if(!allowed){
+      showToast('Bu fasikül hesabınız için gizlenmiş.','info');
+      return;
+    }
   }
   const ders = window.MANIFEST?.dersler.find(d=>d.id===dersId);
   const fasikul = ders?.fasikuller.find(f=>f.id===fasikulId);
