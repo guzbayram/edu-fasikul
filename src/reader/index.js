@@ -637,6 +637,11 @@ function syncNavToPage(pageNum, opts={}){
         }
         renderTekSoruKart(sorular, bestIdx);
         renderSoruStrip(sorular);
+        // updateTestProgress() üstteki "s.NNN" rozetini (spTopicPage) de
+        // yazar — bu çağrı burada EKSİKTİ: activeQuestionIdx bu daldan
+        // güncellendiğinde rozet hiç yenilenmiyor, en son elle tıklamadan
+        // kalma (ya da hiç tıklanmadıysa boş) değerde donuk kalıyordu.
+        updateTestProgress();
       }
     }
     // Çoklu soru modunda: soru elle seçilir, sayfa değişince otomatik değişmez
