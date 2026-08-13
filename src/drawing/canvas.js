@@ -256,6 +256,21 @@ function saveDrawingForPage(pageNum){
   persistDrawingCloud(key, json, fc.width, fc.height, { live:true, pageNum });
 }
 
+// Çizim değişiklikleri her zaman 160ms (metin 80ms) debounce'la buluta
+// yazılır ve — cevaplardan farklı olarak — hiçbir localStorage yedeği
+// YOKTUR (sadece appState.drawings/RAM). Sekme kapanmadan önceki
+// visibilitychange/pagehide flush'ı (main.js) bu bekleyen zamanlayıcıyı
+// hiç kontrol etmiyordu — tablet bellek baskısıyla sekme aniden
+// kapandığında, son 160ms içindeki (henüz ateşlenmemiş) çizim buluta hiç
+// gitmeden kayboluyordu. main.js buradan çağırıp o bekleyen kaydı zorluyor.
+function flushPendingDrawingSave(){
+  if(!appState._saveTimeout) return;
+  clearTimeout(appState._saveTimeout);
+  appState._saveTimeout = null;
+  saveDrawingForPage(appState.currentPage);
+}
+window.flushPendingDrawingSave = flushPendingDrawingSave;
+
 function stabilizeTextSelection(target){
   if(!target || target.type !== 'i-text' || !target.isEditing || !target.hiddenTextarea) return;
   const ta = target.hiddenTextarea;

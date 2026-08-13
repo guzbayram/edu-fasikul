@@ -1315,6 +1315,10 @@ function flushPendingCloudPersistBestEffort(){
     if(_manifestFlushTimer){ clearTimeout(_manifestFlushTimer); _manifestFlushTimer = null; }
     window.flushCloudPersist?.();
   }
+  // Çizimlerin (cevapların aksine) localStorage yedeği yok — bekleyen
+  // 160ms'lik çizim-kaydetme debounce'unu da burada zorla bitiriyoruz,
+  // yoksa sekme tam bu pencerede kapanırsa son çizim hiç buluta gitmez.
+  window.flushPendingDrawingSave?.();
 }
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) flushPendingCloudPersistBestEffort();
