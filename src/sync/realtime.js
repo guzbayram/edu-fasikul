@@ -186,12 +186,12 @@ async function _followCanli(seq){
         // bağımsızlaşıyordu. syncNavToPage zaten tam bu eşlemeyi yapan
         // fonksiyon (aşağıdaki else dalda "konu dışı sayfa" için kullanılıyordu)
         // — burada da çağırıp rozeti/aktif soruyu sayfayla senkron tutuyoruz.
-        window.syncNavToPage?.(d.page);
+        window.syncNavToPage?.(d.page, {force:true});
       }
     } else if(appState.aktifAltKonu){
       // İzlenen konu anlatım/soru-dışı bir sayfada — sol panel ÖNCEKİ test
       // durumunda asılı kalmasın (bkz. livepresence.js'deki aynı düzeltme).
-      window.syncNavToPage?.(d.page || appState.currentPage);
+      window.syncNavToPage?.(d.page || appState.currentPage, {force:true});
     }
     d = _latestCanliData || d;
     if(d.page && appState.currentPage !== d.page){

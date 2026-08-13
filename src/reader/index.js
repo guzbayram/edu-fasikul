@@ -441,7 +441,7 @@ function updatePageCrumb(pageNum){
   el.style.display='';
 }
 
-function syncNavToPage(pageNum){
+function syncNavToPage(pageNum, opts={}){
   updatePageCrumb(pageNum);
   if(appState._suppressNavSync) return;
   const fas = appState.aktifFasikul;
@@ -616,8 +616,13 @@ function syncNavToPage(pageNum){
     if(_isKartBazli){
       // Aynı sayfada birden fazla soru olabilir. Sayfa değişince o sayfanın ilk
       // sorusuna geç; kullanıcı aynı sayfadaki başka bir soruyu seçtiyse koru.
+      // opts.force=true (canlı takip): bu "yapışkanlık" atlanır — takip edilen
+      // kişinin sayfasında BİRDEN FAZLA soru varsa (ör. 2 sütunlu sayfa), admin
+      // kendi ÖNCEDEN seçili sorusu o sayfayı da kapsıyor diye takılı kalıp
+      // yanlış (bir-iki soru kaymış) soruda duruyordu — takipte doğruluk,
+      // manuel taramada olduğu gibi akıcılıktan daha önemli.
       const sorular = targetAlt.sorular || [];
-      const activeIsOnPage = questionCoversPage(sorular[appState.activeQuestionIdx], pageNum);
+      const activeIsOnPage = !opts.force && questionCoversPage(sorular[appState.activeQuestionIdx], pageNum);
       let bestIdx = activeIsOnPage ? appState.activeQuestionIdx : sorular.findIndex(s => questionCoversPage(s, pageNum));
       if(bestIdx < 0){
         renderQuestionlessTopicPage(targetKonu, pageNum, 'Bu sayfada cevaplanacak seçenekli soru yok.');

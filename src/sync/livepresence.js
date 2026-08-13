@@ -503,6 +503,15 @@ function _applyFollow(seq){
         let ak=null;
         (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(a=>{ if(a.id===m.altKonuId) ak=a; }));
         if(ak) window.selectAltKonu?.(ak, `altk-${ak.id}`);
+      } else if(m.page){
+        // Aynı test zaten seçiliyse: PDF izlenen kişinin sayfasına kayar ama
+        // appState.activeQuestionIdx (üstteki "s.NNN" rozetini besleyen) hiç
+        // güncellenmiyordu — realtime.js'deki aynı düzeltmenin kopyası
+        // (bu dosyanın kendi ayrı canlı-takip yolu var, ikisi de aynı hataya
+        // sahipti). force:true: syncNavToPage'in "kullanıcı sayfayı elle
+        // taradıysa mevcut soruda kal" yapışkanlığı burada YANLIŞ davranış —
+        // takip ederken doğruluk, akıcılıktan önemli.
+        window.syncNavToPage?.(m.page, {force:true});
       }
     } else if(appState.aktifAltKonu){
       // İzlenen konu anlatım/soru-dışı bir sayfada (aktif testi yok) ama
@@ -510,7 +519,7 @@ function _applyFollow(seq){
       // aşağıdaki goToPage KENDİ tarama/temizleme mantığını (syncNavToPage)
       // _presSuppress nedeniyle tetiklemez (bkz. throttleScrollHandler),
       // bu yüzden burada doğrudan çağrılır.
-      window.syncNavToPage?.(m.page || appState.currentPage);
+      window.syncNavToPage?.(m.page || appState.currentPage, {force:true});
     }
     if(m.page && appState.currentPage !== m.page){
       const targetPage = Number(m.page);
