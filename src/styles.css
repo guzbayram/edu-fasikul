@@ -1582,8 +1582,7 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--border);flex:none}
 .rapor-head h2{margin:0;font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--text-0);text-align:left}
 .rapor-sub{margin:4px 0 0;font-size:12.5px;color:var(--text-muted)}
-.rapor-head-text{flex:1;min-width:0}
-.rapor-sub-name{text-align:center;font-weight:800;color:var(--text-0)}
+.rapor-sub-name{font-weight:800;color:var(--text-0)}
 .rapor-close-btn{flex:none;width:34px;height:34px;border:1px solid var(--border);border-radius:99px;background:var(--bg-3);color:var(--text-1);font-size:15px;cursor:pointer}
 .rapor-close-btn:hover{background:var(--bg-4);color:var(--text-0)}
 .rapor-head-actions{display:flex;align-items:center;gap:8px;flex:none}
