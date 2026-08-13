@@ -202,16 +202,6 @@ function _rpOtherGunlerForTest(fasikulId, konu, altKonu, excludeGunKey){
   return [...gunler.values()].sort((a,b)=>b.gunKey.localeCompare(a.gunKey));
 }
 
-function _rpSummaryGrid(t){
-  const net = _rpNet(t.dogru, t.yanlis);
-  return `<div class="rapor-summary-grid">
-    <div class="rapor-summary-box"><span class="label">Toplam Soru</span><span class="val">${t.soru}</span></div>
-    <div class="rapor-summary-box"><span class="label">Doğru / Yanlış</span><span class="val"><b class="rp-dogru">${t.dogru} D</b> / <b class="rp-yanlis">${t.yanlis} Y</b></span></div>
-    <div class="rapor-summary-box"><span class="label">Boş</span><span class="val rp-bos">${t.bos}</span></div>
-    <div class="rapor-summary-box"><span class="label">Net</span><span class="val">${_rpFmtNet(net)}</span></div>
-  </div>`;
-}
-
 // Bir testin (altKonu) MANIFEST'teki gerçek toplam soru sayısı — kayıt
 // sayısı (öğrencinin o güne kadar çözdüğü) ile karıştırılmasın diye
 // "N T / M Ç" (Toplam/Çözülen) biçiminde göstermek için. Bulunamazsa null.
@@ -225,6 +215,23 @@ function _rpTotalSoru(fasikulId, altKonuAd){
       if(alt) return Array.isArray(alt.sorular) ? alt.sorular.length : null;
     }
     return null;
+  }
+  return null;
+}
+
+// Bir fasikülün MANIFEST'teki TÜM testlerinin toplam soru sayısı — Fasikül
+// Bazlı Özet başlığında da aynı "N T / M Ç" biçimini kullanmak için
+// (_rpTotalSoru tek bir test/altKonu içindi, bu fasikülün tamamını toplar).
+function _rpFasikulTotalSoru(fasikulId){
+  if(!fasikulId) return null;
+  for(const ders of (window.MANIFEST?.dersler || [])){
+    const fas = ders.fasikuller?.find(f => f.id === fasikulId);
+    if(!fas) continue;
+    let total = 0;
+    (fas.konular || []).forEach(k => (k.altKonular || []).forEach(a => {
+      total += Array.isArray(a.sorular) ? a.sorular.length : 0;
+    }));
+    return total;
   }
   return null;
 }
@@ -281,18 +288,18 @@ function _rpCompactStatsLine(t){
   return `${t.soru} soru · <b class="rp-dogru">${t.dogru} D</b> / <b class="rp-yanlis">${t.yanlis} Y</b> · <span class="rp-bos">${t.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b>`;
 }
 
-function _rpAcc(level, headerHtml, bodyHtml, toplam, open, statsPrefix){
-  const compact = level !== 'fasikul';
-  const stats = statsPrefix ? `${statsPrefix} · ${_rpCompactStatsLine(toplam)}` : _rpCompactStatsLine(toplam);
+// statsHtml: satır kartlarıyla (_rpRowsCards) aynı görünümde hazır HTML —
+// çağıran taraf oluşturur (bkz. renderRaporFasikulOzet), böylece fasikül
+// başlığı da testlerdeki "N T / M Ç · D/Y · boş · Net · %" biçimini kullanır.
+function _rpAcc(level, headerHtml, bodyHtml, statsHtml, open){
   return `<div class="rapor-acc rapor-lvl-${level}${open ? '' : ' rapor-collapsed'}">
     <div class="rapor-acc-header rapor-h-${level}" onclick="raporToggleAcc(this)">
       <div class="rapor-acc-title-row">
         ${headerHtml}
         <span class="rapor-toggle-icon">▾</span>
       </div>
-      ${compact ? `<div class="rapor-acc-stats-line">${stats}</div>` : ''}
+      <div class="rapor-acc-stats-line">${statsHtml}</div>
     </div>
-    ${compact ? '' : _rpSummaryGrid(toplam)}
     <div class="rapor-content-body">${bodyHtml}</div>
   </div>`;
 }
@@ -389,9 +396,14 @@ async function raporOpenSatir(dersId, fasikulId, konuAd, altKonuAd){
 
 function renderRaporFasikulOzet(fasikuller){
   if(!fasikuller.length) return '<div class="rapor-empty">Henüz kayıtlı çalışma yok.</div>';
-  return fasikuller.map((f,i)=>_rpAcc('fasikul', `<span>📘 ${_rpEsc(f.fasikulAd)}</span>`,
-    _rpRowsCards(f.satirlar, true), f.toplam, i===0
-  )).join('');
+  return fasikuller.map((f,i)=>{
+    const t = f.toplam;
+    const net = _rpNet(t.dogru, t.yanlis), basari = _rpBasari(t.dogru, t.yanlis);
+    const toplamSoru = _rpFasikulTotalSoru(f.fasikulId);
+    const soruEtiket = toplamSoru ? `${toplamSoru} T / ${t.soru} Ç` : `${t.soru} soru`;
+    const statsHtml = `${soruEtiket} · <b class="rp-dogru">${t.dogru} D</b> / <b class="rp-yanlis">${t.yanlis} Y</b> · <span class="rp-bos">${t.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}`;
+    return _rpAcc('fasikul', `<span>📘 ${_rpEsc(f.fasikulAd)}</span>`, _rpRowsCards(f.satirlar, true), statsHtml, i===0);
+  }).join('');
 }
 
 // Basit deterministik sözde-rastgele üretici (Math.random yerine) —

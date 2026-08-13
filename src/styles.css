@@ -1604,13 +1604,17 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-acc-stats-line b{font-weight:800}
 .rapor-toggle-icon{flex:none;font-size:12px;color:var(--text-muted);transition:transform .18s}
 .rapor-collapsed .rapor-toggle-icon{transform:rotate(-90deg)}
-.rapor-collapsed .rapor-summary-grid,.rapor-collapsed .rapor-content-body{display:none!important}
+.rapor-collapsed .rapor-content-body{display:none!important}
 /* Seviye tonları: yıl en koyu → gün en açık, hepsi --mat'ten türetilir. */
 .rapor-h-year{background:color-mix(in srgb,var(--mat) 30%,var(--bg-2))}
 .rapor-h-month{background:color-mix(in srgb,var(--mat) 20%,var(--bg-2))}
 .rapor-h-week{background:color-mix(in srgb,var(--mat) 12%,var(--bg-2))}
 .rapor-h-day{background:var(--bg-3)}
 .rapor-h-fasikul{background:var(--mat-dim);border-left:4px solid var(--mat)}
+/* Fasikül başlığındaki istatistik satırı, satır kartlarındaki (rapor-satir-stats)
+   ile aynı içerik yoğunluğunda (T/Ç · D/Y · boş · Net · rozet) — tek satıra
+   sığmayabilir, o yüzden diğer seviyelerin aksine kesilmeden alta kayabilir. */
+.rapor-h-fasikul .rapor-acc-stats-line{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.6}
 
 /* Zaman Hiyerarşisi: girintili iç içe akordeon yerine tek seviye gösteren
    sürükle-tıkla (drill-down) liste — yıl seçilince sadece o yılın ayları,
@@ -1629,10 +1633,6 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-nav-day:last-child{margin-bottom:0}
 .rapor-nav-day .rapor-acc-stats-line{margin-bottom:8px}
 
-.rapor-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 14px;padding:10px;background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-sm)}
-.rapor-summary-box{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xs,8px);padding:7px 8px;text-align:center}
-.rapor-summary-box .label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px}
-.rapor-summary-box .val{font-size:13px;font-weight:800;color:var(--text-0)}
 .rp-dogru{color:var(--green)}
 .rp-yanlis{color:var(--red)}
 .rp-bos{color:var(--text-muted)}
@@ -1681,7 +1681,6 @@ body.reader-locked .main-content{visibility:hidden!important}
 
 @media (max-width:760px){
   .rapor-box{width:100vw;height:100vh;max-width:none;border-radius:0}
-  .rapor-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 .assignment-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;padding:12px;background:var(--bg-1)}
 .assignment-form input,.assignment-form select{width:100%;height:44px;min-height:44px;padding:0 12px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-0);font-size:13px;line-height:44px}
