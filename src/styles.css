@@ -1600,7 +1600,7 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-acc{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden}
 .rapor-acc-header{display:flex;flex-direction:column;gap:3px;padding:11px 14px;cursor:pointer;user-select:none}
 .rapor-acc-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800;font-size:13.5px;color:var(--text-0)}
-.rapor-acc-stats-line{font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rapor-acc-stats-line{font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
 .rapor-acc-stats-line b{font-weight:800}
 .rapor-toggle-icon{flex:none;font-size:12px;color:var(--text-muted);transition:transform .18s}
 .rapor-collapsed .rapor-toggle-icon{transform:rotate(-90deg)}
