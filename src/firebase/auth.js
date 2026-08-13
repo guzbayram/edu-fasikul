@@ -486,7 +486,7 @@ function assignmentProgress(task, records){
   return {correct, wrong, expected, done};
 }
 
-async function fetchStudentRecords(uid){
+export async function fetchStudentRecords(uid){
   const snap = await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',uid,'cozumler'));
   const records = [];
   snap.forEach(d=>records.push({id:d.id, ...d.data()}));

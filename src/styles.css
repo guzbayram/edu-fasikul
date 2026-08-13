@@ -1583,6 +1583,14 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-head h2{margin:0;font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--text-0);text-align:left}
 .rapor-sub{margin:4px 0 0;font-size:12.5px;color:var(--text-muted)}
 .rapor-sub-name{font-weight:800;color:var(--text-0)}
+select.rapor-student-select{
+  appearance:none;-webkit-appearance:none;border:1px solid var(--border-strong);
+  border-radius:99px;background:var(--bg-3);padding:3px 24px 3px 10px;cursor:pointer;
+  font-family:inherit;font-size:12.5px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 6px center;background-size:14px
+}
+select.rapor-student-select:hover{background-color:var(--bg-4)}
 .rapor-close-btn{flex:none;width:34px;height:34px;border:1px solid var(--border);border-radius:99px;background:var(--bg-3);color:var(--text-1);font-size:15px;cursor:pointer}
 .rapor-close-btn:hover{background:var(--bg-4);color:var(--text-0)}
 .rapor-head-actions{display:flex;align-items:center;gap:8px;flex:none}

@@ -486,11 +486,20 @@ function _rpRenderBox(){
   const fasOzet = buildRaporFasikulOzet(list);
   const meta = _rpState.meta;
   const v = _rpState.view;
+  // Admin/öğretmen birden fazla öğrenciyi yönetiyorsa (2+), sabit isim metni
+  // yerine açılır liste göster — raporu kapatıp Kullanıcı Yönetimi'ne dönmeden
+  // başka bir öğrencinin raporuna geçebilsin.
+  const managedStudents = window._managedStudents || [];
+  const nameHtml = (meta.studentUid && managedStudents.length >= 2)
+    ? `<select class="rapor-sub rapor-sub-name rapor-student-select" onchange="raporSwitchStudent(this.value)" title="Öğrenci değiştir">
+        ${managedStudents.map(s=>`<option value="${_rpEsc(s.id)}" ${s.id===meta.studentUid?'selected':''}>${_rpEsc(s.name || s.email || 'Öğrenci')}</option>`).join('')}
+      </select>`
+    : `<p class="rapor-sub rapor-sub-name">${_rpEsc(meta.name || '')}${meta.altBaslik ? ' · ' + _rpEsc(meta.altBaslik) : ''}</p>`;
   box.innerHTML = `
     <div class="rapor-head">
       <div class="rapor-head-text">
         <h2>📊 Çalışma ve Performans Raporu</h2>
-        <p class="rapor-sub rapor-sub-name">${_rpEsc(meta.name || '')}${meta.altBaslik ? ' · ' + _rpEsc(meta.altBaslik) : ''}</p>
+        ${nameHtml}
       </div>
       <div class="rapor-head-actions">
         <button class="rapor-demo-btn${_rpState.demoOn ? ' on' : ''}" onclick="raporToggleDemo()" title="Örnek/demo veri ile önizle">🧪 Demo${_rpState.demoOn ? ' Açık' : ''}</button>
@@ -517,6 +526,32 @@ function openCalismaRaporu(records, meta={}){
   _rpState.view = 'hiyerarsi';
   _rpState.nav = { level:'year', yil:null, ay:null, hafta:null };
   modal.classList.add('open');
+  _rpRenderBox();
+}
+
+// Rapor başlığındaki öğrenci açılır listesinden başka bir öğrenci seçilince:
+// o öğrencinin çözüm kayıtlarını (Firestore) çekip aynı modalda raporu
+// baştan (yıl seviyesinden) render eder.
+async function raporSwitchStudent(uid){
+  if(!uid || uid === _rpState.meta.studentUid) return;
+  const student = (window._managedStudents || []).find(s=>s.id === uid);
+  if(!student){ window.showToast?.('Öğrenci bulunamadı.', 'error'); return; }
+  window.showToast?.('Öğrenci verisi yükleniyor…', 'info');
+  let records;
+  try{
+    records = await window.fetchStudentRecords?.(uid) || [];
+  }catch(e){
+    console.warn('Öğrenci raporu yüklenemedi:', e);
+    window.showToast?.('Öğrenci verisi yüklenemedi.', 'error');
+    return;
+  }
+  window._lastManagedStudentUid = uid;
+  window._lastManagedStudentRecords = records;
+  _rpState.real = records;
+  _rpState.meta = {name: student.name || student.email || 'Öğrenci', studentUid: uid};
+  _rpState.demoOn = false;
+  _rpState.view = 'hiyerarsi';
+  _rpState.nav = { level:'year', yil:null, ay:null, hafta:null };
   _rpRenderBox();
 }
 
@@ -588,6 +623,7 @@ function raporReopenAfterReview(){
 }
 
 window.openCalismaRaporu = openCalismaRaporu;
+window.raporSwitchStudent = raporSwitchStudent;
 window.raporToggleDemo = raporToggleDemo;
 window.raporSwitchView = raporSwitchView;
 window.raporToggleAcc = raporToggleAcc;

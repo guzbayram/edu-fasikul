@@ -11,7 +11,7 @@ import {
   doLogin, doLogout, doGuest, enterApp,
   addKullanici, deleteKullanici, loadKullaniciList,
   toggleKullaniciActive, resetKullaniciPassword,
-  selectManagedStudent, refreshAssignTopicOptions,
+  selectManagedStudent, fetchStudentRecords, refreshAssignTopicOptions,
   createAssignment, updateAssignment, deleteAssignment, loadMyAssignments,
   refreshEditAssignmentTopicOptions,
   refreshPlanFasikulOptions, refreshPlanTopicOptions, prefillStudyPlanSlot, openStudyPlanModal, closeStudyPlanModal, shiftStudyPlanWeek, changeStudyPlanWeek,
@@ -2542,6 +2542,7 @@ window.loadKullaniciList = loadKullaniciList;
 window.toggleKullaniciActive = toggleKullaniciActive;
 window.resetKullaniciPassword = resetKullaniciPassword;
 window.selectManagedStudent = selectManagedStudent;
+window.fetchStudentRecords = fetchStudentRecords;
 window.refreshAssignTopicOptions = refreshAssignTopicOptions;
 window.createAssignment = createAssignment;
 window.updateAssignment = updateAssignment;
