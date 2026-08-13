@@ -3501,7 +3501,9 @@ body.reader-locked .main-content{visibility:hidden!important}
 .reader-color-palette .size-slider{display:block!important;width:60px!important}
 .reader-history-palette .tool-btn:nth-child(3),
 .reader-history-palette .tool-btn:nth-child(4){display:none!important}
-.reader-meta-actions label[for="pdfFileInputToolbar"],
+/* "PDF Yükle / Değiştir" (📂) butonu bilerek GÖRÜNÜR bırakılıyor — yanlış
+   PDF yüklenmiş bir fasikülde öğrencinin PDF'i tekrar seçebileceği TEK yer
+   burası; gizlenirse (önceki hal) kullanıcı bir daha asla değiştiremiyordu. */
 .reader-meta-actions #readingModeBtn{display:none!important}
 
 .reader-canvas-wrap{

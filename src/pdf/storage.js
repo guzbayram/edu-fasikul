@@ -37,6 +37,14 @@ async function handlePDFUpload(input){
     window.showToast?.('Lütfen geçerli bir PDF dosyası seç','error');
     return;
   }
+  // Toolbar'daki "📂" (PDF Yükle / Değiştir) butonu, PDF ZATEN YÜKLÜYKEN de
+  // görünür — yanlış PDF yüklenmiş bir fasikülü düzeltebilmek için gerekli.
+  // Ama bu yüzden yanlışlıkla tıklanıp mevcut doğru PDF'in sessizce üzerine
+  // yazılmasını önlemek için, sadece bu durumda (zaten bir PDF açıkken) onay iste.
+  if(input.id === 'pdfFileInputToolbar' && appState.pdfDoc){
+    const onay = confirm('Bu fasikül için zaten yüklü bir PDF var. Seçtiğiniz yeni dosya onun yerine geçecek. Devam edilsin mi?');
+    if(!onay){ input.value=''; return; }
+  }
   await window.loadPDFFile?.(file);
   if(appState.aktifDers && appState.aktifFasikul){
     // Yazmayı bekle — kullanıcı yüklemenin hemen ardından incelemeyi kapatıp
