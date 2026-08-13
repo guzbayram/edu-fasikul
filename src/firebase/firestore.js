@@ -557,7 +557,19 @@ export async function loadFromFirestore(){
 
     try{
       const cozumSnap=await window._fsGetDocs(window._fsCollection(window._db,'kullanicilar',key,'cozumler'));
-      const loadedState={...appState.sorularState};
+      // ÖNEMLİ: eskiden loadedState appState.sorularState'in TAM kopyasıyla
+      // başlayıp cozumler'deki kayıtları sadece EKLİYORDU (silineni asla
+      // çıkarmıyordu) — bir kayıt subcollection'dan silinse bile (ör. admin
+      // "Fasikül Yetkileri"nden sıfırlasa, ya da başka bir cihazdan silinse)
+      // öğrencinin yerel/localStorage'daki eski kaydı hiç temizlenmiyor,
+      // "sıfırlandı" denen sorular yeşil/işaretli görünmeye devam ediyordu.
+      // Artık sadece HENÜZ BULUTA YAZILMAMIŞ (_synced:false, ör. offline
+      // cevaplar) yerel kayıtlar korunuyor; senkronize olmuş her şey
+      // subcollection'ın GÜNCEL haliyle değiştiriliyor (silinmişse kalkar).
+      const loadedState={};
+      Object.entries(appState.sorularState||{}).forEach(([k,v])=>{
+        if(v && v.answered && v._synced === false) loadedState[k]=v;
+      });
       let cozumCount=0;
       cozumSnap.forEach(d=>{
         cozumCount++;
@@ -581,11 +593,9 @@ export async function loadFromFirestore(){
           loadedState[`${c.fasikulId}__${soruKey}`]=restoredState;
         }
       });
-      if(cozumCount>0){
-        appState.sorularState=loadedState;
-        appState.cloudIstatistik=null;
-        localStorage.setItem('edu_sorularState',JSON.stringify(appState.sorularState));
-      }
+      appState.sorularState=loadedState;
+      appState.cloudIstatistik=null;
+      localStorage.setItem('edu_sorularState',JSON.stringify(appState.sorularState));
       appState.cloudSolutionsLoaded=cozumCount>0;
     }catch(e){ console.warn('Çözüm geçmişi yüklenemedi:',e); }
 
