@@ -107,7 +107,16 @@ function _roomIdForFasikul(fas){
 function _roomIdsForFasikul(fas){
   if(!fas) return [];
   const primary = _roomIdForFasikul(fas);
-  const aliases = [fas?.id, fas?.jsonFile, fas?.pdfFile, fas?.ad]
+  // ÖNCELİK SIRASI ÖNEMLİ: id hemen ardından ad geliyor. id bir cihazda eski/
+  // farklı bir katalog sürümünden geliyorsa (ör. yeniden numaralandırma,
+  // bayat servis-worker önbelleği) admin ve öğrencinin id'leri UYUŞMAYABİLİR
+  // — ama ekranda gördükleri fasikül ADI neredeyse her zaman aynıdır, bu
+  // yüzden ad en güvenilir ikinci köprüdür. Eskiden ad listenin SONUNDAYDI;
+  // id/jsonFile/pdfFile hepsi doluyken aşağıdaki 3'lük kapasite sınırına
+  // takılıp hep İLK ELENEN o oluyordu — tam da id uyuşmazlığında işe
+  // yarayacak tek alan, id uyuştuğunda zaten gereksiz kalan alanlar (jsonFile/
+  // pdfFile) yüzünden atılıyordu.
+  const aliases = [fas?.id, fas?.ad, fas?.jsonFile, fas?.pdfFile]
     .map(_slugRoomPart)
     .filter(Boolean)
     .map(part=>`fas-${part}`);
