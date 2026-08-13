@@ -1589,7 +1589,7 @@ body.reader-locked .main-content{visibility:hidden!important}
 .rapor-demo-btn:hover{background:var(--bg-4)}
 .rapor-demo-btn.on{background:var(--yellow-dim);border-color:var(--yellow);color:var(--yellow)}
 .rapor-demo-banner{margin:12px 22px 0;padding:9px 12px;border:1px solid var(--yellow);border-radius:var(--radius-sm);background:var(--yellow-dim);color:var(--yellow);font-size:12px;font-weight:600;text-align:center;flex:none}
-.rapor-tabs{display:flex;gap:8px;padding:12px 22px;border-bottom:1px solid var(--border);flex:none;overflow-x:auto}
+.rapor-tabs{display:flex;justify-content:center;gap:8px;padding:12px 22px;border-bottom:1px solid var(--border);flex:none;overflow-x:auto}
 .rapor-tab-btn{flex:none;padding:8px 16px;border:1px solid var(--border-strong);border-radius:99px;background:var(--bg-3);color:var(--text-1);font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
 .rapor-tab-btn.active{background:var(--mat);border-color:var(--mat);color:#fff}
 .rapor-body{flex:1;overflow-y:auto;padding:16px 22px 26px}
