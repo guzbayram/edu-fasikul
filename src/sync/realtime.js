@@ -178,6 +178,15 @@ async function _followCanli(seq){
         let foundAk = null;
         (appState.aktifFasikul?.konular||[]).forEach(k=>(k.altKonular||[]).forEach(ak=>{ if(ak.id===d.altKonuId) foundAk=ak; }));
         if(foundAk) window.selectAltKonu?.(foundAk, `altk-${foundAk.id}`);
+      } else if(d.page){
+        // Aynı test zaten seçiliyse yukarıdaki dal hiç çalışmıyordu — PDF
+        // izlenen kişinin sayfasına kayıyordu ama appState.activeQuestionIdx
+        // (üstteki "s.NNN" rozetini besleyen) öğretmenin en son ELLE tıkladığı
+        // soruda donuk kalıyordu; rozet ile ekrandaki gerçek sayfa birbirinden
+        // bağımsızlaşıyordu. syncNavToPage zaten tam bu eşlemeyi yapan
+        // fonksiyon (aşağıdaki else dalda "konu dışı sayfa" için kullanılıyordu)
+        // — burada da çağırıp rozeti/aktif soruyu sayfayla senkron tutuyoruz.
+        window.syncNavToPage?.(d.page);
       }
     } else if(appState.aktifAltKonu){
       // İzlenen konu anlatım/soru-dışı bir sayfada — sol panel ÖNCEKİ test
