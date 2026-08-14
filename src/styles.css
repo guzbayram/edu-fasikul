@@ -866,11 +866,12 @@ body.reader-locked .main-content{visibility:hidden!important}
    çözümden çıkış için yüzer bir buton bulunuyor (sol paneldeki ✕'e ek). */
 .pdf-solve-exit-btn{
   display:none;position:absolute;top:14px;right:14px;z-index:60;
-  width:36px;height:36px;border-radius:99px;border:1px solid var(--border-strong);
-  background:var(--bg-2);color:var(--text-1);font-size:16px;font-weight:700;
-  align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-lg);
+  width:36px;height:36px;border-radius:99px;border-color:transparent;
+  background:linear-gradient(135deg,var(--mat),var(--mat-2,var(--mat)));color:#fff;
+  font-size:16px;font-weight:700;
+  align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 18px rgba(124,92,255,.22);
 }
-.pdf-solve-exit-btn:hover{background:var(--bg-3);color:var(--text-0)}
+.pdf-solve-exit-btn:hover{filter:brightness(1.08)}
 #reader-overlay.solve-mode .pdf-solve-exit-btn{display:flex}
 
 .reader-toolbar{
