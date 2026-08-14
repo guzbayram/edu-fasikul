@@ -741,15 +741,26 @@ export function doGuest(){
 // karşılaştırırken hangisinin hangi kullanıcıya ait olduğu tek bakışta
 // anlaşılsın diye. Sadece bilgi amaçlı; canlı izleme sırasında görüntülenen
 // öğrenciye göre DEĞİL, her zaman gerçekten giriş yapılan hesaba göre.
+// Üç ayrı yerde render edilir — aynı içerik, bağlama göre farklı konum
+// (bkz. styles.css .uib-topbar/.uib-drawer/.user-identity-badge yorumları):
+// panel ekranlarında üst çubuğun ortasında, fasikül çekmecesinde "←" satırının
+// sağında, okuyucu/çözüm modunda ise sabit köşede (o ekranda üst çubuk yok).
 function renderUserIdentityBadge(){
-  const badge = document.getElementById('userIdentityBadge');
-  if(!badge) return;
   const user = appState.user;
-  if(!user){ badge.style.display = 'none'; return; }
-  const roleIcon = user.role === 'admin' ? '🔑' : user.role === 'ogretmen' ? '👨‍🏫' : '🎓';
-  const roleLabel = {ogretmen:'Öğretmen', admin:'Yönetici'}[user.role] || 'Öğrenci';
-  badge.innerHTML = `<span class="uib-icon">${roleIcon}</span><span>${esc(user.name || user.email || 'Kullanıcı')} · ${roleLabel}</span>`;
-  badge.style.display = 'flex';
+  const roleIcon = user ? (user.role === 'admin' ? '🔑' : user.role === 'ogretmen' ? '👨‍🏫' : '🎓') : '';
+  const roleLabel = user ? ({ogretmen:'Öğretmen', admin:'Yönetici'}[user.role] || 'Öğrenci') : '';
+  const html = user ? `<span class="uib-icon">${roleIcon}</span><span>${esc(user.name || user.email || 'Kullanıcı')} · ${roleLabel}</span>` : '';
+  ['userIdentityBadge', 'userIdentityBadgeTopbar', 'userIdentityBadgeDrawer'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = html;
+    // #userIdentityBadge (okuyucudaki sabit/köşe rozet) görünürlüğü CSS'te
+    // "#reader-overlay.open ~ .user-identity-badge" kuralıyla yönetiliyor —
+    // burada inline display YAZMIYORUZ, aksi halde inline stil bu kuralı
+    // ezip rozeti okuyucu kapalıyken de sürekli görünür bırakırdı.
+    if(id === 'userIdentityBadge') return;
+    el.style.display = user ? 'flex' : 'none';
+  });
 }
 window.renderUserIdentityBadge = renderUserIdentityBadge;
 

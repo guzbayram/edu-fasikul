@@ -105,6 +105,7 @@
   <div class="main-content">
     <div class="top-bar">
       <div class="top-bar-title" id="topBarTitle">Anasayfa</div>
+      <div id="userIdentityBadgeTopbar" class="uib-inline uib-topbar" style="display:none"></div>
       <div class="top-bar-actions">
         <button class="icon-btn" onclick="openMyCalismaRaporu()" title="Çalışma Raporu">📊</button>
         <button class="icon-btn" title="Arama (yakında)">🔍</button>
@@ -465,6 +466,7 @@
       <button class="devam-btn drawer-action-btn" id="addFasikulButton" onclick="openFasikulModal()">+ Fasikül Ekle</button>
       <button class="devam-btn drawer-action-btn drawer-action-btn-secondary" id="drawerAddDersButton" onclick="openAltDersModal(event)">+ Ders Ekle</button>
     </div>
+    <div id="userIdentityBadgeDrawer" class="uib-inline uib-drawer" style="display:none"></div>
   </div>
   <div class="drawer-search">
     <input type="text" id="drawerSearch" placeholder="🔍 Fasikül ara…" oninput="filterFasikuller(this.value)">

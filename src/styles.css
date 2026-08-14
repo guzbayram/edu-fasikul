@@ -2204,22 +2204,42 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
 ════════════════════════════════════════════════════════ */
 .toast-container{position:fixed;bottom:24px;right:24px;z-index:600;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 
-/* Kullanıcı kimlik rozeti — hangi hesapla giriş yapıldığı, TÜM ekranlarda
-   (anasayfa, okuyucu/çözüm modu dahil) sabit köşede görünür. Bilgi amaçlı,
-   tıklanabilir/etkileşimli değil. Uygulama TÜM pencere genişliklerinde
-   (dar/geniş fark etmeksizin) sabit 88px'lik alt gezinme çubuğu kullanıyor
-   (bkz. "The former sidebar becomes the persistent four-item bottom
-   navigation" kuralı) — rozet onun ÜSTÜNE binip "Anasayfa" etiketini
-   örtmesin diye 96px'ten başlıyor, sol-alt köşede düşük ama okunur bir
-   opaklıkla. */
-.user-identity-badge{
-  position:fixed;left:8px;bottom:96px;z-index:9999;pointer-events:none;
+/* Kullanıcı kimlik rozeti — hangi hesapla giriş yapıldığı görünsün diye üç
+   yerde render edilir (renderUserIdentityBadge, auth.js), her zaman aynı
+   içerikle ama bağlama göre farklı konumda:
+   1) #userIdentityBadgeTopbar — .top-bar'ın İÇİNDE, satırın TAM ORTASINDA
+      (Anasayfa/Profilim/İstatistikler/Hatalılar gibi panel ekranları).
+   2) #userIdentityBadgeDrawer — .drawer-header'ın İÇİNDE, "← Ders adı"
+      satırının SAĞ ucunda (fasikül listesi çekmecesi).
+   3) #userIdentityBadge — sabit/yüzer, SADECE okuyucu (PDF/çözüm modu)
+      açıkken görünür; o ekranda üstteki 1-2 numaralı satırlar hiç yok. */
+.uib-inline{
   display:flex;align-items:center;gap:6px;padding:4px 10px 4px 7px;border-radius:99px;
+  background:var(--bg-2);border:1px solid var(--border-strong);
+  font-family:var(--font-ui);font-size:10.5px;font-weight:700;color:var(--text-1);
+  white-space:nowrap;flex:none;
+}
+.uib-inline .uib-icon{font-size:13px;line-height:1}
+.top-bar{position:relative}
+.uib-topbar{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+/* margin-left:auto EKLEMİYORUZ: .drawer-actions zaten kendi margin-left:auto'suyla
+   "benden sonraki her şeyi (bu rozet dahil) sağa it" işini yapıyor — rozete
+   AYRICA auto margin verilirse flexbox boş alanı ikisi arasında PAYLAŞTIRIYOR,
+   rozet sağ kenara değil ortalara yakın bir yere düşüyordu. */
+.uib-drawer{}
+
+.user-identity-badge{
+  display:none;position:fixed;left:8px;bottom:96px;z-index:9999;pointer-events:none;
+  align-items:center;gap:6px;padding:4px 10px 4px 7px;border-radius:99px;
   background:var(--bg-2);border:1px solid var(--border-strong);
   font-family:var(--font-ui);font-size:10.5px;font-weight:700;color:var(--text-1);
   box-shadow:var(--shadow-lg);opacity:.85;
 }
 .user-identity-badge .uib-icon{font-size:13px;line-height:1}
+/* .top-bar/.drawer-header okuyucu açıkken ekranda değil — o yüzden orada
+   sabit/köşe rozeti devreye girer. #reader-overlay bu elemandan ÖNCE geldiği
+   için genel kardeş seçiciyle koşullanabiliyor. */
+#reader-overlay.open ~ .user-identity-badge{display:flex}
 .toast{
   background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
   padding:12px 16px;font-size:13px;font-weight:500;
