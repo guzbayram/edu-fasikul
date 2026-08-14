@@ -736,12 +736,30 @@ export function doGuest(){
   enterApp('Misafir');
 }
 
+// Hangi hesapla giriş yapıldığını (isim + rol) TÜM ekranlarda sabit köşede
+// gösteren rozet — iki cihazı (ör. admin MacBook + öğrenci tablet) yan yana
+// karşılaştırırken hangisinin hangi kullanıcıya ait olduğu tek bakışta
+// anlaşılsın diye. Sadece bilgi amaçlı; canlı izleme sırasında görüntülenen
+// öğrenciye göre DEĞİL, her zaman gerçekten giriş yapılan hesaba göre.
+function renderUserIdentityBadge(){
+  const badge = document.getElementById('userIdentityBadge');
+  if(!badge) return;
+  const user = appState.user;
+  if(!user){ badge.style.display = 'none'; return; }
+  const roleIcon = user.role === 'admin' ? '🔑' : user.role === 'ogretmen' ? '👨‍🏫' : '🎓';
+  const roleLabel = {ogretmen:'Öğretmen', admin:'Yönetici'}[user.role] || 'Öğrenci';
+  badge.innerHTML = `<span class="uib-icon">${roleIcon}</span><span>${esc(user.name || user.email || 'Kullanıcı')} · ${roleLabel}</span>`;
+  badge.style.display = 'flex';
+}
+window.renderUserIdentityBadge = renderUserIdentityBadge;
+
 export function enterApp(name){
   if(String(appState.user?.email || '').toLowerCase() === ADMIN_EMAIL && appState.user.role !== 'admin'){
     appState.user.role = 'admin';
   }
   document.documentElement.classList.toggle('guest-mode', appState.user?.email === 'misafir@demo.com');
   document.documentElement.classList.toggle('restricted-mode', appState.user?.role !== 'admin');
+  renderUserIdentityBadge();
   document.getElementById('welcomeName').textContent = name;
   document.getElementById('profileName').textContent = name;
   const roleLabel = {ogretmen:'Öğretmen',admin:'Yönetici'}[appState.user.role] || 'Öğrenci';
@@ -814,6 +832,7 @@ export async function doLogout(){
   document.documentElement.classList.remove('restricted-mode');
   document.documentElement.classList.remove('can-manage-users');
   document.documentElement.classList.remove('can-admin-json');
+  renderUserIdentityBadge();
   document.getElementById('screen-app').classList.remove('active');
   document.getElementById('screen-login').classList.add('active');
 }

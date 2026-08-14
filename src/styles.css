@@ -2203,6 +2203,23 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
    TOAST
 ════════════════════════════════════════════════════════ */
 .toast-container{position:fixed;bottom:24px;right:24px;z-index:600;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+
+/* Kullanıcı kimlik rozeti — hangi hesapla giriş yapıldığı, TÜM ekranlarda
+   (anasayfa, okuyucu/çözüm modu dahil) sabit köşede görünür. Bilgi amaçlı,
+   tıklanabilir/etkileşimli değil. Uygulama TÜM pencere genişliklerinde
+   (dar/geniş fark etmeksizin) sabit 88px'lik alt gezinme çubuğu kullanıyor
+   (bkz. "The former sidebar becomes the persistent four-item bottom
+   navigation" kuralı) — rozet onun ÜSTÜNE binip "Anasayfa" etiketini
+   örtmesin diye 96px'ten başlıyor, sol-alt köşede düşük ama okunur bir
+   opaklıkla. */
+.user-identity-badge{
+  position:fixed;left:8px;bottom:96px;z-index:9999;pointer-events:none;
+  display:flex;align-items:center;gap:6px;padding:4px 10px 4px 7px;border-radius:99px;
+  background:var(--bg-2);border:1px solid var(--border-strong);
+  font-family:var(--font-ui);font-size:10.5px;font-weight:700;color:var(--text-1);
+  box-shadow:var(--shadow-lg);opacity:.85;
+}
+.user-identity-badge .uib-icon{font-size:13px;line-height:1}
 .toast{
   background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
   padding:12px 16px;font-size:13px;font-weight:500;
