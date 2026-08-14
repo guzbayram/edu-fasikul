@@ -1341,13 +1341,29 @@ function goToPage(n){
   }
 }
 
-function scrollToPage(pageNum, behavior){
+const SCROLL_TO_PAGE_RETRY_MS = 150;
+const SCROLL_TO_PAGE_MAX_RETRY = 10;
+function scrollToPage(pageNum, behavior, attempt = 0){
   const el = document.getElementById('page-wrap-' + pageNum);
   if(el){
     appState._scrollingToPage = true;
     window.syncNavToPage?.(pageNum);
     el.scrollIntoView({behavior: behavior || 'smooth', block: 'start'});
     setTimeout(()=>{ appState._scrollingToPage = false; }, 600);
+    return;
+  }
+  // Sayfa-wrap DOM'u henüz kurulmamışsa (ör. renderAllPages() henüz TÜM
+  // yer tutucuları eklemediyse — özellikle YENİ açılan/büyük bir fasikülde
+  // uzak bir sayfaya (ör. 1'den 110'a) aniden atlarken) fonksiyon eskiden
+  // sessizce hiçbir şey yapmadan çıkardı: appState.currentPage (dolayısıyla
+  // rozet/panel bilgisi) doğru güncellenir ama ekran görsel olarak hiç
+  // kaymazdı — canlı takipte "rozet doğru, PDF fasikülün başında kalıyor"
+  // şeklinde rapor edilen tam olarak buydu. Kısa aralıklarla yeniden dener.
+  if(attempt < SCROLL_TO_PAGE_MAX_RETRY){
+    setTimeout(()=>scrollToPage(pageNum, behavior, attempt+1), SCROLL_TO_PAGE_RETRY_MS);
+  } else {
+    console.warn(`scrollToPage: page-wrap-${pageNum} bulunamadı, kaydırma başarısız.`);
+    window.debugReport?.('pdf.scrollToPage.element_missing', {pageNum});
   }
 }
 

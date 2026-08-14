@@ -233,6 +233,22 @@ async function _followCanli(seq){
     // veriyle burada zorla eşitliyoruz.
     const settledPage = d.page || appState.currentPage;
     setTimeout(()=>window.reloadDrawingForPage?.(settledPage), 200);
+    // YENİ bir fasikül açılırken (openReader) appState.currentPage İÇERİDE
+    // her zaman 1'e sıfırlanıyor ve PDF o sayfadan render edilmeye başlıyor;
+    // bu render (büyük/184 sayfalık bir PDF'te ağ+layout nedeniyle) openReader()
+    // ÇÖZÜLDÜKTEN sonra da bir süre arka planda sürebiliyor. Bu sırada yukarıda
+    // doğru sayfaya (d.page) gidilmiş olsa bile, arka planda geç biten "1.
+    // sayfaya render/scroll" tamamlanınca bunun ÜZERİNE yazıp admin'i fasikülün
+    // başına (kapak/önsöz sayfası) geri düşürebiliyordu. Kısa bir gecikmeyle
+    // gerçekten oturup oturmadığını doğrulayıp gerekirse tekrar zorluyoruz.
+    setTimeout(()=>{
+      const target = Number(settledPage);
+      const now = Number(appState.currentPage || 1);
+      if(Number.isFinite(target) && target > 0 && now !== target){
+        window.debugLog?.('live.page.resettle', {from: now, to: target}, 'warn');
+        window.goToPage?.(target);
+      }
+    }, 600);
   }catch(e){
     console.warn('Canlı takip hatası:',e);
     window.debugReport?.('live.follow.failed', {error:e, incoming:_latestCanliData});
