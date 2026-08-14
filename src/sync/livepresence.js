@@ -554,7 +554,7 @@ function _applyFollow(seq){
     try{
       if(seq !== _followApplySeq) return;
       if(m.zoom && Math.abs(m.zoom - appState.zoom) >= 2){
-        try{ await window.setZoomAbsolute?.(m.zoom); }catch(e){}
+        try{ await window.setZoomAbsolute?.(m.zoom); }catch(e){ console.warn('Canlı takip: zoom uygulanamadı:', e); }
         if(seq !== _followApplySeq) return;
       }
       if(m.fracX != null && m.fracY != null){

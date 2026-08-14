@@ -443,7 +443,14 @@ function updatePageCrumb(pageNum){
 
 function syncNavToPage(pageNum, opts={}){
   updatePageCrumb(pageNum);
-  if(appState._suppressNavSync) return;
+  // _suppressNavSync, KULLANICININ KENDİ manuel soru/konu tıklamasından sonra
+  // 600-800ms boyunca kendi scroll-observer'ının bu tıklamayı "düzeltmesini"
+  // (eski soruya geri atmasını) önlemek için var — bu pencere BİZİM kendi
+  // etkileşimimize ait. Ama opts.force=true (canlı takip) tamamen FARKLI bir
+  // kaynaktan (izlenen kişinin gerçek konumu) geliyor; admin tam bu 600-800ms
+  // penceresinde bir şeye tıklamışsa force'lu çağrı sessizce burada
+  // yutuluyor, izlenenin gerçek sayfası/sorusu hiç uygulanmıyordu.
+  if(appState._suppressNavSync && !opts.force) return;
   const fas = appState.aktifFasikul;
   if(!fas || !fas.konular) return;
 

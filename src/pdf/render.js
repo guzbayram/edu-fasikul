@@ -1483,12 +1483,21 @@ window.getCurrentPageScrollFraction = getCurrentPageScrollFraction;
 // alanın sol + üst kenarını baz alıyoruz; farklı cihaz/panel boyutlarında
 // öğrencinin gördüğü bölümün kenarlardan kırpılmasını bu önler. Eski payload'lar
 // için merkez hizalama korunur.
-function applyPageScrollFraction(pageNum, fracX, fracY, opts = {}){
+function applyPageScrollFraction(pageNum, fracX, fracY, opts = {}, attempt = 0){
   const wrap = document.getElementById('readerCanvasWrap');
   const inner = getPagesInner(wrap);
   if(!wrap || !inner || fracX == null || fracY == null) return;
   const pageEl = inner.querySelector(`[data-page-num="${pageNum}"]`);
   if(!pageEl) return;
+  // Sürekli modda sayfa henüz PLACEHOLDER boyutundaysa (IntersectionObserver
+  // gerçek PDF içeriğini henüz render ETMEDİYSE, dataset.rendered!=='1')
+  // getBoundingClientRect() yanlış (yer tutucu) bir boyut döndürür — fracX/Y
+  // buna göre hesaplanınca izleyen, izlenenin GERÇEKTE gördüğü kesitten
+  // farklı bir noktaya kayar. Gerçek render'ı birkaç kez kısa aralıkla bekle.
+  if(appState.viewMode === 'scroll' && pageEl.dataset.rendered !== '1' && attempt < 8){
+    setTimeout(()=>applyPageScrollFraction(pageNum, fracX, fracY, opts, attempt+1), 150);
+    return;
+  }
   const pr = pageEl.getBoundingClientRect();
   if(!pr.width || !pr.height) return;
   const wr = wrap.getBoundingClientRect();

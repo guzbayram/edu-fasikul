@@ -213,7 +213,7 @@ async function _followCanli(seq){
     // restore döngüsünü tetiklediğinden pan ondan ÖNCE uygulanırsa ezilir.
     d = _latestCanliData || d;
     if(d.zoom && Math.abs(d.zoom - appState.zoom) >= 2){
-      try{ await window.setZoomAbsolute?.(d.zoom); }catch(e){}
+      try{ await window.setZoomAbsolute?.(d.zoom); }catch(e){ console.warn('Canlı takip: zoom uygulanamadı:', e); }
     }
     d = _latestCanliData || d;
     if(d.fracX != null && d.fracY != null){

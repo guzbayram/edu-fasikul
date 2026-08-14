@@ -266,12 +266,24 @@ function saveDrawingForPage(pageNum){
 // zamanlamaya göre B'nin tuvali boş kalabiliyordu. _followCanli sayfa
 // senkronundan SONRA bunu çağırıp mevcut tuvali appState.drawings'teki
 // GÜNCEL veriyle zorla eşitliyoruz (fark yoksa no-op).
-function reloadDrawingForPage(pageNum){
+// Sürekli-scroll modunda hedef sayfanın tuvali (Fabric canvas) IntersectionObserver
+// henüz o sayfayı render ETMEDİYSE oluşmamış olabilir; ya da öğrencinin çizim
+// verisi (subscribeRealtimeDrawings, ayrı bir Firestore aboneliği) henüz ağdan
+// gelmemiş olabilir. Her iki durumda da tek seferlik çağrı sessizce hiçbir şey
+// yapmadan çıkardı — retry ekliyoruz (livepresence.js'nin _renderFollowDraw
+// deneme mantığıyla aynı desen).
+const RELOAD_DRAWING_RETRY_MS = 150;
+const RELOAD_DRAWING_MAX_RETRY = 8;
+function reloadDrawingForPage(pageNum, attempt=0){
   const fc = appState.fabricCanvases[pageNum];
-  if(!fc) return;
   const key = drawingKeyForPage(pageNum);
   const saved = appState.drawings[key];
-  if(!saved) return;
+  if(!fc || !saved){
+    if(attempt < RELOAD_DRAWING_MAX_RETRY){
+      setTimeout(()=>reloadDrawingForPage(pageNum, attempt+1), RELOAD_DRAWING_RETRY_MS);
+    }
+    return;
+  }
   let current = '';
   try{ current = localCanvasJSON(fc); }catch(e){}
   if(current === saved) return;
@@ -282,7 +294,7 @@ function reloadDrawingForPage(pageNum){
       fc.renderAll();
       fc._loadingDrawing = false;
     });
-  }catch(e){ fc._loadingDrawing = false; }
+  }catch(e){ fc._loadingDrawing = false; console.warn('Çizim yeniden yüklenemedi:', e); }
 }
 window.reloadDrawingForPage = reloadDrawingForPage;
 
