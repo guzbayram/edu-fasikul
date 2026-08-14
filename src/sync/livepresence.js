@@ -401,6 +401,12 @@ export function followCanliMember(uid, name){
   window.showToast?.(`🔴 ${name||'Katılımcı'} takip ediliyor`,'success');
   _renderRoster();
   scheduleApplyFollow();
+  // presence dokümanındaki tek "şu an hangi sayfadaysa onun çizimi" alanı
+  // (m.draw, aşağıda _applyFollow'da kullanılıyor) izlenenin o oturumda
+  // HİÇ UĞRAMADIĞI bir sayfada önceden yazdığı çözümü hiç gösteremiyordu —
+  // realtime.js'deki TAM cizimler subcollection aboneliğini de başlatıyoruz
+  // ki appState.drawings izlenenin tüm GEÇMİŞ sayfalarıyla dolsun.
+  window.subscribeRealtimeDrawings?.(uid);
 }
 
 export function unfollowCanliMember(){
@@ -409,6 +415,7 @@ export function unfollowCanliMember(){
   _followSourceId = '';
   _followSourceSeenAt = 0;
   appState._followingCanliMember = false;
+  window.unsubscribeRealtimeDrawings?.();
   _renderRoster();
   window.showToast?.('Takip durduruldu','info');
   // İzlenenin istatistik satırı ekranda asılı kalmasın — kendi (gerçek) durumumuza dön.
@@ -559,6 +566,11 @@ function _applyFollow(seq){
           docFracY: m.docFracY
         });
       }
+      // Yorumdaki "sonra çizimi uygula" adımı eksikti — izlenen kişinin bu
+      // sayfadaki ÖNCEDEN VAR OLAN çizimi appState.drawings'e yazılmış
+      // olabilir ama tuvale hiç yansımamış olabilir (bkz. realtime.js'deki
+      // aynı düzeltme, canvas.js reloadDrawingForPage).
+      window.reloadDrawingForPage?.(m.page || appState.currentPage);
     } finally {
       if(seq === _followApplySeq) setTimeout(()=>{ appState._presSuppress = false; }, 900);
     }

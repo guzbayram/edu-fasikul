@@ -225,6 +225,14 @@ async function _followCanli(seq){
         docFracY: d.docFracY
       });
     }
+    // İzlenen öğrencinin bu sayfadaki ÖNCEDEN VAR OLAN çizimi, tuval bu
+    // sayfaya geçmeden ÖNCE ya da SONRA subscribeRealtimeDrawings ile
+    // appState.drawings'e yazılmış olabilir — zamanlamaya göre ekrana hiç
+    // yansımayabiliyordu (bkz. canvas.js reloadDrawingForPage yorumu).
+    // Sayfa/zoom/pan oturduktan sonra tuvali appState.drawings'teki güncel
+    // veriyle burada zorla eşitliyoruz.
+    const settledPage = d.page || appState.currentPage;
+    setTimeout(()=>window.reloadDrawingForPage?.(settledPage), 200);
   }catch(e){
     console.warn('Canlı takip hatası:',e);
     window.debugReport?.('live.follow.failed', {error:e, incoming:_latestCanliData});
@@ -325,6 +333,8 @@ function toggleWatchStatsPanel(){
   if(btn) btn.textContent = panel.classList.contains('collapsed') ? 'Aç' : 'Kapat';
 }
 window.toggleWatchStatsPanel = toggleWatchStatsPanel;
+window.subscribeRealtimeDrawings = subscribeRealtimeDrawings;
+window.unsubscribeRealtimeDrawings = unsubscribeRealtimeDrawings;
 function _showWatchStatsPanel(name, data={}){
   let panel = document.getElementById('watchLiveStatsPanel');
   if(!panel){
@@ -471,9 +481,16 @@ function unsubscribeWatchSolutions(){
   appState.watchSorularState = {};
 }
 
+// Not: appState._followingCanliMember, livepresence.js'nin KENDİ (ayrı) 📡
+// canlı-panel takip özelliğine ait bir bayrak — o özellik daha önce
+// öğrencinin cizimler subcollection'ına HİÇ abone olmuyordu, sadece
+// presence dokümanındaki TEK bir "şu an hangi sayfadaysa onun çizimi"
+// alanına bakıyordu (öğrenci o oturumda o sayfaya hiç uğramadıysa hiçbir
+// şey görünmüyordu). Buradaki abonelik (tam geçmiş, tüm sayfalar) artık
+// o özellik AKTİFKEN de çalışsın diye guard'a eklendi.
 function subscribeRealtimeDrawings(uid){
   unsubscribeRealtimeDrawings();
-  if((!appState.liveSession && !appState.watchMode) || !window._fsOnSnapshot || !window._db || !uid) return;
+  if((!appState.liveSession && !appState.watchMode && !appState._followingCanliMember) || !window._fsOnSnapshot || !window._db || !uid) return;
   const cizimlerRef = window._fsCollection(window._db,'kullanicilar',uid,'cizimler');
   window._realtimeUnsubCizimler = window._fsOnSnapshot(cizimlerRef, (snapshot)=>{
     snapshot.docChanges().forEach(change=>{

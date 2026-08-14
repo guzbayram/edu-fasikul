@@ -256,6 +256,36 @@ function saveDrawingForPage(pageNum){
   persistDrawingCloud(key, json, fc.width, fc.height, { live:true, pageNum });
 }
 
+// Canlı takipte (watchStudentLive): izlenen öğrencinin cizimler subcollection'ı
+// realtime.js'deki subscribeRealtimeDrawings() ile appState.drawings'e
+// yazılıyor, AMA bu SADECE tuval o an ZATEN "aktif sayfa" ise ekrana da
+// uygulanıyor (initFabricForPage tuval İLK KURULURKEN appState.drawings'e
+// bakar, sonradan gelen güncellemeyi kendiliğinden yakalamaz). Admin sayfa
+// A'dayken canlı takip B sayfasına geçerse ve öğrencinin B'deki eski
+// çiziminin verisi tuval B kurulmadan ÖNCE ya da SONRA gelmiş olabilir —
+// zamanlamaya göre B'nin tuvali boş kalabiliyordu. _followCanli sayfa
+// senkronundan SONRA bunu çağırıp mevcut tuvali appState.drawings'teki
+// GÜNCEL veriyle zorla eşitliyoruz (fark yoksa no-op).
+function reloadDrawingForPage(pageNum){
+  const fc = appState.fabricCanvases[pageNum];
+  if(!fc) return;
+  const key = drawingKeyForPage(pageNum);
+  const saved = appState.drawings[key];
+  if(!saved) return;
+  let current = '';
+  try{ current = localCanvasJSON(fc); }catch(e){}
+  if(current === saved) return;
+  fc._loadingDrawing = true;
+  try{
+    fc.loadFromJSON(saved, ()=>{
+      applyDrawingScale(fc, key);
+      fc.renderAll();
+      fc._loadingDrawing = false;
+    });
+  }catch(e){ fc._loadingDrawing = false; }
+}
+window.reloadDrawingForPage = reloadDrawingForPage;
+
 // Çizim değişiklikleri her zaman 160ms (metin 80ms) debounce'la buluta
 // yazılır ve — cevaplardan farklı olarak — hiçbir localStorage yedeği
 // YOKTUR (sadece appState.drawings/RAM). Sekme kapanmadan önceki
