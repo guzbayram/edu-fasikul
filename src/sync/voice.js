@@ -29,6 +29,7 @@ const remoteAudio = new Map();
 const pendingCandidates = new Map();
 const peerRecoveryTimers = new Map();
 const peerLastRestartAt = new Map();
+const peerLastReportedState = new Map();
 
 function esc(s) {
   return String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
@@ -323,15 +324,28 @@ function schedulePeerRecovery(uid, state) {
   if (state === 'connected' || state === 'completed') {
     window.debugLog?.('voice.peer.connected', {uid, state}, 'info');
     clearPeerRecovery(uid);
+    peerLastReportedState.delete(uid);
     publishVoicePresence({ callActive: true }).catch(() => {});
     return;
   }
   if (state === 'closed') {
     clearPeerRecovery(uid);
+    peerLastReportedState.delete(uid);
     return;
   }
   if (state !== 'disconnected' && state !== 'failed') return;
-  window.debugReport?.('voice.peer.unstable', {uid, state}, {force: state === 'failed'});
+  // pc.onconnectionstatechange VE pc.oniceconnectionstatechange İKİSİ DE aynı
+  // onPeerState()'i çağırıyor; bağlantı "disconnected"/"failed" durumunda
+  // KALDIĞI sürece her ufak state tick'inde (yeniden pazarlık denemeleri dahil)
+  // bu fonksiyon tekrar tekrar tetikleniyordu — tek bir gerçek kopma olayı,
+  // saniyeler içinde onlarca neredeyse birebir aynı debugReport kaydına
+  // dönüşüyordu (canlıda 9 saniyede 20 kayıt gözlemlendi). Aynı durum için
+  // sadece BİR KEZ raporla; durum GERÇEKTEN değişince (ör. disconnected'dan
+  // failed'a yükselince, ya da toparlanıp yeniden kopunca) tekrar raporlanır.
+  if (peerLastReportedState.get(uid) !== state) {
+    peerLastReportedState.set(uid, state);
+    window.debugReport?.('voice.peer.unstable', {uid, state}, {force: state === 'failed'});
+  }
   if (peerRecoveryTimers.has(uid)) return;
   const initiator = shouldInitiatePeerRecovery(uid);
   const delay = state === 'failed' ? (initiator ? 300 : 4000) : (initiator ? PEER_DISCONNECT_RETRY_MS : 7000);
