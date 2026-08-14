@@ -494,6 +494,11 @@
       <button class="rb-btn" onclick="reviewJumpToWrong(1)" title="Sonraki yanlış soru">Yanlış ▶</button>
       <button class="rb-btn rb-close" onclick="closeStudentFasikulReview()">✕ İncelemeyi Kapat</button>
     </div>
+    <!-- Çözüm modunda üst araç çubuğu (← geri oku dahil) tamamen gizleniyor;
+         sol paneldeki "✕ Çözüm modundan çık" butonuna ek olarak PDF alanının
+         sağ üst köşesinde de aynı işlevi gören yüzer bir buton — sadece
+         solve-mode'da görünür (bkz. styles.css). -->
+    <button class="pdf-solve-exit-btn" onclick="exitSolveMode()" title="Çözüm modundan çık">✕</button>
     <!-- Top Toolbar -->
     <div class="reader-toolbar" id="readerToolbar">
       <!-- Nav group -->

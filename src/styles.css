@@ -860,7 +860,18 @@ body.reader-locked .main-content{visibility:hidden!important}
 .alt-konu-item.active .akn-chip{background:rgba(129,140,248,0.2);color:var(--mat)}
 
 /* CENTER */
-.reader-center{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-0)}
+.reader-center{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-0);position:relative}
+/* Çözüm modunda üst araç çubuğu (dolayısıyla "← geri" oku da) tamamen
+   gizleniyor — bu yüzden solve-mode'da PDF alanının kendi köşesinde de
+   çözümden çıkış için yüzer bir buton bulunuyor (sol paneldeki ✕'e ek). */
+.pdf-solve-exit-btn{
+  display:none;position:absolute;top:14px;right:14px;z-index:60;
+  width:36px;height:36px;border-radius:99px;border:1px solid var(--border-strong);
+  background:var(--bg-2);color:var(--text-1);font-size:16px;font-weight:700;
+  align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-lg);
+}
+.pdf-solve-exit-btn:hover{background:var(--bg-3);color:var(--text-0)}
+#reader-overlay.solve-mode .pdf-solve-exit-btn{display:flex}
 
 .reader-toolbar{
   height:56px;flex-shrink:0;background:var(--bg-1);border-bottom:1px solid var(--border);
