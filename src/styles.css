@@ -2205,15 +2205,19 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
 ════════════════════════════════════════════════════════ */
 .toast-container{position:fixed;bottom:24px;right:24px;z-index:600;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 
-/* Kullanıcı kimlik rozeti — hangi hesapla giriş yapıldığı görünsün diye üç
+/* Kullanıcı kimlik rozeti — hangi hesapla giriş yapıldığı görünsün diye DÖRT
    yerde render edilir (renderUserIdentityBadge, auth.js), her zaman aynı
    içerikle ama bağlama göre farklı konumda:
    1) #userIdentityBadgeTopbar — .top-bar'ın İÇİNDE, satırın TAM ORTASINDA
       (Anasayfa/Profilim/İstatistikler/Hatalılar gibi panel ekranları).
    2) #userIdentityBadgeDrawer — .drawer-header'ın İÇİNDE, "← Ders adı"
-      satırının SAĞ ucunda (fasikül listesi çekmecesi).
-   3) #userIdentityBadge — sabit/yüzer, SADECE okuyucu (PDF/çözüm modu)
-      açıkken görünür; o ekranda üstteki 1-2 numaralı satırlar hiç yok. */
+      satırının SAĞ ucunda (fasikül listesi çekmecesi) — 📊 Çalışma Raporu
+      butonuyla birlikte.
+   3) #userIdentityBadgeSolve — çözüm modunda sol panelin (#solvePalette)
+      "☰ Konu · s.NNN" satırının hemen altında, kendi satırında.
+   4) #userIdentityBadge — sabit/yüzer, SADECE okuyucu AÇIK ve ÇÖZÜM MODU
+      DIŞINDAYKEN (düz PDF görüntüleme) görünür — o ekranda 1-3 numaralı
+      satırların hiçbiri yok. */
 .uib-inline{
   display:flex;align-items:center;gap:6px;padding:4px 10px 4px 7px;border-radius:99px;
   background:var(--bg-2);border:1px solid var(--border-strong);
@@ -2228,6 +2232,11 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
    AYRICA auto margin verilirse flexbox boş alanı ikisi arasında PAYLAŞTIRIYOR,
    rozet sağ kenara değil ortalara yakın bir yere düşüyordu. */
 .uib-drawer{}
+/* .drawer-rapor-btn de aynı sebeple (yukarıdaki .uib-drawer notu) kendi
+   auto-margin'i almıyor — .drawer-actions'ın margin-left:auto'su zaten
+   kendisinden SONRAKİ tüm kardeşleri (bu buton + rozet) sağa itiyor. */
+.drawer-rapor-btn{flex:none}
+.sp-identity-row{justify-content:center!important}
 
 .user-identity-badge{
   display:none;position:fixed;left:8px;bottom:96px;z-index:9999;pointer-events:none;
@@ -2237,10 +2246,12 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
   box-shadow:var(--shadow-lg);opacity:.85;
 }
 .user-identity-badge .uib-icon{font-size:13px;line-height:1}
-/* .top-bar/.drawer-header okuyucu açıkken ekranda değil — o yüzden orada
-   sabit/köşe rozeti devreye girer. #reader-overlay bu elemandan ÖNCE geldiği
-   için genel kardeş seçiciyle koşullanabiliyor. */
-#reader-overlay.open ~ .user-identity-badge{display:flex}
+/* .top-bar/.drawer-header okuyucu açıkken ekranda değil, o yüzden orada
+   sabit/köşe rozeti devreye girer — ama SADECE çözüm modu DIŞINDA: çözüm
+   modunda #userIdentityBadgeSolve zaten #solvePalette içinde gösteriliyor,
+   ikisi birden aynı anda görünürse rozet iki kez tekrar ederdi. #reader-overlay
+   bu elemandan ÖNCE geldiği için genel kardeş seçiciyle koşullanabiliyor. */
+#reader-overlay.open:not(.solve-mode) ~ .user-identity-badge{display:flex}
 .toast{
   background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
   padding:12px 16px;font-size:13px;font-weight:500;

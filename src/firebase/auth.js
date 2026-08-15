@@ -750,7 +750,7 @@ function renderUserIdentityBadge(){
   const roleIcon = user ? (user.role === 'admin' ? '🔑' : user.role === 'ogretmen' ? '👨‍🏫' : '🎓') : '';
   const roleLabel = user ? ({ogretmen:'Öğretmen', admin:'Yönetici'}[user.role] || 'Öğrenci') : '';
   const html = user ? `<span class="uib-icon">${roleIcon}</span><span>${esc(user.name || user.email || 'Kullanıcı')} · ${roleLabel}</span>` : '';
-  ['userIdentityBadge', 'userIdentityBadgeTopbar', 'userIdentityBadgeDrawer'].forEach(id=>{
+  ['userIdentityBadge', 'userIdentityBadgeTopbar', 'userIdentityBadgeDrawer', 'userIdentityBadgeSolve'].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
     el.innerHTML = html;
