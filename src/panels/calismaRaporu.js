@@ -80,11 +80,15 @@ function _rpBuildGunler(records){
       satirlar: new Map(), toplam: {soru:0, dogru:0, yanlis:0, bos:0}
     };
     const gun = gunler[gunKey];
-    const satirKey = `${r.fasikulId || r.fasikulAd || ''}|${r.konu || ''}|${r.altKonu || ''}`;
+    // Eski/yeni r.konu değeri değil, MANIFEST'te altKonu'nun ŞU AN bağlı
+    // olduğu üst konu adı kullanılır (bkz. _rpCurrentKonuAd) — aksi halde
+    // aynı test, fasikül JSON'ı yeniden düzenlendiğinde iki ayrı satıra bölünür.
+    const konuAd = _rpCurrentKonuAd(r.fasikulId, r.altKonu) || r.konu || '—';
+    const satirKey = `${r.fasikulId || r.fasikulAd || ''}|${konuAd}|${r.altKonu || ''}`;
     if(!gun.satirlar.has(satirKey)) gun.satirlar.set(satirKey, {
       fasikulAd: r.fasikulAd || r.fasikulId || 'Fasikül',
       fasikulId: r.fasikulId || '', dersId: r.dersId || '',
-      konu: r.konu || '—', altKonu: r.altKonu || '—', tarih: gunKey,
+      konu: konuAd, altKonu: r.altKonu || '—', tarih: gunKey,
       soru:0, dogru:0, yanlis:0, bos:0, ilkTs: tarih.getTime(), kayitlar: []
     });
     const s = gun.satirlar.get(satirKey);
@@ -155,9 +159,11 @@ function buildRaporFasikulOzet(records){
       satirlar: new Map(), toplam:{soru:0,dogru:0,yanlis:0,bos:0}, sonTs:0
     });
     const fas = fasikuller.get(fasKey);
-    const satirKey = `${gunKey}|${r.konu||''}|${r.altKonu||''}`;
+    // bkz. _rpBuildGunler'daki aynı normalizasyon notu.
+    const konuAd2 = _rpCurrentKonuAd(r.fasikulId, r.altKonu) || r.konu || '—';
+    const satirKey = `${gunKey}|${konuAd2}|${r.altKonu||''}`;
     if(!fas.satirlar.has(satirKey)) fas.satirlar.set(satirKey, {
-      tarih: gunKey, ts: tarih.getTime(), konu: r.konu || '—', altKonu: r.altKonu || '—',
+      tarih: gunKey, ts: tarih.getTime(), konu: konuAd2, altKonu: r.altKonu || '—',
       fasikulAd: r.fasikulAd || r.fasikulId || 'Fasikül',
       fasikulId: r.fasikulId || '', dersId: r.dersId || '',
       soru:0, dogru:0, yanlis:0, bos:0, kayitlar: []
@@ -231,6 +237,29 @@ function _rpAltKonuSayfa(fasikulId, altKonuAd){
     for(const konu of (fas.konular || [])){
       const alt = (konu.altKonular || []).find(a => a.ad === altKonuAd);
       if(alt) return alt.sayfa || null;
+    }
+    return null;
+  }
+  return null;
+}
+
+// Bir testin (altKonu) MANIFEST'teki GÜNCEL üst konu adı. Kayıtlardaki
+// r.konu, cevap verildiği ANDAKİ appState.aktifKonu'dan alınıp dondurulmuş
+// bir metin — fasikül JSON'ı sonradan yeniden düzenlenip (ör. "Konu Testi-18"
+// bağımsız bir üst konuyken sonradan "Oran" başlığı altına taşınmışsa) aynı
+// testin ESKİ ve YENİ cevapları farklı r.konu değerleriyle kaydedilmiş olur.
+// Rapor bunları r.konu'ya göre gruplarsa aynı test YANLIŞLIKLA iki ayrı
+// satıra bölünür (aynı "s.NNN", aynı toplam soru, ama D/Y/Ç ikiye ayrılmış
+// görünür). Gruplama ve gösterim GÜNCEL manifestten türetilen bu adı
+// kullanır — bulunamazsa (silinmiş/eski fasikül) kayıttaki r.konu'ya düşülür.
+function _rpCurrentKonuAd(fasikulId, altKonuAd){
+  if(!fasikulId || !altKonuAd) return null;
+  for(const ders of (window.MANIFEST?.dersler || [])){
+    const fas = ders.fasikuller?.find(f => f.id === fasikulId);
+    if(!fas) continue;
+    for(const konu of (fas.konular || [])){
+      const alt = (konu.altKonular || []).find(a => a.ad === altKonuAd);
+      if(alt) return konu.ad || null;
     }
     return null;
   }
