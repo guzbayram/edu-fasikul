@@ -2227,15 +2227,15 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
 .uib-inline .uib-icon{font-size:13px;line-height:1}
 .top-bar{position:relative}
 .uib-topbar{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
-/* margin-left:auto EKLEMİYORUZ: .drawer-actions zaten kendi margin-left:auto'suyla
-   "benden sonraki her şeyi (bu rozet dahil) sağa it" işini yapıyor — rozete
-   AYRICA auto margin verilirse flexbox boş alanı ikisi arasında PAYLAŞTIRIYOR,
-   rozet sağ kenara değil ortalara yakın bir yere düşüyordu. */
-.uib-drawer{}
-/* .drawer-rapor-btn de aynı sebeple (yukarıdaki .uib-drawer notu) kendi
-   auto-margin'i almıyor — .drawer-actions'ın margin-left:auto'su zaten
-   kendisinden SONRAKİ tüm kardeşleri (bu buton + rozet) sağa itiyor. */
-.drawer-rapor-btn{flex:none}
+/* Anasayfa'daki (.top-bar) ile AYNI düzen: rozet satırın TAM ORTASINDA
+   (absolute+translate ile, flex akışının dışında), "📊 Çalışma Raporu"
+   butonu ise satırın SAĞ ucunda — ikisi ARTIK yan yana bitişik durmuyor. */
+.drawer-header{position:relative}
+.uib-drawer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+/* .drawer-actions'ın kendi margin-left:auto'su, kendisinden SONRAKİ
+   kardeşi (bu buton) sağa itiyor — rozet artık absolute/ortada olduğu
+   için akıştan çıktı, aralarında paylaşım sorunu kalmadı. */
+.drawer-rapor-btn{flex:none;margin-left:auto}
 .sp-identity-row{justify-content:center!important}
 
 .user-identity-badge{
