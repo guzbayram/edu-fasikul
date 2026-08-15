@@ -1674,6 +1674,7 @@ select.rapor-student-select:hover{background-color:var(--bg-4)}
    tam metin title tooltip'inde durur; kart zaten tıklanınca testi açıyor. */
 .rapor-satir-konu{display:block;width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:700;color:var(--text-0);margin-bottom:4px}
 .rapor-satir-konu .ok{color:var(--text-muted);font-weight:400;margin:0 1px}
+.rapor-satir-sayfa{color:var(--text-muted);font-weight:600;font-size:11px}
 .rapor-satir-icons{display:flex;align-items:center;gap:7px;flex:none;margin-left:auto}
 .rapor-satir-ac{flex:none;font-size:13px;opacity:.7}
 .rapor-satir-saat{flex:none;font-size:13px;opacity:.75;cursor:pointer;transition:opacity .15s,transform .15s}

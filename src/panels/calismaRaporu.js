@@ -219,6 +219,24 @@ function _rpTotalSoru(fasikulId, altKonuAd){
   return null;
 }
 
+// Bir testin (altKonu) MANIFEST'teki başlangıç sayfa numarası — kart
+// üzerinde "Konu Testi-18 › Konu Testi-18" satırının sağına "s.76" olarak
+// eklenir, öğretmen/admin fasikülde testin nerede başladığını rapor
+// ekranından (fasikülü açmadan) görebilsin diye.
+function _rpAltKonuSayfa(fasikulId, altKonuAd){
+  if(!fasikulId || !altKonuAd) return null;
+  for(const ders of (window.MANIFEST?.dersler || [])){
+    const fas = ders.fasikuller?.find(f => f.id === fasikulId);
+    if(!fas) continue;
+    for(const konu of (fas.konular || [])){
+      const alt = (konu.altKonular || []).find(a => a.ad === altKonuAd);
+      if(alt) return alt.sayfa || null;
+    }
+    return null;
+  }
+  return null;
+}
+
 // Bir fasikülün MANIFEST'teki TÜM testlerinin toplam soru sayısı — Fasikül
 // Bazlı Özet başlığında da aynı "N T / M Ç" biçimini kullanmak için
 // (_rpTotalSoru tek bir test/altKonu içindi, bu fasikülün tamamını toplar).
@@ -255,6 +273,8 @@ function _rpRowsCards(rows, tarihSutunu){
     const toplamSoru = _rpTotalSoru(s.fasikulId, s.altKonu);
     const soruEtiket = toplamSoru ? `${toplamSoru} T / ${s.soru} Ç` : `${s.soru} soru`;
     const konuTam = `${s.konu} › ${s.altKonu}`;
+    const baslangicSayfa = _rpAltKonuSayfa(s.fasikulId, s.altKonu);
+    const sayfaEtiket = baslangicSayfa ? ` <span class="rapor-satir-sayfa">s.${baslangicSayfa}</span>` : '';
 
     const digerGunSayisi = s.fasikulId ? _rpOtherGunlerForTest(s.fasikulId, s.konu, s.altKonu, s.tarih).length : 0;
     const cokGunluEtiket = digerGunSayisi
@@ -273,7 +293,7 @@ function _rpRowsCards(rows, tarihSutunu){
           ${acilabilir ? '<span class="rapor-satir-ac" title="Fasikülde bu testi aç">📄</span>' : ''}
         </span>
       </div>
-      <div class="rapor-satir-konu" title="${_rpEsc(konuTam)}">${_rpEsc(s.konu)} <span class="ok">›</span> ${_rpEsc(s.altKonu)}</div>
+      <div class="rapor-satir-konu" title="${_rpEsc(konuTam)}">${_rpEsc(s.konu)} <span class="ok">›</span> ${_rpEsc(s.altKonu)}${sayfaEtiket}</div>
       <div class="rapor-satir-stats">
         ${soruEtiket} · <b class="rp-dogru">${s.dogru} D</b> / <b class="rp-yanlis">${s.yanlis} Y</b> · <span class="rp-bos">${s.bos} boş</span> · Net <b>${_rpFmtNet(net)}</b> · ${_rpBadge(basari)}${cokGunluEtiket}
       </div>
