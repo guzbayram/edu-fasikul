@@ -1324,6 +1324,19 @@ document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) flushPendingCloudPersistBestEffort();
 });
 window.addEventListener('pagehide', flushPendingCloudPersistBestEffort);
+
+// Sekme uzun süre arka planda/offline kalıp bağlantı geri geldiğinde,
+// Firestore'un realtime listener'ları otomatik olarak yeniden senkron
+// olsa da 'dersler' ana sayfası tekrar render edilmediği için kullanıcı
+// bulutta güncellenmiş dersleri/fasikülleri görmüyordu. Bağlantı
+// döndüğünde manifesti bir kez daha çekip ekranı tazeliyoruz.
+let _lastOnlineRefreshAt = 0;
+window.addEventListener('online', ()=>{
+  const now = Date.now();
+  if(now - _lastOnlineRefreshAt < 30000) return;
+  _lastOnlineRefreshAt = now;
+  if(appState.user?.uid) window.loadFromFirestore?.();
+});
 // ══════════════════════════════
 // DATA RESET
 // ══════════════════════════════
