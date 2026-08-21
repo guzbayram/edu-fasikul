@@ -5,8 +5,8 @@
   "kaynakPdf": "14-Tyt Matematik Fasikül 1.pdf",
   "pdf": "14-Tyt Matematik Fasikül 1-kart.pdf",
   "kartKlasoru": "14-Tyt Matematik Fasikül 1-kart",
-  "soruSayisi": 933,
-  "toplamSoru": 933,
+  "soruSayisi": 935,
+  "toplamSoru": 935,
   "konuSayisi": 10,
   "testSayisi": 50,
   "cevapMaskele": true,
@@ -918,7 +918,7 @@
               "pdfSayfa": 34,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "1-konu-testi-2-10",
@@ -927,10 +927,19 @@
               "pdfSayfa": 34,
               "tip": "soru",
               "soruNo": 10,
+              "cevap": "C"
+            },
+            {
+              "id": "1-konu-testi-2-11",
+              "baslik": "Konu Testi 2 - Soru 11",
+              "kartDosya": "1-konu-testi-2-11.png",
+              "pdfSayfa": 34,
+              "tip": "soru",
+              "soruNo": 11,
               "cevap": "A"
             }
           ],
-          "soruSayisi": 10
+          "soruSayisi": 11
         },
         {
           "id": "konu-testi-3",
@@ -4315,7 +4324,7 @@
               "pdfSayfa": 113,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "5-Uygulama-14",
@@ -4324,7 +4333,7 @@
               "pdfSayfa": 113,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "5-Uygulama-15",
@@ -4548,7 +4557,7 @@
               "pdfSayfa": 122,
               "tip": "soru",
               "soruNo": 7,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "5-konu-testi-1-8",
@@ -4557,7 +4566,7 @@
               "pdfSayfa": 122,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "5-konu-testi-1-9",
@@ -4575,7 +4584,7 @@
               "pdfSayfa": 122,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "5-konu-testi-1-11",
@@ -4584,10 +4593,19 @@
               "pdfSayfa": 122,
               "tip": "soru",
               "soruNo": 11,
+              "cevap": "B"
+            },
+            {
+              "id": "5-konu-testi-1-12",
+              "baslik": "Konu Testi 1 - Soru 12",
+              "kartDosya": "5-konu-testi-1-12.png",
+              "pdfSayfa": 122,
+              "tip": "soru",
+              "soruNo": 12,
               "cevap": "C"
             }
           ],
-          "soruSayisi": 11
+          "soruSayisi": 12
         },
         {
           "id": "konu-testi-2",
