@@ -5,8 +5,8 @@
   "kaynakPdf": "24-Aktif - Tyt Geometri Konu Anlatımlı.pdf",
   "pdf": "24-Aktif - Tyt Geometri Konu Anlatımlı-kart.pdf",
   "kartKlasoru": "24-Aktif - Tyt Geometri Konu Anlatımlı-kart",
-  "soruSayisi": 1169,
-  "toplamSoru": 1169,
+  "soruSayisi": 1192,
+  "toplamSoru": 1192,
   "konuSayisi": 17,
   "testSayisi": 34,
   "cevapMaskele": true,
@@ -738,10 +738,10 @@
               "id": "1-konu-testi-2-8",
               "baslik": "Konu Testi 2 - Soru 8",
               "kartDosya": "1-konu-testi-2-8.png",
-              "pdfSayfa": 30,
+              "pdfSayfa": 29,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "1-konu-testi-2-9",
@@ -750,7 +750,7 @@
               "pdfSayfa": 30,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "1-konu-testi-2-10",
@@ -768,7 +768,7 @@
               "pdfSayfa": 30,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "1-konu-testi-2-12",
@@ -786,7 +786,7 @@
               "pdfSayfa": 30,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "1-konu-testi-2-14",
@@ -795,7 +795,7 @@
               "pdfSayfa": 30,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "1-konu-testi-2-15",
@@ -805,9 +805,18 @@
               "tip": "soru",
               "soruNo": 15,
               "cevap": "E"
+            },
+            {
+              "id": "1-konu-testi-2-16",
+              "baslik": "Konu Testi 2 - Soru 16",
+              "kartDosya": "1-konu-testi-2-16.png",
+              "pdfSayfa": 30,
+              "tip": "soru",
+              "soruNo": 16,
+              "cevap": "E"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
@@ -1404,10 +1413,10 @@
               "id": "2-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "2-konu-testi-1-8.png",
-              "pdfSayfa": 52,
+              "pdfSayfa": 51,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "2-konu-testi-1-9",
@@ -1416,7 +1425,7 @@
               "pdfSayfa": 52,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "2-konu-testi-1-10",
@@ -1425,7 +1434,7 @@
               "pdfSayfa": 52,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "2-konu-testi-1-11",
@@ -1434,7 +1443,7 @@
               "pdfSayfa": 52,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "2-konu-testi-1-12",
@@ -1443,7 +1452,7 @@
               "pdfSayfa": 52,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "2-konu-testi-1-13",
@@ -1453,9 +1462,18 @@
               "tip": "soru",
               "soruNo": 13,
               "cevap": "D"
+            },
+            {
+              "id": "2-konu-testi-1-14",
+              "baslik": "Konu Testi 1 - Soru 14",
+              "kartDosya": "2-konu-testi-1-14.png",
+              "pdfSayfa": 52,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "D"
             }
           ],
-          "soruSayisi": 13
+          "soruSayisi": 14
         },
         {
           "id": "konu-testi-2",
@@ -2190,7 +2208,7 @@
               "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 1,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "3-konu-testi-1-2",
@@ -2199,7 +2217,7 @@
               "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 2,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "3-konu-testi-1-3",
@@ -2208,7 +2226,7 @@
               "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 3,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "3-konu-testi-1-4",
@@ -2217,7 +2235,7 @@
               "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 4,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "3-konu-testi-1-5",
@@ -2226,7 +2244,7 @@
               "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 5,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "3-konu-testi-1-6",
@@ -2235,25 +2253,25 @@
               "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 6,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "3-konu-testi-1-7",
               "baslik": "Konu Testi 1 - Soru 7",
               "kartDosya": "3-konu-testi-1-7.png",
-              "pdfSayfa": 80,
+              "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 7,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "3-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "3-konu-testi-1-8.png",
-              "pdfSayfa": 80,
+              "pdfSayfa": 79,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "3-konu-testi-1-9",
@@ -2262,7 +2280,7 @@
               "pdfSayfa": 80,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "3-konu-testi-1-10",
@@ -2271,7 +2289,7 @@
               "pdfSayfa": 80,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "3-konu-testi-1-11",
@@ -2289,7 +2307,7 @@
               "pdfSayfa": 80,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "3-konu-testi-1-13",
@@ -2298,7 +2316,7 @@
               "pdfSayfa": 80,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "3-konu-testi-1-14",
@@ -2308,9 +2326,27 @@
               "tip": "soru",
               "soruNo": 14,
               "cevap": "A"
+            },
+            {
+              "id": "3-konu-testi-1-15",
+              "baslik": "Konu Testi 1 - Soru 15",
+              "kartDosya": "3-konu-testi-1-15.png",
+              "pdfSayfa": 80,
+              "tip": "soru",
+              "soruNo": 15,
+              "cevap": "E"
+            },
+            {
+              "id": "3-konu-testi-1-16",
+              "baslik": "Konu Testi 1 - Soru 16",
+              "kartDosya": "3-konu-testi-1-16.png",
+              "pdfSayfa": 80,
+              "tip": "soru",
+              "soruNo": 16,
+              "cevap": "A"
             }
           ],
-          "soruSayisi": 14
+          "soruSayisi": 16
         },
         {
           "id": "konu-testi-2",
@@ -2351,7 +2387,7 @@
               "pdfSayfa": 81,
               "tip": "soru",
               "soruNo": 4,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "3-konu-testi-2-5",
@@ -2360,7 +2396,7 @@
               "pdfSayfa": 81,
               "tip": "soru",
               "soruNo": 5,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "3-konu-testi-2-6",
@@ -2369,7 +2405,7 @@
               "pdfSayfa": 81,
               "tip": "soru",
               "soruNo": 6,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "3-konu-testi-2-7",
@@ -2378,16 +2414,16 @@
               "pdfSayfa": 81,
               "tip": "soru",
               "soruNo": 7,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "3-konu-testi-2-8",
               "baslik": "Konu Testi 2 - Soru 8",
               "kartDosya": "3-konu-testi-2-8.png",
-              "pdfSayfa": 82,
+              "pdfSayfa": 81,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "3-konu-testi-2-9",
@@ -2396,7 +2432,7 @@
               "pdfSayfa": 82,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "3-konu-testi-2-10",
@@ -2414,7 +2450,7 @@
               "pdfSayfa": 82,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "3-konu-testi-2-12",
@@ -2423,7 +2459,7 @@
               "pdfSayfa": 82,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "3-konu-testi-2-13",
@@ -2432,7 +2468,7 @@
               "pdfSayfa": 82,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "3-konu-testi-2-14",
@@ -2450,10 +2486,19 @@
               "pdfSayfa": 82,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "D"
+            },
+            {
+              "id": "3-konu-testi-2-16",
+              "baslik": "Konu Testi 2 - Soru 16",
+              "kartDosya": "3-konu-testi-2-16.png",
+              "pdfSayfa": 82,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "A"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         },
         {
           "id": "konu-testi-3",
@@ -2750,10 +2795,10 @@
               "id": "4-Uygulama-8",
               "baslik": "Uygulama Soruları - Soru 8",
               "kartDosya": "4-Uygulama-8.png",
-              "pdfSayfa": 89,
+              "pdfSayfa": 88,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "4-Uygulama-9",
@@ -2762,16 +2807,16 @@
               "pdfSayfa": 89,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "4-Uygulama-10",
               "baslik": "Uygulama Soruları - Soru 10",
               "kartDosya": "4-Uygulama-10.png",
-              "pdfSayfa": 90,
+              "pdfSayfa": 89,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "4-Uygulama-11",
@@ -2780,16 +2825,16 @@
               "pdfSayfa": 90,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "E"
+              "cevap": "D"
             },
             {
               "id": "4-Uygulama-12",
               "baslik": "Uygulama Soruları - Soru 12",
               "kartDosya": "4-Uygulama-12.png",
-              "pdfSayfa": 91,
+              "pdfSayfa": 90,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "4-Uygulama-13",
@@ -2798,13 +2843,13 @@
               "pdfSayfa": 91,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "4-Uygulama-14",
               "baslik": "Uygulama Soruları - Soru 14",
               "kartDosya": "4-Uygulama-14.png",
-              "pdfSayfa": 92,
+              "pdfSayfa": 91,
               "tip": "soru",
               "soruNo": 14,
               "cevap": "A"
@@ -2816,10 +2861,19 @@
               "pdfSayfa": 92,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "A"
+            },
+            {
+              "id": "4-Uygulama-16",
+              "baslik": "Uygulama Soruları - Soru 16",
+              "kartDosya": "4-Uygulama-16.png",
+              "pdfSayfa": 92,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "D"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         },
         {
           "id": "konu-testi-1",
@@ -2833,7 +2887,7 @@
               "pdfSayfa": 93,
               "tip": "soru",
               "soruNo": 1,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "4-konu-testi-1-2",
@@ -2842,7 +2896,7 @@
               "pdfSayfa": 93,
               "tip": "soru",
               "soruNo": 2,
-              "cevap": "E"
+              "cevap": "D"
             },
             {
               "id": "4-konu-testi-1-3",
@@ -2851,7 +2905,7 @@
               "pdfSayfa": 93,
               "tip": "soru",
               "soruNo": 3,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "4-konu-testi-1-4",
@@ -2869,7 +2923,7 @@
               "pdfSayfa": 93,
               "tip": "soru",
               "soruNo": 5,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "4-konu-testi-1-6",
@@ -2878,25 +2932,25 @@
               "pdfSayfa": 93,
               "tip": "soru",
               "soruNo": 6,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "4-konu-testi-1-7",
               "baslik": "Konu Testi 1 - Soru 7",
               "kartDosya": "4-konu-testi-1-7.png",
-              "pdfSayfa": 94,
+              "pdfSayfa": 93,
               "tip": "soru",
               "soruNo": 7,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "4-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "4-konu-testi-1-8.png",
-              "pdfSayfa": 94,
+              "pdfSayfa": 93,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "4-konu-testi-1-9",
@@ -2905,7 +2959,7 @@
               "pdfSayfa": 94,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "E"
+              "cevap": "D"
             },
             {
               "id": "4-konu-testi-1-10",
@@ -2914,7 +2968,7 @@
               "pdfSayfa": 94,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "4-konu-testi-1-11",
@@ -2923,7 +2977,7 @@
               "pdfSayfa": 94,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "4-konu-testi-1-12",
@@ -2932,7 +2986,7 @@
               "pdfSayfa": 94,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "4-konu-testi-1-13",
@@ -2941,10 +2995,28 @@
               "pdfSayfa": 94,
               "tip": "soru",
               "soruNo": 13,
+              "cevap": "C"
+            },
+            {
+              "id": "4-konu-testi-1-14",
+              "baslik": "Konu Testi 1 - Soru 14",
+              "kartDosya": "4-konu-testi-1-14.png",
+              "pdfSayfa": 94,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "C"
+            },
+            {
+              "id": "4-konu-testi-1-15",
+              "baslik": "Konu Testi 1 - Soru 15",
+              "kartDosya": "4-konu-testi-1-15.png",
+              "pdfSayfa": 94,
+              "tip": "soru",
+              "soruNo": 15,
               "cevap": "E"
             }
           ],
-          "soruSayisi": 13
+          "soruSayisi": 15
         }
       ]
     },
@@ -4173,7 +4245,7 @@
               "id": "6-Uygulama-9",
               "baslik": "Uygulama Soruları - Soru 9",
               "kartDosya": "6-Uygulama-9.png",
-              "pdfSayfa": 127,
+              "pdfSayfa": 126,
               "tip": "soru",
               "soruNo": 9,
               "cevap": "A"
@@ -4185,16 +4257,16 @@
               "pdfSayfa": 127,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "6-Uygulama-11",
               "baslik": "Uygulama Soruları - Soru 11",
               "kartDosya": "6-Uygulama-11.png",
-              "pdfSayfa": 128,
+              "pdfSayfa": 127,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "6-Uygulama-12",
@@ -4203,13 +4275,13 @@
               "pdfSayfa": 128,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "6-Uygulama-13",
               "baslik": "Uygulama Soruları - Soru 13",
               "kartDosya": "6-Uygulama-13.png",
-              "pdfSayfa": 129,
+              "pdfSayfa": 128,
               "tip": "soru",
               "soruNo": 13,
               "cevap": "B"
@@ -4221,16 +4293,16 @@
               "pdfSayfa": 129,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "6-Uygulama-15",
               "baslik": "Uygulama Soruları - Soru 15",
               "kartDosya": "6-Uygulama-15.png",
-              "pdfSayfa": 130,
+              "pdfSayfa": 129,
               "tip": "soru",
               "soruNo": 15,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "6-Uygulama-16",
@@ -4245,10 +4317,10 @@
               "id": "6-Uygulama-17",
               "baslik": "Uygulama Soruları - Soru 17",
               "kartDosya": "6-Uygulama-17.png",
-              "pdfSayfa": 131,
+              "pdfSayfa": 130,
               "tip": "soru",
               "soruNo": 17,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "6-Uygulama-18",
@@ -4257,13 +4329,13 @@
               "pdfSayfa": 131,
               "tip": "soru",
               "soruNo": 18,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "6-Uygulama-19",
               "baslik": "Uygulama Soruları - Soru 19",
               "kartDosya": "6-Uygulama-19.png",
-              "pdfSayfa": 132,
+              "pdfSayfa": 131,
               "tip": "soru",
               "soruNo": 19,
               "cevap": "C"
@@ -4275,16 +4347,16 @@
               "pdfSayfa": 132,
               "tip": "soru",
               "soruNo": 20,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "6-Uygulama-21",
               "baslik": "Uygulama Soruları - Soru 21",
               "kartDosya": "6-Uygulama-21.png",
-              "pdfSayfa": 133,
+              "pdfSayfa": 132,
               "tip": "soru",
               "soruNo": 21,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "6-Uygulama-22",
@@ -4293,16 +4365,16 @@
               "pdfSayfa": 133,
               "tip": "soru",
               "soruNo": 22,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "6-Uygulama-23",
               "baslik": "Uygulama Soruları - Soru 23",
               "kartDosya": "6-Uygulama-23.png",
-              "pdfSayfa": 134,
+              "pdfSayfa": 133,
               "tip": "soru",
               "soruNo": 23,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "6-Uygulama-24",
@@ -4311,16 +4383,16 @@
               "pdfSayfa": 134,
               "tip": "soru",
               "soruNo": 24,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "6-Uygulama-25",
               "baslik": "Uygulama Soruları - Soru 25",
               "kartDosya": "6-Uygulama-25.png",
-              "pdfSayfa": 135,
+              "pdfSayfa": 134,
               "tip": "soru",
               "soruNo": 25,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "6-Uygulama-26",
@@ -4329,16 +4401,16 @@
               "pdfSayfa": 135,
               "tip": "soru",
               "soruNo": 26,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "6-Uygulama-27",
               "baslik": "Uygulama Soruları - Soru 27",
               "kartDosya": "6-Uygulama-27.png",
-              "pdfSayfa": 136,
+              "pdfSayfa": 135,
               "tip": "soru",
               "soruNo": 27,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "6-Uygulama-28",
@@ -4347,16 +4419,16 @@
               "pdfSayfa": 136,
               "tip": "soru",
               "soruNo": 28,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "6-Uygulama-29",
               "baslik": "Uygulama Soruları - Soru 29",
               "kartDosya": "6-Uygulama-29.png",
-              "pdfSayfa": 137,
+              "pdfSayfa": 136,
               "tip": "soru",
               "soruNo": 29,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "6-Uygulama-30",
@@ -4365,16 +4437,16 @@
               "pdfSayfa": 137,
               "tip": "soru",
               "soruNo": 30,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "6-Uygulama-31",
               "baslik": "Uygulama Soruları - Soru 31",
               "kartDosya": "6-Uygulama-31.png",
-              "pdfSayfa": 138,
+              "pdfSayfa": 137,
               "tip": "soru",
               "soruNo": 31,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "6-Uygulama-32",
@@ -4389,7 +4461,7 @@
               "id": "6-Uygulama-33",
               "baslik": "Uygulama Soruları - Soru 33",
               "kartDosya": "6-Uygulama-33.png",
-              "pdfSayfa": 139,
+              "pdfSayfa": 138,
               "tip": "soru",
               "soruNo": 33,
               "cevap": "E"
@@ -4401,16 +4473,16 @@
               "pdfSayfa": 139,
               "tip": "soru",
               "soruNo": 34,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "6-Uygulama-35",
               "baslik": "Uygulama Soruları - Soru 35",
               "kartDosya": "6-Uygulama-35.png",
-              "pdfSayfa": 140,
+              "pdfSayfa": 139,
               "tip": "soru",
               "soruNo": 35,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "6-Uygulama-36",
@@ -4425,7 +4497,7 @@
               "id": "6-Uygulama-37",
               "baslik": "Uygulama Soruları - Soru 37",
               "kartDosya": "6-Uygulama-37.png",
-              "pdfSayfa": 141,
+              "pdfSayfa": 140,
               "tip": "soru",
               "soruNo": 37,
               "cevap": "C"
@@ -4437,16 +4509,16 @@
               "pdfSayfa": 141,
               "tip": "soru",
               "soruNo": 38,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "6-Uygulama-39",
               "baslik": "Uygulama Soruları - Soru 39",
               "kartDosya": "6-Uygulama-39.png",
-              "pdfSayfa": 142,
+              "pdfSayfa": 141,
               "tip": "soru",
               "soruNo": 39,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "6-Uygulama-40",
@@ -4455,16 +4527,16 @@
               "pdfSayfa": 142,
               "tip": "soru",
               "soruNo": 40,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "6-Uygulama-41",
               "baslik": "Uygulama Soruları - Soru 41",
               "kartDosya": "6-Uygulama-41.png",
-              "pdfSayfa": 143,
+              "pdfSayfa": 142,
               "tip": "soru",
               "soruNo": 41,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "6-Uygulama-42",
@@ -4473,16 +4545,16 @@
               "pdfSayfa": 143,
               "tip": "soru",
               "soruNo": 42,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "6-Uygulama-43",
               "baslik": "Uygulama Soruları - Soru 43",
               "kartDosya": "6-Uygulama-43.png",
-              "pdfSayfa": 144,
+              "pdfSayfa": 143,
               "tip": "soru",
               "soruNo": 43,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "6-Uygulama-44",
@@ -4491,16 +4563,16 @@
               "pdfSayfa": 144,
               "tip": "soru",
               "soruNo": 44,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "6-Uygulama-45",
               "baslik": "Uygulama Soruları - Soru 45",
               "kartDosya": "6-Uygulama-45.png",
-              "pdfSayfa": 145,
+              "pdfSayfa": 144,
               "tip": "soru",
               "soruNo": 45,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "6-Uygulama-46",
@@ -4509,16 +4581,16 @@
               "pdfSayfa": 145,
               "tip": "soru",
               "soruNo": 46,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "6-Uygulama-47",
               "baslik": "Uygulama Soruları - Soru 47",
               "kartDosya": "6-Uygulama-47.png",
-              "pdfSayfa": 146,
+              "pdfSayfa": 145,
               "tip": "soru",
               "soruNo": 47,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "6-Uygulama-48",
@@ -4527,10 +4599,19 @@
               "pdfSayfa": 146,
               "tip": "soru",
               "soruNo": 48,
+              "cevap": "D"
+            },
+            {
+              "id": "6-Uygulama-49",
+              "baslik": "Uygulama Soruları - Soru 49",
+              "kartDosya": "6-Uygulama-49.png",
+              "pdfSayfa": 146,
+              "tip": "soru",
+              "soruNo": 49,
               "cevap": "E"
             }
           ],
-          "soruSayisi": 48
+          "soruSayisi": 49
         },
         {
           "id": "konu-testi-1",
@@ -4604,10 +4685,10 @@
               "id": "6-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "6-konu-testi-1-8.png",
-              "pdfSayfa": 148,
+              "pdfSayfa": 147,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "6-konu-testi-1-9",
@@ -4616,7 +4697,7 @@
               "pdfSayfa": 148,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "6-konu-testi-1-10",
@@ -4625,7 +4706,7 @@
               "pdfSayfa": 148,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "6-konu-testi-1-11",
@@ -4634,7 +4715,7 @@
               "pdfSayfa": 148,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "6-konu-testi-1-12",
@@ -4652,7 +4733,7 @@
               "pdfSayfa": 148,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "6-konu-testi-1-14",
@@ -4661,10 +4742,19 @@
               "pdfSayfa": 148,
               "tip": "soru",
               "soruNo": 14,
+              "cevap": "A"
+            },
+            {
+              "id": "6-konu-testi-1-15",
+              "baslik": "Konu Testi 1 - Soru 15",
+              "kartDosya": "6-konu-testi-1-15.png",
+              "pdfSayfa": 148,
+              "tip": "soru",
+              "soruNo": 15,
               "cevap": "D"
             }
           ],
-          "soruSayisi": 14
+          "soruSayisi": 15
         },
         {
           "id": "konu-testi-2",
@@ -5224,7 +5314,7 @@
               "id": "7-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "7-konu-testi-1-8.png",
-              "pdfSayfa": 160,
+              "pdfSayfa": 159,
               "tip": "soru",
               "soruNo": 8,
               "cevap": "C"
@@ -5236,7 +5326,7 @@
               "pdfSayfa": 160,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "7-konu-testi-1-10",
@@ -5245,7 +5335,7 @@
               "pdfSayfa": 160,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "E"
+              "cevap": "D"
             },
             {
               "id": "7-konu-testi-1-11",
@@ -5254,7 +5344,7 @@
               "pdfSayfa": 160,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "7-konu-testi-1-12",
@@ -5263,7 +5353,7 @@
               "pdfSayfa": 160,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "7-konu-testi-1-13",
@@ -5273,9 +5363,18 @@
               "tip": "soru",
               "soruNo": 13,
               "cevap": "C"
+            },
+            {
+              "id": "7-konu-testi-1-14",
+              "baslik": "Konu Testi 1 - Soru 14",
+              "kartDosya": "7-konu-testi-1-14.png",
+              "pdfSayfa": 160,
+              "tip": "soru",
+              "soruNo": 14,
+              "cevap": "C"
             }
           ],
-          "soruSayisi": 13
+          "soruSayisi": 14
         }
       ]
     },
@@ -6358,10 +6457,10 @@
               "id": "9-konu-testi-2-8",
               "baslik": "Konu Testi 2 - Soru 8",
               "kartDosya": "9-konu-testi-2-8.png",
-              "pdfSayfa": 192,
+              "pdfSayfa": 191,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "9-konu-testi-2-9",
@@ -6370,7 +6469,7 @@
               "pdfSayfa": 192,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "9-konu-testi-2-10",
@@ -6379,7 +6478,7 @@
               "pdfSayfa": 192,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "9-konu-testi-2-11",
@@ -6388,7 +6487,7 @@
               "pdfSayfa": 192,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "9-konu-testi-2-12",
@@ -6397,7 +6496,7 @@
               "pdfSayfa": 192,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "9-konu-testi-2-13",
@@ -6406,7 +6505,7 @@
               "pdfSayfa": 192,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "9-konu-testi-2-14",
@@ -6424,10 +6523,19 @@
               "pdfSayfa": 192,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "C"
+            },
+            {
+              "id": "9-konu-testi-2-16",
+              "baslik": "Konu Testi 2 - Soru 16",
+              "kartDosya": "9-konu-testi-2-16.png",
+              "pdfSayfa": 192,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "D"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
@@ -6586,10 +6694,10 @@
               "id": "10-Uygulama-8",
               "baslik": "Uygulama Soruları - Soru 8",
               "kartDosya": "10-Uygulama-8.png",
-              "pdfSayfa": 197,
+              "pdfSayfa": 196,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "10-Uygulama-9",
@@ -6598,13 +6706,13 @@
               "pdfSayfa": 197,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "10-Uygulama-10",
               "baslik": "Uygulama Soruları - Soru 10",
               "kartDosya": "10-Uygulama-10.png",
-              "pdfSayfa": 198,
+              "pdfSayfa": 197,
               "tip": "soru",
               "soruNo": 10,
               "cevap": "E"
@@ -6616,13 +6724,13 @@
               "pdfSayfa": 198,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "10-Uygulama-12",
               "baslik": "Uygulama Soruları - Soru 12",
               "kartDosya": "10-Uygulama-12.png",
-              "pdfSayfa": 199,
+              "pdfSayfa": 198,
               "tip": "soru",
               "soruNo": 12,
               "cevap": "A"
@@ -6634,16 +6742,16 @@
               "pdfSayfa": 199,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "10-Uygulama-14",
               "baslik": "Uygulama Soruları - Soru 14",
               "kartDosya": "10-Uygulama-14.png",
-              "pdfSayfa": 200,
+              "pdfSayfa": 199,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "10-Uygulama-15",
@@ -6652,16 +6760,16 @@
               "pdfSayfa": 200,
               "tip": "soru",
               "soruNo": 15,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "10-Uygulama-16",
               "baslik": "Uygulama Soruları - Soru 16",
               "kartDosya": "10-Uygulama-16.png",
-              "pdfSayfa": 201,
+              "pdfSayfa": 200,
               "tip": "soru",
               "soruNo": 16,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "10-Uygulama-17",
@@ -6670,16 +6778,16 @@
               "pdfSayfa": 201,
               "tip": "soru",
               "soruNo": 17,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "10-Uygulama-18",
               "baslik": "Uygulama Soruları - Soru 18",
               "kartDosya": "10-Uygulama-18.png",
-              "pdfSayfa": 202,
+              "pdfSayfa": 201,
               "tip": "soru",
               "soruNo": 18,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "10-Uygulama-19",
@@ -6688,10 +6796,19 @@
               "pdfSayfa": 202,
               "tip": "soru",
               "soruNo": 19,
+              "cevap": "C"
+            },
+            {
+              "id": "10-Uygulama-20",
+              "baslik": "Uygulama Soruları - Soru 20",
+              "kartDosya": "10-Uygulama-20.png",
+              "pdfSayfa": 202,
+              "tip": "soru",
+              "soruNo": 20,
               "cevap": "D"
             }
           ],
-          "soruSayisi": 19
+          "soruSayisi": 20
         },
         {
           "id": "konu-testi-1",
@@ -6765,10 +6882,10 @@
               "id": "10-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "10-konu-testi-1-8.png",
-              "pdfSayfa": 204,
+              "pdfSayfa": 203,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "10-konu-testi-1-9",
@@ -6777,7 +6894,7 @@
               "pdfSayfa": 204,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "10-konu-testi-1-10",
@@ -6786,7 +6903,7 @@
               "pdfSayfa": 204,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "10-konu-testi-1-11",
@@ -6804,7 +6921,7 @@
               "pdfSayfa": 204,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "10-konu-testi-1-13",
@@ -6813,7 +6930,7 @@
               "pdfSayfa": 204,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "10-konu-testi-1-14",
@@ -6822,7 +6939,7 @@
               "pdfSayfa": 204,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "10-konu-testi-1-15",
@@ -6831,10 +6948,19 @@
               "pdfSayfa": 204,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "C"
+            },
+            {
+              "id": "10-konu-testi-1-16",
+              "baslik": "Konu Testi 1 - Soru 16",
+              "kartDosya": "10-konu-testi-1-16.png",
+              "pdfSayfa": 204,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "E"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
@@ -7121,7 +7247,7 @@
               "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 1,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "11-konu-testi-1-2",
@@ -7130,7 +7256,7 @@
               "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 2,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "11-konu-testi-1-3",
@@ -7139,7 +7265,7 @@
               "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 3,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "11-konu-testi-1-4",
@@ -7148,7 +7274,7 @@
               "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 4,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "11-konu-testi-1-5",
@@ -7157,7 +7283,7 @@
               "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 5,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "11-konu-testi-1-6",
@@ -7166,7 +7292,7 @@
               "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 6,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "11-konu-testi-1-7",
@@ -7175,16 +7301,16 @@
               "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 7,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "11-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "11-konu-testi-1-8.png",
-              "pdfSayfa": 216,
+              "pdfSayfa": 215,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "11-konu-testi-1-9",
@@ -7193,7 +7319,7 @@
               "pdfSayfa": 216,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "11-konu-testi-1-10",
@@ -7202,7 +7328,7 @@
               "pdfSayfa": 216,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "11-konu-testi-1-11",
@@ -7211,7 +7337,7 @@
               "pdfSayfa": 216,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "11-konu-testi-1-12",
@@ -7220,7 +7346,7 @@
               "pdfSayfa": 216,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "11-konu-testi-1-13",
@@ -7229,7 +7355,7 @@
               "pdfSayfa": 216,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "11-konu-testi-1-14",
@@ -7238,7 +7364,7 @@
               "pdfSayfa": 216,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "11-konu-testi-1-15",
@@ -7247,10 +7373,19 @@
               "pdfSayfa": 216,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "B"
+            },
+            {
+              "id": "11-konu-testi-1-16",
+              "baslik": "Konu Testi 1 - Soru 16",
+              "kartDosya": "11-konu-testi-1-16.png",
+              "pdfSayfa": 216,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "E"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
@@ -7697,10 +7832,10 @@
               "id": "12-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "12-konu-testi-1-8.png",
-              "pdfSayfa": 232,
+              "pdfSayfa": 231,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "12-konu-testi-1-9",
@@ -7709,7 +7844,7 @@
               "pdfSayfa": 232,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "12-konu-testi-1-10",
@@ -7727,7 +7862,7 @@
               "pdfSayfa": 232,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "12-konu-testi-1-12",
@@ -7736,7 +7871,7 @@
               "pdfSayfa": 232,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "12-konu-testi-1-13",
@@ -7745,7 +7880,7 @@
               "pdfSayfa": 232,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "12-konu-testi-1-14",
@@ -7754,7 +7889,7 @@
               "pdfSayfa": 232,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "12-konu-testi-1-15",
@@ -7764,9 +7899,18 @@
               "tip": "soru",
               "soruNo": 15,
               "cevap": "B"
+            },
+            {
+              "id": "12-konu-testi-1-16",
+              "baslik": "Konu Testi 1 - Soru 16",
+              "kartDosya": "12-konu-testi-1-16.png",
+              "pdfSayfa": 232,
+              "tip": "soru",
+              "soruNo": 16,
+              "cevap": "B"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         },
         {
           "id": "konu-testi-2",
@@ -7840,10 +7984,10 @@
               "id": "12-konu-testi-2-8",
               "baslik": "Konu Testi 2 - Soru 8",
               "kartDosya": "12-konu-testi-2-8.png",
-              "pdfSayfa": 234,
+              "pdfSayfa": 233,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "12-konu-testi-2-9",
@@ -7852,7 +7996,7 @@
               "pdfSayfa": 234,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "12-konu-testi-2-10",
@@ -7861,7 +8005,7 @@
               "pdfSayfa": 234,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "12-konu-testi-2-11",
@@ -7870,7 +8014,7 @@
               "pdfSayfa": 234,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "12-konu-testi-2-12",
@@ -7879,7 +8023,7 @@
               "pdfSayfa": 234,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "12-konu-testi-2-13",
@@ -7888,7 +8032,7 @@
               "pdfSayfa": 234,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "12-konu-testi-2-14",
@@ -7897,7 +8041,7 @@
               "pdfSayfa": 234,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "12-konu-testi-2-15",
@@ -7906,10 +8050,19 @@
               "pdfSayfa": 234,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "A"
+            },
+            {
+              "id": "12-konu-testi-2-16",
+              "baslik": "Konu Testi 2 - Soru 16",
+              "kartDosya": "12-konu-testi-2-16.png",
+              "pdfSayfa": 234,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "B"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
@@ -8552,10 +8705,10 @@
               "id": "13-konu-testi-3-8",
               "baslik": "Konu Testi 3 - Soru 8",
               "kartDosya": "13-konu-testi-3-8.png",
-              "pdfSayfa": 256,
+              "pdfSayfa": 255,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "13-konu-testi-3-9",
@@ -8564,7 +8717,7 @@
               "pdfSayfa": 256,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "E"
+              "cevap": "D"
             },
             {
               "id": "13-konu-testi-3-10",
@@ -8582,7 +8735,7 @@
               "pdfSayfa": 256,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "13-konu-testi-3-12",
@@ -8591,7 +8744,7 @@
               "pdfSayfa": 256,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "13-konu-testi-3-13",
@@ -8600,7 +8753,7 @@
               "pdfSayfa": 256,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "13-konu-testi-3-14",
@@ -8609,7 +8762,7 @@
               "pdfSayfa": 256,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "13-konu-testi-3-15",
@@ -8618,10 +8771,19 @@
               "pdfSayfa": 256,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "E"
+            },
+            {
+              "id": "13-konu-testi-3-16",
+              "baslik": "Konu Testi 3 - Soru 16",
+              "kartDosya": "13-konu-testi-3-16.png",
+              "pdfSayfa": 256,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "B"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
@@ -8873,10 +9035,10 @@
               "id": "14-Uygulama-9",
               "baslik": "Uygulama Soruları - Soru 9",
               "kartDosya": "14-Uygulama-9.png",
-              "pdfSayfa": 261,
+              "pdfSayfa": 260,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-10",
@@ -8885,16 +9047,16 @@
               "pdfSayfa": 261,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "14-Uygulama-11",
               "baslik": "Uygulama Soruları - Soru 11",
               "kartDosya": "14-Uygulama-11.png",
-              "pdfSayfa": 262,
+              "pdfSayfa": 261,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "14-Uygulama-12",
@@ -8903,13 +9065,13 @@
               "pdfSayfa": 262,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-13",
               "baslik": "Uygulama Soruları - Soru 13",
               "kartDosya": "14-Uygulama-13.png",
-              "pdfSayfa": 263,
+              "pdfSayfa": 262,
               "tip": "soru",
               "soruNo": 13,
               "cevap": "D"
@@ -8921,13 +9083,13 @@
               "pdfSayfa": 263,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "E"
+              "cevap": "D"
             },
             {
               "id": "14-Uygulama-15",
               "baslik": "Uygulama Soruları - Soru 15",
               "kartDosya": "14-Uygulama-15.png",
-              "pdfSayfa": 264,
+              "pdfSayfa": 263,
               "tip": "soru",
               "soruNo": 15,
               "cevap": "E"
@@ -8939,13 +9101,13 @@
               "pdfSayfa": 264,
               "tip": "soru",
               "soruNo": 16,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "14-Uygulama-17",
               "baslik": "Uygulama Soruları - Soru 17",
               "kartDosya": "14-Uygulama-17.png",
-              "pdfSayfa": 265,
+              "pdfSayfa": 264,
               "tip": "soru",
               "soruNo": 17,
               "cevap": "D"
@@ -8963,10 +9125,10 @@
               "id": "14-Uygulama-19",
               "baslik": "Uygulama Soruları - Soru 19",
               "kartDosya": "14-Uygulama-19.png",
-              "pdfSayfa": 266,
+              "pdfSayfa": 265,
               "tip": "soru",
               "soruNo": 19,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "14-Uygulama-20",
@@ -8981,10 +9143,10 @@
               "id": "14-Uygulama-21",
               "baslik": "Uygulama Soruları - Soru 21",
               "kartDosya": "14-Uygulama-21.png",
-              "pdfSayfa": 267,
+              "pdfSayfa": 266,
               "tip": "soru",
               "soruNo": 21,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-22",
@@ -8993,16 +9155,16 @@
               "pdfSayfa": 267,
               "tip": "soru",
               "soruNo": 22,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "14-Uygulama-23",
               "baslik": "Uygulama Soruları - Soru 23",
               "kartDosya": "14-Uygulama-23.png",
-              "pdfSayfa": 268,
+              "pdfSayfa": 267,
               "tip": "soru",
               "soruNo": 23,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "14-Uygulama-24",
@@ -9011,16 +9173,16 @@
               "pdfSayfa": 268,
               "tip": "soru",
               "soruNo": 24,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-25",
               "baslik": "Uygulama Soruları - Soru 25",
               "kartDosya": "14-Uygulama-25.png",
-              "pdfSayfa": 269,
+              "pdfSayfa": 268,
               "tip": "soru",
               "soruNo": 25,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "14-Uygulama-26",
@@ -9029,13 +9191,13 @@
               "pdfSayfa": 269,
               "tip": "soru",
               "soruNo": 26,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "14-Uygulama-27",
               "baslik": "Uygulama Soruları - Soru 27",
               "kartDosya": "14-Uygulama-27.png",
-              "pdfSayfa": 270,
+              "pdfSayfa": 269,
               "tip": "soru",
               "soruNo": 27,
               "cevap": "E"
@@ -9047,16 +9209,16 @@
               "pdfSayfa": 270,
               "tip": "soru",
               "soruNo": 28,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "14-Uygulama-29",
               "baslik": "Uygulama Soruları - Soru 29",
               "kartDosya": "14-Uygulama-29.png",
-              "pdfSayfa": 271,
+              "pdfSayfa": 270,
               "tip": "soru",
               "soruNo": 29,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "14-Uygulama-30",
@@ -9065,16 +9227,16 @@
               "pdfSayfa": 271,
               "tip": "soru",
               "soruNo": 30,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-31",
               "baslik": "Uygulama Soruları - Soru 31",
               "kartDosya": "14-Uygulama-31.png",
-              "pdfSayfa": 272,
+              "pdfSayfa": 271,
               "tip": "soru",
               "soruNo": 31,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "14-Uygulama-32",
@@ -9092,13 +9254,13 @@
               "pdfSayfa": 272,
               "tip": "soru",
               "soruNo": 33,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "14-Uygulama-34",
               "baslik": "Uygulama Soruları - Soru 34",
               "kartDosya": "14-Uygulama-34.png",
-              "pdfSayfa": 273,
+              "pdfSayfa": 272,
               "tip": "soru",
               "soruNo": 34,
               "cevap": "B"
@@ -9110,16 +9272,16 @@
               "pdfSayfa": 273,
               "tip": "soru",
               "soruNo": 35,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "14-Uygulama-36",
               "baslik": "Uygulama Soruları - Soru 36",
               "kartDosya": "14-Uygulama-36.png",
-              "pdfSayfa": 274,
+              "pdfSayfa": 273,
               "tip": "soru",
               "soruNo": 36,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "14-Uygulama-37",
@@ -9128,7 +9290,7 @@
               "pdfSayfa": 274,
               "tip": "soru",
               "soruNo": 37,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-38",
@@ -9137,13 +9299,13 @@
               "pdfSayfa": 274,
               "tip": "soru",
               "soruNo": 38,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "14-Uygulama-39",
               "baslik": "Uygulama Soruları - Soru 39",
               "kartDosya": "14-Uygulama-39.png",
-              "pdfSayfa": 275,
+              "pdfSayfa": 274,
               "tip": "soru",
               "soruNo": 39,
               "cevap": "C"
@@ -9155,16 +9317,16 @@
               "pdfSayfa": 275,
               "tip": "soru",
               "soruNo": 40,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-41",
               "baslik": "Uygulama Soruları - Soru 41",
               "kartDosya": "14-Uygulama-41.png",
-              "pdfSayfa": 276,
+              "pdfSayfa": 275,
               "tip": "soru",
               "soruNo": 41,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "14-Uygulama-42",
@@ -9173,16 +9335,16 @@
               "pdfSayfa": 276,
               "tip": "soru",
               "soruNo": 42,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "14-Uygulama-43",
               "baslik": "Uygulama Soruları - Soru 43",
               "kartDosya": "14-Uygulama-43.png",
-              "pdfSayfa": 277,
+              "pdfSayfa": 276,
               "tip": "soru",
               "soruNo": 43,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "14-Uygulama-44",
@@ -9191,16 +9353,16 @@
               "pdfSayfa": 277,
               "tip": "soru",
               "soruNo": 44,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "14-Uygulama-45",
               "baslik": "Uygulama Soruları - Soru 45",
               "kartDosya": "14-Uygulama-45.png",
-              "pdfSayfa": 278,
+              "pdfSayfa": 277,
               "tip": "soru",
               "soruNo": 45,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "14-Uygulama-46",
@@ -9209,10 +9371,19 @@
               "pdfSayfa": 278,
               "tip": "soru",
               "soruNo": 46,
+              "cevap": "B"
+            },
+            {
+              "id": "14-Uygulama-47",
+              "baslik": "Uygulama Soruları - Soru 47",
+              "kartDosya": "14-Uygulama-47.png",
+              "pdfSayfa": 278,
+              "tip": "soru",
+              "soruNo": 47,
               "cevap": "E"
             }
           ],
-          "soruSayisi": 46
+          "soruSayisi": 47
         },
         {
           "id": "konu-testi-1",
@@ -10015,16 +10186,16 @@
               "pdfSayfa": 287,
               "tip": "soru",
               "soruNo": 4,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-5",
               "baslik": "Uygulama Soruları - Soru 5",
               "kartDosya": "15-Uygulama-5.png",
-              "pdfSayfa": 287,
+              "pdfSayfa": 288,
               "tip": "soru",
               "soruNo": 5,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "15-Uygulama-6",
@@ -10033,7 +10204,7 @@
               "pdfSayfa": 288,
               "tip": "soru",
               "soruNo": 6,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-7",
@@ -10528,7 +10699,7 @@
               "pdfSayfa": 312,
               "tip": "soru",
               "soruNo": 61,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "15-Uygulama-62",
@@ -10537,16 +10708,16 @@
               "pdfSayfa": 312,
               "tip": "soru",
               "soruNo": 62,
-              "cevap": "D"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-63",
               "baslik": "Uygulama Soruları - Soru 63",
               "kartDosya": "15-Uygulama-63.png",
-              "pdfSayfa": 312,
+              "pdfSayfa": 313,
               "tip": "soru",
               "soruNo": 63,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-64",
@@ -10555,16 +10726,16 @@
               "pdfSayfa": 313,
               "tip": "soru",
               "soruNo": 64,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "15-Uygulama-65",
               "baslik": "Uygulama Soruları - Soru 65",
               "kartDosya": "15-Uygulama-65.png",
-              "pdfSayfa": 313,
+              "pdfSayfa": 314,
               "tip": "soru",
               "soruNo": 65,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-66",
@@ -10573,16 +10744,16 @@
               "pdfSayfa": 314,
               "tip": "soru",
               "soruNo": 66,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-67",
               "baslik": "Uygulama Soruları - Soru 67",
               "kartDosya": "15-Uygulama-67.png",
-              "pdfSayfa": 314,
+              "pdfSayfa": 315,
               "tip": "soru",
               "soruNo": 67,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "15-Uygulama-68",
@@ -10591,16 +10762,16 @@
               "pdfSayfa": 315,
               "tip": "soru",
               "soruNo": 68,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-69",
               "baslik": "Uygulama Soruları - Soru 69",
               "kartDosya": "15-Uygulama-69.png",
-              "pdfSayfa": 315,
+              "pdfSayfa": 316,
               "tip": "soru",
               "soruNo": 69,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-70",
@@ -10609,16 +10780,16 @@
               "pdfSayfa": 316,
               "tip": "soru",
               "soruNo": 70,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-71",
               "baslik": "Uygulama Soruları - Soru 71",
               "kartDosya": "15-Uygulama-71.png",
-              "pdfSayfa": 316,
+              "pdfSayfa": 317,
               "tip": "soru",
               "soruNo": 71,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-72",
@@ -10627,16 +10798,16 @@
               "pdfSayfa": 317,
               "tip": "soru",
               "soruNo": 72,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "15-Uygulama-73",
               "baslik": "Uygulama Soruları - Soru 73",
               "kartDosya": "15-Uygulama-73.png",
-              "pdfSayfa": 317,
+              "pdfSayfa": 318,
               "tip": "soru",
               "soruNo": 73,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-74",
@@ -10645,13 +10816,13 @@
               "pdfSayfa": 318,
               "tip": "soru",
               "soruNo": 74,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-75",
               "baslik": "Uygulama Soruları - Soru 75",
               "kartDosya": "15-Uygulama-75.png",
-              "pdfSayfa": 318,
+              "pdfSayfa": 319,
               "tip": "soru",
               "soruNo": 75,
               "cevap": "E"
@@ -10663,16 +10834,16 @@
               "pdfSayfa": 319,
               "tip": "soru",
               "soruNo": 76,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "15-Uygulama-77",
               "baslik": "Uygulama Soruları - Soru 77",
               "kartDosya": "15-Uygulama-77.png",
-              "pdfSayfa": 319,
+              "pdfSayfa": 320,
               "tip": "soru",
               "soruNo": 77,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-78",
@@ -10681,16 +10852,16 @@
               "pdfSayfa": 320,
               "tip": "soru",
               "soruNo": 78,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-79",
               "baslik": "Uygulama Soruları - Soru 79",
               "kartDosya": "15-Uygulama-79.png",
-              "pdfSayfa": 320,
+              "pdfSayfa": 321,
               "tip": "soru",
               "soruNo": 79,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-80",
@@ -10699,13 +10870,13 @@
               "pdfSayfa": 321,
               "tip": "soru",
               "soruNo": 80,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-81",
               "baslik": "Uygulama Soruları - Soru 81",
               "kartDosya": "15-Uygulama-81.png",
-              "pdfSayfa": 321,
+              "pdfSayfa": 322,
               "tip": "soru",
               "soruNo": 81,
               "cevap": "A"
@@ -10717,16 +10888,16 @@
               "pdfSayfa": 322,
               "tip": "soru",
               "soruNo": 82,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-83",
               "baslik": "Uygulama Soruları - Soru 83",
               "kartDosya": "15-Uygulama-83.png",
-              "pdfSayfa": 322,
+              "pdfSayfa": 323,
               "tip": "soru",
               "soruNo": 83,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-84",
@@ -10735,16 +10906,16 @@
               "pdfSayfa": 323,
               "tip": "soru",
               "soruNo": 84,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-85",
               "baslik": "Uygulama Soruları - Soru 85",
               "kartDosya": "15-Uygulama-85.png",
-              "pdfSayfa": 323,
+              "pdfSayfa": 324,
               "tip": "soru",
               "soruNo": 85,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "15-Uygulama-86",
@@ -10753,13 +10924,13 @@
               "pdfSayfa": 324,
               "tip": "soru",
               "soruNo": 86,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-87",
               "baslik": "Uygulama Soruları - Soru 87",
               "kartDosya": "15-Uygulama-87.png",
-              "pdfSayfa": 324,
+              "pdfSayfa": 325,
               "tip": "soru",
               "soruNo": 87,
               "cevap": "E"
@@ -10771,16 +10942,16 @@
               "pdfSayfa": 325,
               "tip": "soru",
               "soruNo": 88,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-89",
               "baslik": "Uygulama Soruları - Soru 89",
               "kartDosya": "15-Uygulama-89.png",
-              "pdfSayfa": 325,
+              "pdfSayfa": 326,
               "tip": "soru",
               "soruNo": 89,
-              "cevap": "A"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-90",
@@ -10795,10 +10966,10 @@
               "id": "15-Uygulama-91",
               "baslik": "Uygulama Soruları - Soru 91",
               "kartDosya": "15-Uygulama-91.png",
-              "pdfSayfa": 326,
+              "pdfSayfa": 327,
               "tip": "soru",
               "soruNo": 91,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-92",
@@ -10807,13 +10978,13 @@
               "pdfSayfa": 327,
               "tip": "soru",
               "soruNo": 92,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "15-Uygulama-93",
               "baslik": "Uygulama Soruları - Soru 93",
               "kartDosya": "15-Uygulama-93.png",
-              "pdfSayfa": 327,
+              "pdfSayfa": 328,
               "tip": "soru",
               "soruNo": 93,
               "cevap": "D"
@@ -10825,7 +10996,7 @@
               "pdfSayfa": 328,
               "tip": "soru",
               "soruNo": 94,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-95",
@@ -10834,16 +11005,16 @@
               "pdfSayfa": 328,
               "tip": "soru",
               "soruNo": 95,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "15-Uygulama-96",
               "baslik": "Uygulama Soruları - Soru 96",
               "kartDosya": "15-Uygulama-96.png",
-              "pdfSayfa": 328,
+              "pdfSayfa": 329,
               "tip": "soru",
               "soruNo": 96,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "15-Uygulama-97",
@@ -10852,7 +11023,7 @@
               "pdfSayfa": 329,
               "tip": "soru",
               "soruNo": 97,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-98",
@@ -10861,7 +11032,7 @@
               "pdfSayfa": 329,
               "tip": "soru",
               "soruNo": 98,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "15-Uygulama-99",
@@ -10879,7 +11050,7 @@
               "pdfSayfa": 329,
               "tip": "soru",
               "soruNo": 100,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "15-Uygulama-101",
@@ -10888,7 +11059,7 @@
               "pdfSayfa": 329,
               "tip": "soru",
               "soruNo": 101,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-102",
@@ -10897,7 +11068,7 @@
               "pdfSayfa": 329,
               "tip": "soru",
               "soruNo": 102,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "15-Uygulama-103",
@@ -10906,7 +11077,7 @@
               "pdfSayfa": 329,
               "tip": "soru",
               "soruNo": 103,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "15-Uygulama-104",
@@ -11199,10 +11370,10 @@
               "id": "15-konu-testi-1-8",
               "baslik": "Konu Testi 1 - Soru 8",
               "kartDosya": "15-konu-testi-1-8.png",
-              "pdfSayfa": 334,
+              "pdfSayfa": 333,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "15-konu-testi-1-9",
@@ -11211,7 +11382,7 @@
               "pdfSayfa": 334,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "15-konu-testi-1-10",
@@ -11229,7 +11400,7 @@
               "pdfSayfa": 334,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "E"
+              "cevap": "A"
             },
             {
               "id": "15-konu-testi-1-12",
@@ -11238,7 +11409,7 @@
               "pdfSayfa": 334,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "15-konu-testi-1-13",
@@ -11247,7 +11418,7 @@
               "pdfSayfa": 334,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "C"
+              "cevap": "B"
             },
             {
               "id": "15-konu-testi-1-14",
@@ -11256,7 +11427,7 @@
               "pdfSayfa": 334,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "15-konu-testi-1-15",
@@ -11265,10 +11436,19 @@
               "pdfSayfa": 334,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "A"
+            },
+            {
+              "id": "15-konu-testi-1-16",
+              "baslik": "Konu Testi 1 - Soru 16",
+              "kartDosya": "15-konu-testi-1-16.png",
+              "pdfSayfa": 334,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "D"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         },
         {
           "id": "konu-testi-2",
@@ -11426,7 +11606,7 @@
               "pdfSayfa": 337,
               "tip": "soru",
               "soruNo": 17,
-              "cevap": "A"
+              "cevap": "D"
             },
             {
               "id": "15-konu-testi-2-18",
@@ -11435,7 +11615,7 @@
               "pdfSayfa": 337,
               "tip": "soru",
               "soruNo": 18,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "15-konu-testi-2-19",
@@ -11453,7 +11633,7 @@
               "pdfSayfa": 337,
               "tip": "soru",
               "soruNo": 20,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "15-konu-testi-2-21",
@@ -11462,7 +11642,7 @@
               "pdfSayfa": 337,
               "tip": "soru",
               "soruNo": 21,
-              "cevap": "E"
+              "cevap": "D"
             },
             {
               "id": "15-konu-testi-2-22",
@@ -11471,7 +11651,7 @@
               "pdfSayfa": 337,
               "tip": "soru",
               "soruNo": 22,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "15-konu-testi-2-23",
@@ -11486,10 +11666,10 @@
               "id": "15-konu-testi-2-24",
               "baslik": "Konu Testi 2 - Soru 24",
               "kartDosya": "15-konu-testi-2-24.png",
-              "pdfSayfa": 338,
+              "pdfSayfa": 337,
               "tip": "soru",
               "soruNo": 24,
-              "cevap": "A"
+              "cevap": "C"
             },
             {
               "id": "15-konu-testi-2-25",
@@ -11498,7 +11678,7 @@
               "pdfSayfa": 338,
               "tip": "soru",
               "soruNo": 25,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "15-konu-testi-2-26",
@@ -11507,7 +11687,7 @@
               "pdfSayfa": 338,
               "tip": "soru",
               "soruNo": 26,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "15-konu-testi-2-27",
@@ -11516,7 +11696,7 @@
               "pdfSayfa": 338,
               "tip": "soru",
               "soruNo": 27,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "15-konu-testi-2-28",
@@ -11525,7 +11705,7 @@
               "pdfSayfa": 338,
               "tip": "soru",
               "soruNo": 28,
-              "cevap": "D"
+              "cevap": "C"
             },
             {
               "id": "15-konu-testi-2-29",
@@ -11534,7 +11714,7 @@
               "pdfSayfa": 338,
               "tip": "soru",
               "soruNo": 29,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "15-konu-testi-2-30",
@@ -11543,7 +11723,7 @@
               "pdfSayfa": 338,
               "tip": "soru",
               "soruNo": 30,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "15-konu-testi-2-31",
@@ -11552,10 +11732,19 @@
               "pdfSayfa": 338,
               "tip": "soru",
               "soruNo": 31,
+              "cevap": "D"
+            },
+            {
+              "id": "15-konu-testi-2-32",
+              "baslik": "Konu Testi 2 - Soru 32",
+              "kartDosya": "15-konu-testi-2-32.png",
+              "pdfSayfa": 338,
+              "tip": "soru",
+              "soruNo": 32,
               "cevap": "B"
             }
           ],
-          "soruSayisi": 31
+          "soruSayisi": 32
         },
         {
           "id": "konu-testi-3",
@@ -11629,10 +11818,10 @@
               "id": "15-konu-testi-3-8",
               "baslik": "Konu Testi 3 - Soru 8",
               "kartDosya": "15-konu-testi-3-8.png",
-              "pdfSayfa": 340,
+              "pdfSayfa": 339,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "15-konu-testi-3-9",
@@ -11641,7 +11830,7 @@
               "pdfSayfa": 340,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "C"
+              "cevap": "E"
             },
             {
               "id": "15-konu-testi-3-10",
@@ -11650,7 +11839,7 @@
               "pdfSayfa": 340,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "15-konu-testi-3-11",
@@ -11659,7 +11848,7 @@
               "pdfSayfa": 340,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "15-konu-testi-3-12",
@@ -11677,7 +11866,7 @@
               "pdfSayfa": 340,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "B"
+              "cevap": "A"
             },
             {
               "id": "15-konu-testi-3-14",
@@ -11686,7 +11875,7 @@
               "pdfSayfa": 340,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "15-konu-testi-3-15",
@@ -11695,10 +11884,19 @@
               "pdfSayfa": 340,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "E"
+            },
+            {
+              "id": "15-konu-testi-3-16",
+              "baslik": "Konu Testi 3 - Soru 16",
+              "kartDosya": "15-konu-testi-3-16.png",
+              "pdfSayfa": 340,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "C"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
@@ -12757,10 +12955,10 @@
               "id": "16-konu-testi-3-8",
               "baslik": "Konu Testi 3 - Soru 8",
               "kartDosya": "16-konu-testi-3-8.png",
-              "pdfSayfa": 368,
+              "pdfSayfa": 367,
               "tip": "soru",
               "soruNo": 8,
-              "cevap": "D"
+              "cevap": "E"
             },
             {
               "id": "16-konu-testi-3-9",
@@ -12769,7 +12967,7 @@
               "pdfSayfa": 368,
               "tip": "soru",
               "soruNo": 9,
-              "cevap": "C"
+              "cevap": "D"
             },
             {
               "id": "16-konu-testi-3-10",
@@ -12778,7 +12976,7 @@
               "pdfSayfa": 368,
               "tip": "soru",
               "soruNo": 10,
-              "cevap": "B"
+              "cevap": "C"
             },
             {
               "id": "16-konu-testi-3-11",
@@ -12787,7 +12985,7 @@
               "pdfSayfa": 368,
               "tip": "soru",
               "soruNo": 11,
-              "cevap": "E"
+              "cevap": "B"
             },
             {
               "id": "16-konu-testi-3-12",
@@ -12796,7 +12994,7 @@
               "pdfSayfa": 368,
               "tip": "soru",
               "soruNo": 12,
-              "cevap": "B"
+              "cevap": "E"
             },
             {
               "id": "16-konu-testi-3-13",
@@ -12805,7 +13003,7 @@
               "pdfSayfa": 368,
               "tip": "soru",
               "soruNo": 13,
-              "cevap": "A"
+              "cevap": "B"
             },
             {
               "id": "16-konu-testi-3-14",
@@ -12814,7 +13012,7 @@
               "pdfSayfa": 368,
               "tip": "soru",
               "soruNo": 14,
-              "cevap": "C"
+              "cevap": "A"
             },
             {
               "id": "16-konu-testi-3-15",
@@ -12823,10 +13021,19 @@
               "pdfSayfa": 368,
               "tip": "soru",
               "soruNo": 15,
+              "cevap": "C"
+            },
+            {
+              "id": "16-konu-testi-3-16",
+              "baslik": "Konu Testi 3 - Soru 16",
+              "kartDosya": "16-konu-testi-3-16.png",
+              "pdfSayfa": 368,
+              "tip": "soru",
+              "soruNo": 16,
               "cevap": "B"
             }
           ],
-          "soruSayisi": 15
+          "soruSayisi": 16
         }
       ]
     },
