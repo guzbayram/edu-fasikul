@@ -5,8 +5,8 @@
   "kaynakPdf": "21.Tyt Matematik Fasikül 4.pdf",
   "pdf": "21.Tyt Matematik Fasikül 4-kart.pdf",
   "kartKlasoru": "21.Tyt Matematik Fasikül 4-kart",
-  "soruSayisi": 561,
-  "toplamSoru": 561,
+  "soruSayisi": 559,
+  "toplamSoru": 559,
   "konuSayisi": 7,
   "testSayisi": 30,
   "cevapMaskele": true,
@@ -943,15 +943,6 @@
               "cevap": "C"
             },
             {
-              "id": "2-Uygulama-8",
-              "baslik": "Uygulama Soruları - Soru 8",
-              "kartDosya": "2-Uygulama-8.png",
-              "pdfSayfa": 28,
-              "tip": "soru",
-              "soruNo": 8,
-              "cevap": "A"
-            },
-            {
               "id": "2-Uygulama-9",
               "baslik": "Uygulama Soruları - Soru 9",
               "kartDosya": "2-Uygulama-9.png",
@@ -1123,7 +1114,7 @@
               "cevap": "B"
             }
           ],
-          "soruSayisi": 27
+          "soruSayisi": 26
         },
         {
           "id": "konu-testi-1",
@@ -2675,18 +2666,9 @@
               "tip": "soru",
               "soruNo": 24,
               "cevap": "B"
-            },
-            {
-              "id": "4-Uygulama-25",
-              "baslik": "Uygulama Soruları - Soru 25",
-              "kartDosya": "4-Uygulama-25.png",
-              "pdfSayfa": 69,
-              "tip": "soru",
-              "soruNo": 25,
-              "cevap": "D"
             }
           ],
-          "soruSayisi": 25
+          "soruSayisi": 24
         },
         {
           "id": "konu-testi-1",
