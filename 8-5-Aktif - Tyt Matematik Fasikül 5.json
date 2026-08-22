@@ -5,8 +5,8 @@
   "kaynakPdf": "22-Aktif - Tyt Matematik Fasikül 5.pdf",
   "pdf": "22-Aktif - Tyt Matematik Fasikül 5-kart.pdf",
   "kartKlasoru": "22-Aktif - Tyt Matematik Fasikül 5-kart",
-  "soruSayisi": 429,
-  "toplamSoru": 429,
+  "soruSayisi": 428,
+  "toplamSoru": 428,
   "konuSayisi": 3,
   "testSayisi": 23,
   "cevapMaskele": true,
@@ -871,15 +871,6 @@
               "cevap": "B"
             },
             {
-              "id": "1-Uygulama-68",
-              "baslik": "Uygulama Soruları - Soru 68",
-              "kartDosya": "1-Uygulama-68.png",
-              "pdfSayfa": 37,
-              "tip": "soru",
-              "soruNo": 68,
-              "cevap": "C"
-            },
-            {
               "id": "1-Uygulama-69",
               "baslik": "Uygulama Soruları - Soru 69",
               "kartDosya": "1-Uygulama-69.png",
@@ -952,7 +943,7 @@
               "cevap": "B"
             }
           ],
-          "soruSayisi": 76
+          "soruSayisi": 75
         },
         {
           "id": "konu-testi-1",
