@@ -5,8 +5,8 @@
   "kaynakPdf": "15-Tyt Matematik Fasikül 2.pdf",
   "pdf": "15-Tyt Matematik Fasikül 2-kart.pdf",
   "kartKlasoru": "15-Tyt Matematik Fasikül 2-kart",
-  "soruSayisi": 493,
-  "toplamSoru": 493,
+  "soruSayisi": 492,
+  "toplamSoru": 492,
   "konuSayisi": 4,
   "testSayisi": 25,
   "cevapMaskele": true,
@@ -1246,15 +1246,6 @@
               "cevap": "D"
             },
             {
-              "id": "1-konu-testi-5-7",
-              "baslik": "Konu Testi 5 - Soru 7",
-              "kartDosya": "1-konu-testi-5-7.png",
-              "pdfSayfa": 37,
-              "tip": "soru",
-              "soruNo": 7,
-              "cevap": "C"
-            },
-            {
               "id": "1-konu-testi-5-8",
               "baslik": "Konu Testi 5 - Soru 8",
               "kartDosya": "1-konu-testi-5-8.png",
@@ -1300,7 +1291,7 @@
               "cevap": "B"
             }
           ],
-          "soruSayisi": 12
+          "soruSayisi": 11
         },
         {
           "id": "konu-testi-6",
@@ -3790,7 +3781,7 @@
               "pdfSayfa": 92,
               "tip": "soru",
               "soruNo": 6,
-              "cevap": "E"
+              "cevap": "C"
             },
             {
               "id": "3-Uygulama-7",
