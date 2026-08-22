@@ -5,8 +5,8 @@
   "kaynakPdf": "21.Tyt Matematik Fasikül 4.pdf",
   "pdf": "21.Tyt Matematik Fasikül 4-kart.pdf",
   "kartKlasoru": "21.Tyt Matematik Fasikül 4-kart",
-  "soruSayisi": 559,
-  "toplamSoru": 559,
+  "soruSayisi": 561,
+  "toplamSoru": 561,
   "konuSayisi": 7,
   "testSayisi": 30,
   "cevapMaskele": true,
@@ -2665,7 +2665,7 @@
               "pdfSayfa": 69,
               "tip": "soru",
               "soruNo": 23,
-              "cevap": "B"
+              "cevap": "D"
             },
             {
               "id": "4-Uygulama-24",
@@ -2674,7 +2674,7 @@
               "pdfSayfa": 69,
               "tip": "soru",
               "soruNo": 24,
-              "cevap": "D"
+              "cevap": "B"
             },
             {
               "id": "4-Uygulama-25",
@@ -2683,7 +2683,7 @@
               "pdfSayfa": 69,
               "tip": "soru",
               "soruNo": 25,
-              "cevap": "B"
+              "cevap": "D"
             }
           ],
           "soruSayisi": 25
@@ -2908,9 +2908,27 @@
               "tip": "soru",
               "soruNo": 24,
               "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-1-25",
+              "baslik": "Konu Testi 1 - Soru 25",
+              "kartDosya": "4-konu-testi-1-25.png",
+              "pdfSayfa": 73,
+              "tip": "soru",
+              "soruNo": 25,
+              "cevap": "E"
+            },
+            {
+              "id": "4-konu-testi-1-26",
+              "baslik": "Konu Testi 1 - Soru 26",
+              "kartDosya": "4-konu-testi-1-26.png",
+              "pdfSayfa": 73,
+              "tip": "soru",
+              "soruNo": 26,
+              "cevap": "B"
             }
           ],
-          "soruSayisi": 24
+          "soruSayisi": 26
         },
         {
           "id": "konu-testi-2",
