@@ -2,8 +2,8 @@
   "ad": "MÖF 10. Sınıf Matematik 4. Fasikül",
   "sinif": 10,
   "ders": "mat",
-  "soruSayisi": 181,
-  "toplamSoru": 181,
+  "soruSayisi": 180,
+  "toplamSoru": 180,
   "konuSayisi": 10,
   "testSayisi": 14,
   "thumb": "",
@@ -1502,13 +1502,13 @@
       "sayfa": 57,
       "sayfaBasl": 57,
       "sayfaBitis": 59,
-      "soruSayisi": 16,
+      "soruSayisi": 15,
       "altKonular": [
         {
           "id": "test-10-5-tema-sayma-algoritma-ve-bilisim-surec-degerlendirme-testi-10-sorular",
           "ad": "5. Tema: Sayma, Algoritma ve Bilişim - Süreç Değerlendirme Testi 10",
           "sayfa": 57,
-          "soruSayisi": 16,
+          "soruSayisi": 15,
           "sorular": [
             {
               "no": 1,
@@ -1674,17 +1674,6 @@
               "testAdi": "5. Tema: Sayma, Algoritma ve Bilişim - Süreç Değerlendirme Testi 10",
               "onizleme": "5. Tema: Sayma, Algoritma ve Bilişim - Süreç Değerlendirme Testi 10 - Soru 15",
               "_uid": "t10_15"
-            },
-            {
-              "no": 16,
-              "sayfa": 59,
-              "cevap": "B",
-              "zorluk": "orta",
-              "tip": "test",
-              "testNo": 10,
-              "testAdi": "5. Tema: Sayma, Algoritma ve Bilişim - Süreç Değerlendirme Testi 10",
-              "onizleme": "5. Tema: Sayma, Algoritma ve Bilişim - Süreç Değerlendirme Testi 10 - Soru 16",
-              "_uid": "t10_16"
             }
           ]
         }
