@@ -2,7 +2,7 @@
   "ad": "Matematik Atölyem 8",
   "sinif": 8,
   "ders": "Matematik",
-  "soruSayisi": 987,
+  "soruSayisi": 990,
   "konuSayisi": 41,
   "thumb": "📘",
   "pdf": "0-4-Matematik-Atölyem-8.pdf",
@@ -18,7 +18,7 @@
     384
   ],
   "testSayisi": 81,
-  "toplamSoru": 987,
+  "toplamSoru": 990,
   "eksikCevapSayisi": 0,
   "konular": [
     {
@@ -15868,14 +15868,14 @@
       "sayfa": 37,
       "sayfaBasl": 37,
       "sayfaBitis": 42,
-      "soruSayisi": 14,
+      "soruSayisi": 15,
       "tur": "test",
       "altKonular": [
         {
           "id": "test-beceri-temelli-meb-tadnda-sorular-1-sorular",
           "ad": "Beceri Temelli MEB Tadında Sorular 1",
           "sayfa": 37,
-          "soruSayisi": 14,
+          "soruSayisi": 15,
           "sorular": [
             {
               "no": 1,
@@ -16050,7 +16050,7 @@
             {
               "no": 11,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 1 - Soru 11",
-              "cevap": "D",
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 41,
               "tip": "test",
@@ -16067,7 +16067,7 @@
             {
               "no": 12,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 1 - Soru 12",
-              "cevap": "A",
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 41,
               "tip": "test",
@@ -16084,7 +16084,7 @@
             {
               "no": 13,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 1 - Soru 13",
-              "cevap": "D",
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 42,
               "tip": "test",
@@ -16101,11 +16101,28 @@
             {
               "no": 14,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 1 - Soru 14",
-              "cevap": "A",
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 42,
               "tip": "test",
               "_uid": "beceri-temelli-meb-tadnda-sorular-1_14",
+              "testNo": 1,
+              "testAdi": "Beceri Temelli MEB Tadında Sorular 1",
+              "bolum": "Beceri Temelli MEB Tadında Sorular",
+              "bolumNo": 3,
+              "kaynakSayfa": 42,
+              "anaKonu": "Beceri Temelli MEB Tadında Sorular",
+              "anaKonuAdi": "Beceri Temelli MEB Tadında Sorular",
+              "konu": "Beceri Temelli MEB Tadında Sorular"
+            },
+            {
+              "no": 15,
+              "onizleme": "Beceri Temelli MEB Tadında Sorular 1 - Soru 15",
+              "cevap": "A",
+              "zorluk": "orta",
+              "sayfa": 42,
+              "tip": "test",
+              "_uid": "beceri-temelli-meb-tadnda-sorular-1_15",
               "testNo": 1,
               "testAdi": "Beceri Temelli MEB Tadında Sorular 1",
               "bolum": "Beceri Temelli MEB Tadında Sorular",
@@ -16441,14 +16458,14 @@
       "sayfa": 139,
       "sayfaBasl": 139,
       "sayfaBitis": 146,
-      "soruSayisi": 15,
+      "soruSayisi": 16,
       "tur": "test",
       "altKonular": [
         {
           "id": "test-beceri-temelli-meb-tadnda-sorular-3-sorular",
           "ad": "Beceri Temelli MEB Tadında Sorular 3",
           "sayfa": 139,
-          "soruSayisi": 15,
+          "soruSayisi": 16,
           "sorular": [
             {
               "no": 1,
@@ -16640,7 +16657,7 @@
             {
               "no": 12,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 3 - Soru 12",
-              "cevap": "D",
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 144,
               "tip": "test",
@@ -16657,7 +16674,7 @@
             {
               "no": 13,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 3 - Soru 13",
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "sayfa": 145,
               "tip": "test",
@@ -16674,7 +16691,7 @@
             {
               "no": 14,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 3 - Soru 14",
-              "cevap": "A",
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 145,
               "tip": "test",
@@ -16691,11 +16708,28 @@
             {
               "no": 15,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 3 - Soru 15",
-              "cevap": "D",
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 146,
               "tip": "test",
               "_uid": "beceri-temelli-meb-tadnda-sorular-3_15",
+              "testNo": 3,
+              "testAdi": "Beceri Temelli MEB Tadında Sorular 3",
+              "bolum": "Beceri Temelli MEB Tadında Sorular",
+              "bolumNo": 3,
+              "kaynakSayfa": 146,
+              "anaKonu": "Beceri Temelli MEB Tadında Sorular",
+              "anaKonuAdi": "Beceri Temelli MEB Tadında Sorular",
+              "konu": "Beceri Temelli MEB Tadında Sorular"
+            },
+            {
+              "no": 16,
+              "onizleme": "Beceri Temelli MEB Tadında Sorular 3 - Soru 16",
+              "cevap": "D",
+              "zorluk": "orta",
+              "sayfa": 146,
+              "tip": "test",
+              "_uid": "beceri-temelli-meb-tadnda-sorular-3_16",
               "testNo": 3,
               "testAdi": "Beceri Temelli MEB Tadında Sorular 3",
               "bolum": "Beceri Temelli MEB Tadında Sorular",
@@ -17190,14 +17224,14 @@
       "sayfa": 169,
       "sayfaBasl": 169,
       "sayfaBitis": 194,
-      "soruSayisi": 13,
+      "soruSayisi": 14,
       "tur": "test",
       "altKonular": [
         {
           "id": "test-beceri-temelli-meb-tadnda-sorular-6-sorular",
           "ad": "Beceri Temelli MEB Tadında Sorular 6",
           "sayfa": 169,
-          "soruSayisi": 13,
+          "soruSayisi": 14,
           "sorular": [
             {
               "no": 1,
@@ -17372,7 +17406,7 @@
             {
               "no": 11,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 6 - Soru 11",
-              "cevap": "C",
+              "cevap": "B",
               "zorluk": "orta",
               "sayfa": 179,
               "tip": "test",
@@ -17389,7 +17423,7 @@
             {
               "no": 12,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 6 - Soru 12",
-              "cevap": "A",
+              "cevap": "C",
               "zorluk": "orta",
               "sayfa": 180,
               "tip": "test",
@@ -17406,11 +17440,28 @@
             {
               "no": 13,
               "onizleme": "Beceri Temelli MEB Tadında Sorular 6 - Soru 13",
-              "cevap": "D",
+              "cevap": "A",
               "zorluk": "orta",
               "sayfa": 181,
               "tip": "test",
               "_uid": "beceri-temelli-meb-tadnda-sorular-6_13",
+              "testNo": 6,
+              "testAdi": "Beceri Temelli MEB Tadında Sorular 6",
+              "bolum": "Beceri Temelli MEB Tadında Sorular",
+              "bolumNo": 6,
+              "kaynakSayfa": 181,
+              "anaKonu": "Beceri Temelli MEB Tadında Sorular",
+              "anaKonuAdi": "Beceri Temelli MEB Tadında Sorular",
+              "konu": "Beceri Temelli MEB Tadında Sorular"
+            },
+            {
+              "no": 14,
+              "onizleme": "Beceri Temelli MEB Tadında Sorular 6 - Soru 14",
+              "cevap": "D",
+              "zorluk": "orta",
+              "sayfa": 181,
+              "tip": "test",
+              "_uid": "beceri-temelli-meb-tadnda-sorular-6_14",
               "testNo": 6,
               "testAdi": "Beceri Temelli MEB Tadında Sorular 6",
               "bolum": "Beceri Temelli MEB Tadında Sorular",

@@ -2,7 +2,7 @@
   "ad": "Matematik Atölyem 6",
   "sinif": 6,
   "ders": "Matematik",
-  "soruSayisi": 809,
+  "soruSayisi": 811,
   "konuSayisi": 59,
   "thumb": "📙",
   "pdf": "0-2-Matematik atölyem-6.pdf",
@@ -18,7 +18,7 @@
     304
   ],
   "testSayisi": 65,
-  "toplamSoru": 809,
+  "toplamSoru": 811,
   "eksikCevapSayisi": 0,
   "konular": [
     {
@@ -4364,14 +4364,14 @@
       "sayfa": 125,
       "sayfaBasl": 125,
       "sayfaBitis": 126,
-      "soruSayisi": 15,
+      "soruSayisi": 16,
       "tur": "test",
       "altKonular": [
         {
           "id": "test-kazanm-tadnda-sorular-13-sorular",
           "ad": "Kazanım Tadında Sorular 13",
           "sayfa": 125,
-          "soruSayisi": 15,
+          "soruSayisi": 16,
           "sorular": [
             {
               "no": 1,
@@ -4619,6 +4619,23 @@
               "sayfa": 126,
               "tip": "test",
               "_uid": "kazanm-tadnda-sorular-13_15",
+              "testNo": 13,
+              "testAdi": "Kazanım Tadında Sorular 13",
+              "bolum": "Kazanım Tadında Sorular",
+              "bolumNo": 1,
+              "kaynakSayfa": 126,
+              "anaKonu": "Kazanım Tadında Sorular",
+              "anaKonuAdi": "Kazanım Tadında Sorular",
+              "konu": "Kazanım Tadında Sorular"
+            },
+            {
+              "no": 16,
+              "onizleme": "Kazanım Tadında Sorular 13 - Soru 16",
+              "cevap": "C",
+              "zorluk": "orta",
+              "sayfa": 126,
+              "tip": "test",
+              "_uid": "kazanm-tadnda-sorular-13_16",
               "testNo": 13,
               "testAdi": "Kazanım Tadında Sorular 13",
               "bolum": "Kazanım Tadında Sorular",
@@ -9595,14 +9612,14 @@
       "sayfa": 293,
       "sayfaBasl": 293,
       "sayfaBitis": 294,
-      "soruSayisi": 17,
+      "soruSayisi": 18,
       "tur": "test",
       "altKonular": [
         {
           "id": "test-kazanm-tadnda-sorular-32-sorular",
           "ad": "Kazanım Tadında Sorular 32",
           "sayfa": 293,
-          "soruSayisi": 17,
+          "soruSayisi": 18,
           "sorular": [
             {
               "no": 1,
@@ -9884,6 +9901,23 @@
               "sayfa": 294,
               "tip": "test",
               "_uid": "kazanm-tadnda-sorular-32_17",
+              "testNo": 32,
+              "testAdi": "Kazanım Tadında Sorular 32",
+              "bolum": "Kazanım Tadında Sorular",
+              "bolumNo": 1,
+              "kaynakSayfa": 294,
+              "anaKonu": "Kazanım Tadında Sorular",
+              "anaKonuAdi": "Kazanım Tadında Sorular",
+              "konu": "Kazanım Tadında Sorular"
+            },
+            {
+              "no": 18,
+              "onizleme": "Kazanım Tadında Sorular 32 - Soru 18",
+              "cevap": "C",
+              "zorluk": "orta",
+              "sayfa": 294,
+              "tip": "test",
+              "_uid": "kazanm-tadnda-sorular-32_18",
               "testNo": 32,
               "testAdi": "Kazanım Tadında Sorular 32",
               "bolum": "Kazanım Tadında Sorular",

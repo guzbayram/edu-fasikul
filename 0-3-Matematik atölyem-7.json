@@ -2,7 +2,7 @@
   "ad": "Matematik Atölyem 7",
   "sinif": 7,
   "ders": "Matematik",
-  "soruSayisi": 773,
+  "soruSayisi": 776,
   "konuSayisi": 58,
   "thumb": "📗",
   "pdf": "0-3-Matematik atölyem-7.pdf",
@@ -19,7 +19,7 @@
     304
   ],
   "testSayisi": 63,
-  "toplamSoru": 773,
+  "toplamSoru": 776,
   "eksikCevapSayisi": 0,
   "konular": [
     {
@@ -1175,14 +1175,14 @@
       "sayfa": 33,
       "sayfaBasl": 33,
       "sayfaBitis": 34,
-      "soruSayisi": 15,
+      "soruSayisi": 16,
       "tur": "test",
       "altKonular": [
         {
           "id": "test-kazanm-tadnda-sorular-4-sorular",
           "ad": "Kazanım Tadında Sorular 4",
           "sayfa": 33,
-          "soruSayisi": 15,
+          "soruSayisi": 16,
           "sorular": [
             {
               "no": 1,
@@ -1430,6 +1430,23 @@
               "sayfa": 34,
               "tip": "test",
               "_uid": "kazanm-tadnda-sorular-4_15",
+              "testNo": 4,
+              "testAdi": "Kazanım Tadında Sorular 4",
+              "bolum": "1. Ünite",
+              "bolumNo": 1,
+              "kaynakSayfa": 34,
+              "anaKonu": "1. Ünite",
+              "anaKonuAdi": "1. Ünite",
+              "konu": "Kazanım Tadında Sorular 4"
+            },
+            {
+              "no": 16,
+              "onizleme": "Kazanım Tadında Sorular 4 - Soru 16",
+              "cevap": "C",
+              "zorluk": "orta",
+              "sayfa": 34,
+              "tip": "test",
+              "_uid": "kazanm-tadnda-sorular-4_16",
               "testNo": 4,
               "testAdi": "Kazanım Tadında Sorular 4",
               "bolum": "1. Ünite",
@@ -14523,14 +14540,14 @@
       "sayfa": 279,
       "sayfaBasl": 279,
       "sayfaBitis": 280,
-      "soruSayisi": 12,
+      "soruSayisi": 14,
       "tur": "test",
       "altKonular": [
         {
           "id": "test-kazanm-tadnda-sorular-37-sorular",
           "ad": "Kazanım Tadında Sorular 37",
           "sayfa": 279,
-          "soruSayisi": 12,
+          "soruSayisi": 14,
           "sorular": [
             {
               "no": 1,
@@ -14727,6 +14744,40 @@
               "sayfa": 280,
               "tip": "test",
               "_uid": "kazanm-tadnda-sorular-37_12",
+              "testNo": 37,
+              "testAdi": "Kazanım Tadında Sorular 37",
+              "bolum": "6. Ünite",
+              "bolumNo": 6,
+              "kaynakSayfa": 280,
+              "anaKonu": "6. Ünite",
+              "anaKonuAdi": "6. Ünite",
+              "konu": "Kazanım Tadında Sorular 37"
+            },
+            {
+              "no": 13,
+              "onizleme": "Kazanım Tadında Sorular 37 - Soru 13",
+              "cevap": "D",
+              "zorluk": "orta",
+              "sayfa": 280,
+              "tip": "test",
+              "_uid": "kazanm-tadnda-sorular-37_13",
+              "testNo": 37,
+              "testAdi": "Kazanım Tadında Sorular 37",
+              "bolum": "6. Ünite",
+              "bolumNo": 6,
+              "kaynakSayfa": 280,
+              "anaKonu": "6. Ünite",
+              "anaKonuAdi": "6. Ünite",
+              "konu": "Kazanım Tadında Sorular 37"
+            },
+            {
+              "no": 14,
+              "onizleme": "Kazanım Tadında Sorular 37 - Soru 14",
+              "cevap": "D",
+              "zorluk": "orta",
+              "sayfa": 280,
+              "tip": "test",
+              "_uid": "kazanm-tadnda-sorular-37_14",
               "testNo": 37,
               "testAdi": "Kazanım Tadında Sorular 37",
               "bolum": "6. Ünite",
