@@ -491,7 +491,7 @@
             {
               "no": 1,
               "sayfa": 7,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 3",
@@ -878,7 +878,7 @@
             {
               "no": 6,
               "sayfa": 11,
-              "cevap": "D",
+              "cevap": "C",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 5",
@@ -1035,7 +1035,7 @@
             {
               "no": 1,
               "sayfa": 13,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 6",
@@ -1265,7 +1265,7 @@
             {
               "no": 1,
               "sayfa": 15,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 7",
@@ -1434,7 +1434,7 @@
             {
               "no": 1,
               "sayfa": 17,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 8",
@@ -1663,7 +1663,7 @@
             {
               "no": 6,
               "sayfa": 19,
-              "cevap": "D",
+              "cevap": "C",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 9",
@@ -1832,7 +1832,7 @@
             {
               "no": 2,
               "sayfa": 21,
-              "cevap": "A",
+              "cevap": "C",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 10",
@@ -1880,7 +1880,7 @@
             {
               "no": 6,
               "sayfa": 21,
-              "cevap": "A",
+              "cevap": "C",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 10",
@@ -2330,7 +2330,7 @@
             {
               "no": 1,
               "sayfa": 29,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 14",
@@ -2764,7 +2764,7 @@
             {
               "no": 1,
               "sayfa": 33,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 16",
@@ -4612,7 +4612,7 @@
             {
               "no": 1,
               "sayfa": 53,
-              "cevap": "A",
+              "cevap": "B",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 26",
@@ -6437,7 +6437,7 @@
             {
               "no": 14,
               "sayfa": 74,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 36",
@@ -8360,7 +8360,7 @@
             {
               "no": 1,
               "sayfa": 95,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 47",
@@ -8372,7 +8372,7 @@
             {
               "no": 2,
               "sayfa": 95,
-              "cevap": "A",
+              "cevap": "C",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 47",
@@ -11011,7 +11011,7 @@
             {
               "no": 1,
               "sayfa": 127,
-              "cevap": "A",
+              "cevap": "B",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 63",
@@ -11023,7 +11023,7 @@
             {
               "no": 2,
               "sayfa": 127,
-              "cevap": "A",
+              "cevap": "B",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 63",
@@ -11047,7 +11047,7 @@
             {
               "no": 4,
               "sayfa": 127,
-              "cevap": "A",
+              "cevap": "B",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 63",
@@ -11373,7 +11373,7 @@
             {
               "no": 12,
               "sayfa": 130,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 64",
@@ -11701,7 +11701,7 @@
             {
               "no": 1,
               "sayfa": 133,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 66",
@@ -12028,7 +12028,7 @@
             {
               "no": 1,
               "sayfa": 137,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 68",
@@ -12922,7 +12922,7 @@
             {
               "no": 6,
               "sayfa": 147,
-              "cevap": "D",
+              "cevap": "C",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 73",
@@ -13309,7 +13309,7 @@
             {
               "no": 1,
               "sayfa": 151,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 75",
@@ -18891,7 +18891,7 @@
             {
               "no": 14,
               "sayfa": 216,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 107",
@@ -19291,7 +19291,7 @@
             {
               "no": 14,
               "sayfa": 222,
-              "cevap": "C",
+              "cevap": "D",
               "zorluk": "orta",
               "tip": "test",
               "testAdi": "Test 110",
