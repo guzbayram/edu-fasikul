@@ -2,8 +2,8 @@
   "ad": "MÖF 10. Sınıf Matematik 1. Fasikül",
   "sinif": 10,
   "ders": "mat",
-  "soruSayisi": 393,
-  "toplamSoru": 393,
+  "soruSayisi": 392,
+  "toplamSoru": 392,
   "konuSayisi": 34,
   "testSayisi": 42,
   "thumb": "",
@@ -4669,13 +4669,13 @@
       "sayfa": 142,
       "sayfaBasl": 142,
       "sayfaBitis": 143,
-      "soruSayisi": 12,
+      "soruSayisi": 11,
       "altKonular": [
         {
           "id": "test-37-surec-degerlendirme-testi-37-sorular",
           "ad": "Süreç Değerlendirme Testi 37",
           "sayfa": 142,
-          "soruSayisi": 12,
+          "soruSayisi": 11,
           "sorular": [
             {
               "no": 1,
@@ -4797,17 +4797,6 @@
               "testAdi": "Süreç Değerlendirme Testi 37",
               "onizleme": "Süreç Değerlendirme Testi 37 - Soru 11",
               "_uid": "t37_11"
-            },
-            {
-              "no": 12,
-              "sayfa": 143,
-              "cevap": "B",
-              "zorluk": "orta",
-              "tip": "test",
-              "testNo": 37,
-              "testAdi": "Süreç Değerlendirme Testi 37",
-              "onizleme": "Süreç Değerlendirme Testi 37 - Soru 12",
-              "_uid": "t37_12"
             }
           ]
         }
